@@ -1,29 +1,14 @@
-import React, { useEffect } from "react";
-// import "../../assets/vendor/css/core.css";
+import React, { useEffect, useState } from "react";
 import "../../../public/assets/vendor/css/core.css";
-import "../../../public/assets/js/config.js";
-import "../../../public/assets/vendor/libs/node-waves/node-waves.css";
+import "../../../public/assets/css/demo.css";
 import "../../../public/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css";
 import "../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css";
+// import "../../../public/assets/vendor/libs/node-waves/node-waves.css";
 
-export default function SideBar() {
-  // Dynamically injecting CDN scripts/styles in a component's lifecycle:
-  //   useEffect(() => {
-  //     // Inject a CDN stylesheet
-  //     const link = document.createElement("link");
-  //     link.href = "/frontend/src/assets/vendor/css/core.css";
-  //     link.rel = "stylesheet";
-
-  //     document.head.appendChild(link);
-  //     // Clean up on unmount
-  //     return () => {
-  //       document.head.removeChild(link);
-  //     };
-  //   }, []);
-
+export default function SideBar({ activeMenu, toggleMenu }) {
   return (
     <>
-      {/* ----------------------- Sidebar Menu Start------------------------ */}
+      {/* Sidebar Menu */}
       <aside
         id="layout-menu"
         className="layout-menu menu-vertical menu"
@@ -81,19 +66,24 @@ export default function SideBar() {
           </a>
         </div>
 
-        <div className="menu-inner-shadow"></div>
+        <div className="menu-inner-shadow" style={{ display: "none" }}></div>
 
-        <ul className="menu-inner py-1 ps">
+        <ul className="menu-inner py-1 ps ps--active-y">
           {/* Dashboards */}
           <li className="menu-item active">
-            <a href="index.html" className="menu-link ">
+            <a href="index.html" className="menu-link">
               <i className="menu-icon icon-base ti tabler-smart-home"></i>
               <div data-i="Dashboard">Dashboard</div>
             </a>
           </li>
 
           {/* Master */}
-          <li className="menu-item">
+          <li
+            className={`menu-item ${
+              activeMenu === "master" ? "open" : ""
+            } cursor-pointer`}
+            onClick={() => toggleMenu("master")}
+          >
             <a
               // href="javascript:void(0);"
               className="menu-link menu-toggle"
@@ -102,7 +92,11 @@ export default function SideBar() {
               <div data-i="Master">Master</div>
             </a>
 
-            <ul className="menu-sub">
+            <ul
+              className={`menu-sub dropdown ${
+                activeMenu === "master" ? "open" : ""
+              }`}
+            >
               <li className="menu-item">
                 <a href="department-master.html" className="menu-link">
                   <div data-i="Department Master">Department Master</div>
@@ -152,7 +146,12 @@ export default function SideBar() {
             </ul>
           </li>
           {/* Item Management  */}
-          <li className="menu-item">
+          <li
+            className={`menu-item ${
+              activeMenu === "item" ? "open" : ""
+            } cursor-pointer`}
+            onClick={() => toggleMenu("item")}
+          >
             <a
               // href="javascript:void(0);"
               className="menu-link menu-toggle"
@@ -192,7 +191,12 @@ export default function SideBar() {
           </li>
 
           {/* Request Management  */}
-          <li className="menu-item">
+          <li
+            className={`menu-item ${
+              activeMenu === "request" ? "open" : ""
+            } cursor-pointer`}
+            onClick={() => toggleMenu("request")}
+          >
             <a
               // href="javascript:void(0);"
               className="menu-link menu-toggle"
@@ -211,9 +215,14 @@ export default function SideBar() {
           </li>
 
           {/* PO & Material Management   */}
-          <li className="menu-item">
+          <li
+            className={`menu-item ${
+              activeMenu === "po" ? "open" : ""
+            } cursor-pointer`}
+            onClick={() => toggleMenu("po")}
+          >
             <a
-              //  href="javascript:void(0);"
+              // href="javascript:void(0);"
               className="menu-link menu-toggle"
             >
               <i className="menu-icon icon-base ti tabler-truck"></i>
@@ -255,9 +264,14 @@ export default function SideBar() {
           </li>
 
           {/* Payment Management */}
-          <li className="menu-item">
+          <li
+            className={`menu-item ${
+              activeMenu === "payment" ? "open" : ""
+            } cursor-pointer`}
+            onClick={() => toggleMenu("payment")}
+          >
             <a
-              //  href="javascript:void(0);"
+              // href="javascript:void(0);"
               className="menu-link menu-toggle"
             >
               <i className="menu-icon icon-base ti tabler-file-dollar"></i>
@@ -294,7 +308,6 @@ export default function SideBar() {
           </div>
         </ul>
       </aside>
-      {/* ----------------------- Sidebar Menu End-------------------------- */}
     </>
   );
 }
