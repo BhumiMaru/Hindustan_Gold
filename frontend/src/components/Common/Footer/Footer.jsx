@@ -1,6 +1,6 @@
 import React from "react";
-import "../../../public/assets/vendor/css/core.css";
-import "../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css";
+import "../../../../public/assets/vendor/css/core.css";
+import "../../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css";
 
 export default function Footer() {
   return (

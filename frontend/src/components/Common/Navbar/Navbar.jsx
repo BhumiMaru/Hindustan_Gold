@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import "../../../public/assets/vendor/css/core.css";
-import "../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css";
+import "../../../../public/assets/vendor/css/core.css";
+import "../../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css";
 
-export default function Navbar({ activeMenu, toggleMenu }) {
+export default function Navbar({ activeMenu, toggleMenu, activeSubMenu }) {
+  console.log("active sub menu", activeSubMenu);
+  // Decide what to show in Navbar title
+  const pageTitle = activeSubMenu || activeMenu;
   return (
     <>
       {/* ----------------------START NAVBAR--------------------------- */}
@@ -36,7 +39,7 @@ export default function Navbar({ activeMenu, toggleMenu }) {
                     </div>
                     --> */}
           <div className="text-center">
-            <h4 className="mb-0 me-1">Dashboard</h4>
+            <h4 className="mb-0 me-1">{pageTitle}</h4>
           </div>
 
           {/* /Search */}
@@ -55,7 +58,7 @@ export default function Navbar({ activeMenu, toggleMenu }) {
               >
                 <div className="avatar avatar-online">
                   <img
-                    src="assets/img/avatars/1.png"
+                    src="../../../../public/assets/img/avatars/1.png"
                     alt=""
                     className="rounded-circle"
                   />

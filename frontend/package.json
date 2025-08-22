@@ -14,7 +14,8 @@
     "node-waves": "^0.7.6",
     "perfect-scrollbar": "^1.5.6",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^7.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
