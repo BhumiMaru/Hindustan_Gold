@@ -22,6 +22,32 @@ export default function SideBar({
     "User Creation": "/master/user",
   };
 
+  const itemRoutes = {
+    "Group Master": "/item/group",
+    "Category Master": "/item/category",
+    "Subcategory Master": "/item/subcategory",
+    "Item Master": "/item/item-master",
+    "Item Create": "/item/item-create",
+  };
+
+  const requestManagementRoutes = {
+    "Item Request": "/request/request-list",
+  };
+
+  const piAndMaterialManagementRoutes = {
+    "PI Item Request": "/po-material/pi-request-create",
+    "PI Request List": "/po-material/pi-request-list",
+    "Get Quote": "/po-material/get-quote-list",
+    "PO Create": "/po-material/po-create",
+    "PO List": "/po-material/po-list",
+    "GRN List": "/po-material/grn-list",
+  };
+
+  const paymentManagementRoutes = {
+    "Invoice List": "/payment-management/invoice-list",
+    "Vendor List": "/payment-management/vendor-list",
+  };
+
   return (
     <>
       {/* Sidebar Menu */}
@@ -121,13 +147,7 @@ export default function SideBar({
                 activeMenu === "Item" ? "open" : ""
               }`}
             >
-              {[
-                "Group Master",
-                "Category Master",
-                "Subcategory Master",
-                "Item Master",
-                "Item Create",
-              ].map((item) => (
+              {Object.keys(itemRoutes).map((item) => (
                 <li
                   key={item}
                   className={`menu-item ${
@@ -138,9 +158,12 @@ export default function SideBar({
                     handleSubMenuClick("Item", item);
                   }}
                 >
-                  <a className="menu-link cursor-pointer">
+                  <Link
+                    to={itemRoutes[item]}
+                    className="menu-link cursor-pointer"
+                  >
                     <div data-i={item}>{item}</div>
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -162,7 +185,7 @@ export default function SideBar({
                 activeMenu === "Request" ? "open" : ""
               }`}
             >
-              {["Item Request"].map((item) => (
+              {Object.keys(requestManagementRoutes).map((item) => (
                 <li
                   key={item}
                   className={`menu-item ${
@@ -173,9 +196,12 @@ export default function SideBar({
                     handleSubMenuClick("Request", item);
                   }}
                 >
-                  <a className="menu-link cursor-pointer">
+                  <Link
+                    to={requestManagementRoutes[item]}
+                    className="menu-link cursor-pointer"
+                  >
                     <div data-i={item}>{item}</div>
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -199,14 +225,7 @@ export default function SideBar({
                 activeMenu === "PO" ? "open" : ""
               }`}
             >
-              {[
-                "PI Item Request",
-                "PI Request List",
-                "Get Quote",
-                "PO Create",
-                "PO List",
-                "GRN List",
-              ].map((item) => (
+              {Object.keys(piAndMaterialManagementRoutes).map((item) => (
                 <li
                   key={item}
                   className={`menu-item ${
@@ -217,9 +236,12 @@ export default function SideBar({
                     handleSubMenuClick("PO", item);
                   }}
                 >
-                  <a className="menu-link cursor-pointer">
+                  <Link
+                    to={piAndMaterialManagementRoutes[item]}
+                    className="menu-link cursor-pointer"
+                  >
                     <div data-i={item}>{item}</div>
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -241,7 +263,7 @@ export default function SideBar({
                 activeMenu === "Payment" ? "open" : ""
               }`}
             >
-              {["Invoice List", "Vendor List"].map((item) => (
+              {Object.keys(paymentManagementRoutes).map((item) => (
                 <li
                   key={item}
                   className={`menu-item ${
@@ -252,9 +274,12 @@ export default function SideBar({
                     handleSubMenuClick("Payment", item);
                   }}
                 >
-                  <a className="menu-link cursor-pointer">
+                  <Link
+                    to={paymentManagementRoutes[item]}
+                    className="menu-link cursor-pointer"
+                  >
                     <div data-i={item}>{item}</div>
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
