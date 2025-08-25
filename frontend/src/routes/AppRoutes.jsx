@@ -24,6 +24,10 @@ import PO_List_Page from "../Pages/PO_and_Material_Management/PO_List_Page";
 import GRN_List_Page from "../Pages/PO_and_Material_Management/GRN_List_Page";
 import Invoice_List_page from "../Pages/Payment Management/Invoice_List_page";
 import Vendor_List_page from "../Pages/Payment Management/Vendor_List_page";
+import Item_Master_Page from "../Pages/Item Management/Item_Master_Page";
+import Item_Create_Material_Form from "../components/Item Management/Item_Create/Item_Create_Material_Form";
+import Item_Create_Service_Form from "../components/Item Management/Item_Create/Item_Create_Service_Form";
+import Item_Create_Asset_Form from "../components/Item Management/Item_Create/Item_Create_Asset_Form";
 
 export default function AppRoutes() {
   return (
@@ -58,6 +62,19 @@ export default function AppRoutes() {
         <Route path="/item/group" element={<Group_Master_Page />} />
         <Route path="/item/category" element={<Category_Master_Page />} />
         <Route path="/item/subcategory" element={<SubCategory_Master_Page />} />
+        <Route path="/item/item-master" element={<Item_Master_Page />} />
+        <Route
+          path="/item/item-create-material"
+          element={<Item_Create_Material_Form />}
+        />
+        <Route
+          path="/item/item-create-service"
+          element={<Item_Create_Service_Form />}
+        />
+        <Route
+          path="/item/item-create-asset"
+          element={<Item_Create_Asset_Form />}
+        />
 
         {/* Request Management */}
         <Route

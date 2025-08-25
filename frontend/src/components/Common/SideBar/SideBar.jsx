@@ -27,7 +27,7 @@ export default function SideBar({
     "Category Master": "/item/category",
     "Subcategory Master": "/item/subcategory",
     "Item Master": "/item/item-master",
-    "Item Create": "/item/item-create",
+    "Item Create": "/item/item-create-material",
   };
 
   const requestManagementRoutes = {
