@@ -43,7 +43,7 @@ export default function DepartmentTable({ departments }) {
               </div>
             </td>
           </tr>
-          <tr>
+          {/* <tr>
             <td>
               <div className="ms-2">2</div>
             </td>
@@ -94,7 +94,7 @@ export default function DepartmentTable({ departments }) {
                 </button>
               </div>
             </td>
-          </tr>
+          </tr> */}
         </tbody>
       </table>
       {/* ---------------------End DepartmentTable----------------------- */}
