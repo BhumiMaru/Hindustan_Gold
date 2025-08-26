@@ -5,7 +5,7 @@ export default function Group_Master_Form() {
     <>
       {/* -------------------START GROUP MASTER FORM---------------------- */}
       <div
-        class="modal fade show"
+        className="modal fade show"
         id="smallModal"
         tabindex="-1"
         aria-modal="true"
@@ -13,47 +13,47 @@ export default function Group_Master_Form() {
         style={{ display: "block" }}
       >
         <div
-          class="modal-dialog modal-sm modal-dialog-centered"
+          className="modal-dialog modal-sm modal-dialog-centered"
           role="document"
         >
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel2">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel2">
                 Add Group
               </h5>
               <button
                 type="button"
-                class="btn-close"
+                className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">
-              <div class="row">
-                <div class="col mb-2">
-                  <label for="nameSmall" class="form-label">
+            <div className="modal-body">
+              <div className="row">
+                <div className="col mb-2">
+                  <label for="nameSmall" className="form-label">
                     Group Name
                   </label>
                   <input
                     type="text"
                     id="nameSmall"
-                    class="form-control"
+                    className="form-control"
                     placeholder="Enter Group Name"
                   />
                 </div>
               </div>
             </div>
-            <div class="modal-footer">
+            <div className="modal-footer">
               <button
                 type="button"
-                class="btn btn-label-secondary waves-effect"
+                className="btn btn-label-secondary waves-effect"
                 data-bs-dismiss="modal"
               >
                 Close
               </button>
               <button
                 type="button"
-                class="btn btn-primary waves-effect waves-light"
+                className="btn btn-primary waves-effect waves-light"
               >
                 Save changes
               </button>

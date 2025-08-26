@@ -60,7 +60,7 @@ export default function PI_Request_List() {
           </div>
           <div className="d-flex justify-content-between px-3 pb-2">
             <div className="d-flex align-items-center ">
-              {/*  <input type="search" class="form-control" placeholder="Search Users...">*/}
+              {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
               <SearchBar />
             </div>
             <div className="d-flex gap-2">

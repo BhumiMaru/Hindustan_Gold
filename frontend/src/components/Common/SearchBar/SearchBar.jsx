@@ -1,6 +1,16 @@
 import React from "react";
 
-export default function SearchBar() {
+export default function SearchBar({
+  placeholder = "",
+  value,
+  onChange,
+  onSubmit,
+}) {
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && onSubmit) {
+      onSubmit(e.target.value);
+    }
+  };
   return (
     <>
       {/* --------------------Start SearchBar------------------------ */}
@@ -11,9 +21,12 @@ export default function SearchBar() {
         <input
           type="text"
           className="form-control"
-          placeholder="Search departments..."
-          aria-label="Search departments..."
+          placeholder={placeholder}
+          aria-label={placeholder}
           aria-describedby="basic-addon-search31"
+          value={value}
+          onChange={(e) => onChange && onChange(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
       </div>
       {/* --------------------End SearchBar------------------------ */}

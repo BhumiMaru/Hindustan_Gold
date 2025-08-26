@@ -1,6 +1,8 @@
 // import "./App.css";
 import { useState } from "react";
 import { BrowserRouter } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Footer from "./components/Common/Footer/Footer";
 import Navbar from "./components/Common/Navbar/Navbar";
 import SideBar from "./components/Common/SideBar/SideBar";
@@ -42,7 +44,7 @@ function App() {
                 activeSubMenu={activeSubMenu}
               />
 
-              <div class="content-wrapper">
+              <div className="content-wrapper">
                 {/* ----------------Start Content--------------- */}
                 <AppRoutes />
                 {/* ----------------End Content--------------- */}
@@ -53,6 +55,7 @@ function App() {
           </div>
         </div>
       </BrowserRouter>
+      <ToastContainer />
       {/* ----------End App---------- */}
     </>
   );

@@ -86,7 +86,7 @@ export default function SideBar({
             }`}
             onClick={() => toggleMenu("Dashboard")}
           >
-            <Link to="/dashboard" className="menu-link cursor-pointer">
+            <Link to="/" className="menu-link cursor-pointer">
               <i className="menu-icon icon-base ti tabler-smart-home"></i>
               <div data-i="Dashboard">Dashboard</div>
             </Link>

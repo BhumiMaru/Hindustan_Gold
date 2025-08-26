@@ -12,7 +12,7 @@ export default function Vendor_List_List() {
         <div className="card">
           <div className="d-flex justify-content-between p-3">
             <div className="d-flex align-items-center ">
-              {/*  <input type="search" class="form-control" placeholder="Search Users...">*/}
+              {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
               <SearchBar />
             </div>
             <div className="d-flex">

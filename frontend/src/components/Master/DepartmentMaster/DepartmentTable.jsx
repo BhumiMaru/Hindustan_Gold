@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function DepartmentTable() {
+export default function DepartmentTable({ departments }) {
   return (
     <>
       {/* ---------------------Start DepartmentTable----------------------- */}

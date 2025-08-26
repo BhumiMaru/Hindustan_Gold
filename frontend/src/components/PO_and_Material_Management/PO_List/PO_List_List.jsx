@@ -59,7 +59,7 @@ export default function PO_List_List() {
           </div>
           <div className="d-flex justify-content-between px-3 pt-1">
             <div className="d-flex align-items-center ">
-              {/*  <input type="search" class="form-control" placeholder="Search Users...">*/}
+              {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
               <SearchBar />
             </div>
             <div>
@@ -74,9 +74,9 @@ export default function PO_List_List() {
                   </span>
                 </span>
               </button>
-              {/*  <a href="request-list.html" class="btn btn-primary waves-effect waves-light"
+              {/*  <a href="request-list.html" className="btn btn-primary waves-effect waves-light"
                             >
-                                <span class="icon-xs icon-base ti tabler-plus me-2"></span>Create Request
+                                <span className="icon-xs icon-base ti tabler-plus me-2"></span>Create Request
                             </a>*/}
             </div>
           </div>
