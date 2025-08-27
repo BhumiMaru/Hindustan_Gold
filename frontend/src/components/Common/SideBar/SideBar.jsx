@@ -4,13 +4,11 @@ import "../../../../public/assets/css/demo.css";
 import "../../../../public/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css";
 import "../../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css";
 import { Link } from "react-router-dom";
+import { useUIContext } from "../../../Context/UIContext";
 
-export default function SideBar({
-  activeMenu,
-  toggleMenu,
-  activeSubMenu,
-  handleSubMenuClick,
-}) {
+export default function SideBar() {
+  const { activeMenu, toggleMenu, activeSubMenu, handleSubMenuClick } =
+    useUIContext();
   const masterRoutes = {
     "Department Master": "/master/department",
     "Zone Master": "/master/zone",

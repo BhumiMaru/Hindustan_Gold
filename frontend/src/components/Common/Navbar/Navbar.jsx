@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import "../../../../public/assets/vendor/css/core.css";
 import "../../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css";
+import { useUIContext } from "../../../Context/UIContext";
 
-export default function Navbar({ activeMenu, toggleMenu, activeSubMenu }) {
-  console.log("active sub menu", activeSubMenu);
+export default function Navbar() {
+  const { activeMenu, toggleMenu, activeSubMenu } = useUIContext();
   // Decide what to show in Navbar title
   const pageTitle = activeSubMenu || activeMenu;
   return (

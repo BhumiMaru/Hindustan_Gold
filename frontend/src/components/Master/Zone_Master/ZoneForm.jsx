@@ -1,6 +1,46 @@
 import React from "react";
+import { useUIContext } from "../../../Context/UIContext";
+import { validateTextInput } from "../../../utils/validation";
+import { useZone } from "../../../Context/Master/ZoneContext";
+import { toast } from "react-toastify";
 
 export default function ZoneForm() {
+  const { handleClose } = useUIContext();
+  const {
+    zoneName,
+    setZoneName,
+    colorCode,
+    setColorCode,
+    editId,
+    addZone,
+    updateZone,
+    setEditId,
+  } = useZone();
+
+  const handleSave = async () => {
+    const { valid, error } = validateTextInput(zoneName);
+    if (!valid) {
+      toast.error(error);
+      return;
+    }
+
+    try {
+      if (editId) {
+        await updateZone();
+      } else {
+        await addZone();
+      }
+
+      // ✅ Close modal after save
+      handleClose("addNewZone");
+
+      // ✅ Reset form
+      setEditId(null);
+    } catch (err) {
+      toast.error("Something went wrong while saving zone ❌");
+      console.error(err);
+    }
+  };
   return (
     <>
       {/* ---------------------START ZONE FORM POPUP MODAL [ADD/EDIT]-------------------- */}
@@ -27,6 +67,11 @@ export default function ZoneForm() {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
+                  onClick={() => {
+                    handleClose("addNewZone");
+                    setZoneName("");
+                    setColorCode("");
+                  }}
                 ></button>
               </div>
               <div className="modal-body">
@@ -40,13 +85,21 @@ export default function ZoneForm() {
                       id="nameSmall"
                       className="form-control"
                       placeholder="Enter Zone Name"
+                      value={zoneName}
+                      onChange={(e) => setZoneName(e.target.value)}
                     />
                   </div>
                   <div className="col-12 mb-2">
                     <label htmlFor="color" className="form-label">
                       Select Color
                     </label>
-                    <input type="color" id="color" className="form-control" />
+                    <input
+                      type="color"
+                      id="color"
+                      className="form-control"
+                      value={colorCode}
+                      onChange={(e) => setColorCode(e.target.value)}
+                    />
                   </div>
                 </div>
               </div>
@@ -55,12 +108,18 @@ export default function ZoneForm() {
                   type="button"
                   className="btn btn-label-secondary waves-effect"
                   data-bs-dismiss="modal"
+                  onClick={() => {
+                    handleClose("addNewZone");
+                    setZoneName("");
+                    setColorCode("");
+                  }}
                 >
                   Close
                 </button>
                 <button
                   type="button"
                   className="btn btn-primary waves-effect waves-light"
+                  onClick={handleSave}
                 >
                   Save changes
                 </button>
@@ -68,6 +127,7 @@ export default function ZoneForm() {
             </div>
           </div>
         </div>
+        <div className="modal-backdrop fade show"></div>
       </>
       {/* ---------------------END ZONE FORM POPUP MODAL [ADD/EDIT]-------------------- */}
     </>

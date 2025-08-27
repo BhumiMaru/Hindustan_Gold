@@ -4,26 +4,16 @@ import Pagination from "../../Common/Pagination/Pagination";
 import SearchBar from "../../Common/SearchBar/SearchBar";
 import DepartmentForm from "./DepartmentForm";
 import { useUIContext } from "../../../Context/UIContext";
-import { toast } from "react-toastify";
-import { getData } from "../../../utils/api";
+import { useDepartment } from "../../../Context/Master/DepartmentContext";
 
 export default function DepartmentList() {
   const { modal, handleOpen } = useUIContext();
-  const [departments, setDepartments] = useState([]);
-
-  // Fetch departments
-  const fetchDepartments = async () => {
-    try {
-      const data = await getData("/departments");
-      setDepartments(data);
-    } catch (error) {
-      toast.error("Failed to fetch departments", error);
-    }
-  };
+  const { fetchDepartments } = useDepartment();
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetchDepartments();
-  }, []);
+    fetchDepartments(search);
+  }, [search]); // ✅ re-fetch when search changes
   return (
     <>
       {/* ---------------------Start DepartmentList --------------------- */}
@@ -34,7 +24,12 @@ export default function DepartmentList() {
             <div className="d-flex justify-content-between p-3">
               <div className="d-flex align-items-center ">
                 {/*  <input type="search" className="form-control" placeholder="Search departments...">*/}
-                <SearchBar placeholder="Search departments..." />
+                <SearchBar
+                  placeholder="Search departments..."
+                  value={search}
+                  onChange={setSearch} // ✅ update state
+                  onSubmit={(val) => setSearch(val)} // ✅ handle Enter key
+                />
               </div>
               <div>
                 <button
@@ -50,7 +45,7 @@ export default function DepartmentList() {
               </div>
             </div>
             <div className="card-datatable table-responsive pt-0">
-              <DepartmentTable departments={departments} />
+              <DepartmentTable />
               <Pagination />
             </div>
           </div>

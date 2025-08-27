@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../../Common/SearchBar/SearchBar";
 import ZoneTable from "./ZoneTable";
 import Pagination from "../../Common/Pagination/Pagination";
+import { useUIContext } from "../../../Context/UIContext";
+import ZoneForm from "./ZoneForm";
+import { useZone } from "../../../Context/Master/ZoneContext";
 
 export default function ZoneList() {
+  const { modal, handleOpen } = useUIContext();
+  const [search, setSearch] = useState("");
+  const { fetchZones } = useZone();
+
+  useEffect(() => {
+    fetchZones(search);
+  }, [search]); // ✅ re-fetch when search changes
+
   return (
     <>
       {/* --------------------START ZONE LIST---------------------- */}
@@ -14,7 +25,12 @@ export default function ZoneList() {
             <div className="d-flex justify-content-between p-3">
               <div className="d-flex align-items-center ">
                 {/*  <input type="search" className="form-control" placeholder="Search Zones...">*/}
-                <SearchBar />
+                <SearchBar
+                  placeholder="Search Zones..."
+                  value={search}
+                  onChange={setSearch} // ✅ update state
+                  onSubmit={(val) => setSearch(val)} // ✅ handle Enter key
+                />
               </div>
               <div>
                 <button
@@ -22,6 +38,7 @@ export default function ZoneList() {
                   className="btn btn-primary waves-effect waves-light"
                   data-bs-toggle="modal"
                   data-bs-target="#smallModal"
+                  onClick={() => handleOpen("addNewZone")}
                 >
                   <span className="icon-xs icon-base ti tabler-plus me-2"></span>
                   Add New Zone
@@ -34,6 +51,8 @@ export default function ZoneList() {
             </div>
           </div>
         </div>
+
+        {modal.addNewZone && <ZoneForm />}
       </>
       {/* --------------------END ZONE LIST---------------------- */}
     </>

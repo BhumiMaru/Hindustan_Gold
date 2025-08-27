@@ -9,9 +9,27 @@ export const useUIContext = () => {
 
 // UI Context Provider
 export const UIProvider = ({ children }) => {
-  // Popup Modal
+  // Is Open Dropdown in SIDEBAR
+  const [activeMenu, setActiveMenu] = useState(null); // For parent menu
+  const [activeSubMenu, setActiveSubMenu] = useState(null); // For submenu item
+  // Toggle parent menu
+  const toggleMenu = (menuName) => {
+    setActiveMenu(activeMenu === menuName ? null : menuName);
+    setActiveSubMenu(null); // reset submenu when switching parent
+  };
+
+  // Handle submenu click (keep parent open)
+  const handleSubMenuClick = (parentMenu, subMenu) => {
+    setActiveMenu(parentMenu); // 🔑 ensure parent stays open
+    setActiveSubMenu(subMenu); // highlight submenu
+  };
+
+  //--------------------------SIDEBAR-------------------------- //
+
+  // Popup Modal For All
   const [modal, setModal] = useState({
     addNewDepartment: false,
+    addNewZone: false,
   });
 
   const handleOpen = (name) => {
@@ -23,7 +41,17 @@ export const UIProvider = ({ children }) => {
   };
 
   return (
-    <UIContext.Provider value={{ modal, handleClose, handleOpen }}>
+    <UIContext.Provider
+      value={{
+        modal,
+        handleClose,
+        handleOpen,
+        activeMenu,
+        toggleMenu,
+        activeSubMenu,
+        handleSubMenuClick,
+      }}
+    >
       {children}
     </UIContext.Provider>
   );

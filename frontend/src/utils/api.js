@@ -9,25 +9,25 @@ const api = axios.create({
 
 // Generic GET
 export const getData = async (endPoint, params = {}) => {
-  const response = await axios.get(endPoint, { params });
+  const response = await api.get(endPoint, { params });
   return response.data;
 };
 
 // Generic POST
 export const postData = async (endPoint, data) => {
-  const response = await axios.post(endPoint, data);
+  const response = await api.post(endPoint, data);
   return response.data;
 };
 
 //Generic PUT
 export const putData = async (endPoint, data) => {
-  const response = await axios.put(endPoint, data);
+  const response = await api.put(endPoint, data);
   return response.data;
 };
 
 //Generic Delete
 export const deleteData = async (endPoint) => {
-  const response = await axios.delete(endPoint);
+  const response = await api.delete(endPoint);
   return response.data;
 };
 

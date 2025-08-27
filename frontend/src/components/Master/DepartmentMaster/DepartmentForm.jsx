@@ -1,33 +1,48 @@
 import React, { useState } from "react";
 import { useUIContext } from "../../../Context/UIContext";
-import { postData } from "../../../utils/api";
-import { toast } from "react-toastify";
 import { validateTextInput } from "../../../utils/validation";
+import { toast } from "react-toastify";
+import { useDepartment } from "../../../Context/Master/DepartmentContext";
 
 export default function DepartmentForm() {
   const { handleClose } = useUIContext();
-  const [deptName, setDeptName] = useState("");
+  const {
+    deptName,
+    updateDepartment,
+    addDepartment,
+    setDeptName,
+    fetchDepartments,
+    deptEditId,
+    setDeptEditId,
+  } = useDepartment();
 
+  // Add or Update Department
   const handleSave = async () => {
     const { valid, error } = validateTextInput(deptName);
     if (!valid) {
       toast.error(error);
       return;
     }
+
     try {
-      // 👇 Call your generic postData
-      const response = await postData("/department", {
-        departmentName: deptName,
-      });
-      console.log("Department Created:", response);
+      if (deptEditId) {
+        await updateDepartment(deptEditId, deptName);
+        toast.success("Department updated successfully ✅");
+      } else {
+        await addDepartment(deptName);
+        toast.success("Department added successfully ✅");
+      }
 
       // ✅ Close modal after save
       handleClose("addNewDepartment");
+      fetchDepartments();
 
       // ✅ Reset form
       setDeptName("");
-    } catch (error) {
-      toast.error("Error creating department:", error);
+      setDeptEditId(null);
+    } catch (err) {
+      toast.error("Something went wrong while saving department ❌");
+      console.error(err);
     }
   };
 
@@ -56,7 +71,10 @@ export default function DepartmentForm() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
-                onClick={() => handleClose("addNewDepartment")}
+                onClick={() => {
+                  handleClose("addNewDepartment");
+                  setDeptName("");
+                }}
               />
             </div>
             <div className="modal-body">
@@ -81,7 +99,10 @@ export default function DepartmentForm() {
                 type="button"
                 className="btn btn-label-secondary waves-effect"
                 data-bs-dismiss="modal"
-                onClick={() => handleClose("addNewDepartment")}
+                onClick={() => {
+                  handleClose("addNewDepartment");
+                  setDeptName("");
+                }}
               >
                 Close
               </button>
