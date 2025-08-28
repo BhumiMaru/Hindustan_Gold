@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../../Common/SearchBar/SearchBar";
 import Group_Master_Table from "./Group_Master_Table";
 import Pagination from "../../Common/Pagination/Pagination";
+import { useUIContext } from "../../../Context/UIContext";
+import Group_Master_Form from "./Group_Master_Form";
+import { useGroupMasterContext } from "../../../Context/Item Management/GroupMasterContext";
 
 export default function Group_Master_List() {
+  const { handleOpen, modal } = useUIContext();
+  const [search, setSearch] = useState("");
+  const { fetchGroupData } = useGroupMasterContext();
+
+  useEffect(() => {
+    fetchGroupData(search);
+  }, [search]);
+
   return (
     <>
       {/* -------------------START GROUP MASTER LIST---------------------- */}
@@ -13,7 +24,12 @@ export default function Group_Master_List() {
           <div className="d-flex justify-content-between p-3">
             <div className="d-flex align-items-center ">
               {/* <!--  <input type="search" className="form-control" placeholder="Search Groups...">--> */}
-              <SearchBar />
+              <SearchBar
+                placeholder="Search Groups..."
+                value={search}
+                onChange={setSearch} // ✅ update state
+                onSubmit={(val) => setSearch(val)} // ✅ handle Enter key
+              />
             </div>
             <div>
               <button
@@ -21,9 +37,10 @@ export default function Group_Master_List() {
                 className="btn btn-primary waves-effect waves-light"
                 data-bs-toggle="modal"
                 data-bs-target="#smallModal"
+                onClick={() => handleOpen("addNewGroup")}
               >
-                <span className="icon-xs icon-base ti tabler-plus me-2"></span>Add
-                New Group
+                <span className="icon-xs icon-base ti tabler-plus me-2"></span>
+                Add New Group
               </button>
             </div>
           </div>
@@ -33,6 +50,8 @@ export default function Group_Master_List() {
           </div>
         </div>
       </div>
+
+      {modal.addNewGroup && <Group_Master_Form />}
       {/* -------------------END GROUP MASTER LIST---------------------- */}
     </>
   );

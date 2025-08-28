@@ -31,6 +31,9 @@ export const UIProvider = ({ children }) => {
     addNewDepartment: false,
     addNewZone: false,
     addNewServiceLocation1: false,
+    addNewServiceLocation2: false,
+    addNewCompany: false,
+    addNewGroup: false,
   });
 
   const handleOpen = (name) => {

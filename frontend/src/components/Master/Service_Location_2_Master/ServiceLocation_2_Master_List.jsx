@@ -2,8 +2,11 @@ import React from "react";
 import SearchBar from "../../Common/SearchBar/SearchBar";
 import Pagination from "../../Common/Pagination/Pagination";
 import ServiceLocation_2_Master_Table from "./ServiceLocation_2_Master_Table";
+import ServiceLocation_2_Master_Form from "./ServiceLocation_2_Master_Form";
+import { useUIContext } from "../../../Context/UIContext";
 
 export default function ServiceLocation_2_Master_List() {
+  const { handleOpen, modal } = useUIContext();
   return (
     <>
       {/* -----------------START SERVICE LOCATION 2 MASTER List-------------------- */}
@@ -11,7 +14,7 @@ export default function ServiceLocation_2_Master_List() {
         {/* DataTable with Buttons */}
         <div className="card">
           <div className="d-flex justify-content-between p-3">
-            <div className="d-flex align-items-center ">
+            <div className="d-flex align-items-center">
               {/*  <input type="search" className="form-control" placeholder="Search Service Location 2s...">*/}
               <SearchBar />
             </div>
@@ -73,6 +76,7 @@ export default function ServiceLocation_2_Master_List() {
                 className="btn btn-primary waves-effect waves-light"
                 data-bs-toggle="modal"
                 data-bs-target="#smallModal"
+                onClick={() => handleOpen("addNewServiceLocation2")}
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2"></span>
                 Add New Service Location 2
@@ -85,6 +89,7 @@ export default function ServiceLocation_2_Master_List() {
           </div>
         </div>
       </div>
+      {modal.addNewServiceLocation2 && <ServiceLocation_2_Master_Form />}
       {/* -----------------END SERVICE LOCATION 2 MASTER List-------------------- */}
     </>
   );

@@ -1,6 +1,35 @@
 import React from "react";
+import { useUIContext } from "../../../Context/UIContext";
+import { validateTextInput } from "../../../utils/validation";
+import { useGroupMasterContext } from "../../../Context/Item Management/GroupMasterContext";
 
 export default function Group_Master_Form() {
+  const { handleClose } = useUIContext();
+  const {
+    groupName,
+    setGroupName,
+    groupEditId,
+    setgroupEditId,
+    createGroup,
+    updateGroup,
+  } = useGroupMasterContext();
+
+  const handleSubmit = () => {
+    const { valid, error } = validateTextInput(groupName);
+    if (!valid) {
+      toast.error(error);
+      return;
+    }
+
+    if (groupEditId) {
+      updateGroup(groupEditId, groupName);
+    } else {
+      createGroup(groupName);
+    }
+    setgroupEditId(null);
+    setGroupName("");
+    handleClose("addNewGroup");
+  };
   return (
     <>
       {/* -------------------START GROUP MASTER FORM---------------------- */}
@@ -26,12 +55,16 @@ export default function Group_Master_Form() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                onClick={() => {
+                  handleClose("addNewGroup");
+                  setGroupName("");
+                }}
               ></button>
             </div>
             <div className="modal-body">
               <div className="row">
                 <div className="col mb-2">
-                  <label for="nameSmall" className="form-label">
+                  <label htmlFor="nameSmall" className="form-label">
                     Group Name
                   </label>
                   <input
@@ -39,6 +72,8 @@ export default function Group_Master_Form() {
                     id="nameSmall"
                     className="form-control"
                     placeholder="Enter Group Name"
+                    value={groupName}
+                    onChange={(e) => setGroupName(e.target.value)}
                   />
                 </div>
               </div>
@@ -48,12 +83,17 @@ export default function Group_Master_Form() {
                 type="button"
                 className="btn btn-label-secondary waves-effect"
                 data-bs-dismiss="modal"
+                onClick={() => {
+                  handleClose("addNewGroup");
+                  setGroupName("");
+                }}
               >
                 Close
               </button>
               <button
                 type="button"
                 className="btn btn-primary waves-effect waves-light"
+                onClick={handleSubmit}
               >
                 Save changes
               </button>
@@ -61,6 +101,8 @@ export default function Group_Master_Form() {
           </div>
         </div>
       </div>
+      <div className="modal-backdrop fade show"></div>
+
       {/* -------------------END GROUP MASTER FORM---------------------- */}
     </>
   );

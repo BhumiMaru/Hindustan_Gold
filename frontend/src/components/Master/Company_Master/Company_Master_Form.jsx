@@ -1,6 +1,36 @@
 import React from "react";
+import { useCompanyMaster } from "../../../Context/Master/CompanyMasterContext";
+import { validateTextInput } from "../../../utils/validation";
+import { useUIContext } from "../../../Context/UIContext";
 
 export default function Company_Master_Form() {
+  const {
+    companyName,
+    setCompanyName,
+    updateCompany,
+    createCompany,
+    setCompanyEditId,
+    companyEditId,
+  } = useCompanyMaster();
+  const { handleClose } = useUIContext();
+
+  const handleSubmit = () => {
+    const { valid, error } = validateTextInput(companyName);
+    if (!valid) {
+      toast.error(error);
+      return;
+    }
+
+    if (companyEditId) {
+      updateCompany(companyEditId, companyName);
+    } else {
+      createCompany(companyName);
+    }
+    setCompanyEditId(null);
+    setCompanyName("");
+    handleClose("addNewCompany");
+  };
+
   return (
     <>
       {/* ---------------------START COMPANY MASTER FORM------------------------- */}
@@ -27,6 +57,10 @@ export default function Company_Master_Form() {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
+                  onClick={() => {
+                    handleClose("addNewCompany");
+                    setCompanyName("");
+                  }}
                 ></button>
               </div>
               <div className="modal-body">
@@ -40,6 +74,8 @@ export default function Company_Master_Form() {
                       id="nameSmall"
                       className="form-control"
                       placeholder="Enter Company Name"
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
                     />
                   </div>
                 </div>
@@ -49,12 +85,17 @@ export default function Company_Master_Form() {
                   type="button"
                   className="btn btn-label-secondary waves-effect"
                   data-bs-dismiss="modal"
+                  onClick={() => {
+                    handleClose("addNewCompany");
+                    setCompanyName("");
+                  }}
                 >
                   Close
                 </button>
                 <button
                   type="button"
                   className="btn btn-primary waves-effect waves-light"
+                  onClick={handleSubmit}
                 >
                   Save changes
                 </button>
@@ -62,6 +103,7 @@ export default function Company_Master_Form() {
             </div>
           </div>
         </div>
+        <div className="modal-backdrop fade show"></div>
       </>
       {/* ---------------------END COMPANY MASTER FORM------------------------- */}
     </>
