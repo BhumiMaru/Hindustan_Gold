@@ -48,7 +48,7 @@ export default function ZoneForm() {
         <div
           className="modal fade show"
           id="smallModal"
-          tabindex="-1"
+          tabIndex="-1"
           aria-modal="true"
           role="dialog"
           style={{ display: "block" }}

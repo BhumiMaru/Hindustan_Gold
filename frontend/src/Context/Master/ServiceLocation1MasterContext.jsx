@@ -1,0 +1,93 @@
+import { createContext, useContext, useState } from "react";
+import { toast } from "react-toastify";
+import { getData, postData, deleteData } from "../../utils/api";
+import { ENDPOINTS } from "../../constants/endpoints";
+
+const ServiceLocation1MasterContext = createContext();
+
+// CUSTOM HOOK [SERVICE LOCATION 1 MASTER]
+export const useServiceLocation1Master = () => {
+  return useContext(ServiceLocation1MasterContext);
+};
+
+// [SERVICE LOCATION 1 MASTER] Provider
+export const ServiceLocation1MasterProvider = ({ children }) => {
+  const [serviceLocation, setServiceLocation] = useState([]);
+  const [serviceLocationName, setServiceLocationName] = useState("");
+  const [serviceLocation1EditId, setServiceLocation1EditId] = useState(null);
+
+  // Fetch All
+  const fetchServiceLocations = async (search = "") => {
+    try {
+      const res = await getData(ENDPOINTS.SERVICES_LOCATION_1_MASTER.LIST, {
+        search,
+      });
+      setServiceLocation(res.data.data);
+    } catch (error) {
+      toast.error(`Service Location 1 Master Fetch Error: ${error.message}`);
+    }
+  };
+
+  // Create
+  const createServiceLocation = async (service_location_name) => {
+    try {
+      await postData(ENDPOINTS.SERVICES_LOCATION_1_MASTER.ADD_UPDATE, {
+        service_location_name,
+      });
+      toast.success("Service Location 1 Master Created Successfully");
+      fetchServiceLocations();
+    } catch (error) {
+      toast.error(`Service Location 1 Master Create Error: ${error.message}`);
+    }
+  };
+
+  // Update
+  const updateServiceLocation = async (id, service_location_name) => {
+    try {
+      await postData(ENDPOINTS.SERVICES_LOCATION_1_MASTER.ADD_UPDATE, {
+        id,
+        service_location_name,
+      });
+      toast.success("Service Location 1 Master Updated Successfully");
+      fetchServiceLocations();
+    } catch (error) {
+      toast.error(`Service Location 1 Master Update Error: ${error.message}`);
+    }
+  };
+
+  //   Start Editing
+  const startEditing = (id, service_location_name) => {
+    setServiceLocation1EditId(id);
+    setServiceLocationName(service_location_name);
+  };
+
+  // Delete
+  const deleteServiceLocation = async (id) => {
+    try {
+      await deleteData(`${ENDPOINTS.SERVICES_LOCATION_1_MASTER.DELETE}/${id}`);
+      toast.success("Service Location 1 Master Deleted Successfully");
+      fetchServiceLocations();
+    } catch (error) {
+      toast.error(`Service Location 1 Master Delete Error: ${error.message}`);
+    }
+  };
+
+  return (
+    <ServiceLocation1MasterContext.Provider
+      value={{
+        serviceLocation,
+        serviceLocation1EditId,
+        setServiceLocation1EditId,
+        fetchServiceLocations,
+        createServiceLocation,
+        updateServiceLocation,
+        deleteServiceLocation,
+        setServiceLocationName,
+        serviceLocationName,
+        startEditing,
+      }}
+    >
+      {children}
+    </ServiceLocation1MasterContext.Provider>
+  );
+};

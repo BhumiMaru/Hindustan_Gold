@@ -74,7 +74,7 @@ export default function User_Creation_Form() {
                   id="Role"
                   className="select2 form-select select2-hidden-accessible"
                   data-select2-id="Role"
-                  tabindex="-1"
+                  tabIndex="-1"
                   aria-hidden="true"
                 >
                   <option value="AK" data-select2-id="2">
@@ -95,7 +95,7 @@ export default function User_Creation_Form() {
                       role="combobox"
                       aria-haspopup="true"
                       aria-expanded="false"
-                      tabindex="0"
+                      tabIndex="0"
                       aria-disabled="false"
                       aria-labelledby="select2-Role-container"
                     >
@@ -129,7 +129,7 @@ export default function User_Creation_Form() {
                   id="Department"
                   className="select2 form-select select2-hidden-accessible"
                   data-select2-id="Department"
-                  tabindex="-1"
+                  tabIndex="-1"
                   aria-hidden="true"
                 >
                   <option value="AK" data-select2-id="4">
@@ -149,7 +149,7 @@ export default function User_Creation_Form() {
                       role="combobox"
                       aria-haspopup="true"
                       aria-expanded="false"
-                      tabindex="0"
+                      tabIndex="0"
                       aria-disabled="false"
                       aria-labelledby="select2-Department-container"
                     >
@@ -183,7 +183,7 @@ export default function User_Creation_Form() {
                   id="Zone"
                   className="select2 form-select select2-hidden-accessible"
                   data-select2-id="Zone"
-                  tabindex="-1"
+                  tabIndex="-1"
                   aria-hidden="true"
                 >
                   <option value="AK" data-select2-id="6">
@@ -203,7 +203,7 @@ export default function User_Creation_Form() {
                       role="combobox"
                       aria-haspopup="true"
                       aria-expanded="false"
-                      tabindex="0"
+                      tabIndex="0"
                       aria-disabled="false"
                       aria-labelledby="select2-Zone-container"
                     >
@@ -238,7 +238,7 @@ export default function User_Creation_Form() {
                   id="ServiceLocation"
                   className="select2 form-select select2-hidden-accessible"
                   data-select2-id="ServiceLocation"
-                  tabindex="-1"
+                  tabIndex="-1"
                   aria-hidden="true"
                 >
                   <option value="AK" data-select2-id="8">
@@ -258,7 +258,7 @@ export default function User_Creation_Form() {
                       role="combobox"
                       aria-haspopup="true"
                       aria-expanded="false"
-                      tabindex="0"
+                      tabIndex="0"
                       aria-disabled="false"
                       aria-labelledby="select2-ServiceLocation-container"
                     >
@@ -293,7 +293,7 @@ export default function User_Creation_Form() {
                   id="Company"
                   className="select2 form-select select2-hidden-accessible"
                   data-select2-id="Company"
-                  tabindex="-1"
+                  tabIndex="-1"
                   aria-hidden="true"
                 >
                   <option value="AK" data-select2-id="10">
@@ -313,7 +313,7 @@ export default function User_Creation_Form() {
                       role="combobox"
                       aria-haspopup="true"
                       aria-expanded="false"
-                      tabindex="0"
+                      tabIndex="0"
                       aria-disabled="false"
                       aria-labelledby="select2-Company-container"
                     >
@@ -348,7 +348,7 @@ export default function User_Creation_Form() {
                   id="ReportingManager1"
                   className="select2 form-select select2-hidden-accessible"
                   data-select2-id="ReportingManager1"
-                  tabindex="-1"
+                  tabIndex="-1"
                   aria-hidden="true"
                 >
                   <option value="AK" data-select2-id="12">
@@ -368,7 +368,7 @@ export default function User_Creation_Form() {
                       role="combobox"
                       aria-haspopup="true"
                       aria-expanded="false"
-                      tabindex="0"
+                      tabIndex="0"
                       aria-disabled="false"
                       aria-labelledby="select2-ReportingManager1-container"
                     >
@@ -402,7 +402,7 @@ export default function User_Creation_Form() {
                   id="ReportingManager2"
                   className="select2 form-select select2-hidden-accessible"
                   data-select2-id="ReportingManager2"
-                  tabindex="-1"
+                  tabIndex="-1"
                   aria-hidden="true"
                 >
                   <option value="AK" data-select2-id="14">
@@ -422,7 +422,7 @@ export default function User_Creation_Form() {
                       role="combobox"
                       aria-haspopup="true"
                       aria-expanded="false"
-                      tabindex="0"
+                      tabIndex="0"
                       aria-disabled="false"
                       aria-labelledby="select2-ReportingManager2-container"
                     >
@@ -456,7 +456,7 @@ export default function User_Creation_Form() {
                   id="status"
                   className="select2 form-select select2-hidden-accessible"
                   data-select2-id="status"
-                  tabindex="-1"
+                  tabIndex="-1"
                   aria-hidden="true"
                 >
                   <option value="AK" data-select2-id="16">
@@ -476,7 +476,7 @@ export default function User_Creation_Form() {
                       role="combobox"
                       aria-haspopup="true"
                       aria-expanded="false"
-                      tabindex="0"
+                      tabIndex="0"
                       aria-disabled="false"
                       aria-labelledby="select2-status-container"
                     >

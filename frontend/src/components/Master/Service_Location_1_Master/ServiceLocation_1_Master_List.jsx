@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../../Common/SearchBar/SearchBar";
 import ServiceLocation_1_Master_Table from "./ServiceLocation_1_Master_Table";
 import Pagination from "../../Common/Pagination/Pagination";
 import ServiceLocation_1_Master_Form from "./ServiceLocation_1_Master_Form";
+import { useUIContext } from "../../../Context/UIContext";
+import { useServiceLocation1Master } from "../../../Context/Master/ServiceLocation1MasterContext";
 
 export default function ServiceLocation_1_Master_List() {
+  const { handleOpen, modal } = useUIContext();
+  const { fetchServiceLocations } = useServiceLocation1Master();
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    fetchServiceLocations(search);
+  }, [search]);
   return (
     <>
       {/* -----------------START SERVICE LOCATION 1 MASTER List-------------------- */}
@@ -15,7 +24,12 @@ export default function ServiceLocation_1_Master_List() {
             <div className="d-flex justify-content-between p-3">
               <div className="d-flex align-items-center ">
                 {/*  <input type="search" className="form-control" placeholder="Search Service Location 1s...">*/}
-                <SearchBar />
+                <SearchBar
+                  placeholder="Search Service Location 1..."
+                  value={search}
+                  onChange={setSearch} // ✅ update state
+                  onSubmit={(val) => setSearch(val)} // ✅ handle Enter key
+                />
               </div>
               <div>
                 <button
@@ -23,6 +37,7 @@ export default function ServiceLocation_1_Master_List() {
                   className="btn btn-primary waves-effect waves-light"
                   data-bs-toggle="modal"
                   data-bs-target="#smallModal"
+                  onClick={() => handleOpen("addNewServiceLocation1")}
                 >
                   <span className="icon-xs icon-base ti tabler-plus me-2"></span>
                   Add New Service Location 1
@@ -34,7 +49,7 @@ export default function ServiceLocation_1_Master_List() {
               <Pagination />
             </div>
           </div>
-          {/* {showForm && <ServiceLocation_1_Master_Form />} */}
+          {modal.addNewServiceLocation1 && <ServiceLocation_1_Master_Form />}
         </div>
       </>
       {/* -----------------END SERVICE LOCATION 1 MASTER List-------------------- */}

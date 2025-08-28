@@ -43,7 +43,7 @@ export default function Item_Request_List() {
                       data-bs-target="#navs-pills-justified-profile"
                       aria-controls="navs-pills-justified-profile"
                       aria-selected="false"
-                      tabindex="-1"
+                      tabIndex="-1"
                     >
                       <span className="d-none d-sm-inline-flex align-items-center">
                         <i className="icon-base ti tabler-user icon-sm me-1_5"></i>

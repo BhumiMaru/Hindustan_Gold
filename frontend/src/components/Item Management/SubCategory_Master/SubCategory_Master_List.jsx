@@ -36,7 +36,7 @@ export default function SubCategory_Master_List() {
                     id="select6Basic"
                     className="select2 form-select select2-hidden-accessible"
                     data-select2-id="select6Basic"
-                    tabindex="-1"
+                    tabIndex="-1"
                     aria-hidden="true"
                   >
                     <option value="AK" data-select2-id="2">
@@ -58,7 +58,7 @@ export default function SubCategory_Master_List() {
                         role="combobox"
                         aria-haspopup="true"
                         aria-expanded="false"
-                        tabindex="0"
+                        tabIndex="0"
                         aria-disabled="false"
                         aria-labelledby="select2-select6Basic-container"
                       >
@@ -92,7 +92,7 @@ export default function SubCategory_Master_List() {
                     id="select7Basic"
                     className="select2 form-select select2-hidden-accessible"
                     data-select2-id="select7Basic"
-                    tabindex="-1"
+                    tabIndex="-1"
                     aria-hidden="true"
                   >
                     <option value="AK" data-select2-id="4">
@@ -114,7 +114,7 @@ export default function SubCategory_Master_List() {
                         role="combobox"
                         aria-haspopup="true"
                         aria-expanded="false"
-                        tabindex="0"
+                        tabIndex="0"
                         aria-disabled="false"
                         aria-labelledby="select2-select7Basic-container"
                       >
@@ -148,7 +148,7 @@ export default function SubCategory_Master_List() {
                     id="select8Basic"
                     className="select2 form-select select2-hidden-accessible"
                     data-select2-id="select8Basic"
-                    tabindex="-1"
+                    tabIndex="-1"
                     aria-hidden="true"
                   >
                     <option value="AK" data-select2-id="6">
@@ -170,7 +170,7 @@ export default function SubCategory_Master_List() {
                         role="combobox"
                         aria-haspopup="true"
                         aria-expanded="false"
-                        tabindex="0"
+                        tabIndex="0"
                         aria-disabled="false"
                         aria-labelledby="select2-select8Basic-container"
                       >
@@ -204,7 +204,7 @@ export default function SubCategory_Master_List() {
                     id="select8info1"
                     className="select2 form-select select2-hidden-accessible"
                     data-select2-id="select8info1"
-                    tabindex="-1"
+                    tabIndex="-1"
                     aria-hidden="true"
                   >
                     <option value="1" data-select2-id="8">
@@ -226,7 +226,7 @@ export default function SubCategory_Master_List() {
                         role="combobox"
                         aria-haspopup="true"
                         aria-expanded="false"
-                        tabindex="0"
+                        tabIndex="0"
                         aria-disabled="false"
                         aria-labelledby="select2-select8info1-container"
                       >

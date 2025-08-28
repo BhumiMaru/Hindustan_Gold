@@ -30,6 +30,7 @@ export const UIProvider = ({ children }) => {
   const [modal, setModal] = useState({
     addNewDepartment: false,
     addNewZone: false,
+    addNewServiceLocation1: false,
   });
 
   const handleOpen = (name) => {

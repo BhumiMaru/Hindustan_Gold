@@ -34,7 +34,7 @@ export default function User_Creation_List() {
                     id="select3Basic"
                     className="select2 form-select select2-hidden-accessible"
                     data-select2-id="select3Basic"
-                    tabindex="-1"
+                    tabIndex="-1"
                     aria-hidden="true"
                   >
                     <option value="AK" data-select2-id="2">
@@ -55,7 +55,7 @@ export default function User_Creation_List() {
                         role="combobox"
                         aria-haspopup="true"
                         aria-expanded="false"
-                        tabindex="0"
+                        tabIndex="0"
                         aria-disabled="false"
                         aria-labelledby="select2-select3Basic-container"
                       >
@@ -89,7 +89,7 @@ export default function User_Creation_List() {
                     id="select4Basic"
                     className="select2 form-select select2-hidden-accessible"
                     data-select2-id="select4Basic"
-                    tabindex="-1"
+                    tabIndex="-1"
                     aria-hidden="true"
                   >
                     <option value="AK" data-select2-id="4">
@@ -110,7 +110,7 @@ export default function User_Creation_List() {
                         role="combobox"
                         aria-haspopup="true"
                         aria-expanded="false"
-                        tabindex="0"
+                        tabIndex="0"
                         aria-disabled="false"
                         aria-labelledby="select2-select4Basic-container"
                       >
@@ -144,7 +144,7 @@ export default function User_Creation_List() {
                     id="select14Basic"
                     className="select2 form-select select2-hidden-accessible"
                     data-select2-id="select14Basic"
-                    tabindex="-1"
+                    tabIndex="-1"
                     aria-hidden="true"
                   >
                     <option value="AK" data-select2-id="6">
@@ -165,7 +165,7 @@ export default function User_Creation_List() {
                         role="combobox"
                         aria-haspopup="true"
                         aria-expanded="false"
-                        tabindex="0"
+                        tabIndex="0"
                         aria-disabled="false"
                         aria-labelledby="select2-select14Basic-container"
                       >
@@ -199,7 +199,7 @@ export default function User_Creation_List() {
                     id="select5Basic"
                     className="select2 form-select select2-hidden-accessible"
                     data-select2-id="select5Basic"
-                    tabindex="-1"
+                    tabIndex="-1"
                     aria-hidden="true"
                   >
                     <option value="AK" data-select2-id="8">
@@ -220,7 +220,7 @@ export default function User_Creation_List() {
                         role="combobox"
                         aria-haspopup="true"
                         aria-expanded="false"
-                        tabindex="0"
+                        tabIndex="0"
                         aria-disabled="false"
                         aria-labelledby="select2-select5Basic-container"
                       >

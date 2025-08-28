@@ -7,7 +7,7 @@ export default function ServiceLocation_3_Master_Form() {
       <div
         className="modal fade show"
         id="smallModal"
-        tabindex="-1"
+        tabIndex="-1"
         aria-modal="true"
         role="dialog"
         style={{ display: "block" }}
@@ -39,7 +39,7 @@ export default function ServiceLocation_3_Master_Form() {
                       id="select2Basic"
                       className="select2 form-select select2-hidden-accessible"
                       data-select2-id="select2Basic"
-                      tabindex="-1"
+                      tabIndex="-1"
                       aria-hidden="true"
                     >
                       <option value="AK" data-select2-id="6">
@@ -61,7 +61,7 @@ export default function ServiceLocation_3_Master_Form() {
                           role="combobox"
                           aria-haspopup="true"
                           aria-expanded="false"
-                          tabindex="0"
+                          tabIndex="0"
                           aria-disabled="false"
                           aria-labelledby="select2-select2Basic-container"
                         >
@@ -98,7 +98,7 @@ export default function ServiceLocation_3_Master_Form() {
                       id="select3Basic"
                       className="select2 form-select select2-hidden-accessible"
                       data-select2-id="select3Basic"
-                      tabindex="-1"
+                      tabIndex="-1"
                       aria-hidden="true"
                     >
                       <option value="AK" data-select2-id="8">
@@ -120,7 +120,7 @@ export default function ServiceLocation_3_Master_Form() {
                           role="combobox"
                           aria-haspopup="true"
                           aria-expanded="false"
-                          tabindex="0"
+                          tabIndex="0"
                           aria-disabled="false"
                           aria-labelledby="select2-select3Basic-container"
                         >

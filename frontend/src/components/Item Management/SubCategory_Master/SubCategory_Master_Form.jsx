@@ -8,7 +8,7 @@ export default function SubCategory_Master_Form() {
         <div
           className="modal fade show"
           id="smallModal"
-          tabindex="-1"
+          tabIndex="-1"
           style={{ display: "block" }}
           aria-modal="true"
           role="dialog"
@@ -40,7 +40,7 @@ export default function SubCategory_Master_Form() {
                         id="select2Basic"
                         className="select2 form-select select2-hidden-accessible"
                         data-select2-id="select2Basic"
-                        tabindex="-1"
+                        tabIndex="-1"
                         aria-hidden="true"
                       >
                         <option value="AK" data-select2-id="10">
@@ -62,7 +62,7 @@ export default function SubCategory_Master_Form() {
                             role="combobox"
                             aria-haspopup="true"
                             aria-expanded="false"
-                            tabindex="0"
+                            tabIndex="0"
                             aria-disabled="false"
                             aria-labelledby="select2-select2Basic-container"
                           >
@@ -99,7 +99,7 @@ export default function SubCategory_Master_Form() {
                         id="select3Basic"
                         className="select2 form-select select2-hidden-accessible"
                         data-select2-id="select3Basic"
-                        tabindex="-1"
+                        tabIndex="-1"
                         aria-hidden="true"
                       >
                         <option value="AK" data-select2-id="12">
@@ -121,7 +121,7 @@ export default function SubCategory_Master_Form() {
                             role="combobox"
                             aria-haspopup="true"
                             aria-expanded="false"
-                            tabindex="0"
+                            tabIndex="0"
                             aria-disabled="false"
                             aria-labelledby="select2-select3Basic-container"
                           >
@@ -172,7 +172,7 @@ export default function SubCategory_Master_Form() {
                           className="select2 form-select select2-hidden-accessible"
                           multiple=""
                           data-select2-id="select2info1"
-                          tabindex="-1"
+                          tabIndex="-1"
                           aria-hidden="true"
                         >
                           <option value="1" selected="" data-select2-id="14">
@@ -196,7 +196,7 @@ export default function SubCategory_Master_Form() {
                               role="combobox"
                               aria-haspopup="true"
                               aria-expanded="false"
-                              tabindex="-1"
+                              tabIndex="-1"
                               aria-disabled="false"
                             >
                               <ul className="select2-selection__rendered">
@@ -230,7 +230,7 @@ export default function SubCategory_Master_Form() {
                                   <input
                                     className="select2-search__field"
                                     type="search"
-                                    tabindex="0"
+                                    tabIndex="0"
                                     autocomplete="off"
                                     autocorrect="off"
                                     autocapitalize="none"

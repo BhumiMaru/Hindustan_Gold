@@ -25,7 +25,7 @@ export default function Item_Request_Form() {
                     id="SelectItem"
                     className="select2 form-select select2-hidden-accessible"
                     data-select2-id="SelectItem"
-                    tabindex="-1"
+                    tabIndex="-1"
                     aria-hidden="true"
                   >
                     <option value="AK" data-select2-id="2">
@@ -47,7 +47,7 @@ export default function Item_Request_Form() {
                         role="combobox"
                         aria-haspopup="true"
                         aria-expanded="false"
-                        tabindex="0"
+                        tabIndex="0"
                         aria-disabled="false"
                         aria-labelledby="select2-SelectItem-container"
                       >
@@ -142,7 +142,7 @@ export default function Item_Request_Form() {
                     id="Purpose"
                     className="select2 form-select select2-hidden-accessible"
                     data-select2-id="Purpose"
-                    tabindex="-1"
+                    tabIndex="-1"
                     aria-hidden="true"
                   >
                     <option value="AK" data-select2-id="4">
@@ -164,7 +164,7 @@ export default function Item_Request_Form() {
                         role="combobox"
                         aria-haspopup="true"
                         aria-expanded="false"
-                        tabindex="0"
+                        tabIndex="0"
                         aria-disabled="false"
                         aria-labelledby="select2-Purpose-container"
                       >

@@ -1,6 +1,37 @@
 import React from "react";
+import { useServiceLocation1Master } from "../../../Context/Master/ServiceLocation1MasterContext";
+import { validateTextInput } from "../../../utils/validation";
+import { toast } from "react-toastify";
+import { useUIContext } from "../../../Context/UIContext";
 
 export default function ServiceLocation_1_Master_Form() {
+  const { handleClose } = useUIContext();
+  const {
+    setServiceLocationName,
+    serviceLocationName,
+    updateServiceLocation,
+    createServiceLocation,
+    serviceLocation1EditId,
+    setServiceLocation1EditId,
+  } = useServiceLocation1Master();
+
+  const handleSubmit = () => {
+    const { valid, error } = validateTextInput(serviceLocationName);
+    if (!valid) {
+      toast.error(error);
+      return;
+    }
+
+    if (serviceLocation1EditId) {
+      updateServiceLocation(serviceLocation1EditId, serviceLocationName);
+    } else {
+      createServiceLocation(serviceLocationName);
+    }
+    setServiceLocation1EditId(null);
+    setServiceLocationName("");
+    handleClose("addNewServiceLocation1");
+  };
+
   return (
     <>
       {/* -----------------START SERVICE LOCATION 1 MASTER Form-------------------- */}
@@ -8,7 +39,7 @@ export default function ServiceLocation_1_Master_Form() {
         <div
           className="modal fade show"
           id="smallModal"
-          tabindex="-1"
+          tabIndex="-1"
           aria-modal="true"
           role="dialog"
           style={{ display: "block" }}
@@ -27,6 +58,10 @@ export default function ServiceLocation_1_Master_Form() {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
+                  onClick={() => {
+                    handleClose("addNewServiceLocation1");
+                    setServiceLocationName("");
+                  }}
                 ></button>
               </div>
               <div className="modal-body">
@@ -40,6 +75,8 @@ export default function ServiceLocation_1_Master_Form() {
                       id="nameSmall"
                       className="form-control"
                       placeholder="Enter Service Location 1 Name"
+                      value={serviceLocationName}
+                      onChange={(e) => setServiceLocationName(e.target.value)}
                     />
                   </div>
                 </div>
@@ -49,12 +86,17 @@ export default function ServiceLocation_1_Master_Form() {
                   type="button"
                   className="btn btn-label-secondary waves-effect"
                   data-bs-dismiss="modal"
+                  onClick={() => {
+                    handleClose("addNewServiceLocation1");
+                    setServiceLocationName("");
+                  }}
                 >
                   Close
                 </button>
                 <button
                   type="button"
                   className="btn btn-primary waves-effect waves-light"
+                  onClick={handleSubmit}
                 >
                   Save changes
                 </button>
@@ -62,6 +104,7 @@ export default function ServiceLocation_1_Master_Form() {
             </div>
           </div>
         </div>
+        <div className="modal-backdrop fade show"></div>
       </>
       {/* -----------------END SERVICE LOCATION 1 MASTER Form-------------------- */}
     </>

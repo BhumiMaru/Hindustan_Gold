@@ -8,7 +8,7 @@ export default function Role_Master_Form() {
         <div
           className="modal fade show"
           id="smallModal"
-          tabindex="-1"
+          tabIndex="-1"
           style={{ display: "block" }}
           aria-modal="true"
           role="dialog"
