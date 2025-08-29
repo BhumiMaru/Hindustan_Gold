@@ -14,6 +14,16 @@ export const ENDPOINTS = {
     ADD_UPDATE: "/service-locations/add/update",
     DELETE: "/service-locations/delete",
   },
+  SERVICES_LOCATION_2_MASTER: {
+    LIST: "/service-locations-2/list",
+    ADD_UPDATE: "/service-locations-2/add/update",
+    DELETE: "/service-locations-2/delete",
+  },
+  SERVICES_LOCATION_3_MASTER: {
+    LIST: "/service-locations-3/list",
+    ADD_UPDATE: "/service-locations-3/add/update",
+    DELETE: "/service-locations-3/delete",
+  },
   COMPANY_MASTER: {
     LIST: "/companies/list",
     ADD_UPDATE: "/companies/add/update",

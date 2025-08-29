@@ -1,6 +1,11 @@
 import React from "react";
+import { useServiceLocation3Master } from "../../../Context/Master/ServiceLocation3MasterContext";
+import { useUIContext } from "../../../Context/UIContext";
 
 export default function ServiceLocation_3_Master_Table() {
+  const { handleOpen } = useUIContext();
+  const { serviceLocation3, deleteServiceLocation3, startEditing } =
+    useServiceLocation3Master();
   return (
     <>
       {/* -----------------START SERVICE LOCATION 3 MASTER TABLE-------------------- */}
@@ -20,91 +25,53 @@ export default function ServiceLocation_3_Master_Table() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <div className="ms-4">1</div>
-            </td>
-            <td>Service Location 3 Master </td>
-            <td>Service Location 2 Master </td>
-            <td>Service Location 1 Master </td>
+          {serviceLocation3.map((serviceLocation3, index) => {
+            return (
+              <tr key={serviceLocation3.id}>
+                <td>
+                  <div className="ms-4">{index + 1}</div>
+                </td>
+                <td>{serviceLocation3.service_location_3_name}</td>
+                <td>{serviceLocation3?.sl2?.service_location_2_name} </td>
+                <td>{serviceLocation3?.sl1?.service_location_name} </td>
 
-            <td>
-              <div className="d-inline-flex gap-2">
-                <button
-                  type="button"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                  data-bs-toggle="modal"
-                  data-bs-target="#smallModal"
-                >
-                  <i className="icon-base ti tabler-edit icon-22px"></i>
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                  data-bs-toggle="modal"
-                  data-bs-target="#deleteModal"
-                >
-                  <i className="icon-base ti tabler-trash text-danger icon-22px"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div className="ms-4">2</div>
-            </td>
-            <td>Service Location 3 Master </td>
-            <td>Service Location 2 Master </td>
-            <td>Service Location 1 Master </td>
-            <td>
-              <div className="d-inline-flex gap-2">
-                <button
-                  type="button"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                  data-bs-toggle="modal"
-                  data-bs-target="#smallModal"
-                >
-                  <i className="icon-base ti tabler-edit icon-22px"></i>
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                  data-bs-toggle="modal"
-                  data-bs-target="#deleteModal"
-                >
-                  <i className="icon-base ti tabler-trash text-danger icon-22px"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div className="ms-4">3</div>
-            </td>
-            <td>Service Location 3 Master </td>
-            <td>Service Location 2 Master </td>
-            <td>Service Location 1 Master </td>
-            <td>
-              <div className="d-inline-flex gap-2">
-                <button
-                  type="button"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                  data-bs-toggle="modal"
-                  data-bs-target="#smallModal"
-                >
-                  <i className="icon-base ti tabler-edit icon-22px"></i>
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                  data-bs-toggle="modal"
-                  data-bs-target="#deleteModal"
-                >
-                  <i className="icon-base ti tabler-trash text-danger icon-22px"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
+                <td>
+                  <div className="d-inline-flex gap-2">
+                    <button
+                      type="button"
+                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
+                      data-bs-toggle="modal"
+                      data-bs-target="#smallModal"
+                      onClick={() => {
+                        startEditing(
+                          serviceLocation3.id,
+                          serviceLocation3.service_location_3_name,
+                          serviceLocation3.service_location_1_id, // ✅ ID
+                          serviceLocation3.service_location_2_id, // ✅ ID
+                          serviceLocation3?.sl1?.service_location_name, // ✅ Label
+                          serviceLocation3?.sl2?.service_location_2_name // ✅ Label
+                        );
+                        handleOpen("addNewServiceLocation3");
+                      }}
+                    >
+                      <i className="icon-base ti tabler-edit icon-22px"></i>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteModal"
+                      onClick={() => {
+                        deleteServiceLocation3(serviceLocation3.id);
+                      }}
+                    >
+                      <i className="icon-base ti tabler-trash text-danger icon-22px"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
       {/* -----------------END SERVICE LOCATION 3 MASTER TABLE-------------------- */}

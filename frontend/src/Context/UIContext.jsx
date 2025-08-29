@@ -32,6 +32,7 @@ export const UIProvider = ({ children }) => {
     addNewZone: false,
     addNewServiceLocation1: false,
     addNewServiceLocation2: false,
+    addNewServiceLocation3: false,
     addNewCompany: false,
     addNewGroup: false,
   });

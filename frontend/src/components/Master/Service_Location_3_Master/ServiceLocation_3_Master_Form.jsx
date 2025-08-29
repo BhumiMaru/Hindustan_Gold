@@ -1,6 +1,78 @@
-import React from "react";
+import React, { useEffect } from "react";
+import CustomSelect from "../../Common/CustomSelect/CustomSelect";
+import { useUIContext } from "../../../Context/UIContext";
+import { useServiceLocation3Master } from "../../../Context/Master/ServiceLocation3MasterContext";
+import { useServiceLocation2Master } from "../../../Context/Master/ServiceLocation2MasterContext";
+import { useServiceLocation1Master } from "../../../Context/Master/ServiceLocation1MasterContext";
+import { toast } from "react-toastify";
+import { validateTextInput } from "../../../utils/validation";
 
 export default function ServiceLocation_3_Master_Form() {
+  const { handleClose } = useUIContext();
+  const {
+    setServiceLocation3Data,
+    serviceLocation3Data,
+    serviceLocation3EditId,
+    updateServiceLocation3,
+    createServiceLocation3,
+    setServiceLocation3EditId,
+  } = useServiceLocation3Master();
+  const { serviceLocation: serviceLocation1, fetchServiceLocations } =
+    useServiceLocation1Master();
+  const { serviceLocation2, fetchServiceLocations2 } =
+    useServiceLocation2Master();
+
+  useEffect(() => {
+    fetchServiceLocations();
+    fetchServiceLocations2();
+  }, []);
+
+  const handleSave = () => {
+    // ✅ validate text input
+    const { valid, error } = validateTextInput(
+      serviceLocation3Data.serviceLocation3Name
+    );
+    if (!valid) {
+      toast.error(error);
+      return;
+    }
+
+    // ✅ validate select input
+    if (!serviceLocation3Data.selectedSl1) {
+      toast.error("Please select Service Location 1");
+      return;
+    }
+
+    if (!serviceLocation3Data.selectedSl2) {
+      toast.error("Please select Service Location 2");
+      return;
+    }
+
+    if (serviceLocation3EditId) {
+      // update
+      updateServiceLocation3(
+        serviceLocation3EditId,
+        serviceLocation3Data.serviceLocation3Name,
+        serviceLocation3Data.selectedSl1.value,
+        serviceLocation3Data.selectedSl2.value
+      );
+    } else {
+      // create
+      createServiceLocation3(
+        serviceLocation3Data.serviceLocation3Name,
+        serviceLocation3Data.selectedSl1.value,
+        serviceLocation3Data.selectedSl2.value
+      );
+    }
+
+    handleClose("addNewServiceLocation3");
+    setServiceLocation3EditId(null);
+    setServiceLocation3Data({
+      serviceLocation3Name: "",
+      selectedSl1: null,
+      selectedSl2: null,
+    });
+  };
   return (
     <>
       {/* -----------------START SERVICE LOCATION 3 MASTER Form-------------------- */}
@@ -26,6 +98,7 @@ export default function ServiceLocation_3_Master_Form() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                onClick={() => handleClose("addNewServiceLocation3")}
               ></button>
             </div>
             <div className="modal-body">
@@ -35,58 +108,20 @@ export default function ServiceLocation_3_Master_Form() {
                     Service Location 1
                   </label>
                   <div className="position-relative">
-                    <select
-                      id="select2Basic"
-                      className="select2 form-select select2-hidden-accessible"
-                      data-select2-id="select2Basic"
-                      tabIndex="-1"
-                      aria-hidden="true"
-                    >
-                      <option value="AK" data-select2-id="6">
-                        Service Location 1
-                      </option>
-                      <option value="HI">Service Location 1</option>
-                      <option value="CA">Service Location 1</option>
-                      <option value="NV">Service Location 1</option>
-                    </select>
-                    <span
-                      className="select2 select2-container select2-container--default"
-                      dir="ltr"
-                      data-select2-id="5"
-                      style={{ width: "auto" }}
-                    >
-                      <span className="selection">
-                        <span
-                          className="select2-selection select2-selection--single"
-                          role="combobox"
-                          aria-haspopup="true"
-                          aria-expanded="false"
-                          tabIndex="0"
-                          aria-disabled="false"
-                          aria-labelledby="select2-select2Basic-container"
-                        >
-                          <span
-                            className="select2-selection__rendered"
-                            id="select2-select2Basic-container"
-                            role="textbox"
-                            aria-readonly="true"
-                            title="Service Location 1"
-                          >
-                            Service Location 1
-                          </span>
-                          <span
-                            className="select2-selection__arrow"
-                            role="presentation"
-                          >
-                            <b role="presentation"></b>
-                          </span>
-                        </span>
-                      </span>
-                      <span
-                        className="dropdown-wrapper"
-                        aria-hidden="true"
-                      ></span>
-                    </span>
+                    <CustomSelect
+                      options={serviceLocation1?.map((loc) => ({
+                        value: loc.id,
+                        label: loc.service_location_name,
+                      }))}
+                      value={serviceLocation3Data.selectedSl1}
+                      onChange={(val) =>
+                        setServiceLocation3Data((prev) => ({
+                          ...prev,
+                          selectedSl1: val,
+                        }))
+                      }
+                      placeholder="Select Service Location 1"
+                    />
                   </div>
                 </div>
                 <div className="col-md-12 mb-2">
@@ -94,58 +129,20 @@ export default function ServiceLocation_3_Master_Form() {
                     Service Location 2
                   </label>
                   <div className="position-relative">
-                    <select
-                      id="select3Basic"
-                      className="select2 form-select select2-hidden-accessible"
-                      data-select2-id="select3Basic"
-                      tabIndex="-1"
-                      aria-hidden="true"
-                    >
-                      <option value="AK" data-select2-id="8">
-                        Service Location 2
-                      </option>
-                      <option value="HI">Service Location 2</option>
-                      <option value="CA">Service Location 2</option>
-                      <option value="NV">Service Location 2</option>
-                    </select>
-                    <span
-                      className="select2 select2-container select2-container--default"
-                      dir="ltr"
-                      data-select2-id="7"
-                      style={{ width: "auto" }}
-                    >
-                      <span className="selection">
-                        <span
-                          className="select2-selection select2-selection--single"
-                          role="combobox"
-                          aria-haspopup="true"
-                          aria-expanded="false"
-                          tabIndex="0"
-                          aria-disabled="false"
-                          aria-labelledby="select2-select3Basic-container"
-                        >
-                          <span
-                            className="select2-selection__rendered"
-                            id="select2-select3Basic-container"
-                            role="textbox"
-                            aria-readonly="true"
-                            title="Service Location 2"
-                          >
-                            Service Location 2
-                          </span>
-                          <span
-                            className="select2-selection__arrow"
-                            role="presentation"
-                          >
-                            <b role="presentation"></b>
-                          </span>
-                        </span>
-                      </span>
-                      <span
-                        className="dropdown-wrapper"
-                        aria-hidden="true"
-                      ></span>
-                    </span>
+                    <CustomSelect
+                      options={serviceLocation2?.map((loc) => ({
+                        value: loc.id,
+                        label: loc.service_location_2_name,
+                      }))}
+                      value={serviceLocation3Data.selectedSl2}
+                      onChange={(val) =>
+                        setServiceLocation3Data((prev) => ({
+                          ...prev,
+                          selectedSl2: val,
+                        }))
+                      }
+                      placeholder="Select Service Location 2"
+                    />
                   </div>
                 </div>
                 <div className="col-md-12 mb-2">
@@ -157,6 +154,13 @@ export default function ServiceLocation_3_Master_Form() {
                     id="nameSmall"
                     className="form-control"
                     placeholder="Enter Service Location 3 Name"
+                    value={serviceLocation3Data.serviceLocation3Name}
+                    onChange={(e) =>
+                      setServiceLocation3Data((prev) => ({
+                        ...prev,
+                        serviceLocation3Name: e.target.value,
+                      }))
+                    }
                   />
                 </div>
               </div>
@@ -166,12 +170,14 @@ export default function ServiceLocation_3_Master_Form() {
                 type="button"
                 className="btn btn-label-secondary waves-effect"
                 data-bs-dismiss="modal"
+                onClick={() => handleClose("addNewServiceLocation3")}
               >
                 Close
               </button>
               <button
                 type="button"
                 className="btn btn-primary waves-effect waves-light"
+                onClick={handleSave}
               >
                 Save changes
               </button>
@@ -179,6 +185,7 @@ export default function ServiceLocation_3_Master_Form() {
           </div>
         </div>
       </div>
+      <div className="modal-backdrop fade show"></div>
       {/* -----------------END SERVICE LOCATION 3 MASTER Form-------------------- */}
     </>
   );

@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../../Common/SearchBar/SearchBar";
 import ServiceLocation_3_Master_Table from "./ServiceLocation_3_Master_Table";
 import Pagination from "../../Common/Pagination/Pagination";
+import ServiceLocation_3_Master_Form from "./ServiceLocation_3_Master_Form";
+import { useUIContext } from "../../../Context/UIContext";
+import { useServiceLocation3Master } from "../../../Context/Master/ServiceLocation3MasterContext";
 
 export default function ServiceLocation_3_Master_List() {
+  const { modal, handleOpen } = useUIContext();
+  const [search, setSearch] = useState("");
+  const { fetchServiceLocations3 } = useServiceLocation3Master();
+
+  useEffect(() => {
+    fetchServiceLocations3(search);
+  }, [search]);
+
   return (
     <>
       {/* -----------------START SERVICE LOCATION 3 MASTER List-------------------- */}
@@ -14,7 +25,12 @@ export default function ServiceLocation_3_Master_List() {
           <div className="d-flex justify-content-between p-3">
             <div className="d-flex align-items-center ">
               {/*  <input type="search" className="form-control" placeholder="Search Service Location 3s...">*/}
-              <SearchBar />
+              <SearchBar
+                placeholder="Search Service Location 3..."
+                value={search}
+                onChange={setSearch} // ✅ update state
+                onSubmit={(val) => setSearch(val)} // ✅ handle Enter key
+              />
             </div>
             <div className="d-flex gap-1">
               <div className="position-relative">
@@ -125,6 +141,7 @@ export default function ServiceLocation_3_Master_List() {
                 className="btn btn-primary waves-effect waves-light"
                 data-bs-toggle="modal"
                 data-bs-target="#smallModal"
+                onClick={() => handleOpen("addNewServiceLocation3")}
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2"></span>
                 Add New Service Location 3
@@ -137,7 +154,7 @@ export default function ServiceLocation_3_Master_List() {
           </div>
         </div>
       </div>
-
+      {modal.addNewServiceLocation3 && <ServiceLocation_3_Master_Form />}
       {/* -----------------END SERVICE LOCATION 3 MASTER List-------------------- */}
     </>
   );

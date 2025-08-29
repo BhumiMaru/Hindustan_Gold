@@ -1,6 +1,69 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Select from "react-select";
+import CustomSelect from "../../Common/CustomSelect/CustomSelect";
+import { useServiceLocation1Master } from "../../../Context/Master/ServiceLocation1MasterContext";
+import { useServiceLocation2Master } from "../../../Context/Master/ServiceLocation2MasterContext";
+import { useUIContext } from "../../../Context/UIContext";
+import { validateTextInput } from "../../../utils/validation";
+import { toast } from "react-toastify";
 
 export default function ServiceLocation_2_Master_Form() {
+  const { serviceLocation, fetchServiceLocations } =
+    useServiceLocation1Master();
+  const { handleClose } = useUIContext();
+  const {
+    createServiceLocation2,
+    updateServiceLocation2,
+    serviceLocation2EditId,
+    serviceLocation2Name,
+    setServiceLocation2Name,
+    setServiceLocation2EditId,
+    selectedOption,
+    setSelectedOption,
+  } = useServiceLocation2Master();
+
+  useEffect(() => {
+    fetchServiceLocations();
+  }, []);
+
+  const handleSave = () => {
+    // ✅ validate text input
+    const { valid, error } = validateTextInput(serviceLocation2Name);
+    if (!valid) {
+      toast.error(error);
+      return;
+    }
+
+    // ✅ validate select input
+    if (!selectedOption) {
+      toast.error("Please select Service Location 1");
+      return;
+    }
+
+    try {
+      if (serviceLocation2EditId) {
+        // ✅ update existing
+        updateServiceLocation2(
+          serviceLocation2EditId,
+          serviceLocation2Name,
+          selectedOption.value
+        );
+      } else {
+        // ✅ create new
+        createServiceLocation2(serviceLocation2Name, selectedOption.value);
+      }
+
+      // ✅ reset state after success
+      handleClose("addNewServiceLocation2");
+      setServiceLocation2Name("");
+      setServiceLocation2EditId(null);
+      setSelectedOption(null); // reset dropdown
+    } catch (error) {
+      console.error("Error saving Service Location 2:", error);
+      toast.error("Something went wrong while saving");
+    }
+  };
+
   return (
     <>
       {/* -----------------START SERVICE LOCATION 2 MASTER Form-------------------- */}
@@ -26,16 +89,21 @@ export default function ServiceLocation_2_Master_Form() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                onClick={() => {
+                  handleClose("addNewServiceLocation2");
+                  setServiceLocation2Name("");
+                  setSelectedOption(null);
+                }}
               ></button>
             </div>
             <div className="modal-body">
               <div className="row">
                 <div className="col-md-12 mb-2">
-                  <label htmlFor="select2Basic" className="form-label">
+                  {/* <label htmlFor="select2Basic" className="form-label">
                     Service Location 1
-                  </label>
+                  </label> */}
                   <div className="position-relative">
-                    <select
+                    {/* <select
                       id="select2Basic"
                       className="select2 form-select select2-hidden-accessible"
                       data-select2-id="select2Basic"
@@ -48,45 +116,18 @@ export default function ServiceLocation_2_Master_Form() {
                       <option value="HI">Service Location 1</option>
                       <option value="CA">Service Location 1</option>
                       <option value="NV">Service Location 1</option>
-                    </select>
-                    <span
-                      className="select2 select2-container select2-container--default"
-                      dir="ltr"
-                      data-select2-id="3"
-                      style={{ width: "auto" }}
-                    >
-                      <span className="selection">
-                        <span
-                          className="select2-selection select2-selection--single"
-                          role="combobox"
-                          aria-haspopup="true"
-                          aria-expanded="false"
-                          tabIndex="0"
-                          aria-disabled="false"
-                          aria-labelledby="select2-select2Basic-container"
-                        >
-                          <span
-                            className="select2-selection__rendered"
-                            id="select2-select2Basic-container"
-                            role="textbox"
-                            aria-readonly="true"
-                            title="Service Location 1"
-                          >
-                            Service Location 1
-                          </span>
-                          <span
-                            className="select2-selection__arrow"
-                            role="presentation"
-                          >
-                            <b role="presentation"></b>
-                          </span>
-                        </span>
-                      </span>
-                      <span
-                        className="dropdown-wrapper"
-                        aria-hidden="true"
-                      ></span>
-                    </span>
+                    </select> */}
+                    <CustomSelect
+                      label="Service Location 1"
+                      options={serviceLocation.map((loc) => ({
+                        value: loc.id,
+                        label: loc.service_location_name,
+                      }))}
+                      value={selectedOption}
+                      onChange={setSelectedOption}
+                      placeholder="Select Service Location 1"
+                      required
+                    />
                   </div>
                 </div>
                 <div className="col-md-12 mb-2">
@@ -98,6 +139,8 @@ export default function ServiceLocation_2_Master_Form() {
                     id="nameSmall"
                     className="form-control"
                     placeholder="Enter Service Location 2 Name"
+                    value={serviceLocation2Name}
+                    onChange={(e) => setServiceLocation2Name(e.target.value)}
                   />
                 </div>
               </div>
@@ -107,12 +150,18 @@ export default function ServiceLocation_2_Master_Form() {
                 type="button"
                 className="btn btn-label-secondary waves-effect"
                 data-bs-dismiss="modal"
+                onClick={() => {
+                  handleClose("addNewServiceLocation2");
+                  setServiceLocation2Name("");
+                  setSelectedOption(null);
+                }}
               >
                 Close
               </button>
               <button
                 type="button"
                 className="btn btn-primary waves-effect waves-light"
+                onClick={handleSave}
               >
                 Save changes
               </button>
@@ -120,6 +169,7 @@ export default function ServiceLocation_2_Master_Form() {
           </div>
         </div>
       </div>
+      <div className="modal-backdrop fade show"></div>
       {/* -----------------END SERVICE LOCATION 2 MASTER Form-------------------- */}
     </>
   );
