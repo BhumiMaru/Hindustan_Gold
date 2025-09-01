@@ -5,15 +5,37 @@ import Pagination from "../../Common/Pagination/Pagination";
 import ServiceLocation_3_Master_Form from "./ServiceLocation_3_Master_Form";
 import { useUIContext } from "../../../Context/UIContext";
 import { useServiceLocation3Master } from "../../../Context/Master/ServiceLocation3MasterContext";
+import CustomSelect from "../../Common/CustomSelect/CustomSelect";
+import { useServiceLocation1Master } from "../../../Context/Master/ServiceLocation1MasterContext";
+import { useServiceLocation2Master } from "../../../Context/Master/ServiceLocation2MasterContext";
 
 export default function ServiceLocation_3_Master_List() {
   const { modal, handleOpen } = useUIContext();
   const [search, setSearch] = useState("");
-  const { fetchServiceLocations3 } = useServiceLocation3Master();
+  const {
+    fetchServiceLocations3,
+    serviceLocation3Data,
+    setServiceLocation3Data,
+  } = useServiceLocation3Master();
+  const { serviceLocation, fetchServiceLocations } =
+    useServiceLocation1Master();
+  const { serviceLocation2, fetchServiceLocations2 } =
+    useServiceLocation2Master();
 
+  // 🔹 Load dropdown data
   useEffect(() => {
-    fetchServiceLocations3(search);
-  }, [search]);
+    fetchServiceLocations();
+    fetchServiceLocations2();
+    fetchServiceLocations3(
+      search,
+      serviceLocation3Data?.selectedSl1?.value,
+      serviceLocation3Data?.selectedSl2?.value
+    );
+  }, [
+    search,
+    serviceLocation3Data?.selectedSl1,
+    serviceLocation3Data?.selectedSl2,
+  ]);
 
   return (
     <>
@@ -34,106 +56,50 @@ export default function ServiceLocation_3_Master_List() {
             </div>
             <div className="d-flex gap-1">
               <div className="position-relative">
-                <select
-                  id="select7Basic"
-                  className="select2 form-select select2-hidden-accessible"
-                  data-select2-id="select7Basic"
-                  tabIndex="-1"
-                  aria-hidden="true"
-                >
-                  <option value="AK" data-select2-id="2">
-                    Service Location 1
-                  </option>
-                  <option value="HI">Service Location 1</option>
-                  <option value="CA">Service Location 1</option>
-                  <option value="NV">Service Location 1</option>
-                </select>
-                <span
-                  className="select2 select2-container select2-container--default"
-                  dir="ltr"
-                  data-select2-id="1"
-                  style={{ width: "98.8281px" }}
-                >
-                  <span className="selection">
-                    <span
-                      className="select2-selection select2-selection--single"
-                      role="combobox"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      tabIndex="0"
-                      aria-disabled="false"
-                      aria-labelledby="select2-select7Basic-container"
-                    >
-                      <span
-                        className="select2-selection__rendered"
-                        id="select2-select7Basic-container"
-                        role="textbox"
-                        aria-readonly="true"
-                        title="Service Location 1"
-                      >
-                        {/* Service Location 1 */}
-                      </span>
-                      <span
-                        className="select2-selection__arrow"
-                        role="presentation"
-                      >
-                        <b role="presentation"></b>
-                      </span>
-                    </span>
-                  </span>
-                  <span className="dropdown-wrapper" aria-hidden="true"></span>
-                </span>
+                {/* ✅ Service Location 1 filter */}
+                <CustomSelect
+                  options={serviceLocation?.map((loc) => ({
+                    value: loc.id,
+                    label: loc.service_location_name,
+                  }))}
+                  value={serviceLocation3Data.selectedSl1}
+                  onChange={(option) =>
+                    setServiceLocation3Data((prev) => ({
+                      ...prev,
+                      selectedSl1: option,
+                    }))
+                  }
+                  placeholder="Service Location 1"
+                  styles={{
+                    container: (base) => ({
+                      ...base,
+                      width: "250px",
+                    }),
+                  }}
+                />
               </div>
               <div className="position-relative">
-                <select
-                  id="select8Basic"
-                  className="select2 form-select select2-hidden-accessible"
-                  data-select2-id="select8Basic"
-                  tabIndex="-1"
-                  aria-hidden="true"
-                >
-                  <option value="AK" data-select2-id="4">
-                    Service Location 2
-                  </option>
-                  <option value="HI">Service Location 2</option>
-                  <option value="CA">Service Location 2</option>
-                  <option value="NV">Service Location 2</option>
-                </select>
-                <span
-                  className="select2 select2-container select2-container--default"
-                  dir="ltr"
-                  data-select2-id="3"
-                  style={{ width: "186px" }}
-                >
-                  <span className="selection">
-                    <span
-                      className="select2-selection select2-selection--single"
-                      role="combobox"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      tabIndex="0"
-                      aria-disabled="false"
-                      aria-labelledby="select2-select8Basic-container"
-                    >
-                      <span
-                        className="select2-selection__rendered"
-                        id="select2-select8Basic-container"
-                        role="textbox"
-                        aria-readonly="true"
-                        title="Service Location 2"
-                      >
-                        {/* Service Location 2 */}
-                      </span>
-                      <span
-                        className="select2-selection__arrow"
-                        role="presentation"
-                      >
-                        <b role="presentation"></b>
-                      </span>
-                    </span>
-                  </span>
-                  <span className="dropdown-wrapper" aria-hidden="true"></span>
-                </span>
+                {/* ✅ Service Location 2 filter */}
+                <CustomSelect
+                  options={serviceLocation2?.map((loc) => ({
+                    value: loc.id,
+                    label: loc.service_location_2_name,
+                  }))}
+                  value={serviceLocation3Data.selectedSl2}
+                  onChange={(option) =>
+                    setServiceLocation3Data((prev) => ({
+                      ...prev,
+                      selectedSl2: option,
+                    }))
+                  }
+                  placeholder="Service Location 2"
+                  styles={{
+                    container: (base) => ({
+                      ...base,
+                      width: "250px",
+                    }),
+                  }}
+                />
               </div>
 
               <button
