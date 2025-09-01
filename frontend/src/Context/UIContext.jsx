@@ -28,13 +28,17 @@ export const UIProvider = ({ children }) => {
 
   // Popup Modal For All
   const [modal, setModal] = useState({
+    // MASTER
     addNewDepartment: false,
     addNewZone: false,
     addNewServiceLocation1: false,
     addNewServiceLocation2: false,
     addNewServiceLocation3: false,
+    addNewRole: false,
     addNewCompany: false,
+    // ITEM MANAGEMENT
     addNewGroup: false,
+    addNewCategory: false,
   });
 
   const handleOpen = (name) => {

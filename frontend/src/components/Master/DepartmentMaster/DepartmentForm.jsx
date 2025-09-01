@@ -64,7 +64,7 @@ export default function DepartmentForm() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel2">
-                Add Department
+                {deptEditId ? "Edit Department" : "Add Department"}
               </h5>
               <button
                 type="button"

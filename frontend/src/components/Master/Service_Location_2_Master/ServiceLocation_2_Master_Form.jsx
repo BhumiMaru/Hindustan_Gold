@@ -82,7 +82,9 @@ export default function ServiceLocation_2_Master_Form() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel2">
-                Add Service Location 2
+                {serviceLocation2EditId
+                  ? "Edit Service Location 2"
+                  : "Add Service Location 2"}
               </h5>
               <button
                 type="button"
@@ -103,20 +105,6 @@ export default function ServiceLocation_2_Master_Form() {
                     Service Location 1
                   </label> */}
                   <div className="position-relative">
-                    {/* <select
-                      id="select2Basic"
-                      className="select2 form-select select2-hidden-accessible"
-                      data-select2-id="select2Basic"
-                      tabIndex="-1"
-                      aria-hidden="true"
-                    >
-                      <option value="AK" data-select2-id="4">
-                        Service Location 1
-                      </option>
-                      <option value="HI">Service Location 1</option>
-                      <option value="CA">Service Location 1</option>
-                      <option value="NV">Service Location 1</option>
-                    </select> */}
                     <CustomSelect
                       label="Service Location 1"
                       options={serviceLocation.map((loc) => ({

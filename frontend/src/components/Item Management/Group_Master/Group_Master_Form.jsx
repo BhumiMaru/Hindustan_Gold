@@ -48,7 +48,7 @@ export default function Group_Master_Form() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel2">
-                Add Group
+                {groupEditId ? "Edit Group" : "Add Group"}
               </h5>
               <button
                 type="button"

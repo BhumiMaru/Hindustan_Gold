@@ -4,7 +4,9 @@ export default function User_Creation_Permission() {
   return (
     <>
       {/* ----------------START USER CREATION PERMISSION------------------- */}
-      <div className="row mt-4">
+
+      {/* DataTable with Buttons */}
+      <div className="row">
         <div className="col-lg-12">
           <div className="card mb-6">
             <div className="card-body">
@@ -38,7 +40,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_1"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -48,7 +50,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_2"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -58,7 +60,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_2"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -68,7 +70,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_2"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -83,7 +85,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_4"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -93,7 +95,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_5"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -103,7 +105,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_5"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -113,7 +115,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_5"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -161,7 +163,6 @@ export default function User_Creation_Permission() {
                   </table>
                 </div>
               </div>
-
               <h5 className="card-title mb-4">Item Request Module</h5>
               <div className="card shadow-none mb-6 border-0">
                 <div className="table-responsive border border-top-0 rounded">
@@ -189,7 +190,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_1"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -199,7 +200,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_2"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -209,7 +210,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_2"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -224,7 +225,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_4"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -245,14 +246,12 @@ export default function User_Creation_Permission() {
                           </div>
                         </td>
                         <td></td>
-
                         <td></td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
-
               <h5 className="card-title mb-4">
                 PO &amp; Material Management Module
               </h5>
@@ -286,7 +285,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_1"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -296,7 +295,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_2"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -307,7 +306,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_2"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -317,7 +316,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_2"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -332,7 +331,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_4"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -342,7 +341,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_5"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -352,7 +351,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_5"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -362,7 +361,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_5"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -390,7 +389,6 @@ export default function User_Creation_Permission() {
                             />
                           </div>
                         </td>
-
                         <td></td>
                         <td></td>
                         <td>
@@ -423,7 +421,6 @@ export default function User_Creation_Permission() {
                             />
                           </div>
                         </td>
-
                         <td></td>
                         <td>
                           <div className="form-check d-flex justify-content-center">
@@ -450,7 +447,6 @@ export default function User_Creation_Permission() {
                             />
                           </div>
                         </td>
-
                         <td>
                           <div className="form-check d-flex justify-content-center">
                             <input
@@ -475,7 +471,6 @@ export default function User_Creation_Permission() {
                   </table>
                 </div>
               </div>
-
               <h5 className="card-title mb-4">Payment Management Module</h5>
               <div className="card shadow-none mb-6 border-0">
                 <div className="table-responsive border border-top-0 rounded">
@@ -506,7 +501,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_1"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -524,7 +519,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_4"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -534,7 +529,7 @@ export default function User_Creation_Permission() {
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_5"
-                              checked=""
+                              defaultChecked=""
                             />
                           </div>
                         </td>
@@ -591,6 +586,7 @@ export default function User_Creation_Permission() {
           </div>
         </div>
       </div>
+
       {/* ----------------END USER CREATION PERMISSION------------------- */}
     </>
   );

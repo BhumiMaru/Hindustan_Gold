@@ -1,5 +1,6 @@
 import React from "react";
 import avatar10 from "../../../../public/assets/img/avatars/10.png";
+import { Link } from "react-router-dom";
 
 export default function User_Creation_Table() {
   return (
@@ -79,13 +80,13 @@ export default function User_Creation_Table() {
                 >
                   <i className="icon-base ti tabler-edit icon-22px"></i>
                 </a>
-                <a
-                  href="user-permission.html"
+                <Link
+                  to="/user-permission"
                   type="button"
                   className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                 >
                   <i className="icon-base ti tabler-article text-info icon-22px"></i>
-                </a>
+                </Link>
               </div>
             </td>
           </tr>
@@ -136,13 +137,13 @@ export default function User_Creation_Table() {
             </td>
             <td>
               <div className="d-inline-flex gap-2">
-                <a
-                  href="user-permission.html"
+                <Link
+                  to="/user-permission"
                   type="button"
                   className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                 >
                   <i className="icon-base ti tabler-article text-info icon-22px"></i>
-                </a>
+                </Link>
               </div>
               <div className="d-inline-flex gap-2">
                 <a

@@ -50,7 +50,7 @@ export default function Company_Master_Form() {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel2">
-                  Add Company
+                  {companyEditId ? "Edit Company" : "Add Company"}
                 </h5>
                 <button
                   type="button"

@@ -1,4 +1,5 @@
 export const ENDPOINTS = {
+  // MASTER
   DEPARTMENTS: {
     LIST: "/departments/list",
     ADD_UPDATE: "/departments/add/update",
@@ -24,14 +25,30 @@ export const ENDPOINTS = {
     ADD_UPDATE: "/service-locations-3/add/update",
     DELETE: "/service-locations-3/delete",
   },
+  ROLE_MASTER: {
+    LIST: "/roles/list",
+    ADD_UPDATE: "/roles/add/update",
+    DELETE: "/roles/delete",
+  },
   COMPANY_MASTER: {
     LIST: "/companies/list",
     ADD_UPDATE: "/companies/add/update",
     DELETE: "/companies/delete",
   },
+  // ITEM MANAGEMENT
   GROUP_MASTER: {
     LIST: "/groups/list",
     ADD_UPDATE: "/groups/add/update",
     DELETE: "/groups/delete",
+  },
+  CATEGORY_MASTER: {
+    LIST: "/category/list",
+    ADD_UPDATE: "/category/add/update",
+    DELETE: "/category/delete",
+  },
+  SUBCATEGORY_MASTER: {
+    LIST: "/subcategory/list",
+    ADD_UPDATE: "/subcategory/add/update",
+    DELETE: "/subcategory/delete",
   },
 };

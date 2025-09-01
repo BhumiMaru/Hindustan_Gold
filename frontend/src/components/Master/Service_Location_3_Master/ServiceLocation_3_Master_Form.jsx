@@ -91,7 +91,9 @@ export default function ServiceLocation_3_Master_Form() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel2">
-                Add Service Location 3
+                {serviceLocation3EditId
+                  ? "Edit Service Location 3"
+                  : "Add Service Location 3"}
               </h5>
               <button
                 type="button"

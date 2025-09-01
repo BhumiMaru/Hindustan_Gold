@@ -1,6 +1,60 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useUIContext } from "../../../Context/UIContext";
+import { useCategoryMaster } from "../../../Context/Item Management/CategoryMasterContext";
+import { toast } from "react-toastify";
+import { validateTextInput } from "../../../utils/validation";
+import CustomSelect from "../../Common/CustomSelect/CustomSelect";
+import { useGroupMasterContext } from "../../../Context/Item Management/GroupMasterContext";
 
 export default function Category_Master_Form() {
+  const { handleClose } = useUIContext();
+  const {
+    categoryData,
+    setCategoryData,
+    categoryEditId,
+    setCategoryEditId,
+    createCategory,
+    updateCategory,
+  } = useCategoryMaster();
+  const { fetchGroupData, groups } = useGroupMasterContext();
+
+  useEffect(() => {
+    fetchGroupData();
+  }, []);
+
+  const handleSubmit = async () => {
+    try {
+      const { valid, error } = validateTextInput(
+        categoryData.category_name,
+        categoryData.group_id,
+        categoryData.prefix_code
+      );
+      if (!valid) {
+        toast.error(error);
+        return;
+      }
+
+      if (categoryEditId) {
+        // Update
+        await updateCategory(categoryEditId, categoryData);
+      } else {
+        // Create
+        await createCategory(categoryData);
+      }
+
+      // Reset after save
+      setCategoryEditId(null);
+      setCategoryData({
+        categoryName: "",
+        groupId: "",
+        prefixCode: "",
+        status: null,
+      });
+      handleClose("addNewCategory");
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
   return (
     <>
       {/* ---------------START CATEGORY MASTER FORM----------------- */}
@@ -20,13 +74,22 @@ export default function Category_Master_Form() {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel2">
-                  Add Category
+                  {categoryEditId ? "Edit Category" : "Add Category"}
                 </h5>
                 <button
                   type="button"
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
+                  onClick={() => {
+                    handleClose("addNewCategory");
+                    setCategoryData({
+                      categoryName: "",
+                      groupId: "",
+                      prefixCode: "",
+                      status: null,
+                    });
+                  }}
                 ></button>
               </div>
               <div className="modal-body">
@@ -36,58 +99,30 @@ export default function Category_Master_Form() {
                       Group
                     </label>
                     <div className="position-relative">
-                      <select
-                        id="select2Basic"
-                        className="select2 form-select select2-hidden-accessible"
-                        data-select2-id="select2Basic"
-                        tabIndex="-1"
-                        aria-hidden="true"
-                      >
-                        <option value="AK" data-select2-id="4">
-                          Group
-                        </option>
-                        <option value="HI">Group</option>
-                        <option value="CA">Group</option>
-                        <option value="NV">Group</option>
-                      </select>
-                      <span
-                        className="select2 select2-container select2-container--default"
-                        dir="ltr"
-                        data-select2-id="3"
-                        style={{ width: "auto" }}
-                      >
-                        <span className="selection">
-                          <span
-                            className="select2-selection select2-selection--single"
-                            role="combobox"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                            tabIndex="0"
-                            aria-disabled="false"
-                            aria-labelledby="select2-select2Basic-container"
-                          >
-                            <span
-                              className="select2-selection__rendered"
-                              id="select2-select2Basic-container"
-                              role="textbox"
-                              aria-readonly="true"
-                              title="Group"
-                            >
-                              Group
-                            </span>
-                            <span
-                              className="select2-selection__arrow"
-                              role="presentation"
-                            >
-                              <b role="presentation"></b>
-                            </span>
-                          </span>
-                        </span>
-                        <span
-                          className="dropdown-wrapper"
-                          aria-hidden="true"
-                        ></span>
-                      </span>
+                      <CustomSelect
+                        placeholder="Select Group"
+                        options={groups.map((grp) => ({
+                          value: grp.id,
+                          label: grp.group_name,
+                        }))}
+                        value={
+                          categoryData.group_id
+                            ? {
+                                value: categoryData.group_id,
+                                label:
+                                  groups.find(
+                                    (g) => g.id === categoryData.group_id
+                                  )?.group_name || "N/A",
+                              }
+                            : null
+                        }
+                        onChange={(opt) =>
+                          setCategoryData({
+                            ...categoryData,
+                            group_id: opt.value,
+                          })
+                        }
+                      />
                     </div>
                   </div>
                   <div className="col-md-12 mb-2">
@@ -99,6 +134,13 @@ export default function Category_Master_Form() {
                       id="nameSmall"
                       className="form-control"
                       placeholder="Enter Category Name"
+                      value={categoryData.category_name}
+                      onChange={(e) =>
+                        setCategoryData({
+                          ...categoryData,
+                          category_name: e.target.value,
+                        })
+                      }
                     />
                   </div>
                   <div className="col-md-12 mb-2">
@@ -111,10 +153,14 @@ export default function Category_Master_Form() {
                       className="form-control"
                       max="3"
                       placeholder="Enter Prefix Code"
-                    >
-                      {" "}
-                      /
-                    </input>
+                      value={categoryData.prefix_code}
+                      onChange={(e) =>
+                        setCategoryData({
+                          ...categoryData,
+                          prefix_code: e.target.value,
+                        })
+                      }
+                    />
                   </div>
                 </div>
               </div>
@@ -123,12 +169,22 @@ export default function Category_Master_Form() {
                   type="button"
                   className="btn btn-label-secondary waves-effect"
                   data-bs-dismiss="modal"
+                  onClick={() => {
+                    handleClose("addNewCategory");
+                    setCategoryData({
+                      categoryName: "",
+                      groupId: "",
+                      prefixCode: "",
+                      status: null,
+                    });
+                  }}
                 >
                   Close
                 </button>
                 <button
                   type="button"
                   className="btn btn-primary waves-effect waves-light"
+                  onClick={handleSubmit}
                 >
                   Save changes
                 </button>
@@ -136,6 +192,7 @@ export default function Category_Master_Form() {
             </div>
           </div>
         </div>
+        <div className="modal-backdrop fade show"></div>
       </>
       {/* ---------------END CATEGORY MASTER FORM----------------- */}
     </>

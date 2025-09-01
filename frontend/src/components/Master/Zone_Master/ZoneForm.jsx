@@ -60,7 +60,7 @@ export default function ZoneForm() {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel2">
-                  Add Zone
+                  {editId ? "Edit Zone" : "Add Zone"}
                 </h5>
                 <button
                   type="button"

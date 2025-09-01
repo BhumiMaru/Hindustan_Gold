@@ -1,6 +1,37 @@
 import React from "react";
+import { validateTextInput } from "../../../utils/validation";
+import { useRoleMaster } from "../../../Context/Master/RoleMasterContext";
+import { useUIContext } from "../../../Context/UIContext";
+import { toast } from "react-toastify";
 
 export default function Role_Master_Form() {
+  const {
+    roleName,
+    setRoleName,
+    roleEditId,
+    updateRole,
+    createRole,
+    setRoleEditId,
+  } = useRoleMaster();
+  const { handleClose } = useUIContext();
+
+  const handleSubmit = () => {
+    const { valid, error } = validateTextInput(roleName);
+    if (!valid) {
+      toast.error(error);
+      return;
+    }
+
+    if (roleEditId) {
+      updateRole(roleEditId, roleName);
+    } else {
+      createRole(roleName);
+    }
+    setRoleEditId(null);
+    setRoleName("");
+    handleClose("addNewRole");
+  };
+
   return (
     <>
       {/* ----------------------START ROLE MASTER FORM------------------------ */}
@@ -20,13 +51,17 @@ export default function Role_Master_Form() {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel2">
-                  Add Role
+                  {roleEditId ? "Edit Role" : "Add Role"}
                 </h5>
                 <button
                   type="button"
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
+                  onClick={() => {
+                    handleClose("addNewRole");
+                    setRoleName("");
+                  }}
                 ></button>
               </div>
               <div className="modal-body">
@@ -40,6 +75,8 @@ export default function Role_Master_Form() {
                       id="nameSmall"
                       className="form-control"
                       placeholder="Enter Role Name"
+                      value={roleName}
+                      onChange={(e) => setRoleName(e.target.value)}
                     />
                   </div>
                 </div>
@@ -49,12 +86,17 @@ export default function Role_Master_Form() {
                   type="button"
                   className="btn btn-label-secondary waves-effect"
                   data-bs-dismiss="modal"
+                  onClick={() => {
+                    handleClose("addNewRole");
+                    setRoleName("");
+                  }}
                 >
                   Close
                 </button>
                 <button
                   type="button"
                   className="btn btn-primary waves-effect waves-light"
+                  onClick={handleSubmit}
                 >
                   Save changes
                 </button>
@@ -62,6 +104,7 @@ export default function Role_Master_Form() {
             </div>
           </div>
         </div>
+        <div className="modal-backdrop fade show"></div>
       </>
       {/* ----------------------END ROLE MASTER FORM------------------------ */}
     </>

@@ -28,6 +28,7 @@ import Item_Master_Page from "../Pages/Item Management/Item_Master_Page";
 import Item_Create_Material_Form from "../components/Item Management/Item_Create/Item_Create_Material_Form";
 import Item_Create_Service_Form from "../components/Item Management/Item_Create/Item_Create_Service_Form";
 import Item_Create_Asset_Form from "../components/Item Management/Item_Create/Item_Create_Asset_Form";
+import User_Creation_Permission from "../components/Master/User_Creation/User_Creation_Permission";
 
 export default function AppRoutes() {
   return (
@@ -54,6 +55,16 @@ export default function AppRoutes() {
           element={<ServiceLocation3MasterPage />}
         />
         <Route path="/master/role" element={<RoleMasterPage />} />
+
+        <Route
+          path="/user-permission"
+          element={
+            <div className="container-xxl flex-grow-1 container-p-y">
+              <User_Creation_Permission />
+            </div>
+          }
+        />
+
         <Route path="/master/company" element={<CompanyMasterPage />} />
         <Route path="/master/user" element={<User_Creation_Page />} />
         <Route path="/master/user-create" element={<User_Creation_Form />} />

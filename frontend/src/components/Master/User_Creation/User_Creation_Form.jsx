@@ -522,6 +522,7 @@ export default function User_Creation_Form() {
         <h3 className="mt-4">User Permissions</h3>
         <User_Creation_Permission />
       </div>
+
       {/* ------------------END USER CREATION FORM------------------- */}
     </>
   );
