@@ -35,6 +35,11 @@ export const ENDPOINTS = {
     ADD_UPDATE: "/companies/add/update",
     DELETE: "/companies/delete",
   },
+  USER_CREATION: {
+    LIST: "/user/list",
+    ADD_UPDATE: "/user/add/update",
+    DELETE: "/user/delete",
+  },
   // ITEM MANAGEMENT
   GROUP_MASTER: {
     LIST: "/groups/list",

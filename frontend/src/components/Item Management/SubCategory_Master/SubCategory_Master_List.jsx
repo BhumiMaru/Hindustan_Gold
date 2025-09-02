@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../../Common/SearchBar/SearchBar";
 import Category_Master_Table from "./SubCategory_Master_Table";
 import Pagination from "../../Common/Pagination/Pagination";
 import SubCategory_Master_Table from "./SubCategory_Master_Table";
+import CustomSelect from "../../Common/CustomSelect/CustomSelect";
+import { useSubCategory } from "../../../Context/Item Management/SubCategoryContext";
 
 export default function SubCategory_Master_List() {
+  const [type, setType] = useState("");
+  const [group, setGroup] = useState("");
+  const [category, setCategory] = useState("");
+  const [owner, setOwner] = useState("");
+  const [search, setSearch] = useState("");
+
+  const { fetchSubCategoryData } = useSubCategory();
+  useEffect(() => {
+    fetchSubCategoryData(search);
+  }, [search]);
+
   return (
     <>
       {/* ---------------START CATEGORY MASTER LIST----------------- */}
@@ -15,7 +28,12 @@ export default function SubCategory_Master_List() {
             <div className="d-flex justify-content-between p-3">
               <div className="d-flex align-items-center ">
                 {/*  <input type="search" className="form-control" placeholder="Search Subcategorys...">*/}
-                <SearchBar />
+                <SearchBar
+                  placeholder="Enter Category..."
+                  value={search}
+                  onChange={setSearch} // ✅ update state
+                  onSubmit={(val) => setSearch(val)} // ✅ handle Enter key
+                />
               </div>
               <div className="d-flex gap-1">
                 <button
@@ -32,21 +50,20 @@ export default function SubCategory_Master_List() {
             <div className="row px-3 pb-3">
               <div className="col-lg-3">
                 <div className="position-relative">
-                  <select
-                    id="select6Basic"
-                    className="select2 form-select select2-hidden-accessible"
-                    data-select2-id="select6Basic"
-                    tabIndex="-1"
-                    aria-hidden="true"
-                  >
-                    <option value="AK" data-select2-id="2">
-                      Select Type
-                    </option>
-                    <option value="HI">Material</option>
-                    <option value="CA">Service</option>
-                    <option value="NV">Asset</option>
-                  </select>
-                  <span
+                  <CustomSelect
+                    id="selectType"
+                    label=""
+                    options={[
+                      { value: "material", label: "Material" },
+                      { value: "service", label: "Service" },
+                      { value: "asset", label: "Asset" },
+                    ]}
+                    value={type}
+                    onChange={setType}
+                    placeholder="Select Type"
+                    required
+                  />
+                  {/* <span
                     className="select2 select2-container select2-container--default"
                     dir="ltr"
                     data-select2-id="1"
@@ -62,7 +79,7 @@ export default function SubCategory_Master_List() {
                         aria-disabled="false"
                         aria-labelledby="select2-select6Basic-container"
                       >
-                        {/* <span
+                        <span
                           className="select2-selection__rendered"
                           id="select2-select6Basic-container"
                           role="textbox"
@@ -70,7 +87,7 @@ export default function SubCategory_Master_List() {
                           title="Select Type"
                         >
                           Select Type
-                        </span> */}
+                        </span>
                         <span
                           className="select2-selection__arrow"
                           role="presentation"
@@ -83,175 +100,52 @@ export default function SubCategory_Master_List() {
                       className="dropdown-wrapper"
                       aria-hidden="true"
                     ></span>
-                  </span>
+                  </span> */}
                 </div>
               </div>
               <div className="col-lg-3">
                 <div className="position-relative">
-                  <select
-                    id="select7Basic"
-                    className="select2 form-select select2-hidden-accessible"
-                    data-select2-id="select7Basic"
-                    tabIndex="-1"
-                    aria-hidden="true"
-                  >
-                    <option value="AK" data-select2-id="4">
-                      Select&nbsp;Grop
-                    </option>
-                    <option value="HI">Grop</option>
-                    <option value="CA">Grop</option>
-                    <option value="NV">Grop</option>
-                  </select>
-                  <span
-                    className="select2 select2-container select2-container--default"
-                    dir="ltr"
-                    data-select2-id="3"
-                    style={{ width: "240.5px" }}
-                  >
-                    <span className="selection">
-                      <span
-                        className="select2-selection select2-selection--single"
-                        role="combobox"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                        tabIndex="0"
-                        aria-disabled="false"
-                        aria-labelledby="select2-select7Basic-container"
-                      >
-                        <span
-                          className="select2-selection__rendered"
-                          id="select2-select7Basic-container"
-                          role="textbox"
-                          aria-readonly="true"
-                          title="Select&nbsp;Grop"
-                        >
-                          {/* Select&nbsp;Grop */}
-                        </span>
-                        <span
-                          className="select2-selection__arrow"
-                          role="presentation"
-                        >
-                          <b role="presentation"></b>
-                        </span>
-                      </span>
-                    </span>
-                    <span
-                      className="dropdown-wrapper"
-                      aria-hidden="true"
-                    ></span>
-                  </span>
+                  <CustomSelect
+                    id="selectGroup"
+                    label=""
+                    options={[
+                      { value: "g1", label: "Group 1" },
+                      { value: "g2", label: "Group 2" },
+                    ]}
+                    value={group}
+                    onChange={setGroup}
+                    placeholder="Select Group"
+                  />
                 </div>
               </div>
               <div className="col-lg-3">
                 <div className="position-relative">
-                  <select
-                    id="select8Basic"
-                    className="select2 form-select select2-hidden-accessible"
-                    data-select2-id="select8Basic"
-                    tabIndex="-1"
-                    aria-hidden="true"
-                  >
-                    <option value="AK" data-select2-id="6">
-                      Select&nbsp;Category
-                    </option>
-                    <option value="HI">Category</option>
-                    <option value="CA">Category</option>
-                    <option value="NV">Category</option>
-                  </select>
-                  <span
-                    className="select2 select2-container select2-container--default"
-                    dir="ltr"
-                    data-select2-id="5"
-                    style={{ width: "240.5px" }}
-                  >
-                    <span className="selection">
-                      <span
-                        className="select2-selection select2-selection--single"
-                        role="combobox"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                        tabIndex="0"
-                        aria-disabled="false"
-                        aria-labelledby="select2-select8Basic-container"
-                      >
-                        <span
-                          className="select2-selection__rendered"
-                          id="select2-select8Basic-container"
-                          role="textbox"
-                          aria-readonly="true"
-                          title="Select&nbsp;Category"
-                        >
-                          {/* Select&nbsp;Category */}
-                        </span>
-                        <span
-                          className="select2-selection__arrow"
-                          role="presentation"
-                        >
-                          <b role="presentation"></b>
-                        </span>
-                      </span>
-                    </span>
-                    <span
-                      className="dropdown-wrapper"
-                      aria-hidden="true"
-                    ></span>
-                  </span>
+                  <CustomSelect
+                    id="selectCategory"
+                    label=""
+                    options={[
+                      { value: "c1", label: "Category 1" },
+                      { value: "c2", label: "Category 2" },
+                    ]}
+                    value={category}
+                    onChange={setCategory}
+                    placeholder="Select Category"
+                  />
                 </div>
               </div>
               <div className="col-lg-3">
                 <div className="position-relative">
-                  <select
-                    id="select8info1"
-                    className="select2 form-select select2-hidden-accessible"
-                    data-select2-id="select8info1"
-                    tabIndex="-1"
-                    aria-hidden="true"
-                  >
-                    <option value="1" data-select2-id="8">
-                      Select Categary Owner
-                    </option>
-                    <option value="2">Option2</option>
-                    <option value="3">Option3</option>
-                    <option value="4">Option4</option>
-                  </select>
-                  <span
-                    className="select2 select2-container select2-container--default"
-                    dir="ltr"
-                    data-select2-id="7"
-                    style={{ width: "240.5px" }}
-                  >
-                    <span className="selection">
-                      <span
-                        className="select2-selection select2-selection--single"
-                        role="combobox"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                        tabIndex="0"
-                        aria-disabled="false"
-                        aria-labelledby="select2-select8info1-container"
-                      >
-                        <span
-                          className="select2-selection__rendered"
-                          id="select2-select8info1-container"
-                          role="textbox"
-                          aria-readonly="true"
-                          title="Select Categary Owner"
-                        >
-                          {/* Select Categary Owner */}
-                        </span>
-                        <span
-                          className="select2-selection__arrow"
-                          role="presentation"
-                        >
-                          <b role="presentation"></b>
-                        </span>
-                      </span>
-                    </span>
-                    <span
-                      className="dropdown-wrapper"
-                      aria-hidden="true"
-                    ></span>
-                  </span>
+                  <CustomSelect
+                    id="selectOwner"
+                    label=""
+                    options={[
+                      { value: "o1", label: "Owner 1" },
+                      { value: "o2", label: "Owner 2" },
+                    ]}
+                    value={owner}
+                    onChange={setOwner}
+                    placeholder="Select Owner"
+                  />
                 </div>
               </div>
             </div>

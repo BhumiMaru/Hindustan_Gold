@@ -1,5 +1,6 @@
 import React from "react";
 import User_Creation_Permission from "./User_Creation_Permission";
+import CustomSelect from "../../Common/CustomSelect/CustomSelect";
 
 export default function User_Creation_Form() {
   return (
@@ -66,175 +67,70 @@ export default function User_Creation_Form() {
               />
             </div>
             <div className="col-sm-3 mb-4">
-              <label htmlFor="Role" className="form-label">
+              {/* <label htmlFor="Role" className="form-label">
                 Role
-              </label>
+              </label> */}
               <div className="position-relative">
-                <select
-                  id="Role"
-                  className="select2 form-select select2-hidden-accessible"
-                  data-select2-id="Role"
-                  tabIndex="-1"
-                  aria-hidden="true"
-                >
-                  <option value="AK" data-select2-id="2">
-                    Manager
-                  </option>
-                  <option value="HI">Stoer Manager</option>
-                  <option value="HI">Plant Manager</option>
-                </select>
-                <span
-                  className="select2 select2-container select2-container--default"
-                  dir="ltr"
-                  data-select2-id="1"
-                  style={{ width: "236.75px" }}
-                >
-                  <span className="selection">
-                    <span
-                      className="select2-selection select2-selection--single"
-                      role="combobox"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      tabIndex="0"
-                      aria-disabled="false"
-                      aria-labelledby="select2-Role-container"
-                    >
-                      <span
-                        className="select2-selection__rendered"
-                        id="select2-Role-container"
-                        role="textbox"
-                        aria-readonly="true"
-                        title="Manager"
-                      >
-                        Manager
-                      </span>
-                      <span
-                        className="select2-selection__arrow"
-                        role="presentation"
-                      >
-                        <b role="presentation"></b>
-                      </span>
-                    </span>
-                  </span>
-                  <span className="dropdown-wrapper" aria-hidden="true"></span>
-                </span>
+                <CustomSelect
+                  id="selectRole"
+                  label="Role"
+                  options={[
+                    { value: "Manager", label: "Manager" },
+                    { value: "Stoer Manager", label: "Stoer Manager" },
+                    { value: "Plant Head", label: "Plant Head" },
+                  ]}
+                  // value={type}
+                  // onChange={setType}
+                  placeholder="Select Role"
+                  required
+                />
               </div>
             </div>
             <div className="col-sm-3 mb-4">
-              <label htmlFor="Department" className="form-label">
+              {/* <label htmlFor="Department" className="form-label">
                 Department
-              </label>
+              </label> */}
               <div className="position-relative">
-                <select
-                  id="Department"
-                  className="select2 form-select select2-hidden-accessible"
-                  data-select2-id="Department"
-                  tabIndex="-1"
-                  aria-hidden="true"
-                >
-                  <option value="AK" data-select2-id="4">
-                    Department 1
-                  </option>
-                  <option value="HI">Department 2</option>
-                </select>
-                <span
-                  className="select2 select2-container select2-container--default"
-                  dir="ltr"
-                  data-select2-id="3"
-                  style={{ width: "236.75px" }}
-                >
-                  <span className="selection">
-                    <span
-                      className="select2-selection select2-selection--single"
-                      role="combobox"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      tabIndex="0"
-                      aria-disabled="false"
-                      aria-labelledby="select2-Department-container"
-                    >
-                      <span
-                        className="select2-selection__rendered"
-                        id="select2-Department-container"
-                        role="textbox"
-                        aria-readonly="true"
-                        title="Department 1"
-                      >
-                        Department 1
-                      </span>
-                      <span
-                        className="select2-selection__arrow"
-                        role="presentation"
-                      >
-                        <b role="presentation"></b>
-                      </span>
-                    </span>
-                  </span>
-                  <span className="dropdown-wrapper" aria-hidden="true"></span>
-                </span>
+                <CustomSelect
+                  id="selectDepartment"
+                  label="Department"
+                  options={[
+                    { value: "Department 1", label: "Department 1" },
+                    { value: "Department 2", label: "Department 2" },
+                  ]}
+                  // value={type}
+                  // onChange={setType}
+                  placeholder="Select Department"
+                  required
+                />
               </div>
             </div>
             <div className="col-sm-3 mb-4">
-              <label htmlFor="Zone" className="form-label">
+              {/* <label htmlFor="Zone" className="form-label">
                 Zone
-              </label>
+              </label> */}
               <div className="position-relative">
-                <select
-                  id="Zone"
-                  className="select2 form-select select2-hidden-accessible"
-                  data-select2-id="Zone"
-                  tabIndex="-1"
-                  aria-hidden="true"
-                >
-                  <option value="AK" data-select2-id="6">
-                    Zone 1
-                  </option>
-                  <option value="HI">Zone 2</option>
-                </select>
-                <span
-                  className="select2 select2-container select2-container--default"
-                  dir="ltr"
-                  data-select2-id="5"
-                  style={{ width: "236.75px" }}
-                >
-                  <span className="selection">
-                    <span
-                      className="select2-selection select2-selection--single"
-                      role="combobox"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      tabIndex="0"
-                      aria-disabled="false"
-                      aria-labelledby="select2-Zone-container"
-                    >
-                      <span
-                        className="select2-selection__rendered"
-                        id="select2-Zone-container"
-                        role="textbox"
-                        aria-readonly="true"
-                        title="Zone 1"
-                      >
-                        Zone 1
-                      </span>
-                      <span
-                        className="select2-selection__arrow"
-                        role="presentation"
-                      >
-                        <b role="presentation"></b>
-                      </span>
-                    </span>
-                  </span>
-                  <span className="dropdown-wrapper" aria-hidden="true"></span>
-                </span>
+                <CustomSelect
+                  id="selectZone"
+                  label="Zone"
+                  options={[
+                    { value: "Zone 1", label: "Zone 1" },
+                    { value: "Zone 2", label: "Zone 2" },
+                  ]}
+                  // value={type}
+                  // onChange={setType}
+                  placeholder="Select Zone"
+                  required
+                />
               </div>
             </div>
 
             <div className="col-sm-3 mb-4">
-              <label htmlFor="ServiceLocation" className="form-label">
+              {/* <label htmlFor="ServiceLocation" className="form-label">
                 Service Location
-              </label>
+              </label> */}
               <div className="position-relative">
-                <select
+                {/* <select
                   id="ServiceLocation"
                   className="select2 form-select select2-hidden-accessible"
                   data-select2-id="ServiceLocation"
@@ -245,260 +141,128 @@ export default function User_Creation_Form() {
                     Service Location 1
                   </option>
                   <option value="HI">Service Location 2</option>
-                </select>
-                <span
-                  className="select2 select2-container select2-container--default"
-                  dir="ltr"
-                  data-select2-id="7"
-                  style={{ width: "236.75px" }}
-                >
-                  <span className="selection">
-                    <span
-                      className="select2-selection select2-selection--single"
-                      role="combobox"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      tabIndex="0"
-                      aria-disabled="false"
-                      aria-labelledby="select2-ServiceLocation-container"
-                    >
-                      <span
-                        className="select2-selection__rendered"
-                        id="select2-ServiceLocation-container"
-                        role="textbox"
-                        aria-readonly="true"
-                        title="Service Location 1"
-                      >
-                        Service Location 1
-                      </span>
-                      <span
-                        className="select2-selection__arrow"
-                        role="presentation"
-                      >
-                        <b role="presentation"></b>
-                      </span>
-                    </span>
-                  </span>
-                  <span className="dropdown-wrapper" aria-hidden="true"></span>
-                </span>
+                </select> */}
+                <CustomSelect
+                  id="selectServiceLocation"
+                  label="Service Location"
+                  options={[
+                    {
+                      value: "Service Location 1",
+                      label: "Service Location 1",
+                    },
+                    {
+                      value: "Service Location 2",
+                      label: "Service Location 2",
+                    },
+                  ]}
+                  // value={type}
+                  // onChange={setType}
+                  placeholder="Select Service Location"
+                  required
+                />
               </div>
             </div>
 
             <div className="col-sm-3 mb-4">
-              <label htmlFor="Company" className="form-label">
+              {/* <label htmlFor="Company" className="form-label">
                 Company
-              </label>
+              </label> */}
               <div className="position-relative">
-                <select
-                  id="Company"
-                  className="select2 form-select select2-hidden-accessible"
-                  data-select2-id="Company"
-                  tabIndex="-1"
-                  aria-hidden="true"
-                >
-                  <option value="AK" data-select2-id="10">
-                    Company 1
-                  </option>
-                  <option value="HI">Company 2</option>
-                </select>
-                <span
-                  className="select2 select2-container select2-container--default"
-                  dir="ltr"
-                  data-select2-id="9"
-                  style={{ width: "236.75px" }}
-                >
-                  <span className="selection">
-                    <span
-                      className="select2-selection select2-selection--single"
-                      role="combobox"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      tabIndex="0"
-                      aria-disabled="false"
-                      aria-labelledby="select2-Company-container"
-                    >
-                      <span
-                        className="select2-selection__rendered"
-                        id="select2-Company-container"
-                        role="textbox"
-                        aria-readonly="true"
-                        title="Company 1"
-                      >
-                        Company 1
-                      </span>
-                      <span
-                        className="select2-selection__arrow"
-                        role="presentation"
-                      >
-                        <b role="presentation"></b>
-                      </span>
-                    </span>
-                  </span>
-                  <span className="dropdown-wrapper" aria-hidden="true"></span>
-                </span>
+                <CustomSelect
+                  id="selectCompany"
+                  label="Company"
+                  options={[
+                    {
+                      value: "Company 1",
+                      label: "Company 1",
+                    },
+                    {
+                      value: "Company 2",
+                      label: "Company 2",
+                    },
+                  ]}
+                  // value={type}
+                  // onChange={setType}
+                  placeholder="Select Company"
+                  // data-select2-id="10"
+                  required
+                />
               </div>
             </div>
 
             <div className="col-sm-3 mb-4">
-              <label htmlFor="ReportingManager1" className="form-label">
+              {/* <label htmlFor="ReportingManager1" className="form-label">
                 Reporting Manager 1
-              </label>
+              </label> */}
               <div className="position-relative">
-                <select
-                  id="ReportingManager1"
-                  className="select2 form-select select2-hidden-accessible"
-                  data-select2-id="ReportingManager1"
-                  tabIndex="-1"
-                  aria-hidden="true"
-                >
-                  <option value="AK" data-select2-id="12">
-                    User 1
-                  </option>
-                  <option value="HI">User 2</option>
-                </select>
-                <span
-                  className="select2 select2-container select2-container--default"
-                  dir="ltr"
-                  data-select2-id="11"
-                  style={{ width: "236.75px" }}
-                >
-                  <span className="selection">
-                    <span
-                      className="select2-selection select2-selection--single"
-                      role="combobox"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      tabIndex="0"
-                      aria-disabled="false"
-                      aria-labelledby="select2-ReportingManager1-container"
-                    >
-                      <span
-                        className="select2-selection__rendered"
-                        id="select2-ReportingManager1-container"
-                        role="textbox"
-                        aria-readonly="true"
-                        title="User 1"
-                      >
-                        User 1
-                      </span>
-                      <span
-                        className="select2-selection__arrow"
-                        role="presentation"
-                      >
-                        <b role="presentation"></b>
-                      </span>
-                    </span>
-                  </span>
-                  <span className="dropdown-wrapper" aria-hidden="true"></span>
-                </span>
+                <CustomSelect
+                  id="selectReportingManager1"
+                  label="Reporting Manager 1"
+                  options={[
+                    {
+                      value: "User 1",
+                      label: "User 1",
+                    },
+                    {
+                      value: "User 2",
+                      label: "User 2",
+                    },
+                  ]}
+                  // value={type}
+                  // onChange={setType}
+                  placeholder="Select User"
+                  // data-select2-id="10"
+                  required
+                />
               </div>
             </div>
             <div className="col-sm-3 mb-4">
-              <label htmlFor="ReportingManager2" className="form-label">
+              {/* <label htmlFor="ReportingManager2" className="form-label">
                 Reporting Manager 2
-              </label>
+              </label> */}
               <div className="position-relative">
-                <select
-                  id="ReportingManager2"
-                  className="select2 form-select select2-hidden-accessible"
-                  data-select2-id="ReportingManager2"
-                  tabIndex="-1"
-                  aria-hidden="true"
-                >
-                  <option value="AK" data-select2-id="14">
-                    User 1
-                  </option>
-                  <option value="HI">User 2</option>
-                </select>
-                <span
-                  className="select2 select2-container select2-container--default"
-                  dir="ltr"
-                  data-select2-id="13"
-                  style={{ width: "236.75px" }}
-                >
-                  <span className="selection">
-                    <span
-                      className="select2-selection select2-selection--single"
-                      role="combobox"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      tabIndex="0"
-                      aria-disabled="false"
-                      aria-labelledby="select2-ReportingManager2-container"
-                    >
-                      <span
-                        className="select2-selection__rendered"
-                        id="select2-ReportingManager2-container"
-                        role="textbox"
-                        aria-readonly="true"
-                        title="User 1"
-                      >
-                        User 1
-                      </span>
-                      <span
-                        className="select2-selection__arrow"
-                        role="presentation"
-                      >
-                        <b role="presentation"></b>
-                      </span>
-                    </span>
-                  </span>
-                  <span className="dropdown-wrapper" aria-hidden="true"></span>
-                </span>
+                <CustomSelect
+                  id="selectReportingManager2"
+                  label="Reporting Manager 2"
+                  options={[
+                    {
+                      value: "User 1",
+                      label: "User 1",
+                    },
+                    {
+                      value: "User 2",
+                      label: "User 2",
+                    },
+                  ]}
+                  // value={type}
+                  // onChange={setType}
+                  placeholder="Select User"
+                  // data-select2-id="10"
+                  required
+                />
               </div>
             </div>
             <div className="col-sm-3 mb-4">
-              <label htmlFor="status" className="form-label">
-                Status
-              </label>
               <div className="position-relative">
-                <select
-                  id="status"
-                  className="select2 form-select select2-hidden-accessible"
-                  data-select2-id="status"
-                  tabIndex="-1"
-                  aria-hidden="true"
-                >
-                  <option value="AK" data-select2-id="16">
-                    Active
-                  </option>
-                  <option value="HI">Deactive</option>
-                </select>
-                <span
-                  className="select2 select2-container select2-container--default"
-                  dir="ltr"
-                  data-select2-id="15"
-                  style={{ width: "236.75px" }}
-                >
-                  <span className="selection">
-                    <span
-                      className="select2-selection select2-selection--single"
-                      role="combobox"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      tabIndex="0"
-                      aria-disabled="false"
-                      aria-labelledby="select2-status-container"
-                    >
-                      <span
-                        className="select2-selection__rendered"
-                        id="select2-status-container"
-                        role="textbox"
-                        aria-readonly="true"
-                        title="Active"
-                      >
-                        Active
-                      </span>
-                      <span
-                        className="select2-selection__arrow"
-                        role="presentation"
-                      >
-                        <b role="presentation"></b>
-                      </span>
-                    </span>
-                  </span>
-                  <span className="dropdown-wrapper" aria-hidden="true"></span>
-                </span>
+                <CustomSelect
+                  id="selectStatus"
+                  label="Status"
+                  options={[
+                    {
+                      value: "Active",
+                      label: "Active",
+                    },
+                    {
+                      value: "Deactive",
+                      label: "Deactive",
+                    },
+                  ]}
+                  // value={type}
+                  // onChange={setType}
+                  placeholder="Select Status"
+                  // data-select2-id="10"
+                  required
+                />
               </div>
             </div>
             <div className="col-sm-3 mb-4">

@@ -36,58 +36,14 @@ export default function SubCategory_Master_Form() {
                       Group
                     </label>
                     <div className="position-relative">
-                      <select
-                        id="select2Basic"
-                        className="select2 form-select select2-hidden-accessible"
-                        data-select2-id="select2Basic"
-                        tabIndex="-1"
-                        aria-hidden="true"
-                      >
-                        <option value="AK" data-select2-id="10">
-                          Group
-                        </option>
-                        <option value="HI">Group</option>
-                        <option value="CA">Group</option>
-                        <option value="NV">Group</option>
-                      </select>
-                      <span
-                        className="select2 select2-container select2-container--default"
-                        dir="ltr"
-                        data-select2-id="9"
-                        style={{ width: "auto" }}
-                      >
-                        <span className="selection">
-                          <span
-                            className="select2-selection select2-selection--single"
-                            role="combobox"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                            tabIndex="0"
-                            aria-disabled="false"
-                            aria-labelledby="select2-select2Basic-container"
-                          >
-                            <span
-                              className="select2-selection__rendered"
-                              id="select2-select2Basic-container"
-                              role="textbox"
-                              aria-readonly="true"
-                              title="Group"
-                            >
-                              Group
-                            </span>
-                            <span
-                              className="select2-selection__arrow"
-                              role="presentation"
-                            >
-                              <b role="presentation"></b>
-                            </span>
-                          </span>
-                        </span>
-                        <span
-                          className="dropdown-wrapper"
-                          aria-hidden="true"
-                        ></span>
-                      </span>
+                      <div class="col-lg-3">
+                        <select id="select7Basic" class="select2 form-select">
+                          <option value="AK">Select&nbsp;Grop</option>
+                          <option value="HI">Grop</option>
+                          <option value="CA">Grop</option>
+                          <option value="NV">Grop</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                   <div className="col-md-12 mb-2">

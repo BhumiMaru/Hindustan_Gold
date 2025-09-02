@@ -106,9 +106,9 @@ export default function ServiceLocation_3_Master_Form() {
             <div className="modal-body">
               <div className="row">
                 <div className="col-md-12 mb-2">
-                  <label htmlFor="select2Basic" className="form-label">
+                  {/* <label htmlFor="select2Basic" className="form-label">
                     Service Location 1
-                  </label>
+                  </label> */}
                   <div className="position-relative">
                     <CustomSelect
                       options={serviceLocation1?.map((loc) => ({
@@ -122,14 +122,17 @@ export default function ServiceLocation_3_Master_Form() {
                           selectedSl1: val,
                         }))
                       }
+                      label="Service Location 1"
                       placeholder="Select Service Location 1"
+                      id="serviceLocation1"
+                      required
                     />
                   </div>
                 </div>
                 <div className="col-md-12 mb-2">
-                  <label htmlFor="select3Basic" className="form-label">
+                  {/* <label htmlFor="select3Basic" className="form-label">
                     Service Location 2
-                  </label>
+                  </label> */}
                   <div className="position-relative">
                     <CustomSelect
                       options={serviceLocation2?.map((loc) => ({
@@ -144,6 +147,9 @@ export default function ServiceLocation_3_Master_Form() {
                         }))
                       }
                       placeholder="Select Service Location 2"
+                      id="serviceLocation2"
+                      label="Service Location 2"
+                      required
                     />
                   </div>
                 </div>

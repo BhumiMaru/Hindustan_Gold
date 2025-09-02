@@ -1,4 +1,7 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
+import { getData } from "../../utils/api";
+import { toast } from "react-toastify";
+import { ENDPOINTS } from "../../constants/endpoints";
 
 export const UserCreationContext = createContext();
 
@@ -9,7 +12,24 @@ export const useUserCreation = () => {
 
 // USER CREATION PROVIDER
 export const UserCreationProvider = ({ children }) => {
+  const [userCreaions, setUserCreation] = useState([]);
+
+  //   Fetch user Creaions
+  const fetchUserCreationData = async (search = "") => {
+    try {
+      const res = await getData(ENDPOINTS.USER_CREATION.LIST, { search });
+      setUserCreation(res.data.data);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch User Creation");
+    }
+  };
+
   return (
-    <UserCreationContext.Provider>{children}</UserCreationContext.Provider>
+    <UserCreationContext.Provider
+      value={{ userCreaions, fetchUserCreationData }}
+    >
+      {children}
+    </UserCreationContext.Provider>
   );
 };
