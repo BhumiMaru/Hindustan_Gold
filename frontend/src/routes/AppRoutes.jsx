@@ -29,6 +29,17 @@ import Item_Create_Material_Form from "../components/Item Management/Item_Create
 import Item_Create_Service_Form from "../components/Item Management/Item_Create/Item_Create_Service_Form";
 import Item_Create_Asset_Form from "../components/Item Management/Item_Create/Item_Create_Asset_Form";
 import User_Creation_Permission from "../components/Master/User_Creation/User_Creation_Permission";
+import {
+  UserCreationContext,
+  UserCreationProvider,
+} from "../Context/Master/UserCreationContext";
+import { RoleMasterProvider } from "../Context/Master/RoleMasterContext";
+import { CompanyMasterProvider } from "../Context/Master/CompanyMasterContext";
+import { ServiceLocation1MasterProvider } from "../Context/Master/ServiceLocation1MasterContext";
+import { ServiceLocation2MasterProvider } from "../Context/Master/ServiceLocation2MasterContext";
+import { ServiceLocation3MasterProvider } from "../Context/Master/ServiceLocation3MasterContext";
+import { ZoneProvider } from "../Context/Master/ZoneContext";
+import { DepartmentProvider } from "../Context/Master/DepartmentContext";
 
 export default function AppRoutes() {
   return (
@@ -66,8 +77,36 @@ export default function AppRoutes() {
         />
 
         <Route path="/master/company" element={<CompanyMasterPage />} />
-        <Route path="/master/user" element={<User_Creation_Page />} />
-        <Route path="/master/user-create" element={<User_Creation_Form />} />
+        <Route
+          path="/master/user"
+          element={
+            <UserCreationProvider>
+              <User_Creation_Page />
+            </UserCreationProvider>
+          }
+        />
+        <Route
+          path="/master/user-create"
+          element={
+            <UserCreationProvider>
+              <RoleMasterProvider>
+                <CompanyMasterProvider>
+                  <ServiceLocation1MasterProvider>
+                    <ServiceLocation2MasterProvider>
+                      <ServiceLocation3MasterProvider>
+                        <ZoneProvider>
+                          <DepartmentProvider>
+                            <User_Creation_Form />
+                          </DepartmentProvider>
+                        </ZoneProvider>
+                      </ServiceLocation3MasterProvider>
+                    </ServiceLocation2MasterProvider>
+                  </ServiceLocation1MasterProvider>
+                </CompanyMasterProvider>
+              </RoleMasterProvider>
+            </UserCreationProvider>
+          }
+        />
 
         {/* Item Management  */}
         <Route path="/item/group" element={<Group_Master_Page />} />

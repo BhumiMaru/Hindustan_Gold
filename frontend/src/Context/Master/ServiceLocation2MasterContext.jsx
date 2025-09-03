@@ -13,6 +13,7 @@ export const useServiceLocation2Master = () => {
 // [SERVICE LOCATION 2 MASTER] Provider
 export const ServiceLocation2MasterProvider = ({ children }) => {
   const [serviceLocation2, setServiceLocation2] = useState([]);
+  const [serviceL2, setServiceL2] = useState([]);
   const [serviceLocation2Name, setServiceLocation2Name] = useState("");
   const [serviceLocation2EditId, setServiceLocation2EditId] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -30,6 +31,17 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
       setServiceLocation2(res.data.data);
     } catch (error) {
       toast.error(`Service Location 2 Master Fetch Error: ${error.message}`);
+    }
+  };
+
+  // Fetch SL2 Filter
+  const fetchSL2Filter = async () => {
+    try {
+      const res = await getData(ENDPOINTS.SERVICES_LOCATION_2_MASTER.FILTER);
+      setServiceL2(res.data);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch SL2 Filter");
     }
   };
 
@@ -108,7 +120,9 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
         setServiceLocation2EditId,
         selectedOption,
         setSelectedOption,
+        serviceL2,
 
+        fetchSL2Filter,
         fetchServiceLocations2,
         createServiceLocation2,
         updateServiceLocation2,

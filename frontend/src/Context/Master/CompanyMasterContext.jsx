@@ -13,6 +13,7 @@ export const useCompanyMaster = () => {
 // Company Provider
 export const CompanyMasterProvider = ({ children }) => {
   const [companies, setCompanies] = useState([]);
+  const [companyFilter, setCompanyFilter] = useState([]);
   const [companyName, setCompanyName] = useState("");
   const [companyEditId, setCompanyEditId] = useState(null);
 
@@ -24,6 +25,17 @@ export const CompanyMasterProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
       toast.error("Failed to fetch Company");
+    }
+  };
+
+  // Fetch Company Filter
+  const fetchCompanyFilter = async () => {
+    try {
+      const res = await getData(ENDPOINTS.COMPANY_MASTER.FILTER);
+      setCompanyFilter(res.data);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch Company Filter");
     }
   };
 
@@ -76,6 +88,8 @@ export const CompanyMasterProvider = ({ children }) => {
       value={{
         companyName,
         setCompanyName,
+        fetchCompanyFilter,
+        companyFilter,
         updateCompany,
         createCompany,
         setCompanyEditId,

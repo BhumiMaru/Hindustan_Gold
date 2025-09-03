@@ -13,6 +13,7 @@ export const useServiceLocation1Master = () => {
 // [SERVICE LOCATION 1 MASTER] Provider
 export const ServiceLocation1MasterProvider = ({ children }) => {
   const [serviceLocation, setServiceLocation] = useState([]);
+  const [serviceL1, setServiceL1] = useState([]);
   const [serviceLocationName, setServiceLocationName] = useState("");
   const [serviceLocation1EditId, setServiceLocation1EditId] = useState(null);
 
@@ -25,6 +26,17 @@ export const ServiceLocation1MasterProvider = ({ children }) => {
       setServiceLocation(res.data.data);
     } catch (error) {
       toast.error(`Service Location 1 Master Fetch Error: ${error.message}`);
+    }
+  };
+
+  // Fetch SL1 Filter
+  const fetchSL1Filter = async () => {
+    try {
+      const res = await getData(ENDPOINTS.SERVICES_LOCATION_1_MASTER.FILTER);
+      setServiceL1(res.data);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch SL1 Filter");
     }
   };
 
@@ -78,6 +90,8 @@ export const ServiceLocation1MasterProvider = ({ children }) => {
         serviceLocation,
         serviceLocation1EditId,
         setServiceLocation1EditId,
+        serviceL1,
+        fetchSL1Filter,
         fetchServiceLocations,
         createServiceLocation,
         updateServiceLocation,

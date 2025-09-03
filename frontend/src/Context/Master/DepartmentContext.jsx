@@ -16,6 +16,7 @@ export const useDepartment = () => {
 export const DepartmentProvider = ({ children }) => {
   const { handleClose } = useUIContext();
   const [departments, setDepartments] = useState([]);
+  const [deptFilter, setDeptFilter] = useState([]);
   const [deptName, setDeptName] = useState("");
   const [deptEditId, setDeptEditId] = useState(null);
 
@@ -23,12 +24,23 @@ export const DepartmentProvider = ({ children }) => {
   const fetchDepartments = async (search = "") => {
     try {
       const res = await getData(ENDPOINTS.DEPARTMENTS.LIST, { search }); // ✅ pass search as query param
-      if (res.status) {
-        setDepartments(res);
-      }
+      // if (res.status) {
+      setDepartments(res);
+      // }
     } catch (error) {
       console.log(error);
       toast.error("Failed to fetch departments");
+    }
+  };
+
+  // Fetch departments Filter
+  const fetchDeptFilter = async () => {
+    try {
+      const res = await getData(ENDPOINTS.DEPARTMENTS.FILTER);
+      setDeptFilter(res.data);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch Department Filter");
     }
   };
 
@@ -72,6 +84,9 @@ export const DepartmentProvider = ({ children }) => {
         departments,
         deptName,
         setDeptName,
+        deptFilter,
+
+        fetchDeptFilter,
         fetchDepartments,
         addDepartment,
         updateDepartment,

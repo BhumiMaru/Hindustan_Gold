@@ -1,10 +1,21 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import avatar10 from "../../../../public/assets/img/avatars/10.png";
 import { Link } from "react-router-dom";
 import { useUserCreation } from "../../../Context/Master/UserCreationContext";
 
 export default function User_Creation_Table() {
-  const { userCreaions } = useUserCreation();
+  const navigate = useNavigate();
+  const { userCreations, deleteUser, startEditing, setIsEditUserId } =
+    useUserCreation();
+
+  const handleEditClick = (user) => {
+    // const userId = user.id || user.user_id || user._id; // fallback check
+    // setIsEditUserId(userId);
+    startEditing(user); // set edit data in context
+    navigate("/master/user-create"); // then navigate
+  };
+
   return (
     <>
       {/* -------------------START USER CREATION TABLE--------------------- */}
@@ -26,7 +37,7 @@ export default function User_Creation_Table() {
           </tr>
         </thead>
         <tbody>
-          {userCreaions.map((user, index) => {
+          {userCreations?.map((user, index) => {
             return (
               <tr key={user.id}>
                 <td>
@@ -109,12 +120,16 @@ export default function User_Creation_Table() {
                         className="dropdown-menu dropdown-menu-end m-0"
                         style={{}}
                       >
-                        <a
-                          href="user-create.html"
+                        <button
+                          key={user.id}
                           className="dropdown-item waves-effect"
+                          onClick={() => {
+                            handleEditClick(user); // set context
+                          }}
                         >
                           Edit
-                        </a>
+                        </button>
+
                         <a
                           href="#"
                           className="dropdown-item waves-effect"
@@ -124,7 +139,10 @@ export default function User_Creation_Table() {
                           View
                         </a>
                         <div className="dropdown-divider"></div>
-                        <a className="dropdown-item text-danger delete-record waves-effect">
+                        <a
+                          className="dropdown-item text-danger delete-record waves-effect"
+                          onClick={() => deleteUser(user.id)}
+                        >
                           Delete
                         </a>
                       </div>

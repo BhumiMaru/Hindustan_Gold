@@ -13,6 +13,7 @@ export const useRoleMaster = () => {
 // ROLE MASTER PROVIDER
 export const RoleMasterProvider = ({ children }) => {
   const [roles, setRoles] = useState([]);
+  const [filterRole, setFilterRole] = useState([]);
   const [roleName, setRoleName] = useState("");
   const [roleEditId, setRoleEditId] = useState(null);
 
@@ -24,6 +25,17 @@ export const RoleMasterProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
       toast.error("Failed to fetch Roles");
+    }
+  };
+
+  // Fetch Role Filter
+  const fetchRoleFilter = async () => {
+    try {
+      const res = await getData(ENDPOINTS.ROLE_MASTER.FILTER);
+      setFilterRole(res.data);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch Roles Filter");
     }
   };
 
@@ -79,8 +91,11 @@ export const RoleMasterProvider = ({ children }) => {
         setRoleName,
         roles,
         setRoles,
+        filterRole,
+        setFilterRole,
 
         fetchRoleData,
+        fetchRoleFilter,
         createRole,
         updateRole,
         startEditing,

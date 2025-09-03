@@ -13,6 +13,7 @@ export const useZone = () => {
 // PROVIDER
 export const ZoneProvider = ({ children }) => {
   const [zones, setZones] = useState([]);
+  const [zoneFilter, setZoneFilter] = useState([]);
   const [zoneName, setZoneName] = useState("");
   const [colorCode, setColorCode] = useState("");
   const [editId, setEditId] = useState(null);
@@ -21,12 +22,23 @@ export const ZoneProvider = ({ children }) => {
   const fetchZones = async (search = "") => {
     try {
       const res = await getData(ENDPOINTS.ZONES.LIST, { search });
-      if (res.status) {
-        setZones(res.data.data); // res.data.data contains the array
-      }
+      // if (res.status) {
+      setZones(res.data.data); // res.data.data contains the array
+      // }
     } catch (err) {
       toast.error("Failed to fetch zones");
       console.error(err);
+    }
+  };
+
+  // Fetch Zone Filter
+  const fetchZoneFilter = async () => {
+    try {
+      const res = await getData(ENDPOINTS.ZONES.FILTER);
+      setZoneFilter(res.data);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch Zone Filter");
     }
   };
 
@@ -111,6 +123,9 @@ export const ZoneProvider = ({ children }) => {
         setColorCode,
         editId,
         setEditId,
+        zoneFilter,
+
+        fetchZoneFilter,
         fetchZones,
         addZone,
         updateZone,

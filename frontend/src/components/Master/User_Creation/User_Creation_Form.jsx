@@ -1,8 +1,87 @@
-import React from "react";
+import React, { useEffect } from "react";
 import User_Creation_Permission from "./User_Creation_Permission";
 import CustomSelect from "../../Common/CustomSelect/CustomSelect";
+import { useUserCreation } from "../../../Context/Master/UserCreationContext";
+import { useRoleMaster } from "../../../Context/Master/RoleMasterContext";
+import { useCompanyMaster } from "../../../Context/Master/CompanyMasterContext";
+import { useServiceLocation1Master } from "../../../Context/Master/ServiceLocation1MasterContext";
+import { useServiceLocation2Master } from "../../../Context/Master/ServiceLocation2MasterContext";
+import { useServiceLocation3Master } from "../../../Context/Master/ServiceLocation3MasterContext";
+import { useZone } from "../../../Context/Master/ZoneContext";
+import { useDepartment } from "../../../Context/Master/DepartmentContext";
+import { useNavigate } from "react-router-dom";
 
 export default function User_Creation_Form() {
+  const navigate = useNavigate();
+  const {
+    createUser,
+    updateUser,
+    isEditUserId,
+    useCreationData,
+    setUserCreationData,
+    fetchUserFilter,
+    filterUser,
+    resetUserData,
+  } = useUserCreation();
+  const { fetchRoleFilter, filterRole } = useRoleMaster();
+  const { fetchCompanyFilter, companyFilter } = useCompanyMaster();
+  const { serviceL1, fetchSL1Filter } = useServiceLocation1Master();
+  const { serviceL2, fetchSL2Filter } = useServiceLocation2Master();
+  const { serviceL3, fetchSL3Filter } = useServiceLocation3Master();
+  const { zoneFilter, fetchZoneFilter } = useZone();
+  const { deptFilter, fetchDeptFilter } = useDepartment();
+  console.log("isEditUserId", isEditUserId);
+  useEffect(() => {
+    fetchSL1Filter();
+    fetchSL2Filter();
+    fetchSL3Filter();
+    fetchCompanyFilter();
+    fetchDeptFilter();
+    fetchZoneFilter();
+    fetchUserFilter();
+    fetchRoleFilter();
+  }, []);
+
+  // Save Data
+  const handleSave = async () => {
+    e.preventDefault();
+    const payload = {
+      name: useCreationData.name,
+      role_id: useCreationData.role_id,
+      employee_id: useCreationData.employee_id,
+      department_id: useCreationData.department_id,
+      zone_id: useCreationData.zone_id,
+      company_id: useCreationData.company_id,
+      email: useCreationData.email,
+      mobileno: useCreationData.mobileno,
+      password: useCreationData.password,
+      service_location_1_id: useCreationData.service_location_1_id,
+      service_location_2_id: useCreationData.service_location_2_id,
+      service_location_3_id: useCreationData.service_location_3_id,
+      reporting_manager_1_id: useCreationData.reporting_manager_1_id,
+      reporting_manager_2_id: useCreationData.reporting_manager_2_id,
+      status: useCreationData.status,
+      register_date: useCreationData.register_date,
+      profile_photo_url: useCreationData.profile_photo_url,
+    };
+    console.log("isEditUserId isEditUserId", isEditUserId);
+    const editID = localStorage.getItem("editUserId");
+
+    try {
+      if (editID) {
+        console.log("payloaf", payload);
+        await updateUser(editID, payload);
+      } else {
+        await createUser(payload);
+        navigate("/master/user");
+        resetUserData();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    // navigate("/master/user");
+  };
   return (
     <>
       {/* ------------------START USER CREATION FORM------------------- */}
@@ -19,6 +98,13 @@ export default function User_Creation_Form() {
                 className="form-control"
                 id="username"
                 placeholder="Enter User Name"
+                value={useCreationData?.name || ""}
+                onChange={(e) =>
+                  setUserCreationData({
+                    ...useCreationData,
+                    name: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="col-sm-3 mb-4">
@@ -30,6 +116,13 @@ export default function User_Creation_Form() {
                 className="form-control"
                 id="employid"
                 placeholder="Enter Employee ID"
+                value={useCreationData?.employee_id || ""}
+                onChange={(e) =>
+                  setUserCreationData({
+                    ...useCreationData,
+                    employee_id: e.target.value,
+                  })
+                }
               />
             </div>
 
@@ -38,21 +131,35 @@ export default function User_Creation_Form() {
                 Email ID
               </label>
               <input
-                type="text"
+                type="email"
                 className="form-control"
                 id="emailid"
                 placeholder="Enter Email ID"
+                value={useCreationData?.email || ""}
+                onChange={(e) =>
+                  setUserCreationData({
+                    ...useCreationData,
+                    email: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="col-sm-3 mb-4">
-              <label htmlFor="emailid" className="form-label">
+              <label htmlFor="phoneid" className="form-label">
                 Phone Number
               </label>
               <input
                 type="text"
                 className="form-control"
-                id="emailid"
+                id="phoneid"
                 placeholder="Phone Number"
+                value={useCreationData?.mobileno || ""}
+                onChange={(e) =>
+                  setUserCreationData({
+                    ...useCreationData,
+                    mobileno: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="col-sm-3 mb-4">
@@ -64,6 +171,13 @@ export default function User_Creation_Form() {
                 className="form-control"
                 id="password"
                 placeholder="Enter password"
+                value={useCreationData?.password || ""}
+                onChange={(e) =>
+                  setUserCreationData({
+                    ...useCreationData,
+                    password: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="col-sm-3 mb-4">
@@ -74,15 +188,19 @@ export default function User_Creation_Form() {
                 <CustomSelect
                   id="selectRole"
                   label="Role"
-                  options={[
-                    { value: "Manager", label: "Manager" },
-                    { value: "Stoer Manager", label: "Stoer Manager" },
-                    { value: "Plant Head", label: "Plant Head" },
-                  ]}
-                  // value={type}
-                  // onChange={setType}
+                  options={filterRole.map((roleFilter) => ({
+                    value: roleFilter.id,
+                    label: roleFilter.role_name,
+                  }))}
                   placeholder="Select Role"
                   required
+                  value={useCreationData?.role_id}
+                  onChange={(selected) =>
+                    setUserCreationData({
+                      ...useCreationData,
+                      role_id: selected,
+                    })
+                  }
                 />
               </div>
             </div>
@@ -94,12 +212,17 @@ export default function User_Creation_Form() {
                 <CustomSelect
                   id="selectDepartment"
                   label="Department"
-                  options={[
-                    { value: "Department 1", label: "Department 1" },
-                    { value: "Department 2", label: "Department 2" },
-                  ]}
-                  // value={type}
-                  // onChange={setType}
+                  options={deptFilter.map((dept) => ({
+                    value: dept.id,
+                    label: dept.department_name,
+                  }))}
+                  value={useCreationData?.department_id}
+                  onChange={(selected) =>
+                    setUserCreationData({
+                      ...useCreationData,
+                      department_id: selected,
+                    })
+                  }
                   placeholder="Select Department"
                   required
                 />
@@ -113,50 +236,88 @@ export default function User_Creation_Form() {
                 <CustomSelect
                   id="selectZone"
                   label="Zone"
-                  options={[
-                    { value: "Zone 1", label: "Zone 1" },
-                    { value: "Zone 2", label: "Zone 2" },
-                  ]}
-                  // value={type}
-                  // onChange={setType}
+                  options={zoneFilter.map((zone) => ({
+                    value: zone.id,
+                    label: zone.zone_name,
+                  }))}
+                  value={useCreationData?.zone_id}
+                  onChange={(selected) =>
+                    setUserCreationData({
+                      ...useCreationData,
+                      zone_id: selected,
+                    })
+                  }
                   placeholder="Select Zone"
                   required
                 />
               </div>
             </div>
 
+            {/* Service Location 1 */}
             <div className="col-sm-3 mb-4">
-              {/* <label htmlFor="ServiceLocation" className="form-label">
-                Service Location
-              </label> */}
               <div className="position-relative">
-                {/* <select
-                  id="ServiceLocation"
-                  className="select2 form-select select2-hidden-accessible"
-                  data-select2-id="ServiceLocation"
-                  tabIndex="-1"
-                  aria-hidden="true"
-                >
-                  <option value="AK" data-select2-id="8">
-                    Service Location 1
-                  </option>
-                  <option value="HI">Service Location 2</option>
-                </select> */}
                 <CustomSelect
                   id="selectServiceLocation"
-                  label="Service Location"
-                  options={[
-                    {
-                      value: "Service Location 1",
-                      label: "Service Location 1",
-                    },
-                    {
-                      value: "Service Location 2",
-                      label: "Service Location 2",
-                    },
-                  ]}
-                  // value={type}
-                  // onChange={setType}
+                  label="Service Location 1"
+                  options={serviceL1.map((sl1) => {
+                    return {
+                      value: sl1.id,
+                      label: sl1.service_location_name,
+                    };
+                  })}
+                  value={useCreationData?.service_location_1_id}
+                  onChange={(selected) => {
+                    setUserCreationData({
+                      ...useCreationData,
+                      service_location_1_id: selected,
+                    });
+                  }}
+                  placeholder="Select Service Location"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Service Location 2 */}
+            <div className="col-sm-3 mb-4">
+              <div className="position-relative">
+                <CustomSelect
+                  id="selectServiceLocation2"
+                  label="Service Location 2"
+                  options={serviceL2.map((sl2) => ({
+                    value: sl2.id,
+                    label: sl2.service_location_2_name,
+                  }))}
+                  value={useCreationData?.service_location_2_id}
+                  onChange={(selected) =>
+                    setUserCreationData({
+                      ...useCreationData,
+                      service_location_2_id: selected,
+                    })
+                  }
+                  placeholder="Select Service Location"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Service Location 3 */}
+            <div className="col-sm-3 mb-4">
+              <div className="position-relative">
+                <CustomSelect
+                  id="selectServiceLocation3"
+                  label="Service Location 3"
+                  options={serviceL3.map((sl3) => ({
+                    value: sl3.id,
+                    label: sl3.service_location_3_name,
+                  }))}
+                  value={useCreationData?.service_location_3_id}
+                  onChange={(selected) =>
+                    setUserCreationData({
+                      ...useCreationData,
+                      service_location_3_id: selected,
+                    })
+                  }
                   placeholder="Select Service Location"
                   required
                 />
@@ -171,18 +332,17 @@ export default function User_Creation_Form() {
                 <CustomSelect
                   id="selectCompany"
                   label="Company"
-                  options={[
-                    {
-                      value: "Company 1",
-                      label: "Company 1",
-                    },
-                    {
-                      value: "Company 2",
-                      label: "Company 2",
-                    },
-                  ]}
-                  // value={type}
-                  // onChange={setType}
+                  options={companyFilter?.map((company) => ({
+                    value: company.id,
+                    label: company.company_name,
+                  }))}
+                  value={useCreationData?.company_id}
+                  onChange={(selected) =>
+                    setUserCreationData({
+                      ...useCreationData,
+                      company_id: selected,
+                    })
+                  }
                   placeholder="Select Company"
                   // data-select2-id="10"
                   required
@@ -198,18 +358,17 @@ export default function User_Creation_Form() {
                 <CustomSelect
                   id="selectReportingManager1"
                   label="Reporting Manager 1"
-                  options={[
-                    {
-                      value: "User 1",
-                      label: "User 1",
-                    },
-                    {
-                      value: "User 2",
-                      label: "User 2",
-                    },
-                  ]}
-                  // value={type}
-                  // onChange={setType}
+                  options={filterUser.map((user) => ({
+                    value: user.id,
+                    label: user.name,
+                  }))}
+                  value={useCreationData?.reporting_manager_1_id}
+                  onChange={(selected) =>
+                    setUserCreationData({
+                      ...useCreationData,
+                      reporting_manager_1_id: selected,
+                    })
+                  }
                   placeholder="Select User"
                   // data-select2-id="10"
                   required
@@ -224,18 +383,17 @@ export default function User_Creation_Form() {
                 <CustomSelect
                   id="selectReportingManager2"
                   label="Reporting Manager 2"
-                  options={[
-                    {
-                      value: "User 1",
-                      label: "User 1",
-                    },
-                    {
-                      value: "User 2",
-                      label: "User 2",
-                    },
-                  ]}
-                  // value={type}
-                  // onChange={setType}
+                  options={filterUser.map((user) => ({
+                    value: user.id,
+                    label: user.name,
+                  }))}
+                  value={useCreationData?.reporting_manager_2_id}
+                  onChange={(selected) =>
+                    setUserCreationData({
+                      ...useCreationData,
+                      reporting_manager_2_id: selected,
+                    })
+                  }
                   placeholder="Select User"
                   // data-select2-id="10"
                   required
@@ -249,16 +407,21 @@ export default function User_Creation_Form() {
                   label="Status"
                   options={[
                     {
-                      value: "Active",
+                      value: 1,
                       label: "Active",
                     },
                     {
-                      value: "Deactive",
+                      value: 0,
                       label: "Deactive",
                     },
                   ]}
-                  // value={type}
-                  // onChange={setType}
+                  value={useCreationData?.status}
+                  onChange={(selected) =>
+                    setUserCreationData({
+                      ...useCreationData,
+                      status: selected,
+                    })
+                  }
                   placeholder="Select Status"
                   // data-select2-id="10"
                   required
@@ -272,12 +435,23 @@ export default function User_Creation_Form() {
               <input
                 type="file"
                 className="form-control"
-                id="employid"
+                id="uploadid"
                 placeholder="Enter Employee ID"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    setUserCreationData({
+                      ...useCreationData,
+                      profile_photo_url: e.target.files[0], // ✅ file object
+                    });
+                  }
+                }}
               />
             </div>
             <div className="col-lg-12 text-end">
-              <button className="btn btn-primary waves-effect waves-light">
+              <button
+                className="btn btn-primary waves-effect waves-light"
+                onClick={handleSave}
+              >
                 Save
               </button>
             </div>

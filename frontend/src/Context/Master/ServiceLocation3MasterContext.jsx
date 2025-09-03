@@ -13,6 +13,7 @@ export const useServiceLocation3Master = () => {
 // PROVIDER
 export const ServiceLocation3MasterProvider = ({ children }) => {
   const [serviceLocation3, setServiceLocation3] = useState([]);
+  const [serviceL3, setServiceL3] = useState([]);
   const [serviceLocation3Data, setServiceLocation3Data] = useState({
     serviceLocation3Name: "",
     selectedSl1: null,
@@ -35,6 +36,17 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
       setServiceLocation3(res.data.data);
     } catch (error) {
       toast.error(`Service Location 3 Master Fetch Error: ${error.message}`);
+    }
+  };
+
+  // Fetch SL1 Filter
+  const fetchSL3Filter = async () => {
+    try {
+      const res = await getData(ENDPOINTS.SERVICES_LOCATION_3_MASTER.FILTER);
+      setServiceL3(res.data);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch SL3 Filter");
     }
   };
 
@@ -120,7 +132,9 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
         setServiceLocation3Data,
         serviceLocation3EditId,
         setServiceLocation3EditId,
+        serviceL3,
 
+        fetchSL3Filter,
         fetchServiceLocations3,
         createServiceLocation3,
         updateServiceLocation3,
