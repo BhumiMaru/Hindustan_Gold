@@ -4,16 +4,50 @@ import avatar10 from "../../../../public/assets/img/avatars/10.png";
 import { Link } from "react-router-dom";
 import { useUserCreation } from "../../../Context/Master/UserCreationContext";
 
-export default function User_Creation_Table() {
+export default function User_Creation_Table({ search }) {
   const navigate = useNavigate();
   const { userCreations, deleteUser, startEditing, setIsEditUserId } =
     useUserCreation();
+  // console.log("userCreations", userCreations);
+  // Derived filtered list
+  const filteredUsers = userCreations.filter((user) => {
+    const s = (search || "").toLowerCase().trim(); // safe string always
+
+    const name = (user?.name || "").toLowerCase();
+    const email = (user?.email || "").toLowerCase();
+    const mobileno = (user?.mobileno || "").toLowerCase();
+    const employeeId = (user?.employee_id || "").toLowerCase();
+    const role = (user?.role?.role_name || "").toLowerCase();
+    const department = (user?.department?.department_name || "").toLowerCase();
+    const zone = (user?.zone?.zone_name || "").toLowerCase();
+    const registerDate = (user?.register_date || "").toLowerCase();
+
+    // handle status properly – if numeric, convert to string too
+    let statusText = "";
+    if (user?.status === 1) statusText = "active";
+    else if (user?.status === 0) statusText = "deactive";
+    else statusText = String(user?.status || ""); // will match "13"
+
+    return (
+      name.includes(s) ||
+      email.includes(s) ||
+      mobileno.includes(s) ||
+      employeeId.includes(s) ||
+      role.includes(s) ||
+      department.includes(s) ||
+      zone.includes(s) ||
+      statusText.includes(s) ||
+      registerDate.includes(s)
+    );
+  });
+
+  // console.log("sss", search);
+  // console.log("filteredUsers", filteredUsers);
 
   const handleEditClick = (user) => {
-    // const userId = user.id || user.user_id || user._id; // fallback check
-    // setIsEditUserId(userId);
-    startEditing(user); // set edit data in context
-    navigate("/master/user-create"); // then navigate
+    console.log("user", user);
+    startEditing(user.id); // set edit data in context
+    navigate(`/master/user-create/${user.id}`); // then navigate
   };
 
   return (
@@ -37,7 +71,7 @@ export default function User_Creation_Table() {
           </tr>
         </thead>
         <tbody>
-          {userCreations?.map((user, index) => {
+          {filteredUsers?.map((user, index) => {
             return (
               <tr key={user.id}>
                 <td>

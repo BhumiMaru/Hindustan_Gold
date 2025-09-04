@@ -21,6 +21,7 @@ export const CategoryMasterProvider = ({ children }) => {
     // status: null,
   });
   const [categoryEditId, setCategoryEditId] = useState(null);
+  const [filterCategory, setFilterCategory] = useState([]);
   //   Group Filter
   const [selectedGroup, setSelectedGroup] = useState(null);
 
@@ -34,6 +35,17 @@ export const CategoryMasterProvider = ({ children }) => {
       setCategories(res.data.data); // `data.data` based on your API
     } catch (error) {
       toast.error(`Category Fetch Error: ${error.message}`);
+    }
+  };
+
+  // Fetch Category Master Filter
+  const fetchCategoryFilter = async () => {
+    try {
+      const res = await getData(ENDPOINTS.CATEGORY_MASTER.FILTER);
+      setFilterCategory(res.data);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch Group Filter");
     }
   };
 
@@ -97,7 +109,9 @@ export const CategoryMasterProvider = ({ children }) => {
         setCategoryEditId,
         selectedGroup,
         setSelectedGroup,
+        filterCategory,
 
+        fetchCategoryFilter,
         fetchCategories,
         createCategory,
         updateCategory,

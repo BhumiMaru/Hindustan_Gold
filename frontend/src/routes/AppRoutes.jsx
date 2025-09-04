@@ -71,7 +71,19 @@ export default function AppRoutes() {
           path="/user-permission"
           element={
             <div className="container-xxl flex-grow-1 container-p-y">
-              <User_Creation_Permission />
+              <RoleMasterProvider>
+                <User_Creation_Permission />
+              </RoleMasterProvider>
+            </div>
+          }
+        />
+        <Route
+          path="/user-permission/:id"
+          element={
+            <div className="container-xxl flex-grow-1 container-p-y">
+              <RoleMasterProvider>
+                <User_Creation_Permission />
+              </RoleMasterProvider>
             </div>
           }
         />
@@ -87,6 +99,29 @@ export default function AppRoutes() {
         />
         <Route
           path="/master/user-create"
+          element={
+            <UserCreationProvider>
+              <RoleMasterProvider>
+                <CompanyMasterProvider>
+                  <ServiceLocation1MasterProvider>
+                    <ServiceLocation2MasterProvider>
+                      <ServiceLocation3MasterProvider>
+                        <ZoneProvider>
+                          <DepartmentProvider>
+                            <User_Creation_Form />
+                          </DepartmentProvider>
+                        </ZoneProvider>
+                      </ServiceLocation3MasterProvider>
+                    </ServiceLocation2MasterProvider>
+                  </ServiceLocation1MasterProvider>
+                </CompanyMasterProvider>
+              </RoleMasterProvider>
+            </UserCreationProvider>
+          }
+        />
+
+        <Route
+          path="/master/user-create/:id"
           element={
             <UserCreationProvider>
               <RoleMasterProvider>

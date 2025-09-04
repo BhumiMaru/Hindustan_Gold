@@ -5,12 +5,22 @@ import Pagination from "../../Common/Pagination/Pagination";
 import { Link } from "react-router-dom";
 import CustomSelect from "../../Common/CustomSelect/CustomSelect";
 import { useUserCreation } from "../../../Context/Master/UserCreationContext";
+import { useDepartment } from "../../../Context/Master/DepartmentContext";
+import { useZone } from "../../../Context/Master/ZoneContext";
+import { useRoleMaster } from "../../../Context/Master/RoleMasterContext";
 
 export default function User_Creation_List() {
   const [search, setSearch] = useState("");
-  const { fetchUserCreationData } = useUserCreation();
+  const { fetchUserCreationData, setUserCreationData, useCreationData } =
+    useUserCreation();
+  const { zoneFilter, fetchZoneFilter } = useZone();
+  const { deptFilter, fetchDeptFilter } = useDepartment();
+  const { filterRole, fetchRoleFilter } = useRoleMaster();
 
   useEffect(() => {
+    fetchRoleFilter();
+    fetchDeptFilter();
+    fetchZoneFilter();
     fetchUserCreationData(search);
   }, [search]);
 
@@ -61,10 +71,10 @@ export default function User_Creation_List() {
                   <CustomSelect
                     id="selectRole"
                     label=""
-                    options={[
-                      { value: "Manager", label: "Manager" },
-                      { value: "Plant Head", label: "Plant Head" },
-                    ]}
+                    options={filterRole.map((role) => ({
+                      value: role.id,
+                      label: role.role_name,
+                    }))}
                     // value={type}
                     // onChange={setType}
                     placeholder="Select Role"
@@ -77,12 +87,17 @@ export default function User_Creation_List() {
                   <CustomSelect
                     id="selectDepartment"
                     label=""
-                    options={[
-                      { value: "Manager", label: "Manager" },
-                      { value: "Plant Head", label: "Plant Head" },
-                    ]}
-                    // value={type}
-                    // onChange={setType}
+                    options={deptFilter.map((dept) => ({
+                      value: dept.id,
+                      label: dept.department_name,
+                    }))}
+                    value={useCreationData?.department_id}
+                    onChange={(selected) =>
+                      setUserCreationData({
+                        ...useCreationData,
+                        department_id: selected,
+                      })
+                    }
                     placeholder="Select Department"
                     required
                   />
@@ -93,12 +108,17 @@ export default function User_Creation_List() {
                   <CustomSelect
                     id="selectZone"
                     label=""
-                    options={[
-                      { value: "Red", label: "Red" },
-                      { value: "Green", label: "Green" },
-                    ]}
-                    // value={type}
-                    // onChange={setType}
+                    options={zoneFilter.map((zone) => ({
+                      value: zone.id,
+                      label: zone.zone_name,
+                    }))}
+                    value={useCreationData?.zone_id}
+                    onChange={(selected) =>
+                      setUserCreationData({
+                        ...useCreationData,
+                        zone_id: selected,
+                      })
+                    }
                     placeholder="Select Zone"
                     required
                   />
@@ -110,8 +130,8 @@ export default function User_Creation_List() {
                     id="selectStatus"
                     label=""
                     options={[
-                      { value: "Active", label: "Active" },
-                      { value: "Deactive", label: "Deactive" },
+                      { value: 1, label: "Active" },
+                      { value: 0, label: "Deactive" },
                     ]}
                     // value={type}
                     // onChange={setType}
@@ -122,7 +142,7 @@ export default function User_Creation_List() {
               </div>
             </div>
             <div className="card-datatable table-responsive pt-0">
-              <User_Creation_Table />
+              <User_Creation_Table search={search} />
               <Pagination />
             </div>
           </div>

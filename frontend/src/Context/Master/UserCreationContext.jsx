@@ -31,17 +31,20 @@ export const UserCreationProvider = ({ children }) => {
     register_date: "",
     profile_photo_url: "",
   });
-  const [isEditUserId, setIsEditUserIdState] = useState(
-    localStorage.getItem("editUserId") || null
-  );
-  const setIsEditUserId = (id) => {
-    if (id) {
-      localStorage.setItem("editUserId", id);
-    } else {
-      localStorage.removeItem("editUserId");
-    }
-    setIsEditUserIdState(id);
-  };
+  // const [isEditUserId, setIsEditUserIdState] = useState(
+  //   localStorage.getItem("editUserId") || null
+  // );
+  // const setIsEditUserId = (id) => {
+  //   if (id) {
+  //     localStorage.setItem("editUserId", id);
+  //   } else {
+  //     localStorage.removeItem("editUserId");
+  //   }
+  //   setIsEditUserIdState(id);
+  // };
+
+  const [isEditUserId, setIsEditUserId] = useState(null);
+
   // console.log(isEditUserId);
   // Fetch Users
   const fetchUserCreationData = async (search = "") => {
@@ -106,29 +109,63 @@ export const UserCreationProvider = ({ children }) => {
       }
     }
   };
+
+  // Fetch Data By Id
+  const fetchUserById = async (id) => {
+    try {
+      const res = await postData(ENDPOINTS.USER_CREATION.DETAILS, { id });
+      console.log("res", res.data);
+      const user = res.data;
+      setUserCreationData({
+        name: user?.name || "",
+        role_id: user?.role_id || null,
+        employee_id: user?.employee_id || "",
+        department_id: user?.department_id || null,
+        zone_id: user?.zone_id || null,
+        email: user?.email || "",
+        mobileno: user?.mobileno || "",
+        password: "", // ✅ keep empty, don’t prefill passwords for security
+        company_id: user?.company_id || null,
+        service_location_1_id: user?.service_location_1_id || null,
+        service_location_2_id: user?.service_location_2_id || null,
+        service_location_3_id: user?.service_location_3_id || null,
+        reporting_manager_1_id: user?.reporting_manager_1_id || null,
+        reporting_manager_2_id: user?.reporting_manager_2_id || null,
+        status: user?.status ?? null,
+        register_date: user?.register_date || "",
+        profile_photo_url: user?.profile_photo_url || "", // if backend gives a URL
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // Start Editing
-  const startEditing = (user) => {
-    const userId = user.id || user.user_id || user._id;
+  const startEditing = (userId) => {
+    // const userId = user.id || user.user_id || user._id;
+    // setIsEditUserId(userId);
+    // console.log("userId", userId);
+    // setUserCreationData({
+    //   name: user?.name || "",
+    //   role_id: user?.role_id || null,
+    //   employee_id: user?.employee_id || "",
+    //   department_id: user?.department_id || null,
+    //   zone_id: user?.zone_id || null,
+    //   email: user?.email || "",
+    //   mobileno: user?.mobileno || "",
+    //   password: "", // ✅ keep empty, don’t prefill passwords for security
+    //   company_id: user?.company_id || null,
+    //   service_location_1_id: user?.service_location_1_id || null,
+    //   service_location_2_id: user?.service_location_2_id || null,
+    //   service_location_3_id: user?.service_location_3_id || null,
+    //   reporting_manager_1_id: user?.reporting_manager_1_id || null,
+    //   reporting_manager_2_id: user?.reporting_manager_2_id || null,
+    //   status: user?.status ?? null,
+    //   register_date: user?.register_date || "",
+    //   profile_photo_url: user?.profile_photo_url || "", // if backend gives a URL
+    // });
     setIsEditUserId(userId);
-    setUserCreationData({
-      name: user?.name || "",
-      role_id: user?.role_id || null,
-      employee_id: user?.employee_id || "",
-      department_id: user?.department_id || null,
-      zone_id: user?.zone_id || null,
-      email: user?.email || "",
-      mobileno: user?.mobileno || "",
-      password: "", // ✅ keep empty, don’t prefill passwords for security
-      company_id: user?.company_id || null,
-      service_location_1_id: user?.service_location_1_id || null,
-      service_location_2_id: user?.service_location_2_id || null,
-      service_location_3_id: user?.service_location_3_id || null,
-      reporting_manager_1_id: user?.reporting_manager_1_id || null,
-      reporting_manager_2_id: user?.reporting_manager_2_id || null,
-      status: user?.status ?? null,
-      register_date: user?.register_date || "",
-      profile_photo_url: user?.profile_photo_url || "", // if backend gives a URL
-    });
+    fetchUserById(userId);
   };
 
   // Delete User
@@ -164,6 +201,7 @@ export const UserCreationProvider = ({ children }) => {
       register_date: "",
       profile_photo_url: "",
     });
+    setIsEditUserId(null);
   };
 
   return (
@@ -177,6 +215,7 @@ export const UserCreationProvider = ({ children }) => {
         filterUser,
         setFilterUser,
 
+        fetchUserById,
         fetchUserFilter,
         fetchUserCreationData,
         createUser,

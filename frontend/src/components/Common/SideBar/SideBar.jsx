@@ -25,7 +25,7 @@ export default function SideBar() {
     "Category Master": "/item/category",
     "Subcategory Master": "/item/subcategory",
     "Item Master": "/item/item-master",
-    "Item Create": "/item/item-create-material",
+    // "Item Create": "/item/item-create-material",
   };
 
   const requestManagementRoutes = {
@@ -33,7 +33,7 @@ export default function SideBar() {
   };
 
   const piAndMaterialManagementRoutes = {
-    "PI Item Request": "/po-material/pi-request-create",
+    // "PI Item Request": "/po-material/pi-request-create",
     "PI Request List": "/po-material/pi-request-list",
     "Get Quote": "/po-material/get-quote-list",
     "PO Create": "/po-material/po-create",

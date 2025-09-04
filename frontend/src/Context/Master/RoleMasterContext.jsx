@@ -17,6 +17,15 @@ export const RoleMasterProvider = ({ children }) => {
   const [roleName, setRoleName] = useState("");
   const [roleEditId, setRoleEditId] = useState(null);
 
+  // role Permission List
+  const [permission, setPermission] = useState([]);
+  const [rolePermissionData, setRolePermissionData] = useState({
+    role_id: null,
+    module_name: "",
+    type: "",
+    permission: "",
+  });
+
   //   Fetch Role
   const fetchRoleData = async (search = "") => {
     try {
@@ -35,6 +44,7 @@ export const RoleMasterProvider = ({ children }) => {
       setFilterRole(res.data);
     } catch (error) {
       console.log(error);
+
       toast.error("Failed to fetch Roles Filter");
     }
   };
@@ -82,6 +92,52 @@ export const RoleMasterProvider = ({ children }) => {
       toast.error(`Role Master Delete Error: ${error.message}`);
     }
   };
+
+  // -----------------------Role Permission List--------------------------- //
+
+  // Fetch Role Permission List
+  const fetchRolePermission = async (role_id) => {
+    try {
+      const res = await getData(
+        `${ENDPOINTS.ROLE_MASTER.PERMISSION_LIST}?role_id=${role_id}`
+      );
+
+      // If the API returns a valid response
+      if (res?.data?.data) {
+        setPermission(res.data.data);
+      } else {
+        setPermission([]); // no data, but not an error
+      }
+    } catch (error) {
+      console.log(error);
+
+      // ✅ Only show error if it’s not “no data”
+      if (error?.response?.status !== 204 && error?.response?.status !== 404) {
+        toast.error("Failed to fetch Role Permission List");
+      } else {
+        setPermission([]); // no data → treat as empty
+      }
+    }
+  };
+
+  // Add Role Permission
+  const createRolePermission = async (payload) => {
+    try {
+      const res = await postData(
+        ENDPOINTS.ROLE_MASTER.PERMISSION_ADD_UPDATE,
+        payload
+      );
+      toast.success("Role Permission Created/Updated Successfully");
+      setRolePermissionData(res.data.data);
+      if (payload.role_id) {
+        fetchRolePermission(payload.role_id);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to Create Role Permission List");
+    }
+  };
+
   return (
     <RoleMasterContext.Provider
       value={{
@@ -93,6 +149,7 @@ export const RoleMasterProvider = ({ children }) => {
         setRoles,
         filterRole,
         setFilterRole,
+        permission,
 
         fetchRoleData,
         fetchRoleFilter,
@@ -100,6 +157,9 @@ export const RoleMasterProvider = ({ children }) => {
         updateRole,
         startEditing,
         deleteRole,
+
+        fetchRolePermission,
+        createRolePermission,
       }}
     >
       {children}

@@ -35,6 +35,8 @@ export const ENDPOINTS = {
     ADD_UPDATE: "/roles/add/update",
     DELETE: "/roles/delete",
     FILTER: "/roles/filter",
+    PERMISSION_LIST: "/roles/permission/list",
+    PERMISSION_ADD_UPDATE: "/roles/permission/add/update",
   },
   COMPANY_MASTER: {
     LIST: "/companies/list",
@@ -47,17 +49,20 @@ export const ENDPOINTS = {
     ADD_UPDATE: "/user/add/update",
     DELETE: "/user/delete",
     FILTER: "/user/filter",
+    DETAILS: "/user/detail",
   },
   // ITEM MANAGEMENT
   GROUP_MASTER: {
     LIST: "/groups/list",
     ADD_UPDATE: "/groups/add/update",
     DELETE: "/groups/delete",
+    FILTER: "/groups/filter",
   },
   CATEGORY_MASTER: {
     LIST: "/category/list",
     ADD_UPDATE: "/category/add/update",
     DELETE: "/category/delete",
+    FILTER: "/category/filter",
   },
   SUBCATEGORY_MASTER: {
     LIST: "/subcategory/list",

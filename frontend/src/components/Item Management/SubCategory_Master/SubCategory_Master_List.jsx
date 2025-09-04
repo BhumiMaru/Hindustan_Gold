@@ -5,6 +5,9 @@ import Pagination from "../../Common/Pagination/Pagination";
 import SubCategory_Master_Table from "./SubCategory_Master_Table";
 import CustomSelect from "../../Common/CustomSelect/CustomSelect";
 import { useSubCategory } from "../../../Context/Item Management/SubCategoryContext";
+import { useCategoryMaster } from "../../../Context/Item Management/CategoryMasterContext";
+import { useGroupMasterContext } from "../../../Context/Item Management/GroupMasterContext";
+import { useUserCreation } from "../../../Context/Master/UserCreationContext";
 
 export default function SubCategory_Master_List() {
   const [type, setType] = useState("");
@@ -13,8 +16,15 @@ export default function SubCategory_Master_List() {
   const [owner, setOwner] = useState("");
   const [search, setSearch] = useState("");
 
+  const { filterCategory, fetchCategoryFilter } = useCategoryMaster();
+  const { filterGroup, fetchGroupFilter } = useGroupMasterContext();
+  const { filterUser, fetchUserFilter } = useUserCreation();
   const { fetchSubCategoryData } = useSubCategory();
+
   useEffect(() => {
+    fetchCategoryFilter();
+    fetchGroupFilter();
+    fetchUserFilter();
     fetchSubCategoryData(search);
   }, [search]);
 
@@ -108,13 +118,12 @@ export default function SubCategory_Master_List() {
                   <CustomSelect
                     id="selectGroup"
                     label=""
-                    options={[
-                      { value: "g1", label: "Group 1" },
-                      { value: "g2", label: "Group 2" },
-                    ]}
-                    value={group}
-                    onChange={setGroup}
+                    options={filterGroup.map((group) => ({
+                      value: group.id,
+                      label: group.group_name,
+                    }))}
                     placeholder="Select Group"
+                    required
                   />
                 </div>
               </div>
@@ -123,28 +132,26 @@ export default function SubCategory_Master_List() {
                   <CustomSelect
                     id="selectCategory"
                     label=""
-                    options={[
-                      { value: "c1", label: "Category 1" },
-                      { value: "c2", label: "Category 2" },
-                    ]}
-                    value={category}
-                    onChange={setCategory}
+                    options={filterCategory.map((cat) => ({
+                      value: cat.id,
+                      label: cat.category_name,
+                    }))}
                     placeholder="Select Category"
+                    required
                   />
                 </div>
               </div>
               <div className="col-lg-3">
                 <div className="position-relative">
                   <CustomSelect
-                    id="selectOwner"
+                    id="selectUser"
                     label=""
-                    options={[
-                      { value: "o1", label: "Owner 1" },
-                      { value: "o2", label: "Owner 2" },
-                    ]}
-                    value={owner}
-                    onChange={setOwner}
-                    placeholder="Select Owner"
+                    options={filterUser.map((user) => ({
+                      value: user.id,
+                      label: user.name,
+                    }))}
+                    placeholder="Select User"
+                    required
                   />
                 </div>
               </div>
