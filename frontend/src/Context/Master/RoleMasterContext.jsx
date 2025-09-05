@@ -129,6 +129,8 @@ export const RoleMasterProvider = ({ children }) => {
       );
       toast.success("Role Permission Created/Updated Successfully");
       setRolePermissionData(res.data.data);
+
+      // console.log(payload);
       if (payload.role_id) {
         fetchRolePermission(payload.role_id);
       }

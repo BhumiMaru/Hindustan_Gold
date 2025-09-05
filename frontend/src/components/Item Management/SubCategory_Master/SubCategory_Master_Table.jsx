@@ -1,8 +1,10 @@
 import React from "react";
 import { useSubCategory } from "../../../Context/Item Management/SubCategoryContext";
+import { useUIContext } from "../../../Context/UIContext";
 
 export default function SubCategory_Master_Table() {
-  const { subCategory } = useSubCategory();
+  const { subCategory, StartEditing, deleteSubCategory } = useSubCategory();
+  const { handleOpen } = useUIContext();
   return (
     <>
       {/* ---------------START CATEGORY MASTER TABLE----------------- */}
@@ -37,10 +39,14 @@ export default function SubCategory_Master_Table() {
                 <td>{subCat.type}</td>
                 <td>{subCat.prefix_code}</td>
                 <td>
-                  {subCat?.owners?.map((user) => {
-                    return user?.name;
-                  })}
+                  {subCat?.owners?.map((owner, i) => (
+                    <span key={owner.id}>
+                      {owner?.user?.name}
+                      {i < subCat.owners.length - 1 && ", "}
+                    </span>
+                  ))}
                 </td>
+
                 <td>
                   <div className="d-inline-flex gap-2">
                     <button
@@ -48,6 +54,10 @@ export default function SubCategory_Master_Table() {
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                       data-bs-toggle="modal"
                       data-bs-target="#smallModal"
+                      onClick={() => {
+                        handleOpen("addNewSubCategory");
+                        StartEditing(subCat.id, subCat);
+                      }}
                     >
                       <i className="icon-base ti tabler-edit icon-22px"></i>
                     </button>
@@ -56,6 +66,7 @@ export default function SubCategory_Master_Table() {
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                       data-bs-toggle="modal"
                       data-bs-target="#deleteModal"
+                      onClick={() => deleteSubCategory(subCat.id)}
                     >
                       <i className="icon-base ti tabler-trash text-danger icon-22px"></i>
                     </button>

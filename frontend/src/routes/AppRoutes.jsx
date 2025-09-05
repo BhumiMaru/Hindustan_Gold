@@ -28,7 +28,6 @@ import Item_Master_Page from "../Pages/Item Management/Item_Master_Page";
 import Item_Create_Material_Form from "../components/Item Management/Item_Create/Item_Create_Material_Form";
 import Item_Create_Service_Form from "../components/Item Management/Item_Create/Item_Create_Service_Form";
 import Item_Create_Asset_Form from "../components/Item Management/Item_Create/Item_Create_Asset_Form";
-import User_Creation_Permission from "../components/Master/User_Creation/User_Creation_Permission";
 import {
   UserCreationContext,
   UserCreationProvider,
@@ -40,6 +39,8 @@ import { ServiceLocation2MasterProvider } from "../Context/Master/ServiceLocatio
 import { ServiceLocation3MasterProvider } from "../Context/Master/ServiceLocation3MasterContext";
 import { ZoneProvider } from "../Context/Master/ZoneContext";
 import { DepartmentProvider } from "../Context/Master/DepartmentContext";
+import Role_Permission from "../components/Master/Role_Master/Role_Permission";
+import User_Creation_Permission from "../components/Master/User_Creation/User_Creation_Permission";
 
 export default function AppRoutes() {
   return (
@@ -68,21 +69,47 @@ export default function AppRoutes() {
         <Route path="/master/role" element={<RoleMasterPage />} />
 
         <Route
-          path="/user-permission"
+          path="/role-permission"
           element={
             <div className="container-xxl flex-grow-1 container-p-y">
               <RoleMasterProvider>
-                <User_Creation_Permission />
+                <Role_Permission />
               </RoleMasterProvider>
             </div>
           }
         />
         <Route
+          path="/role-permission/:id"
+          element={
+            <div className="container-xxl flex-grow-1 container-p-y">
+              <RoleMasterProvider>
+                <Role_Permission />
+              </RoleMasterProvider>
+            </div>
+          }
+        />
+
+        <Route
+          path="/user-permission"
+          element={
+            <div className="container-xxl flex-grow-1 container-p-y">
+              <RoleMasterProvider>
+                <UserCreationProvider>
+                  <User_Creation_Permission />
+                </UserCreationProvider>
+              </RoleMasterProvider>
+            </div>
+          }
+        />
+
+        <Route
           path="/user-permission/:id"
           element={
             <div className="container-xxl flex-grow-1 container-p-y">
               <RoleMasterProvider>
-                <User_Creation_Permission />
+                <UserCreationProvider>
+                  <User_Creation_Permission />
+                </UserCreationProvider>
               </RoleMasterProvider>
             </div>
           }

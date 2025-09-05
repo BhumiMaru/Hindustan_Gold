@@ -1,39 +1,31 @@
 import React, { useEffect } from "react";
+import { useRoleMaster } from "../../../Context/Master/RoleMasterContext";
 import { useParams } from "react-router-dom";
-import { useUserCreation } from "../../../Context/Master/UserCreationContext";
 
-export default function User_Creation_Permission() {
+export default function Role_Permission() {
   const { id } = useParams();
-  const {
-    fetchUserPermission,
-    userPermission,
-    createUserPermission,
-    useCreationData,
-    fetchUserById,
-  } = useUserCreation();
+  const { fetchRolePermission, permission, createRolePermission } =
+    useRoleMaster();
 
   useEffect(() => {
     if (id) {
-      fetchUserById(id);
-      fetchUserPermission(id);
+      fetchRolePermission(id);
     }
   }, [id]);
 
   // Handle checkbox change
-  const handlePermissionChange = async (module_name, type, permission, e) => {
+  const handlePermissionChange = (module_name, type, permission, e) => {
     const isChecked = e.target.checked;
 
-    await createUserPermission({
-      user_id: Number(id),
-      role_id: useCreationData?.role_id ?? 0,
+    createRolePermission({
+      role_id: id, // from route
       module_name,
       type,
-      permission,
-      status: isChecked ? 1 : 0,
+      permission, // view, add, edit, delete
+      status: isChecked ? 1 : 0, // backend expects 0/1
     });
-
-    // ✅ ensure UI updates with latest backend data
-    await fetchUserPermission(id);
+    // Refresh list so checkboxes update
+    fetchRolePermission(id);
   };
 
   return (
@@ -121,13 +113,12 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_2"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name === "Item Request Module" &&
                                     p.type === "Material Handover" &&
-                                    p.permission === "all_rights" &&
-                                    p.status === 1
+                                    p.permission === "all_rights"
                                 )
                               }
                               onChange={(e) =>
@@ -183,9 +174,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_5"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name === "Item Request Module" &&
                                     p.type === "Material Handover" &&
                                     p.permission === "all_rights"
@@ -239,9 +230,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_8"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name === "Item Request Module" &&
                                     p.type === "Material Handover" &&
                                     p.permission === "all_rights"
@@ -294,9 +285,9 @@ export default function User_Creation_Permission() {
                               id="defaultCheck_cust_1"
                               type="checkbox"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name === "Item Request Module" &&
                                     p.type === "Item Request" &&
                                     p.permission === "view"
@@ -320,9 +311,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_2"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name === "Item Request Module" &&
                                     p.type === "Item Request" &&
                                     p.permission === "add_edit"
@@ -346,9 +337,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_2"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name === "Item Request Module" &&
                                     p.type === "Item Request" &&
                                     p.permission === "delete"
@@ -377,9 +368,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_4"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name === "Item Request Module" &&
                                     p.type === "Material Handover" &&
                                     p.permission === "view"
@@ -410,9 +401,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_7"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name === "Item Request Module" &&
                                     p.type === "Request History Report" &&
                                     p.permission === "view"
@@ -472,9 +463,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_1"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "PI Request" &&
@@ -499,9 +490,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_2"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "PI Request" &&
@@ -527,9 +518,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_2"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "PI Request" &&
@@ -554,9 +545,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_2"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "PI Request" &&
@@ -586,9 +577,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_4"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "Vendor Quotation" &&
@@ -613,9 +604,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_5"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "Vendor Quotation" &&
@@ -640,9 +631,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_5"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "Vendor Quotation" &&
@@ -667,9 +658,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_5"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "Vendor Quotation" &&
@@ -700,9 +691,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_7"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "PO Generation" &&
@@ -727,9 +718,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_8"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "PO Generation" &&
@@ -756,9 +747,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_8"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "PO Generation" &&
@@ -786,9 +777,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_7"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "GRN" &&
@@ -813,9 +804,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_8"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "GRN" &&
@@ -841,9 +832,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_8"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "GRN" &&
@@ -875,9 +866,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_8"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "Invoice Entry" &&
@@ -902,9 +893,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_8"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "Invoice Entry" &&
@@ -929,9 +920,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_8"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
                                     p.type === "Invoice Entry" &&
@@ -987,9 +978,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_1"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "Payment Management Module" &&
                                     p.type === "Pending Payment Vendor List" &&
@@ -1022,9 +1013,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_4"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "Payment Management Module" &&
                                     p.type === "Payment Request" &&
@@ -1049,9 +1040,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_5"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "Payment Management Module" &&
                                     p.type === "Payment Request" &&
@@ -1085,9 +1076,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_8"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "Payment Management Module" &&
                                     p.type === "Payment Approval" &&
@@ -1118,9 +1109,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_7"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "Payment Management Module" &&
                                     p.type === "Vendor Payment History" &&
@@ -1147,9 +1138,9 @@ export default function User_Creation_Permission() {
                               type="checkbox"
                               id="defaultCheck_cust_8"
                               checked={
-                                !!userPermission?.some(
+                                !!permission?.some(
                                   (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "Payment Management Module" &&
                                     p.type === "Vendor Payment History" &&

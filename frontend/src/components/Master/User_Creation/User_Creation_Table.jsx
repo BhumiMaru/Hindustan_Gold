@@ -140,6 +140,13 @@ export default function User_Creation_Table({ search }) {
                     >
                       <i className="icon-base ti tabler-article text-info icon-22px"></i>
                     </Link> */}
+                    <Link
+                      to={`/user-permission/${user.id}`}
+                      type="button"
+                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
+                    >
+                      <i className="icon-base ti tabler-article text-info icon-22px"></i>
+                    </Link>
                   </div>
                   <div className="d-inline-flex gap-2">
                     <a

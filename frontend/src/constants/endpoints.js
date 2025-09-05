@@ -50,6 +50,8 @@ export const ENDPOINTS = {
     DELETE: "/user/delete",
     FILTER: "/user/filter",
     DETAILS: "/user/detail",
+    PERMISSION_LIST: "/user/permission/list",
+    PERMISSION_ADD_UPDATE: "/user/permission/add/update",
   },
   // ITEM MANAGEMENT
   GROUP_MASTER: {
@@ -68,5 +70,6 @@ export const ENDPOINTS = {
     LIST: "/subcategory/list",
     ADD_UPDATE: "/subcategory/add/update",
     DELETE: "/subcategory/delete",
+    FILTER: "/subcategory/filter",
   },
 };

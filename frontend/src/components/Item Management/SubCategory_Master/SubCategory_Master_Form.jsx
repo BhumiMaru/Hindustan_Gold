@@ -1,6 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
+import { useUIContext } from "../../../Context/UIContext";
+import { useGroupMasterContext } from "../../../Context/Item Management/GroupMasterContext";
+import CustomSelect from "../../Common/CustomSelect/CustomSelect";
+import { useCategoryMaster } from "../../../Context/Item Management/CategoryMasterContext";
+import { useSubCategory } from "../../../Context/Item Management/SubCategoryContext";
+import { useUserCreation } from "../../../Context/Master/UserCreationContext";
 
 export default function SubCategory_Master_Form() {
+  const { handleClose } = useUIContext();
+  const { filterGroup } = useGroupMasterContext();
+  const { filterCategory } = useCategoryMaster();
+  const { filterUser } = useUserCreation();
+  const {
+    createSubCategory,
+    EditSubCategory,
+    isSubEditId,
+    setSubCategoryData,
+    subCategoryData,
+    ReserSubCategory,
+  } = useSubCategory();
+
+  const handleSave = (e) => {
+    e.preventDefault();
+
+    const payload = { ...subCategoryData };
+
+    try {
+      if (isSubEditId) {
+        EditSubCategory(isSubEditId, payload);
+      } else {
+        createSubCategory(payload);
+      }
+      handleClose("addNewSubCategory");
+    } catch (error) {
+      console.log("Sub Category Error", error);
+    }
+  };
+
   return (
     <>
       {/* ---------------START CATEGORY MASTER FORM----------------- */}
@@ -20,30 +56,66 @@ export default function SubCategory_Master_Form() {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel2">
-                  Add Subcategory
+                  {isSubEditId ? "Edit Subcategory" : "Add Subcategory"}
                 </h5>
                 <button
                   type="button"
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
+                  onClick={() => {
+                    handleClose("addNewSubCategory");
+                    ReserSubCategory();
+                  }}
                 ></button>
               </div>
               <div className="modal-body">
                 <div className="row">
                   <div className="col-md-12 mb-2">
+                    <label htmlFor="typeSelect" className="form-label">
+                      Type
+                    </label>
+                    <CustomSelect
+                      id="typeSelect"
+                      label=""
+                      options={[
+                        { value: "service", label: "Service" },
+                        { value: "material", label: "Material" },
+                      ]}
+                      value={subCategoryData.type}
+                      onChange={(val) =>
+                        setSubCategoryData({
+                          ...subCategoryData,
+                          type: val,
+                        })
+                      }
+                      placeholder="Select Type"
+                      required
+                    />
+                  </div>
+
+                  <div className="col-md-12 mb-2">
                     <label htmlFor="select2Basic" className="form-label">
                       Group
                     </label>
                     <div className="position-relative">
-                      <div class="col-lg-3">
-                        <select id="select7Basic" class="select2 form-select">
-                          <option value="AK">Select&nbsp;Grop</option>
-                          <option value="HI">Grop</option>
-                          <option value="CA">Grop</option>
-                          <option value="NV">Grop</option>
-                        </select>
-                      </div>
+                      <CustomSelect
+                        id="selectGroup"
+                        label=""
+                        options={filterGroup.map((group) => ({
+                          value: group.id,
+                          label: group.group_name,
+                        }))}
+                        value={subCategoryData.group_id}
+                        onChange={(val) => {
+                          setSubCategoryData({
+                            ...subCategoryData,
+                            group_id: val,
+                          });
+                        }}
+                        placeholder="Select Group"
+                        required
+                      />
                     </div>
                   </div>
                   <div className="col-md-12 mb-2">
@@ -51,58 +123,23 @@ export default function SubCategory_Master_Form() {
                       Category
                     </label>
                     <div className="position-relative">
-                      <select
-                        id="select3Basic"
-                        className="select2 form-select select2-hidden-accessible"
-                        data-select2-id="select3Basic"
-                        tabIndex="-1"
-                        aria-hidden="true"
-                      >
-                        <option value="AK" data-select2-id="12">
-                          Category
-                        </option>
-                        <option value="HI">Category</option>
-                        <option value="CA">Category</option>
-                        <option value="NV">Category</option>
-                      </select>
-                      <span
-                        className="select2 select2-container select2-container--default"
-                        dir="ltr"
-                        data-select2-id="11"
-                        style={{ width: "auto" }}
-                      >
-                        <span className="selection">
-                          <span
-                            className="select2-selection select2-selection--single"
-                            role="combobox"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                            tabIndex="0"
-                            aria-disabled="false"
-                            aria-labelledby="select2-select3Basic-container"
-                          >
-                            <span
-                              className="select2-selection__rendered"
-                              id="select2-select3Basic-container"
-                              role="textbox"
-                              aria-readonly="true"
-                              title="Category"
-                            >
-                              Category
-                            </span>
-                            <span
-                              className="select2-selection__arrow"
-                              role="presentation"
-                            >
-                              <b role="presentation"></b>
-                            </span>
-                          </span>
-                        </span>
-                        <span
-                          className="dropdown-wrapper"
-                          aria-hidden="true"
-                        ></span>
-                      </span>
+                      <CustomSelect
+                        id="selectCategory"
+                        label=""
+                        options={filterCategory.map((cat) => ({
+                          value: cat.id,
+                          label: cat.category_name,
+                        }))}
+                        value={subCategoryData.category_id}
+                        onChange={(val) =>
+                          setSubCategoryData({
+                            ...subCategoryData,
+                            category_id: val,
+                          })
+                        }
+                        placeholder="Select Category"
+                        required
+                      />
                     </div>
                   </div>
                   <div className="col-md-12 mb-2">
@@ -114,97 +151,38 @@ export default function SubCategory_Master_Form() {
                       id="nameSmall"
                       className="form-control"
                       placeholder="Enter Subcategory Name"
+                      value={subCategoryData.sub_category_name}
+                      onChange={(e) => {
+                        setSubCategoryData({
+                          ...subCategoryData,
+                          sub_category_name: e.target.value,
+                        });
+                      }}
                     />
                   </div>
                   {/* Primary */}
                   <div className="col-md-12 mb-4">
-                    <label htmlFor="select2info1" className="form-label">
+                    {/* <label htmlFor="select2info1" className="form-label">
                       Categary Owner
-                    </label>
+                    </label> */}
                     <div className="select2-info">
                       <div className="position-relative">
-                        <select
-                          id="select2info1"
-                          className="select2 form-select select2-hidden-accessible"
-                          multiple=""
-                          data-select2-id="select2info1"
-                          tabIndex="-1"
-                          aria-hidden="true"
-                        >
-                          <option value="1" selected="" data-select2-id="14">
-                            Option1
-                          </option>
-                          <option value="2" selected="" data-select2-id="15">
-                            Option2
-                          </option>
-                          <option value="3">Option3</option>
-                          <option value="4">Option4</option>
-                        </select>
-                        <span
-                          className="select2 select2-container select2-container--default"
-                          dir="ltr"
-                          data-select2-id="13"
-                          style={{ width: "auto" }}
-                        >
-                          <span className="selection">
-                            <span
-                              className="select2-selection select2-selection--multiple"
-                              role="combobox"
-                              aria-haspopup="true"
-                              aria-expanded="false"
-                              tabIndex="-1"
-                              aria-disabled="false"
-                            >
-                              <ul className="select2-selection__rendered">
-                                <li
-                                  className="select2-selection__choice"
-                                  title="Option1"
-                                  data-select2-id="16"
-                                >
-                                  <span
-                                    className="select2-selection__choice__remove"
-                                    role="presentation"
-                                  >
-                                    ×
-                                  </span>
-                                  Option1
-                                </li>
-                                <li
-                                  className="select2-selection__choice"
-                                  title="Option2"
-                                  data-select2-id="17"
-                                >
-                                  <span
-                                    className="select2-selection__choice__remove"
-                                    role="presentation"
-                                  >
-                                    ×
-                                  </span>
-                                  Option2
-                                </li>
-                                <li className="select2-search select2-search--inline">
-                                  <input
-                                    className="select2-search__field"
-                                    type="search"
-                                    tabIndex="0"
-                                    autocomplete="off"
-                                    autocorrect="off"
-                                    autocapitalize="none"
-                                    spellcheck="false"
-                                    role="searchbox"
-                                    aria-autocomplete="list"
-                                    placeholder=""
-                                    style={{ width: "0.75em" }}
-                                  />
-                                </li>
-                              </ul>
-                            </span>
-                          </span>
-                          <span
-                            className="dropdown-wrapper"
-                            aria-hidden="true"
-                          ></span>
-                        </span>
+                        <CustomSelect
+                          id="selectOwner"
+                          label="Category Owner"
+                          multiple={true}
+                          options={filterUser.map((user) => ({
+                            value: user.id,
+                            label: user.name,
+                          }))}
+                          value={subCategoryData.owners} // must be an array, e.g. ["1", "2"]
+                          onChange={(val) => {
+                            setSubCategoryData({
+                              ...subCategoryData,
+                              owners: val,
+                            });
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -218,6 +196,13 @@ export default function SubCategory_Master_Form() {
                       className="form-control"
                       max="3"
                       placeholder="Enter Prefix Code"
+                      value={subCategoryData.prefix_code}
+                      onChange={(e) => {
+                        setSubCategoryData({
+                          ...subCategoryData,
+                          prefix_code: e.target.value,
+                        });
+                      }}
                     />
                   </div>
                 </div>
@@ -227,12 +212,17 @@ export default function SubCategory_Master_Form() {
                   type="button"
                   className="btn btn-label-secondary waves-effect"
                   data-bs-dismiss="modal"
+                  onClick={() => {
+                    handleClose("addNewSubCategory");
+                    ReserSubCategory();
+                  }}
                 >
                   Close
                 </button>
                 <button
                   type="button"
                   className="btn btn-primary waves-effect waves-light"
+                  onClick={handleSave}
                 >
                   Save changes
                 </button>
@@ -240,6 +230,7 @@ export default function SubCategory_Master_Form() {
             </div>
           </div>
         </div>
+        <div className="modal-backdrop fade show"></div>
       </>
       {/* ---------------END CATEGORY MASTER FORM----------------- */}
     </>

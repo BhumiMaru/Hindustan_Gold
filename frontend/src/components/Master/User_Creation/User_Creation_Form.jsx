@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import User_Creation_Permission from "./User_Creation_Permission";
 import CustomSelect from "../../Common/CustomSelect/CustomSelect";
 import { useUserCreation } from "../../../Context/Master/UserCreationContext";
 import { useRoleMaster } from "../../../Context/Master/RoleMasterContext";
@@ -10,6 +9,8 @@ import { useServiceLocation3Master } from "../../../Context/Master/ServiceLocati
 import { useZone } from "../../../Context/Master/ZoneContext";
 import { useDepartment } from "../../../Context/Master/DepartmentContext";
 import { useNavigate, useParams } from "react-router-dom";
+import Role_Permission from "../Role_Master/Role_Permission";
+import User_Creation_Permission from "./User_Creation_Permission";
 
 export default function User_Creation_Form() {
   const { id } = useParams();
@@ -33,12 +34,12 @@ export default function User_Creation_Form() {
   const { serviceL3, fetchSL3Filter } = useServiceLocation3Master();
   const { zoneFilter, fetchZoneFilter } = useZone();
   const { deptFilter, fetchDeptFilter } = useDepartment();
-  console.log("id", id);
+  // console.log("id", id);
 
   useEffect(() => {
     if (id) {
       // set edit id in context
-      console.log("id1", id);
+      // console.log("id1", id);
       setIsEditUserId(id);
       fetchUserById(id);
     } else {
@@ -62,30 +63,10 @@ export default function User_Creation_Form() {
   // Save Data
   const handleSave = async (e) => {
     e.preventDefault();
-    // const payload = {
-    //   name: useCreationData.name,
-    //   role_id: useCreationData.role_id,
-    //   employee_id: useCreationData.employee_id,
-    //   department_id: useCreationData.department_id,
-    //   zone_id: useCreationData.zone_id,
-    //   company_id: useCreationData.company_id,
-    //   email: useCreationData.email,
-    //   mobileno: useCreationData.mobileno,
-    //   password: useCreationData.password,
-    //   service_location_1_id: useCreationData.service_location_1_id,
-    //   service_location_2_id: useCreationData.service_location_2_id,
-    //   service_location_3_id: useCreationData.service_location_3_id,
-    //   reporting_manager_1_id: useCreationData.reporting_manager_1_id,
-    //   reporting_manager_2_id: useCreationData.reporting_manager_2_id,
-    //   status: useCreationData.status,
-    //   register_date: useCreationData.register_date,
-    //   profile_photo_url: useCreationData.profile_photo_url,
-    // };
     const payload = { ...useCreationData };
-    console.log(id);
+
     try {
       if (id) {
-        console.log("Updating user", id, payload);
         await updateUser(id, payload);
       } else {
         await createUser(payload);
@@ -93,7 +74,7 @@ export default function User_Creation_Form() {
     } catch (error) {
       console.log(error);
     }
-    navigate("/master/user");
+    // navigate("/master/user");
     resetUserData();
     setIsEditUserId(null);
   };

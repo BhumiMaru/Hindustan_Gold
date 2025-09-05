@@ -8,8 +8,11 @@ import { useSubCategory } from "../../../Context/Item Management/SubCategoryCont
 import { useCategoryMaster } from "../../../Context/Item Management/CategoryMasterContext";
 import { useGroupMasterContext } from "../../../Context/Item Management/GroupMasterContext";
 import { useUserCreation } from "../../../Context/Master/UserCreationContext";
+import SubCategory_Master_Form from "./SubCategory_Master_Form";
+import { useUIContext } from "../../../Context/UIContext";
 
 export default function SubCategory_Master_List() {
+  const { modal, handleOpen } = useUIContext();
   const [type, setType] = useState("");
   const [group, setGroup] = useState("");
   const [category, setCategory] = useState("");
@@ -51,6 +54,7 @@ export default function SubCategory_Master_List() {
                   className="btn btn-primary waves-effect waves-light"
                   data-bs-toggle="modal"
                   data-bs-target="#smallModal"
+                  onClick={() => handleOpen("addNewSubCategory")}
                 >
                   <span className="icon-xs icon-base ti tabler-plus me-2"></span>
                   Add New Subcategory
@@ -163,6 +167,12 @@ export default function SubCategory_Master_List() {
             </div>
           </div>
         </div>
+
+        {modal.addNewSubCategory && (
+          <>
+            <SubCategory_Master_Form />
+          </>
+        )}
       </>
       {/* ---------------END CATEGORY MASTER LIST----------------- */}
     </>

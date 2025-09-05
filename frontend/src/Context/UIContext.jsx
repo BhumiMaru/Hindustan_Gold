@@ -39,6 +39,7 @@ export const UIProvider = ({ children }) => {
     // ITEM MANAGEMENT
     addNewGroup: false,
     addNewCategory: false,
+    addNewSubCategory: false,
   });
 
   const handleOpen = (name) => {
