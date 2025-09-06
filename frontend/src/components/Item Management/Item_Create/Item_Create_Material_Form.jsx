@@ -26,13 +26,6 @@ export default function Item_Create_Material_Form() {
   const { filterSubCategory, fetchSubCategoryFilter } = useSubCategory();
 
   useEffect(() => {
-    setItemMasterData((prev) => ({
-      ...prev,
-      type: "material", // 👈 force Material type on load
-    }));
-  }, []);
-
-  useEffect(() => {
     fetchSL1Filter();
     fetchSL2Filter();
     fetchSL3Filter();
@@ -122,6 +115,21 @@ export default function Item_Create_Material_Form() {
                     {/* {isItemEditId ? "Edit Material" : "Add Material"} */}
                   </h5>
                   <div className="row p-3">
+                    {/* Type */}
+                    <div className="col-sm-3 mb-4 d-none">
+                      <label htmlFor="Group" className="form-label">
+                        Type
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="type"
+                        placeholder="type"
+                        disabled=""
+                        readOnly=""
+                        value="material"
+                      />
+                    </div>
                     <div className="col-sm-3 mb-4">
                       <label htmlFor="Group" className="form-label">
                         Group
