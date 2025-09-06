@@ -1,6 +1,21 @@
 import React from "react";
+import { useItemMaster } from "../../../Context/Item Management/ItemMasterContext";
 
-export default function Item_Master_Table() {
+export default function Item_Master_Table({ search }) {
+  const { itemMaster, deleteItemMaster } = useItemMaster();
+
+  // Local filter on top of context data
+  const filteredData = itemMaster.filter((item) => {
+    const term = search.toLowerCase();
+    return (
+      item.item_name?.toLowerCase().includes(term) ||
+      item.item_code?.toLowerCase().includes(term) ||
+      item.type?.toLowerCase().includes(term) ||
+      item?.category?.category_name?.toLowerCase().includes(term) ||
+      item?.subcategory?.sub_category_name?.toLowerCase().includes(term)
+    );
+  });
+
   return (
     <>
       {/* -----------------START ITEM MASTER TABLE----------------- */}
@@ -23,99 +38,48 @@ export default function Item_Master_Table() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <div className="ms-4">1</div>
-            </td>
-            <td>Item</td>
-            <td>IT_STR_000001</td>
-            <td>Book</td>
-            <td>Stationery</td>
-            <td>Stationery</td>
-            <td>100</td>
-            <td>
-              <span className="badge bg-label-success">Active</span>
-            </td>
-            <td>
-              <div className="d-inline-flex gap-2">
-                <a
-                  href="item-create.html"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                >
-                  <i className="icon-base ti tabler-edit icon-22px" />
-                </a>
-                <a
-                  href="#"
-                  type="button"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                >
-                  <i className="icon-base ti tabler-trash text-danger icon-22px" />
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div className="ms-4">2</div>
-            </td>
-            <td>Services</td>
-            <td>SR_AC_000001</td>
-            <td>AC SERVICES</td>
-            <td>Services</td>
-            <td>AcServices</td>
-            <td>-</td>
-            <td>
-              <span className="badge bg-label-success">Active</span>
-            </td>
-            <td>
-              <div className="d-inline-flex gap-2">
-                <a
-                  href="item-create.html"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                >
-                  <i className="icon-base ti tabler-edit icon-22px" />
-                </a>
-                <a
-                  href="#"
-                  type="button"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                >
-                  <i className="icon-base ti tabler-trash text-danger icon-22px" />
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div className="ms-4">3</div>
-            </td>
-            <td>Asset</td>
-            <td>AS_CS_000001</td>
-            <td>csc machine</td>
-            <td>CNC</td>
-            <td>machine</td>
-            <td>-</td>
-            <td>
-              <span className="badge bg-label-success">Active</span>
-            </td>
-            <td>
-              <div className="d-inline-flex gap-2">
-                <a
-                  href="item-create.html"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                >
-                  <i className="icon-base ti tabler-edit icon-22px" />
-                </a>
-                <a
-                  href="#"
-                  type="button"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                >
-                  <i className="icon-base ti tabler-trash text-danger icon-22px" />
-                </a>
-              </div>
-            </td>
-          </tr>
+          {filteredData.map((item, index) => {
+            return (
+              <tr key={item.id}>
+                <td>
+                  <div className="ms-4">{index + 1}</div>
+                </td>
+                <td>{item.type}</td>
+                <td>{item.item_code}</td>
+                <td>{item.item_name}</td>
+                <td>{item?.category?.category_name}</td>
+                <td>{item?.subcategory?.sub_category_name}</td>
+                <td>{item.stock_value}</td>
+                <td>
+                  <span
+                    className={`badge ${
+                      item.status === 1 ? "bg-label-success" : "bg-label-danger"
+                    }`}
+                  >
+                    {item.status === 1 ? "Active" : "Deactive"}
+                  </span>
+                </td>
+                <td>
+                  <div className="d-inline-flex gap-2">
+                    <a
+                      href="item-create.html"
+                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
+                    >
+                      <i className="icon-base ti tabler-edit icon-22px" />
+                    </a>
+                    <a
+                      href="#"
+                      type="button"
+                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
+                      onClick={() => deleteItemMaster(item.id)}
+                    >
+                      <i className="icon-base ti tabler-trash text-danger icon-22px" />
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
       {/* -----------------END ITEM MASTER TABLE----------------- */}

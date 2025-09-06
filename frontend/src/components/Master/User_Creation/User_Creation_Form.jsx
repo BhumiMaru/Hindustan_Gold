@@ -74,7 +74,7 @@ export default function User_Creation_Form() {
     } catch (error) {
       console.log(error);
     }
-    // navigate("/master/user");
+    navigate("/master/user");
     resetUserData();
     setIsEditUserId(null);
   };

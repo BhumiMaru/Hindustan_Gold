@@ -60,9 +60,21 @@ export const UserCreationProvider = ({ children }) => {
 
   // console.log(isEditUserId);
   // Fetch Users
-  const fetchUserCreationData = async (search = "") => {
+  const fetchUserCreationData = async ({
+    search = "",
+    role_id = null,
+    department_id = null,
+    zone_id = null,
+    status = null,
+  } = {}) => {
     try {
-      const res = await getData(ENDPOINTS.USER_CREATION.LIST, { search });
+      const res = await getData(ENDPOINTS.USER_CREATION.LIST, {
+        search,
+        role_id,
+        department_id,
+        zone_id,
+        status,
+      });
       setUserCreations(res.data.data);
     } catch (error) {
       console.error(error);

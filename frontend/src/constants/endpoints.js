@@ -72,4 +72,10 @@ export const ENDPOINTS = {
     DELETE: "/subcategory/delete",
     FILTER: "/subcategory/filter",
   },
+  ITEM_MASTER: {
+    LIST: "/item/list",
+    ADD_UPDATE: "/item/add/update",
+    DELETE: "/item/delete",
+    DETAILS: "/item/detail",
+  },
 };

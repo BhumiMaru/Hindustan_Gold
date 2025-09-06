@@ -22,6 +22,7 @@ export const SubCategoryProvider = ({ children }) => {
     type: "",
   });
   const [isSubEditId, setIsSubEditId] = useState(null);
+  const [filterSubCategory, setFilterSubCategory] = useState(null);
 
   //   Fetch user Creaions
   const fetchSubCategoryData = async (search = "") => {
@@ -31,6 +32,17 @@ export const SubCategoryProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
       toast.error("Failed to fetch Sub Category");
+    }
+  };
+
+  // Fetch Category Master Filter
+  const fetchSubCategoryFilter = async () => {
+    try {
+      const res = await getData(ENDPOINTS.SUBCATEGORY_MASTER.FILTER);
+      setFilterSubCategory(res.data);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch Group Filter");
     }
   };
 
@@ -122,6 +134,7 @@ export const SubCategoryProvider = ({ children }) => {
         subCategoryData,
         isSubEditId,
         setSubCategoryData,
+        filterSubCategory,
 
         EditSubCategory,
         fetchSubCategoryData,
@@ -129,6 +142,7 @@ export const SubCategoryProvider = ({ children }) => {
         ReserSubCategory,
         StartEditing,
         deleteSubCategory,
+        fetchSubCategoryFilter,
       }}
     >
       {children}

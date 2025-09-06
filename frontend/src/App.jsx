@@ -32,7 +32,7 @@ function App() {
           </div>
         </div>
       </BrowserRouter>
-      <ToastContainer />
+      <ToastContainer position="bottom-center" autoClose={3000} />
       {/* ----------End App---------- */}
     </>
   );

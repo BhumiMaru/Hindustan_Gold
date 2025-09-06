@@ -9,7 +9,7 @@ export default function Item_Create_Asset_Form() {
         <div className="card h-100 mt-2">
           <div className="card-body">
             <div className="nav-align-top">
-              <ul
+              {/* <ul
                 className="nav nav-tabs nav-fill rounded-0 timeline-indicator-advanced"
                 role="tablist"
               >
@@ -54,7 +54,7 @@ export default function Item_Create_Asset_Form() {
                     Assets
                   </button>
                 </li>
-              </ul>
+              </ul> */}
               <div className="tab-content border-0  mx-1">
                 <div className="tab-pane fade" id="Item" role="tabpanel">
                   <div className="row p-3">

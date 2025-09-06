@@ -41,6 +41,9 @@ import { ZoneProvider } from "../Context/Master/ZoneContext";
 import { DepartmentProvider } from "../Context/Master/DepartmentContext";
 import Role_Permission from "../components/Master/Role_Master/Role_Permission";
 import User_Creation_Permission from "../components/Master/User_Creation/User_Creation_Permission";
+import { ItemMasterProvider } from "../Context/Item Management/ItemMasterContext";
+import { CategoryMasterProvider } from "../Context/Item Management/CategoryMasterContext";
+import { SubCategoryProvider } from "../Context/Item Management/SubCategoryContext";
 
 export default function AppRoutes() {
   return (
@@ -177,7 +180,23 @@ export default function AppRoutes() {
         <Route path="/item/item-master" element={<Item_Master_Page />} />
         <Route
           path="/item/item-create-material"
-          element={<Item_Create_Material_Form />}
+          element={
+            <ItemMasterProvider>
+              <CategoryMasterProvider>
+                <SubCategoryProvider>
+                  <ZoneProvider>
+                    <ServiceLocation1MasterProvider>
+                      <ServiceLocation2MasterProvider>
+                        <ServiceLocation3MasterProvider>
+                          <Item_Create_Material_Form />
+                        </ServiceLocation3MasterProvider>
+                      </ServiceLocation2MasterProvider>
+                    </ServiceLocation1MasterProvider>
+                  </ZoneProvider>
+                </SubCategoryProvider>
+              </CategoryMasterProvider>
+            </ItemMasterProvider>
+          }
         />
         <Route
           path="/item/item-create-service"

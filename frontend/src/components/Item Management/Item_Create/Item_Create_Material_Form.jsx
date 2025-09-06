@@ -1,6 +1,61 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useItemMaster } from "../../../Context/Item Management/ItemMasterContext";
+import { useNavigate } from "react-router-dom";
+import { useCategoryMaster } from "../../../Context/Item Management/CategoryMasterContext";
+import CustomSelect from "../../Common/CustomSelect/CustomSelect";
+import { useZone } from "../../../Context/Master/ZoneContext";
+import { useServiceLocation3Master } from "../../../Context/Master/ServiceLocation3MasterContext";
+import { useServiceLocation2Master } from "../../../Context/Master/ServiceLocation2MasterContext";
+import { useServiceLocation1Master } from "../../../Context/Master/ServiceLocation1MasterContext";
+import { useSubCategory } from "../../../Context/Item Management/SubCategoryContext";
 
 export default function Item_Create_Material_Form() {
+  const {
+    itemMasterData,
+    setItemMasterData,
+    isItemEditId,
+    EditItemMaster,
+    createItemMaster,
+  } = useItemMaster();
+  const navigate = useNavigate();
+  const { filterCategory, fetchCategoryFilter } = useCategoryMaster();
+  const { zoneFilter, fetchZoneFilter } = useZone();
+  const { serviceL1, fetchSL1Filter } = useServiceLocation1Master();
+  const { fetchSL2Filter, serviceL2 } = useServiceLocation2Master();
+  const { serviceL3, fetchSL3Filter } = useServiceLocation3Master();
+  const { filterSubCategory, fetchSubCategoryFilter } = useSubCategory();
+
+  useEffect(() => {
+    setItemMasterData((prev) => ({
+      ...prev,
+      type: "material", // 👈 force Material type on load
+    }));
+  }, []);
+
+  useEffect(() => {
+    fetchSL1Filter();
+    fetchSL2Filter();
+    fetchSL3Filter();
+    fetchSubCategoryFilter();
+    fetchZoneFilter();
+    fetchCategoryFilter();
+  }, []);
+
+  // Save Item Material Data
+  const handleSave = async () => {
+    const payload = { ...itemMasterData };
+    try {
+      if (isItemEditId) {
+        await EditItemMaster(isItemEditId, payload);
+      } else {
+        await createItemMaster(payload);
+      }
+
+      navigate("/item/item-master");
+    } catch (error) {
+      console.log("item save error", error);
+    }
+  };
   return (
     <>
       {/* ---------------START ITEM CREATE MATERIAL FORM-------------- */}
@@ -9,7 +64,7 @@ export default function Item_Create_Material_Form() {
         <div className="card h-100 mt-2">
           <div className="card-body">
             <div className="nav-align-top">
-              <ul
+              {/* <ul
                 className="nav nav-tabs nav-fill rounded-0 timeline-indicator-advanced"
                 role="tablist"
               >
@@ -55,13 +110,17 @@ export default function Item_Create_Material_Form() {
                     Assets
                   </button>
                 </li>
-              </ul>
+              </ul> */}
+
               <div className="tab-content border-0  mx-1">
                 <div
                   className="tab-pane fade active show"
                   id="Item"
                   role="tabpanel"
                 >
+                  <h5 className="modal-title" id="exampleModalLabel2">
+                    {/* {isItemEditId ? "Edit Material" : "Add Material"} */}
+                  </h5>
                   <div className="row p-3">
                     <div className="col-sm-3 mb-4">
                       <label htmlFor="Group" className="form-label">
@@ -72,9 +131,16 @@ export default function Item_Create_Material_Form() {
                         className="form-control"
                         id="Group"
                         placeholder="Group"
-                        defaultValue="Group"
+                        // defaultValue=""
                         disabled=""
                         readOnly=""
+                        value={itemMasterData.group_id}
+                        onChange={(e) =>
+                          setItemMasterData({
+                            ...itemMasterData,
+                            group_id: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     <div className="col-sm-3 mb-4">
@@ -89,63 +155,34 @@ export default function Item_Create_Material_Form() {
                         disabled=""
                         defaultValue="Categary"
                         readOnly=""
+                        value={itemMasterData.c_id}
+                        onChange={(e) =>
+                          setItemMasterData({
+                            ...itemMasterData,
+                            c_id: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     <div className="col-sm-3 mb-4">
-                      <label htmlFor="Subcategory" className="form-label">
-                        Subcategory
-                      </label>
                       <div className="position-relative">
-                        <select
-                          id="Subcategory"
-                          className="select2 form-select select2-hidden-accessible"
-                          data-select2-id="Subcategory"
-                          tabIndex={-1}
-                          aria-hidden="true"
-                        >
-                          <option value="AK" data-select2-id={2}>
-                            Subcategory 1
-                          </option>
-                          <option value="HI">Subcategory 2</option>
-                        </select>
-                        <span
-                          className="select2 select2-container select2-container--default"
-                          dir="ltr"
-                          data-select2-id={1}
-                          style={{ width: "210.75px" }}
-                        >
-                          <span className="selection">
-                            <span
-                              className="select2-selection select2-selection--single"
-                              role="combobox"
-                              aria-haspopup="true"
-                              aria-expanded="false"
-                              tabIndex={0}
-                              aria-disabled="false"
-                              aria-labelledby="select2-Subcategory-container"
-                            >
-                              <span
-                                className="select2-selection__rendered"
-                                id="select2-Subcategory-container"
-                                role="textbox"
-                                aria-readonly="true"
-                                title="Subcategory 1"
-                              >
-                                Subcategory 1
-                              </span>
-                              <span
-                                className="select2-selection__arrow"
-                                role="presentation"
-                              >
-                                <b role="presentation" />
-                              </span>
-                            </span>
-                          </span>
-                          <span
-                            className="dropdown-wrapper"
-                            aria-hidden="true"
-                          />
-                        </span>
+                        <CustomSelect
+                          id="selectSubCategory"
+                          label="Subcategory"
+                          options={filterSubCategory?.map((subcat) => ({
+                            value: subcat.id,
+                            label: subcat.sub_category_name,
+                          }))}
+                          value={itemMasterData.sub_c_id}
+                          onChange={(val) =>
+                            setItemMasterData({
+                              ...itemMasterData,
+                              sub_c_id: val,
+                            })
+                          }
+                          placeholder="Select SubCategory"
+                          required
+                        />
                       </div>
                     </div>
                     <div className="col-sm-3 mb-4">
@@ -157,63 +194,40 @@ export default function Item_Create_Material_Form() {
                         className="form-control"
                         id="Itemname"
                         placeholder="Enter Item Name"
+                        value={itemMasterData.item_name}
+                        onChange={(e) =>
+                          setItemMasterData({
+                            ...itemMasterData,
+                            item_name: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     <div className="col-sm-3 mb-4">
-                      <label htmlFor="Zone" className="form-label">
-                        Unit Of Measure
-                      </label>
                       <div className="position-relative">
-                        <select
-                          id="Zone"
-                          className="select2 form-select select2-hidden-accessible"
-                          data-select2-id="Zone"
-                          tabIndex={-1}
-                          aria-hidden="true"
-                        >
-                          <option value="AK" data-select2-id={4}>
-                            Kg
-                          </option>
-                          <option value="HI">Ltr</option>
-                        </select>
-                        <span
-                          className="select2 select2-container select2-container--default"
-                          dir="ltr"
-                          data-select2-id={3}
-                          style={{ width: "210.75px" }}
-                        >
-                          <span className="selection">
-                            <span
-                              className="select2-selection select2-selection--single"
-                              role="combobox"
-                              aria-haspopup="true"
-                              aria-expanded="false"
-                              tabIndex={0}
-                              aria-disabled="false"
-                              aria-labelledby="select2-Zone-container"
-                            >
-                              <span
-                                className="select2-selection__rendered"
-                                id="select2-Zone-container"
-                                role="textbox"
-                                aria-readonly="true"
-                                title="Kg"
-                              >
-                                Kg
-                              </span>
-                              <span
-                                className="select2-selection__arrow"
-                                role="presentation"
-                              >
-                                <b role="presentation" />
-                              </span>
-                            </span>
-                          </span>
-                          <span
-                            className="dropdown-wrapper"
-                            aria-hidden="true"
-                          />
-                        </span>
+                        <CustomSelect
+                          id="selectuom"
+                          label="Unit Of Measure"
+                          options={[
+                            {
+                              value: "kg",
+                              label: "KG",
+                            },
+                            {
+                              value: "ltr",
+                              label: "Ltr",
+                            },
+                          ]}
+                          value={itemMasterData.uom}
+                          onChange={(val) =>
+                            setItemMasterData({
+                              ...itemMasterData,
+                              uom: val,
+                            })
+                          }
+                          placeholder="Select Unit of Measure"
+                          required
+                        />
                       </div>
                     </div>
                     <div className="col-sm-3 mb-4">
@@ -228,6 +242,13 @@ export default function Item_Create_Material_Form() {
                         defaultValue="AS-DN-001"
                         disabled=""
                         readOnly=""
+                        value={itemMasterData.item_code}
+                        onChange={(e) =>
+                          setItemMasterData({
+                            ...itemMasterData,
+                            item_code: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     <div className="col-sm-6 mb-4">
@@ -238,8 +259,16 @@ export default function Item_Create_Material_Form() {
                         id="Description"
                         className="form-control"
                         defaultValue={""}
+                        value={itemMasterData.description}
+                        onChange={(e) =>
+                          setItemMasterData({
+                            ...itemMasterData,
+                            description: e.target.value,
+                          })
+                        }
                       />
                     </div>
+                    {/* Is Purpose Required? */}
                     <div className="col-sm-3 mb-4">
                       <label className="form-label">Is Purpose Required?</label>
                       <div>
@@ -247,13 +276,20 @@ export default function Item_Create_Material_Form() {
                           <input
                             className="form-check-input"
                             type="radio"
-                            name="inlineRadioOptions"
-                            id="inlineRadio1"
-                            defaultValue="option1"
+                            name="purposeRequired"
+                            id="purposeYes"
+                            value="1"
+                            checked={itemMasterData.is_purpose_required === 1}
+                            onChange={(e) =>
+                              setItemMasterData({
+                                ...itemMasterData,
+                                is_purpose_required: Number(e.target.value),
+                              })
+                            }
                           />
                           <label
                             className="form-check-label"
-                            htmlFor="inlineRadio1"
+                            htmlFor="purposeYes"
                           >
                             Yes
                           </label>
@@ -262,19 +298,28 @@ export default function Item_Create_Material_Form() {
                           <input
                             className="form-check-input"
                             type="radio"
-                            name="inlineRadioOptions"
-                            id="inlineRadio2"
-                            defaultValue="option2"
+                            name="purposeRequired"
+                            id="purposeNo"
+                            value="0"
+                            checked={itemMasterData.is_purpose_required === 0}
+                            onChange={(e) =>
+                              setItemMasterData({
+                                ...itemMasterData,
+                                is_purpose_required: Number(e.target.value),
+                              })
+                            }
                           />
                           <label
                             className="form-check-label"
-                            htmlFor="inlineRadio2"
+                            htmlFor="purposeNo"
                           >
                             No
                           </label>
                         </div>
                       </div>
                     </div>
+
+                    {/* Is Approval Required? */}
                     <div className="col-sm-3 mb-4">
                       <label className="form-label">
                         Is Approval Required?
@@ -284,13 +329,20 @@ export default function Item_Create_Material_Form() {
                           <input
                             className="form-check-input"
                             type="radio"
-                            name="inlineRadioOptions"
-                            id="inlineRadio3"
-                            defaultValue="option1"
+                            name="approvalRequired"
+                            id="approvalYes"
+                            value="1"
+                            checked={itemMasterData.is_approval_required === 1}
+                            onChange={(e) =>
+                              setItemMasterData({
+                                ...itemMasterData,
+                                is_approval_required: Number(e.target.value),
+                              })
+                            }
                           />
                           <label
                             className="form-check-label"
-                            htmlFor="inlineRadio3"
+                            htmlFor="approvalYes"
                           >
                             Yes
                           </label>
@@ -299,108 +351,106 @@ export default function Item_Create_Material_Form() {
                           <input
                             className="form-check-input"
                             type="radio"
-                            name="inlineRadioOptions"
-                            id="inlineRadio4"
-                            defaultValue="option2"
+                            name="approvalRequired"
+                            id="approvalNo"
+                            value="0"
+                            checked={itemMasterData.is_approval_required === 0}
+                            onChange={(e) =>
+                              setItemMasterData({
+                                ...itemMasterData,
+                                is_approval_required: Number(e.target.value),
+                              })
+                            }
                           />
                           <label
                             className="form-check-label"
-                            htmlFor="inlineRadio4"
+                            htmlFor="approvalNo"
                           >
                             No
                           </label>
                         </div>
                       </div>
                     </div>
+
                     {/* Primary */}
+                    {/* service location 1 */}
                     <div className="col-sm-3 mb-4">
-                      <label htmlFor="select2Primary" className="form-label">
+                      {/* <label htmlFor="select2Primary" className="form-label">
                         Storage Location
-                      </label>
+                      </label> */}
                       <div className="select2-primary">
                         <div className="position-relative">
-                          <select
-                            id="select2Primary"
-                            className="select2 form-select select2-hidden-accessible"
-                            multiple=""
-                            data-select2-id="select2Primary"
-                            tabIndex={-1}
-                            aria-hidden="true"
-                          >
-                            <option value={1} selected="" data-select2-id={6}>
-                              Option1
-                            </option>
-                            <option value={2} selected="" data-select2-id={7}>
-                              Option2
-                            </option>
-                            <option value={3}>Option3</option>
-                            <option value={4}>Option4</option>
-                          </select>
-                          <span
-                            className="select2 select2-container select2-container--default"
-                            dir="ltr"
-                            data-select2-id={5}
-                            style={{ width: "210.75px" }}
-                          >
-                            <span className="selection">
-                              <span
-                                className="select2-selection select2-selection--multiple"
-                                role="combobox"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                                tabIndex={-1}
-                                aria-disabled="false"
-                              >
-                                <ul className="select2-selection__rendered">
-                                  <li
-                                    className="select2-selection__choice"
-                                    title="Option1"
-                                    data-select2-id={8}
-                                  >
-                                    <span
-                                      className="select2-selection__choice__remove"
-                                      role="presentation"
-                                    >
-                                      ×
-                                    </span>
-                                    Option1
-                                  </li>
-                                  <li
-                                    className="select2-selection__choice"
-                                    title="Option2"
-                                    data-select2-id={9}
-                                  >
-                                    <span
-                                      className="select2-selection__choice__remove"
-                                      role="presentation"
-                                    >
-                                      ×
-                                    </span>
-                                    Option2
-                                  </li>
-                                  <li className="select2-search select2-search--inline">
-                                    <input
-                                      className="select2-search__field"
-                                      type="search"
-                                      tabIndex={0}
-                                      autoComplete="off"
-                                      autoCorrect="off"
-                                      autoCapitalize="none"
-                                      spellCheck="false"
-                                      role="searchbox"
-                                      aria-autocomplete="list"
-                                      placeholder=""
-                                      style={{ width: "0.75em" }}
-                                    />
-                                  </li>
-                                </ul>
-                              </span>
-                            </span>
-                            <span
-                              className="dropdown-wrapper"
-                              aria-hidden="true"
-                            />
-                          </span>
+                          <CustomSelect
+                            options={serviceL1?.map((loc) => ({
+                              value: loc.id,
+                              label: loc.service_location_name,
+                            }))}
+                            value={itemMasterData.service_location_1_id}
+                            onChange={(val) =>
+                              setItemMasterData((prev) => ({
+                                ...itemMasterData,
+                                service_location_1_id: val,
+                              }))
+                            }
+                            label="Service Location 1"
+                            placeholder="Select Service Location 1"
+                            id="serviceLocation1"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* service location 2 */}
+                    <div className="col-sm-3 mb-4">
+                      {/* <label htmlFor="select2Primary" className="form-label">
+                        Storage Location
+                      </label> */}
+                      <div className="select2-primary">
+                        <div className="position-relative">
+                          <CustomSelect
+                            options={serviceL2?.map((loc) => ({
+                              value: loc.id,
+                              label: loc.service_location_2_name,
+                            }))}
+                            value={itemMasterData.service_location_2_id}
+                            onChange={(val) =>
+                              setItemMasterData((prev) => ({
+                                ...itemMasterData,
+                                service_location_2_id: val,
+                              }))
+                            }
+                            label="Service Location 2"
+                            placeholder="Select Service Location 2"
+                            id="serviceLocation2"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* service location 2 */}
+                    <div className="col-sm-3 mb-4">
+                      {/* <label htmlFor="select2Primary" className="form-label">
+                        Storage Location
+                      </label> */}
+                      <div className="select2-primary">
+                        <div className="position-relative">
+                          <CustomSelect
+                            options={serviceL3?.map((loc) => ({
+                              value: loc.id,
+                              label: loc.service_location_3_name,
+                            }))}
+                            value={itemMasterData.service_location_3_id}
+                            onChange={(val) =>
+                              setItemMasterData((prev) => ({
+                                ...itemMasterData,
+                                service_location_3_id: val,
+                              }))
+                            }
+                            label="Service Location 3"
+                            placeholder="Select Service Location 3"
+                            id="serviceLocation3"
+                            required
+                          />
                         </div>
                       </div>
                     </div>
@@ -411,88 +461,21 @@ export default function Item_Create_Material_Form() {
                       </label>
                       <div className="select2-info">
                         <div className="position-relative">
-                          <select
-                            id="select2info"
-                            className="select2 form-select select2-hidden-accessible"
-                            multiple=""
-                            data-select2-id="select2info"
-                            tabIndex={-1}
-                            aria-hidden="true"
-                          >
-                            <option value={1} selected="" data-select2-id={11}>
-                              Option1
-                            </option>
-                            <option value={2} selected="" data-select2-id={12}>
-                              Option2
-                            </option>
-                            <option value={3}>Option3</option>
-                            <option value={4}>Option4</option>
-                          </select>
-                          <span
-                            className="select2 select2-container select2-container--default"
-                            dir="ltr"
-                            data-select2-id={10}
-                            style={{ width: "210.75px" }}
-                          >
-                            <span className="selection">
-                              <span
-                                className="select2-selection select2-selection--multiple"
-                                role="combobox"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                                tabIndex={-1}
-                                aria-disabled="false"
-                              >
-                                <ul className="select2-selection__rendered">
-                                  <li
-                                    className="select2-selection__choice"
-                                    title="Option1"
-                                    data-select2-id={13}
-                                  >
-                                    <span
-                                      className="select2-selection__choice__remove"
-                                      role="presentation"
-                                    >
-                                      ×
-                                    </span>
-                                    Option1
-                                  </li>
-                                  <li
-                                    className="select2-selection__choice"
-                                    title="Option2"
-                                    data-select2-id={14}
-                                  >
-                                    <span
-                                      className="select2-selection__choice__remove"
-                                      role="presentation"
-                                    >
-                                      ×
-                                    </span>
-                                    Option2
-                                  </li>
-                                  <li className="select2-search select2-search--inline">
-                                    <input
-                                      className="select2-search__field"
-                                      type="search"
-                                      tabIndex={0}
-                                      autoComplete="off"
-                                      autoCorrect="off"
-                                      autoCapitalize="none"
-                                      spellCheck="false"
-                                      role="searchbox"
-                                      aria-autocomplete="list"
-                                      placeholder=""
-                                      style={{ width: "0.75em" }}
-                                    />
-                                  </li>
-                                </ul>
-                              </span>
-                            </span>
-                            <span
-                              className="dropdown-wrapper"
-                              aria-hidden="true"
-                            />
-                          </span>
+                          <CustomSelect
+                            id="selectZone"
+                            options={zoneFilter?.map((zone) => ({
+                              value: zone.id,
+                              label: zone.zone_name,
+                            }))}
+                            value={itemMasterData.zone_id}
+                            onChange={(val) =>
+                              setItemMasterData({
+                                ...itemMasterData,
+                                zone_id: val,
+                              })
+                            }
+                            placeholder="Select Zone"
+                          />
                         </div>
                       </div>
                     </div>
@@ -505,6 +488,13 @@ export default function Item_Create_Material_Form() {
                         className="form-control"
                         id="Stock"
                         placeholder="Stock"
+                        value={itemMasterData.stock}
+                        onChange={(e) =>
+                          setItemMasterData({
+                            ...itemMasterData,
+                            stock: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     <div className="col-sm-3 mb-4">
@@ -516,6 +506,13 @@ export default function Item_Create_Material_Form() {
                         className="form-control"
                         id="StockValue"
                         placeholder="Stock Value"
+                        value={itemMasterData.stock_value}
+                        onChange={(e) =>
+                          setItemMasterData({
+                            ...itemMasterData,
+                            stock_value: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     <div className="col-sm-3 mb-4">
@@ -527,947 +524,51 @@ export default function Item_Create_Material_Form() {
                         className="form-control"
                         id="MinimumStock"
                         placeholder="Minimum Stock"
+                        value={itemMasterData.minimum_stock}
+                        onChange={(e) =>
+                          setItemMasterData({
+                            ...itemMasterData,
+                            minimum_stock: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     <div className="col-sm-3 mb-4">
-                      <label htmlFor="status" className="form-label">
+                      {/* <label htmlFor="status" className="form-label">
                         Status
-                      </label>
+                      </label> */}
                       <div className="position-relative">
-                        <select
-                          id="status"
-                          className="select2 form-select select2-hidden-accessible"
-                          data-select2-id="status"
-                          tabIndex={-1}
-                          aria-hidden="true"
-                        >
-                          <option value="AK" data-select2-id={16}>
-                            Active
-                          </option>
-                          <option value="HI">Deactive</option>
-                        </select>
-                        <span
-                          className="select2 select2-container select2-container--default"
-                          dir="ltr"
-                          data-select2-id={15}
-                          style={{ width: "210.75px" }}
-                        >
-                          <span className="selection">
-                            <span
-                              className="select2-selection select2-selection--single"
-                              role="combobox"
-                              aria-haspopup="true"
-                              aria-expanded="false"
-                              tabIndex={0}
-                              aria-disabled="false"
-                              aria-labelledby="select2-status-container"
-                            >
-                              <span
-                                className="select2-selection__rendered"
-                                id="select2-status-container"
-                                role="textbox"
-                                aria-readonly="true"
-                                title="Active"
-                              >
-                                Active
-                              </span>
-                              <span
-                                className="select2-selection__arrow"
-                                role="presentation"
-                              >
-                                <b role="presentation" />
-                              </span>
-                            </span>
-                          </span>
-                          <span
-                            className="dropdown-wrapper"
-                            aria-hidden="true"
-                          />
-                        </span>
+                        <CustomSelect
+                          id="selectStatus"
+                          label="Status"
+                          options={[
+                            {
+                              value: 1,
+                              label: "Active",
+                            },
+                            {
+                              value: 0,
+                              label: "Deactive",
+                            },
+                          ]}
+                          value={itemMasterData?.status}
+                          onChange={(val) =>
+                            setItemMasterData({
+                              ...itemMasterData,
+                              status: val,
+                            })
+                          }
+                          placeholder="Select Status"
+                          // data-select2-id="10"
+                          required
+                        />
                       </div>
                     </div>
                     <div className="col-lg-12 text-end">
-                      <button className="btn btn-primary waves-effect waves-light">
-                        Save
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="tab-pane fade" id="Services" role="tabpanel">
-                  <div className="row p-3">
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="Group1" className="form-label">
-                        Group
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="Group1"
-                        placeholder="Group"
-                        defaultValue="Group"
-                        disabled=""
-                        readOnly=""
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="Category1" className="form-label">
-                        Category
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="Category1"
-                        placeholder="Category"
-                        defaultValue="Categary"
-                        disabled=""
-                        readOnly=""
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="Subcategory1" className="form-label">
-                        Subcategory
-                      </label>
-                      <div className="position-relative">
-                        <select
-                          id="Subcategory1"
-                          className="select2 form-select select2-hidden-accessible"
-                          data-select2-id="Subcategory1"
-                          tabIndex={-1}
-                          aria-hidden="true"
-                        >
-                          <option value="AK" data-select2-id={18}>
-                            Subcategory 1
-                          </option>
-                          <option value="HI">Subcategory 2</option>
-                        </select>
-                        <span
-                          className="select2 select2-container select2-container--default"
-                          dir="ltr"
-                          data-select2-id={17}
-                          style={{ width: "auto" }}
-                        >
-                          <span className="selection">
-                            <span
-                              className="select2-selection select2-selection--single"
-                              role="combobox"
-                              aria-haspopup="true"
-                              aria-expanded="false"
-                              tabIndex={0}
-                              aria-disabled="false"
-                              aria-labelledby="select2-Subcategory1-container"
-                            >
-                              <span
-                                className="select2-selection__rendered"
-                                id="select2-Subcategory1-container"
-                                role="textbox"
-                                aria-readonly="true"
-                                title="Subcategory 1"
-                              >
-                                Subcategory 1
-                              </span>
-                              <span
-                                className="select2-selection__arrow"
-                                role="presentation"
-                              >
-                                <b role="presentation" />
-                              </span>
-                            </span>
-                          </span>
-                          <span
-                            className="dropdown-wrapper"
-                            aria-hidden="true"
-                          />
-                        </span>
-                      </div>
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="Servicename" className="form-label">
-                        Service
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="Servicename"
-                        placeholder="Enter Service Name"
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="ServiceCode" className="form-label">
-                        Service Code
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="ServiceCode"
-                        placeholder="Service Code"
-                        defaultValue="AS-DN-001"
-                        disabled=""
-                        readOnly=""
-                      />
-                    </div>
-                    <div className="col-sm-6 mb-4">
-                      <label htmlFor="Description1" className="form-label">
-                        Description
-                      </label>
-                      <textarea
-                        id="Description1"
-                        className="form-control"
-                        defaultValue={""}
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label className="form-label">Is Purpose Required?</label>
-                      <div>
-                        <div className="form-check form-check-inline mt-4">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="inlineRadioOptions"
-                            id="inlineRadio11"
-                            defaultValue="option1"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="inlineRadio1"
-                          >
-                            Yes
-                          </label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="inlineRadioOptions"
-                            id="inlineRadio21"
-                            defaultValue="option2"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="inlineRadio2"
-                          >
-                            No
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label className="form-label">
-                        Is Approval Required?
-                      </label>
-                      <div>
-                        <div className="form-check form-check-inline mt-4">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="inlineRadioOptions"
-                            id="inlineRadio31"
-                            defaultValue="option1"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="inlineRadio3"
-                          >
-                            Yes
-                          </label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="inlineRadioOptions"
-                            id="inlineRadio41"
-                            defaultValue="option2"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="inlineRadio4"
-                          >
-                            No
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                    {/* Primary */}
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="ServiceLocation" className="form-label">
-                        Service Location
-                      </label>
-                      <div className="select2-primary">
-                        <div className="position-relative">
-                          <select
-                            id="ServiceLocation"
-                            className="select2 form-select select2-hidden-accessible"
-                            multiple=""
-                            data-select2-id="ServiceLocation"
-                            tabIndex={-1}
-                            aria-hidden="true"
-                          >
-                            <option value={1} selected="" data-select2-id={20}>
-                              Option1
-                            </option>
-                            <option value={2} selected="" data-select2-id={21}>
-                              Option2
-                            </option>
-                            <option value={3}>Option3</option>
-                            <option value={4}>Option4</option>
-                          </select>
-                          <span
-                            className="select2 select2-container select2-container--default"
-                            dir="ltr"
-                            data-select2-id={19}
-                            style={{ width: "auto" }}
-                          >
-                            <span className="selection">
-                              <span
-                                className="select2-selection select2-selection--multiple"
-                                role="combobox"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                                tabIndex={-1}
-                                aria-disabled="false"
-                              >
-                                <ul className="select2-selection__rendered">
-                                  <li
-                                    className="select2-selection__choice"
-                                    title="Option1"
-                                    data-select2-id={22}
-                                  >
-                                    <span
-                                      className="select2-selection__choice__remove"
-                                      role="presentation"
-                                    >
-                                      ×
-                                    </span>
-                                    Option1
-                                  </li>
-                                  <li
-                                    className="select2-selection__choice"
-                                    title="Option2"
-                                    data-select2-id={23}
-                                  >
-                                    <span
-                                      className="select2-selection__choice__remove"
-                                      role="presentation"
-                                    >
-                                      ×
-                                    </span>
-                                    Option2
-                                  </li>
-                                  <li className="select2-search select2-search--inline">
-                                    <input
-                                      className="select2-search__field"
-                                      type="search"
-                                      tabIndex={0}
-                                      autoComplete="off"
-                                      autoCorrect="off"
-                                      autoCapitalize="none"
-                                      spellCheck="false"
-                                      role="searchbox"
-                                      aria-autocomplete="list"
-                                      placeholder=""
-                                      style={{ width: "0.75em" }}
-                                    />
-                                  </li>
-                                </ul>
-                              </span>
-                            </span>
-                            <span
-                              className="dropdown-wrapper"
-                              aria-hidden="true"
-                            />
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    {/* Primary */}
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="select2info1" className="form-label">
-                        Zone
-                      </label>
-                      <div className="select2-info">
-                        <div className="position-relative">
-                          <select
-                            id="select2info1"
-                            className="select2 form-select select2-hidden-accessible"
-                            multiple=""
-                            data-select2-id="select2info1"
-                            tabIndex={-1}
-                            aria-hidden="true"
-                          >
-                            <option value={1} selected="" data-select2-id={25}>
-                              Option1
-                            </option>
-                            <option value={2} selected="" data-select2-id={26}>
-                              Option2
-                            </option>
-                            <option value={3}>Option3</option>
-                            <option value={4}>Option4</option>
-                          </select>
-                          <span
-                            className="select2 select2-container select2-container--default"
-                            dir="ltr"
-                            data-select2-id={24}
-                            style={{ width: "auto" }}
-                          >
-                            <span className="selection">
-                              <span
-                                className="select2-selection select2-selection--multiple"
-                                role="combobox"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                                tabIndex={-1}
-                                aria-disabled="false"
-                              >
-                                <ul className="select2-selection__rendered">
-                                  <li
-                                    className="select2-selection__choice"
-                                    title="Option1"
-                                    data-select2-id={27}
-                                  >
-                                    <span
-                                      className="select2-selection__choice__remove"
-                                      role="presentation"
-                                    >
-                                      ×
-                                    </span>
-                                    Option1
-                                  </li>
-                                  <li
-                                    className="select2-selection__choice"
-                                    title="Option2"
-                                    data-select2-id={28}
-                                  >
-                                    <span
-                                      className="select2-selection__choice__remove"
-                                      role="presentation"
-                                    >
-                                      ×
-                                    </span>
-                                    Option2
-                                  </li>
-                                  <li className="select2-search select2-search--inline">
-                                    <input
-                                      className="select2-search__field"
-                                      type="search"
-                                      tabIndex={0}
-                                      autoComplete="off"
-                                      autoCorrect="off"
-                                      autoCapitalize="none"
-                                      spellCheck="false"
-                                      role="searchbox"
-                                      aria-autocomplete="list"
-                                      placeholder=""
-                                      style={{ width: "0.75em" }}
-                                    />
-                                  </li>
-                                </ul>
-                              </span>
-                            </span>
-                            <span
-                              className="dropdown-wrapper"
-                              aria-hidden="true"
-                            />
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="status1" className="form-label">
-                        Status
-                      </label>
-                      <div className="position-relative">
-                        <select
-                          id="status1"
-                          className="select2 form-select select2-hidden-accessible"
-                          data-select2-id="status1"
-                          tabIndex={-1}
-                          aria-hidden="true"
-                        >
-                          <option value="AK" data-select2-id={30}>
-                            Active
-                          </option>
-                          <option value="HI">Deactive</option>
-                        </select>
-                        <span
-                          className="select2 select2-container select2-container--default"
-                          dir="ltr"
-                          data-select2-id={29}
-                          style={{ width: "auto" }}
-                        >
-                          <span className="selection">
-                            <span
-                              className="select2-selection select2-selection--single"
-                              role="combobox"
-                              aria-haspopup="true"
-                              aria-expanded="false"
-                              tabIndex={0}
-                              aria-disabled="false"
-                              aria-labelledby="select2-status1-container"
-                            >
-                              <span
-                                className="select2-selection__rendered"
-                                id="select2-status1-container"
-                                role="textbox"
-                                aria-readonly="true"
-                                title="Active"
-                              >
-                                Active
-                              </span>
-                              <span
-                                className="select2-selection__arrow"
-                                role="presentation"
-                              >
-                                <b role="presentation" />
-                              </span>
-                            </span>
-                          </span>
-                          <span
-                            className="dropdown-wrapper"
-                            aria-hidden="true"
-                          />
-                        </span>
-                      </div>
-                    </div>
-                    <div className="col-lg-12 text-end">
-                      <button className="btn btn-primary waves-effect waves-light">
-                        Save
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="tab-pane fade " id="Assets" role="tabpanel">
-                  <div className="row p-3">
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="Group12" className="form-label">
-                        Group
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="Group12"
-                        placeholder="Group"
-                        defaultValue="Group"
-                        disabled=""
-                        readOnly=""
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="AssetCategory1" className="form-label">
-                        Asset Category
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="AssetCategory1"
-                        placeholder="Category"
-                        defaultValue="Categary"
-                        disabled=""
-                        readOnly=""
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="Subcategory12" className="form-label">
-                        Subcategory
-                      </label>
-                      <div className="position-relative">
-                        <select
-                          id="Subcategory12"
-                          className="select2 form-select select2-hidden-accessible"
-                          data-select2-id="Subcategory12"
-                          tabIndex={-1}
-                          aria-hidden="true"
-                        >
-                          <option value="AK" data-select2-id={32}>
-                            Subcategory 1
-                          </option>
-                          <option value="HI">Subcategory 2</option>
-                        </select>
-                        <span
-                          className="select2 select2-container select2-container--default"
-                          dir="ltr"
-                          data-select2-id={31}
-                          style={{ width: "auto" }}
-                        >
-                          <span className="selection">
-                            <span
-                              className="select2-selection select2-selection--single"
-                              role="combobox"
-                              aria-haspopup="true"
-                              aria-expanded="false"
-                              tabIndex={0}
-                              aria-disabled="false"
-                              aria-labelledby="select2-Subcategory12-container"
-                            >
-                              <span
-                                className="select2-selection__rendered"
-                                id="select2-Subcategory12-container"
-                                role="textbox"
-                                aria-readonly="true"
-                                title="Subcategory 1"
-                              >
-                                Subcategory 1
-                              </span>
-                              <span
-                                className="select2-selection__arrow"
-                                role="presentation"
-                              >
-                                <b role="presentation" />
-                              </span>
-                            </span>
-                          </span>
-                          <span
-                            className="dropdown-wrapper"
-                            aria-hidden="true"
-                          />
-                        </span>
-                      </div>
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="Assetname" className="form-label">
-                        Asset
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="Assetname"
-                        placeholder="Enter Asset Name"
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="AssetCode" className="form-label">
-                        Asset Code
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="AssetCode"
-                        placeholder="Service Code"
-                        defaultValue="AS-DN-001"
-                        disabled=""
-                        readOnly=""
-                      />
-                    </div>
-                    <div className="col-sm-6 mb-4">
-                      <label htmlFor="Description12" className="form-label">
-                        Description
-                      </label>
-                      <textarea
-                        id="Description12"
-                        className="form-control"
-                        defaultValue={""}
-                      />
-                    </div>
-                    {/* Primary */}
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="ServiceLocation12" className="form-label">
-                        Service Location
-                      </label>
-                      <div className="select2-primary">
-                        <div className="position-relative">
-                          <select
-                            id="ServiceLocation12"
-                            className="select2 form-select select2-hidden-accessible"
-                            multiple=""
-                            data-select2-id="ServiceLocation12"
-                            tabIndex={-1}
-                            aria-hidden="true"
-                          >
-                            <option value={1} selected="" data-select2-id={34}>
-                              Option1
-                            </option>
-                            <option value={2} selected="" data-select2-id={35}>
-                              Option2
-                            </option>
-                            <option value={3}>Option3</option>
-                            <option value={4}>Option4</option>
-                          </select>
-                          <span
-                            className="select2 select2-container select2-container--default"
-                            dir="ltr"
-                            data-select2-id={33}
-                            style={{ width: "auto" }}
-                          >
-                            <span className="selection">
-                              <span
-                                className="select2-selection select2-selection--multiple"
-                                role="combobox"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                                tabIndex={-1}
-                                aria-disabled="false"
-                              >
-                                <ul className="select2-selection__rendered">
-                                  <li
-                                    className="select2-selection__choice"
-                                    title="Option1"
-                                    data-select2-id={36}
-                                  >
-                                    <span
-                                      className="select2-selection__choice__remove"
-                                      role="presentation"
-                                    >
-                                      ×
-                                    </span>
-                                    Option1
-                                  </li>
-                                  <li
-                                    className="select2-selection__choice"
-                                    title="Option2"
-                                    data-select2-id={37}
-                                  >
-                                    <span
-                                      className="select2-selection__choice__remove"
-                                      role="presentation"
-                                    >
-                                      ×
-                                    </span>
-                                    Option2
-                                  </li>
-                                  <li className="select2-search select2-search--inline">
-                                    <input
-                                      className="select2-search__field"
-                                      type="search"
-                                      tabIndex={0}
-                                      autoComplete="off"
-                                      autoCorrect="off"
-                                      autoCapitalize="none"
-                                      spellCheck="false"
-                                      role="searchbox"
-                                      aria-autocomplete="list"
-                                      placeholder=""
-                                      style={{ width: "0.75em" }}
-                                    />
-                                  </li>
-                                </ul>
-                              </span>
-                            </span>
-                            <span
-                              className="dropdown-wrapper"
-                              aria-hidden="true"
-                            />
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label className="form-label">Is Movable?</label>
-                      <div>
-                        <div className="form-check form-check-inline mt-4">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="inlineRadioOptions"
-                            id="inlineRadio112"
-                            defaultValue="option1"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="inlineRadio1"
-                          >
-                            Yes
-                          </label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="inlineRadioOptions"
-                            id="inlineRadio212"
-                            defaultValue="option2"
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="inlineRadio2"
-                          >
-                            No
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-                    {/* Primary */}
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="select2info112" className="form-label">
-                        Zone
-                      </label>
-                      <div className="select2-info">
-                        <div className="position-relative">
-                          <select
-                            id="select2info112"
-                            className="select2 form-select select2-hidden-accessible"
-                            multiple=""
-                            data-select2-id="select2info112"
-                            tabIndex={-1}
-                            aria-hidden="true"
-                          >
-                            <option value={1} selected="" data-select2-id={39}>
-                              Option1
-                            </option>
-                            <option value={2} selected="" data-select2-id={40}>
-                              Option2
-                            </option>
-                            <option value={3}>Option3</option>
-                            <option value={4}>Option4</option>
-                          </select>
-                          <span
-                            className="select2 select2-container select2-container--default"
-                            dir="ltr"
-                            data-select2-id={38}
-                            style={{ width: "auto" }}
-                          >
-                            <span className="selection">
-                              <span
-                                className="select2-selection select2-selection--multiple"
-                                role="combobox"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                                tabIndex={-1}
-                                aria-disabled="false"
-                              >
-                                <ul className="select2-selection__rendered">
-                                  <li
-                                    className="select2-selection__choice"
-                                    title="Option1"
-                                    data-select2-id={41}
-                                  >
-                                    <span
-                                      className="select2-selection__choice__remove"
-                                      role="presentation"
-                                    >
-                                      ×
-                                    </span>
-                                    Option1
-                                  </li>
-                                  <li
-                                    className="select2-selection__choice"
-                                    title="Option2"
-                                    data-select2-id={42}
-                                  >
-                                    <span
-                                      className="select2-selection__choice__remove"
-                                      role="presentation"
-                                    >
-                                      ×
-                                    </span>
-                                    Option2
-                                  </li>
-                                  <li className="select2-search select2-search--inline">
-                                    <input
-                                      className="select2-search__field"
-                                      type="search"
-                                      tabIndex={0}
-                                      autoComplete="off"
-                                      autoCorrect="off"
-                                      autoCapitalize="none"
-                                      spellCheck="false"
-                                      role="searchbox"
-                                      aria-autocomplete="list"
-                                      placeholder=""
-                                      style={{ width: "0.75em" }}
-                                    />
-                                  </li>
-                                </ul>
-                              </span>
-                            </span>
-                            <span
-                              className="dropdown-wrapper"
-                              aria-hidden="true"
-                            />
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="PurchaseDate" className="form-label">
-                        Purchase Date
-                      </label>
-                      <input
-                        type="date"
-                        className="form-control"
-                        id="PurchaseDate"
-                        placeholder="Purchase Date"
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="WarrantyExpiry" className="form-label">
-                        Warranty Expiry
-                      </label>
-                      <input
-                        type="date"
-                        className="form-control"
-                        id="WarrantyExpiry"
-                        placeholder="Warranty Expiry Date"
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="Quantity" className="form-label">
-                        Quantity
-                      </label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        id="Quantity"
-                        placeholder="Enter Quantity"
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="status12" className="form-label">
-                        Status
-                      </label>
-                      <div className="position-relative">
-                        <select
-                          id="status12"
-                          className="select2 form-select select2-hidden-accessible"
-                          data-select2-id="status12"
-                          tabIndex={-1}
-                          aria-hidden="true"
-                        >
-                          <option value="AK" data-select2-id={44}>
-                            Active
-                          </option>
-                          <option value="HI">Deactive</option>
-                        </select>
-                        <span
-                          className="select2 select2-container select2-container--default"
-                          dir="ltr"
-                          data-select2-id={43}
-                          style={{ width: "auto" }}
-                        >
-                          <span className="selection">
-                            <span
-                              className="select2-selection select2-selection--single"
-                              role="combobox"
-                              aria-haspopup="true"
-                              aria-expanded="false"
-                              tabIndex={0}
-                              aria-disabled="false"
-                              aria-labelledby="select2-status12-container"
-                            >
-                              <span
-                                className="select2-selection__rendered"
-                                id="select2-status12-container"
-                                role="textbox"
-                                aria-readonly="true"
-                                title="Active"
-                              >
-                                Active
-                              </span>
-                              <span
-                                className="select2-selection__arrow"
-                                role="presentation"
-                              >
-                                <b role="presentation" />
-                              </span>
-                            </span>
-                          </span>
-                          <span
-                            className="dropdown-wrapper"
-                            aria-hidden="true"
-                          />
-                        </span>
-                      </div>
-                    </div>
-                    <div className="col-lg-12 text-end">
-                      <button className="btn btn-primary waves-effect waves-light">
+                      <button
+                        className="btn btn-primary waves-effect waves-light"
+                        onClick={handleSave}
+                      >
                         Save
                       </button>
                     </div>
