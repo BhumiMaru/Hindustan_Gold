@@ -1,5 +1,5 @@
 import React from "react";
-import DepartmentList from "../../components/Master/DepartmentMaster/DepartmentList";
+import DepartmentList from "./components/Master/DepartmentMaster/DepartmentList";
 import { DepartmentProvider } from "../../Context/Master/DepartmentContext";
 
 export default function DepartmentMasterPage() {

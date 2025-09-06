@@ -57,7 +57,7 @@ export default function CustomSelect({
     <div ref={containerRef}>
       {label && (
         <label className="form-label" htmlFor={id}>
-          {label} 
+          {label}
           {/* {required && <span className="text-danger">*</span>} */}
         </label>
       )}

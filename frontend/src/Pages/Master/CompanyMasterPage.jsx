@@ -1,5 +1,5 @@
 import React from "react";
-import Company_Master_List from "../../components/Master/Company_Master/Company_Master_List";
+import Company_Master_List from "./components/Master/Company_Master/Company_Master_List";
 import { CompanyMasterProvider } from "../../Context/Master/CompanyMasterContext";
 
 export default function CompanyMasterPage() {

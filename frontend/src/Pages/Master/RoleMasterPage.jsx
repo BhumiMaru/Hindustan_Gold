@@ -1,6 +1,6 @@
 import React from "react";
-import Role_Master_List from "../../components/Master/Role_Master/Role_Master_List";
 import { RoleMasterProvider } from "../../Context/Master/RoleMasterContext";
+import Role_Master_List from "./components/Master/Role_Master/Role_Master_List";
 
 export default function RoleMasterPage() {
   return (

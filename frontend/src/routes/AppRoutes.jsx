@@ -1,49 +1,42 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import DashboardPage from "../Pages/DashboardPage";
+import DashboardPage from "../Pages/Dashboard/DashboardPage";
 import DepartmentMasterPage from "../Pages/Master/DepartmentMasterPage";
 import ZoneMasterpage from "../Pages/Master/ZoneMasterpAGE";
 import ServiceLocation1MasterPage from "../Pages/Master/ServiceLocation1MasterPage";
 import ServiceLocation2MasterPage from "../Pages/Master/ServiceLocation2MasterPage";
 import ServiceLocation3MasterPage from "../Pages/Master/ServiceLocation3MasterPage";
 import RoleMasterPage from "../Pages/Master/RoleMasterPage";
-import CompanyMasterPage from "../Pages/Master/CompanyMasterPage";
-import User_Creation_Form from "../components/Master/User_Creation/User_Creation_Form";
-import Group_Master_Page from "../Pages/Item Management/Group_Master_Page";
-import SubCategory_Master_Page from "../Pages/Item Management/SubCategory_Master_Page";
-import Category_Master_Page from "../Pages/Item Management/Category_Master_Page";
-import User_Creation_Page from "../Pages/Master/User_Creation_Page";
-import Request_Management_Page from "../Pages/Request Management/Request_Management_Page";
-import Item_Request_Form from "../components/Request Management/Item_Request/Item_Request_Form";
-import PI_Item_Request_Page from "../Pages/PO_and_Material_Management/PI_Item_Request_Page";
-import PI_Request_List_Page from "../Pages/PO_and_Material_Management/PI_Request_List_Page";
-import PI_Request_Get_Quote from "../components/PO_and_Material_Management/Get_Quote/PI_Request_Get_Quote";
-import Get_Quote_Page from "../Pages/PO_and_Material_Management/Get_Quote_Page";
-import PO_Create_Page from "../Pages/PO_and_Material_Management/PO_Create_Page";
-import PO_List_Page from "../Pages/PO_and_Material_Management/PO_List_Page";
-import GRN_List_Page from "../Pages/PO_and_Material_Management/GRN_List_Page";
-import Invoice_List_page from "../Pages/Payment Management/Invoice_List_page";
-import Vendor_List_page from "../Pages/Payment Management/Vendor_List_page";
-import Item_Master_Page from "../Pages/Item Management/Item_Master_Page";
-import Item_Create_Material_Form from "../components/Item Management/Item_Create/Item_Create_Material_Form";
-import Item_Create_Service_Form from "../components/Item Management/Item_Create/Item_Create_Service_Form";
-import Item_Create_Asset_Form from "../components/Item Management/Item_Create/Item_Create_Asset_Form";
-import {
-  UserCreationContext,
-  UserCreationProvider,
-} from "../Context/Master/UserCreationContext";
 import { RoleMasterProvider } from "../Context/Master/RoleMasterContext";
-import { CompanyMasterProvider } from "../Context/Master/CompanyMasterContext";
+import Role_Permission from "../Pages/Master/components/Master/Role_Master/Role_Permission";
+import User_Creation_Permission from "../Pages/Master/components/Master/User_Creation/User_Creation_Permission";
+import { UserCreationProvider } from "../Context/Master/UserCreationContext";
+import User_Creation_Page from "../Pages/Master/User_Creation_Page";
 import { ServiceLocation1MasterProvider } from "../Context/Master/ServiceLocation1MasterContext";
 import { ServiceLocation2MasterProvider } from "../Context/Master/ServiceLocation2MasterContext";
 import { ServiceLocation3MasterProvider } from "../Context/Master/ServiceLocation3MasterContext";
 import { ZoneProvider } from "../Context/Master/ZoneContext";
 import { DepartmentProvider } from "../Context/Master/DepartmentContext";
-import Role_Permission from "../components/Master/Role_Master/Role_Permission";
-import User_Creation_Permission from "../components/Master/User_Creation/User_Creation_Permission";
-import { ItemMasterProvider } from "../Context/Item Management/ItemMasterContext";
-import { CategoryMasterProvider } from "../Context/Item Management/CategoryMasterContext";
-import { SubCategoryProvider } from "../Context/Item Management/SubCategoryContext";
+import User_Creation_Form from "../Pages/Master/components/Master/User_Creation/User_Creation_Form";
+import Group_Master_Page from "../Pages/ItemManagement/Group_Master_Page";
+import Category_Master_Page from "../Pages/ItemManagement/Category_Master_Page";
+import SubCategory_Master_Page from "../Pages/ItemManagement/SubCategory_Master_Page";
+import Item_Master_Page from "../Pages/ItemManagement/Item_Master_Page";
+import { ItemMasterProvider } from "../Context/ItemManagement/ItemMasterContext";
+import { CategoryMasterProvider } from "../Context/ItemManagement/CategoryMasterContext";
+import { SubCategoryProvider } from "../Context/ItemManagement/SubCategoryContext";
+import Item_Create_Service_Form from "../Pages/ItemManagement/components/ItemManagement/Item_Create/Item_Create_Service_Form";
+import Item_Create_Asset_Form from "../Pages/ItemManagement/components/ItemManagement/Item_Create/Item_Create_Asset_Form";
+import Request_Management_Page from "../Pages/RequestManagement/Request_Management_Page";
+import Item_Request_Form from "../Pages/RequestManagement/components/RequestManagement/Item_Request/Item_Request_Form";
+import PI_Item_Request_Page from "../Pages/POandMaterialManagement/PI_Item_Request_Page";
+import PI_Request_List_Page from "../Pages/POandMaterialManagement/PI_Request_List_Page";
+import Get_Quote_Page from "../Pages/POandMaterialManagement/Get_Quote_Page";
+import PI_Request_Get_Quote from "../Pages/POandMaterialManagement/components/POandMaterialManagement/Get_Quote/PI_Request_Get_Quote";
+import PO_Create_Page from "../Pages/POandMaterialManagement/PO_Create_Page";
+import PO_List_Page from "../Pages/POandMaterialManagement/PO_List_Page";
+import GRN_List_Page from "../Pages/POandMaterialManagement/GRN_List_Page";
+import Invoice_List_page from "../Pages/PaymentManagement/Invoice_List_page";
 
 export default function AppRoutes() {
   return (

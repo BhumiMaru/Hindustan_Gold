@@ -1,9 +1,9 @@
 import React from "react";
-import User_Creation_List from "../../components/Master/User_Creation/User_Creation_List";
+import User_Creation_List from "./components/Master/User_Creation/User_Creation_List";
 import { UserCreationProvider } from "../../Context/Master/UserCreationContext";
-import { ZoneProvider } from "../../Context/Master/ZoneContext";
-import { DepartmentProvider } from "../../Context/Master/DepartmentContext";
 import { RoleMasterProvider } from "../../Context/Master/RoleMasterContext";
+import { DepartmentProvider } from "../../Context/Master/DepartmentContext";
+import { ZoneProvider } from "../../Context/Master/ZoneContext";
 
 export default function User_Creation_Page() {
   return (
