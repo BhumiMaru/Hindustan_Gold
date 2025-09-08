@@ -94,12 +94,39 @@ export const UserCreationProvider = ({ children }) => {
   };
 
   // Create User
-  // const createUser = async (payload) => {
+  const createUser = async (payload) => {
+    try {
+      const res = await postData(ENDPOINTS.USER_CREATION.ADD_UPDATE, payload);
+      setUserCreationData(res.data);
+      toast.success("User created successfully");
+      return res.data;
+      // fetchUserCreationData();
+    } catch (error) {
+      // ✅ Check if backend sent validation errors
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+        Object.values(errors).forEach((errArray) => {
+          errArray.forEach((msg) => toast.error(msg)); // Show all error messages
+        });
+      } else {
+        toast.error(error.response?.data?.message || "Failed to create user");
+      }
+    }
+  };
+
+  //   const createUser = async (payload) => {
   //   try {
   //     const res = await postData(ENDPOINTS.USER_CREATION.ADD_UPDATE, payload);
-  //     setUserCreationData(res.data.data);
+
+  //     const newUser = res.data; // backend response should include id
+  //     setUserCreationData(newUser);
+  //     console.log(" newUser?.id", newUser?.id);
+  //     if (res.success && newUser?.id) {
+  //       setIsEditUserId(newUser.id);
+  //     }
+
   //     toast.success("User created successfully");
-  //     fetchUserCreationData();
+  //     return newUser; // ✅ return created user object
   //   } catch (error) {
   //     // ✅ Check if backend sent validation errors
   //     if (error.response && error.response.data && error.response.data.errors) {
@@ -113,27 +140,28 @@ export const UserCreationProvider = ({ children }) => {
   //   }
   // };
 
-  const createUser = async (payload) => {
-    try {
-      const res = await postData(ENDPOINTS.USER.CREATE, payload);
+  // const createUser = async (payload) => {
+  //   try {
+  //     const res = await postData(ENDPOINTS.USER_CREATION.ADD_UPDATE, payload);
 
-      const newUserId = res.data.data.id; // assuming backend returns id
-      toast.success("User created successfully");
+  //     // const newUserId = res.data.data.id; // assuming backend returns id
+  //     // toast.success("User created successfully");
 
-      // Save form data + new user_id
-      setUserCreationData({
-        ...payload,
-        id: newUserId,
-      });
+  //     // Save form data + new user_id
+  //     setUserCreationData({
+  //       ...payload,
+  //       id: newUserId,
+  //     });
 
-      // ✅ Immediately fetch permissions for this role
-      // fetchRolePermission(payload.role_id);
+  //     // ✅ Immediately fetch permissions for this role
+  //     // fetchRolePermission(payload.role_id);
 
-      return res.data;
-    } catch (error) {
-      toast.error("Failed to create user");
-    }
-  };
+  //     return res.data;
+  //   } catch (error) {
+  //     toast.error("Failed to create user");
+  //     console.log("Failed to create user", error);
+  //   }
+  // };
 
   // Update User
   const updateUser = async (id, payload) => {

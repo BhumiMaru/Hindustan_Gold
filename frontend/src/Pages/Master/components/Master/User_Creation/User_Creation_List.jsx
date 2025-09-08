@@ -75,6 +75,12 @@ export default function User_Creation_List() {
                 value={roleId}
                 onChange={setRoleId}
                 placeholder="Select Role"
+                styles={{
+                  container: (base) => ({
+                    ...base,
+                    width: "250px",
+                  }),
+                }}
               />
             </div>
             <div className="col-lg-3">
@@ -87,6 +93,12 @@ export default function User_Creation_List() {
                 value={deptId}
                 onChange={setDeptId}
                 placeholder="Select Department"
+                styles={{
+                  container: (base) => ({
+                    ...base,
+                    width: "250px",
+                  }),
+                }}
               />
             </div>
             <div className="col-lg-3">
@@ -99,6 +111,12 @@ export default function User_Creation_List() {
                 value={zoneId}
                 onChange={setZoneId}
                 placeholder="Select Zone"
+                styles={{
+                  container: (base) => ({
+                    ...base,
+                    width: "250px",
+                  }),
+                }}
               />
             </div>
             <div className="col-lg-3">
@@ -110,7 +128,13 @@ export default function User_Creation_List() {
                 ]}
                 value={status}
                 onChange={setStatus}
-                placeholder="Select Status" 
+                placeholder="Select Status"
+                styles={{
+                  container: (base) => ({
+                    ...base,
+                    width: "250px",
+                  }),
+                }}
               />
             </div>
           </div>

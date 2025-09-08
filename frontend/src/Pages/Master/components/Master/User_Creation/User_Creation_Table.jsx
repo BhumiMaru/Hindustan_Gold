@@ -47,7 +47,7 @@ export default function User_Creation_Table({ search }) {
   // console.log("filteredUsers", filteredUsers);
 
   const handleEditClick = (user) => {
-    console.log("user", user);
+    // console.log("user", user);
     startEditing(user.id); // set edit data in context
     navigate(`/master/user-create/${user.id}`); // then navigate
   };
@@ -76,7 +76,7 @@ export default function User_Creation_Table({ search }) {
           {userCreations?.map((user, index) => {
             return (
               <tr key={user.id}>
-                {console.log(user.status)}
+                {/* {console.log(user.status)} */}
                 <td>
                   <div className="ms-4">{index + 1}</div>
                 </td>
@@ -125,7 +125,7 @@ export default function User_Creation_Table({ search }) {
                       user.status === 1 ? "bg-label-success" : "bg-label-danger"
                     }`}
                   >
-                    {console.log(typeof user.status)}
+                    {/* {console.log(typeof user.status)} */}
                     {user.status === 1 ? "Active" : "Deactive"}
                   </span>
                 </td>

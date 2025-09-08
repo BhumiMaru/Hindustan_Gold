@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import SearchBar from "../../Common/SearchBar/SearchBar";
+import { useUIContext } from "../../../../../Context/UIContext";
+import { useGroupMasterContext } from "../../../../../Context/ItemManagement/GroupMasterContext";
+import { useCategoryMaster } from "../../../../../Context/ItemManagement/CategoryMasterContext";
+import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 import Category_Master_Table from "./Category_Master_Table";
-import Pagination from "../../Common/Pagination/Pagination";
-import { useCategoryMaster } from "../../../Context/Item Management/CategoryMasterContext";
-import { useUIContext } from "../../../Context/UIContext";
+import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import Category_Master_Form from "./Category_Master_Form";
-import CustomSelect from "../../Common/CustomSelect/CustomSelect";
-import { useGroupMasterContext } from "../../../Context/Item Management/GroupMasterContext";
 
 export default function Category_Master_List() {
   const { modal, handleOpen } = useUIContext();
@@ -17,7 +17,7 @@ export default function Category_Master_List() {
 
   useEffect(() => {
     fetchGroupData();
-    fetchCategories(search, selectedGroup?.value);
+    fetchCategories(search, selectedGroup);
   }, [search, selectedGroup]);
   return (
     <>

@@ -1,5 +1,6 @@
 import React from "react";
 import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
+import { Link } from "react-router-dom";
 
 export default function Item_Master_Table({ search }) {
   const { itemMaster, deleteItemMaster } = useItemMaster();
@@ -61,12 +62,12 @@ export default function Item_Master_Table({ search }) {
                 </td>
                 <td>
                   <div className="d-inline-flex gap-2">
-                    <a
-                      href="item-create.html"
+                    <Link
+                      to="/item/item-create-material"
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                     >
                       <i className="icon-base ti tabler-edit icon-22px" />
-                    </a>
+                    </Link>
                     <a
                       href="#"
                       type="button"

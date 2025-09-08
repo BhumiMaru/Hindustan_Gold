@@ -53,10 +53,12 @@ export const CategoryMasterProvider = ({ children }) => {
   const createCategory = async (payload) => {
     try {
       const res = await postData(ENDPOINTS.CATEGORY_MASTER.ADD_UPDATE, payload);
+      console.log("payload", payload);
       toast.success("Category Created Successfully");
       fetchCategories(); // refresh
       return res;
     } catch (error) {
+      console.log(`Create Category Error: ${error.message}`, error);
       toast.error(`Create Category Error: ${error.message}`);
     }
   };

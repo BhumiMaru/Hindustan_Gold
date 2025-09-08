@@ -93,7 +93,7 @@ export default function SideBar() {
           {/* Master */}
           <li
             className={`menu-item ${
-              activeMenu === "Master" ? "open" : ""
+              activeMenu === "Master" ? "open active" : ""
             } cursor-pointer`}
             onClick={() => toggleMenu("Master")}
           >
@@ -132,7 +132,7 @@ export default function SideBar() {
           {/* Item Management */}
           <li
             className={`menu-item ${
-              activeMenu === "Item" ? "open" : ""
+              activeMenu === "Item" ? "open active" : ""
             } cursor-pointer`}
             onClick={() => toggleMenu("Item")}
           >
@@ -170,7 +170,7 @@ export default function SideBar() {
           {/* Request Management */}
           <li
             className={`menu-item ${
-              activeMenu === "Request" ? "open" : ""
+              activeMenu === "Request" ? "open active" : ""
             } cursor-pointer`}
             onClick={() => toggleMenu("Request")}
           >
@@ -208,7 +208,7 @@ export default function SideBar() {
           {/* PO & Material Management */}
           <li
             className={`menu-item ${
-              activeMenu === "PO" ? "open" : ""
+              activeMenu === "PO" ? "open active" : ""
             } cursor-pointer`}
             onClick={() => toggleMenu("PO")}
           >
@@ -248,7 +248,7 @@ export default function SideBar() {
           {/* Payment Management */}
           <li
             className={`menu-item ${
-              activeMenu === "Payment" ? "open" : ""
+              activeMenu === "Payment" ? "open active" : ""
             } cursor-pointer`}
             onClick={() => toggleMenu("Payment")}
           >

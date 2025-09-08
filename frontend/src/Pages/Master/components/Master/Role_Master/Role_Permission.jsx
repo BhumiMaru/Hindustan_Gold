@@ -78,7 +78,7 @@ export default function Role_Permission() {
                           Material Code
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center invisible">
+                          <div className="form-check d-flex justify-content-center">
                             <input
                               className="form-check-input"
                               type="checkbox"
@@ -87,7 +87,7 @@ export default function Role_Permission() {
                           </div>
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center invisible">
+                          <div className="form-check d-flex justify-content-center">
                             <input
                               className="form-check-input"
                               type="checkbox"
@@ -97,7 +97,7 @@ export default function Role_Permission() {
                           </div>
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center invisible">
+                          <div className="form-check d-flex justify-content-center">
                             <input
                               className="form-check-input"
                               type="checkbox"
@@ -116,19 +116,20 @@ export default function Role_Permission() {
                                 !!permission?.some(
                                   (p) =>
                                     String(p.role_id) === String(id) && // normalize ID comparison
-                                    p.module_name === "Item Request Module" &&
-                                    p.type === "Material Handover" &&
+                                    p.module_name ===
+                                      "Item Management Module" &&
+                                    p.type === "Material Code" &&
                                     p.permission === "all_rights"
                                 )
                               }
-                              onChange={(e) =>
+                              onChange={(e) => {
                                 handlePermissionChange(
                                   "Item Management Module",
                                   "Material Code",
                                   "all_rights",
                                   e
-                                )
-                              }
+                                );
+                              }}
                             />
                           </div>
                         </td>
@@ -177,8 +178,9 @@ export default function Role_Permission() {
                                 !!permission?.some(
                                   (p) =>
                                     String(p.role_id) === String(id) && // normalize ID comparison
-                                    p.module_name === "Item Request Module" &&
-                                    p.type === "Material Handover" &&
+                                    p.module_name ===
+                                      "Item Management Module" &&
+                                    p.type === "Service Code" &&
                                     p.permission === "all_rights"
                                 )
                               }
@@ -233,8 +235,9 @@ export default function Role_Permission() {
                                 !!permission?.some(
                                   (p) =>
                                     String(p.role_id) === String(id) && // normalize ID comparison
-                                    p.module_name === "Item Request Module" &&
-                                    p.type === "Material Handover" &&
+                                    p.module_name ===
+                                      "Item Management Module" &&
+                                    p.type === "Asset Code" &&
                                     p.permission === "all_rights"
                                 )
                               }
