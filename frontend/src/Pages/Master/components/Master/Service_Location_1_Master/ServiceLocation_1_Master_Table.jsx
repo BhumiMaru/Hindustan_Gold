@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { useUIContext } from "../../../Context/UIContext";
-import { useServiceLocation1Master } from "../../../Context/Master/ServiceLocation1MasterContext";
+import { useUIContext } from "../../../../../Context/UIContext";
+import { useServiceLocation1Master } from "../../../../../Context/Master/ServiceLocation1MasterContext";
 
 export default function ServiceLocation_1_Master_Table() {
   const { handleOpen } = useUIContext();

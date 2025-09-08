@@ -1,7 +1,7 @@
 import React from "react";
+import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import GRN_List_Table from "./GRN_List_Table";
-import Pagination from "../../Common/Pagination/Pagination";
-import SearchBar from "../../Common/SearchBar/SearchBar";
+import Pagination from "../../../../../components/Common/Pagination/Pagination";
 
 export default function GRN_List_List() {
   return (

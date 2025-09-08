@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
-import { useItemMaster } from "../../../Context/Item Management/ItemMasterContext";
 import { useNavigate } from "react-router-dom";
-import { useCategoryMaster } from "../../../Context/Item Management/CategoryMasterContext";
-import CustomSelect from "../../Common/CustomSelect/CustomSelect";
-import { useZone } from "../../../Context/Master/ZoneContext";
-import { useServiceLocation3Master } from "../../../Context/Master/ServiceLocation3MasterContext";
-import { useServiceLocation2Master } from "../../../Context/Master/ServiceLocation2MasterContext";
-import { useServiceLocation1Master } from "../../../Context/Master/ServiceLocation1MasterContext";
-import { useSubCategory } from "../../../Context/Item Management/SubCategoryContext";
+import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
+import { useCategoryMaster } from "../../../../../Context/ItemManagement/CategoryMasterContext";
+import { useZone } from "../../../../../Context/Master/ZoneContext";
+import { useServiceLocation1Master } from "../../../../../Context/Master/ServiceLocation1MasterContext";
+import { useServiceLocation2Master } from "../../../../../Context/Master/ServiceLocation2MasterContext";
+import { useServiceLocation3Master } from "../../../../../Context/Master/ServiceLocation3MasterContext";
+import { useSubCategory } from "../../../../../Context/ItemManagement/SubCategoryContext";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 
 export default function Item_Create_Material_Form() {
   const {

@@ -1,6 +1,6 @@
 import React from "react";
-import { useServiceLocation3Master } from "../../../Context/Master/ServiceLocation3MasterContext";
-import { useUIContext } from "../../../Context/UIContext";
+import { useUIContext } from "../../../../../Context/UIContext";
+import { useServiceLocation3Master } from "../../../../../Context/Master/ServiceLocation3MasterContext";
 
 export default function ServiceLocation_3_Master_Table() {
   const { handleOpen } = useUIContext();

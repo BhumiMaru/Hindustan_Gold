@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Select from "react-select";
-import CustomSelect from "../../Common/CustomSelect/CustomSelect";
-import { useServiceLocation1Master } from "../../../Context/Master/ServiceLocation1MasterContext";
-import { useServiceLocation2Master } from "../../../Context/Master/ServiceLocation2MasterContext";
-import { useUIContext } from "../../../Context/UIContext";
-import { validateTextInput } from "../../../utils/validation";
 import { toast } from "react-toastify";
+import { useServiceLocation1Master } from "../../../../../Context/Master/ServiceLocation1MasterContext";
+import { useUIContext } from "../../../../../Context/UIContext";
+import { useServiceLocation2Master } from "../../../../../Context/Master/ServiceLocation2MasterContext";
+import { validateTextInput } from "../../../../../utils/validation";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 
 export default function ServiceLocation_2_Master_Form() {
   const { serviceLocation, fetchServiceLocations } =

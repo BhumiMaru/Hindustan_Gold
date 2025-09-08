@@ -1,12 +1,19 @@
 import React from "react";
-import "../../../public/assets/vendor/css/core.css";
-import "../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css";
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function Dashboard() {
   return (
     <>
       {/* -------------------------------STRAT DASHBOARD--------------------------------- */}
       <>
+        <link
+          rel="stylesheet"
+          href={`${publicUrl}/assets/vendor/css/core.css`}
+        />
+        <link
+          rel="stylesheet"
+          href={`${publicUrl}/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css`}
+        />
         <div className="container-xxl flex-grow-1 container-p-y">
           <div className="row g-6">
             {/* Card Border Shadow */}

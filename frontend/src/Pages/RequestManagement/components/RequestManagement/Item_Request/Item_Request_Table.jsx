@@ -1,5 +1,5 @@
 import React from "react";
-import avatar10 from "../../../../public/assets/img/avatars/10.png";
+// import avatar10 from "../../../../public/assets/img/avatars/10.png";
 
 export default function Item_Request_Table() {
   return (
@@ -41,7 +41,7 @@ export default function Item_Request_Table() {
                 <div className="avatar-wrapper">
                   <div className="avatar me-2">
                     <img
-                      src={avatar10}
+                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRI9lRck6miglY0SZF_BZ_sK829yiNskgYRUg&s"
                       alt="Avatar"
                       className="rounded-circle"
                     />

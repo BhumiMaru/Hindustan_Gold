@@ -1,6 +1,6 @@
 import React from "react";
-import { useDepartment } from "../../../Context/Master/DepartmentContext";
-import { useUIContext } from "../../../Context/UIContext";
+import { useDepartment } from "../../../../../Context/Master/DepartmentContext";
+import { useUIContext } from "../../../../../Context/UIContext";
 
 export default function DepartmentTable() {
   const { departments, startEdit, deleteDepartment } = useDepartment();

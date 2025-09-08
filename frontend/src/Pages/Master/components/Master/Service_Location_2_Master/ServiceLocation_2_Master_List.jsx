@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import SearchBar from "../../Common/SearchBar/SearchBar";
-import Pagination from "../../Common/Pagination/Pagination";
+import { useUIContext } from "../../../../../Context/UIContext";
+import { useServiceLocation2Master } from "../../../../../Context/Master/ServiceLocation2MasterContext";
+import { useServiceLocation1Master } from "../../../../../Context/Master/ServiceLocation1MasterContext";
+import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 import ServiceLocation_2_Master_Table from "./ServiceLocation_2_Master_Table";
+import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import ServiceLocation_2_Master_Form from "./ServiceLocation_2_Master_Form";
-import { useUIContext } from "../../../Context/UIContext";
-import { useServiceLocation2Master } from "../../../Context/Master/ServiceLocation2MasterContext";
-import CustomSelect from "../../Common/CustomSelect/CustomSelect";
-import { useServiceLocation1Master } from "../../../Context/Master/ServiceLocation1MasterContext";
 
 export default function ServiceLocation_2_Master_List() {
   const { handleOpen, modal } = useUIContext();
@@ -18,7 +18,7 @@ export default function ServiceLocation_2_Master_List() {
 
   useEffect(() => {
     fetchServiceLocations();
-    fetchServiceLocations2(search, selectedOption?.value);
+    fetchServiceLocations2(search, selectedOption);
   }, [search, selectedOption]);
   return (
     <>

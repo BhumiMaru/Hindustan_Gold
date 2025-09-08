@@ -1,6 +1,6 @@
 import React from "react";
-import { useCompanyMaster } from "../../../Context/Master/CompanyMasterContext";
-import { useUIContext } from "../../../Context/UIContext";
+import { useCompanyMaster } from "../../../../../Context/Master/CompanyMasterContext";
+import { useUIContext } from "../../../../../Context/UIContext";
 
 export default function Company_Master_Table() {
   const { companies, deleteCompany, startEditing } = useCompanyMaster();

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import SearchBar from "../../Common/SearchBar/SearchBar";
+import { useUIContext } from "../../../../../Context/UIContext";
+import { useCompanyMaster } from "../../../../../Context/Master/CompanyMasterContext";
+import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import Company_Master_Table from "./Company_Master_Table";
-import Pagination from "../../Common/Pagination/Pagination";
-import { useUIContext } from "../../../Context/UIContext";
+import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import Company_Master_Form from "./Company_Master_Form";
-import { useCompanyMaster } from "../../../Context/Master/CompanyMasterContext";
 
 export default function Company_Master_List() {
   const { handleOpen, modal } = useUIContext();

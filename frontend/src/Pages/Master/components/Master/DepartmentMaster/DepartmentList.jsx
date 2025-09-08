@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useUIContext } from "../../../Context/UIContext";
-import { useDepartment } from "../../../Context/Master/DepartmentContext";
-import DepartmentForm from "./DepartmentForm";
+import { useUIContext } from "../../../../../Context/UIContext";
+import { useDepartment } from "../../../../../Context/Master/DepartmentContext";
+import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import DepartmentTable from "./DepartmentTable";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
-import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
+import DepartmentForm from "./DepartmentForm";
 
 export default function DepartmentList() {
   const { modal, handleOpen } = useUIContext();

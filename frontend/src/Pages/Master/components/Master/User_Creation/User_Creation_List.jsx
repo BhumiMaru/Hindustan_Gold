@@ -110,7 +110,7 @@ export default function User_Creation_List() {
                 ]}
                 value={status}
                 onChange={setStatus}
-                placeholder="Select Status"
+                placeholder="Select Status" 
               />
             </div>
           </div>

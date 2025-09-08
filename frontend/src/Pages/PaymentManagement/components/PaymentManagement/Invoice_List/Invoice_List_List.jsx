@@ -1,7 +1,7 @@
 import React from "react";
+import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import Invoice_List_Table from "./Invoice_List_Table";
-import Pagination from "../../Common/Pagination/Pagination";
-import SearchBar from "../../Common/SearchBar/SearchBar";
+import Pagination from "../../../../../components/Common/Pagination/Pagination";
 
 export default function Invoice_List_List() {
   return (

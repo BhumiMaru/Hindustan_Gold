@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import avatar10 from "../../../../public/assets/img/avatars/10.png";
 import { Link } from "react-router-dom";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 
@@ -10,36 +9,39 @@ export default function User_Creation_Table({ search }) {
     useUserCreation();
   // console.log("userCreations", userCreations);
   // Derived filtered list
-  const filteredUsers = userCreations.filter((user) => {
-    const s = (search || "").toLowerCase().trim(); // safe string always
+  // Derived filtered list
+  // const filteredUsers = userCreations.filter((user) => {
+  //   const s = (search || "").toLowerCase().trim(); // safe string always
 
-    const name = (user?.name || "").toLowerCase();
-    const email = (user?.email || "").toLowerCase();
-    const mobileno = (user?.mobileno || "").toLowerCase();
-    const employeeId = (user?.employee_id || "").toLowerCase();
-    const role = (user?.role?.role_name || "").toLowerCase();
-    const department = (user?.department?.department_name || "").toLowerCase();
-    const zone = (user?.zone?.zone_name || "").toLowerCase();
-    const registerDate = (user?.register_date || "").toLowerCase();
+  //   // if no search → just return all (backend already filtered by role/zone/dept/status)
+  //   if (!s) return true;
+  //   console.log(s);
 
-    // handle status properly – if numeric, convert to string too
-    let statusText = "";
-    if (user?.status === 1) statusText = "active";
-    else if (user?.status === 0) statusText = "deactive";
-    else statusText = String(user?.status || ""); // will match "13"
+  //   const name = (user?.name || "").toLowerCase();
+  //   const email = (user?.email || "").toLowerCase();
+  //   const mobileno = (user?.mobileno || "").toLowerCase();
+  //   const employeeId = (user?.employee_id || "").toLowerCase();
+  //   const role = (user?.role?.role_name || "").toLowerCase();
+  //   const department = (user?.department?.department_name || "").toLowerCase();
+  //   const zone = (user?.zone?.zone_name || "").toLowerCase();
+  //   const registerDate = (user?.register_date || "").toLowerCase();
 
-    return (
-      name.includes(s) ||
-      email.includes(s) ||
-      mobileno.includes(s) ||
-      employeeId.includes(s) ||
-      role.includes(s) ||
-      department.includes(s) ||
-      zone.includes(s) ||
-      statusText.includes(s) ||
-      registerDate.includes(s)
-    );
-  });
+  //   // status text for search (Active / Deactive)
+  //   const statusText = user.status === 1 ? "active" : "deactive";
+  //   console.log(statusText);
+
+  //   return (
+  //     name.includes(s) ||
+  //     email.includes(s) ||
+  //     mobileno.includes(s) ||
+  //     employeeId.includes(s) ||
+  //     role.includes(s) ||
+  //     department.includes(s) ||
+  //     zone.includes(s) ||
+  //     statusText.includes(s) ||
+  //     registerDate.includes(s)
+  //   );
+  // });
 
   // console.log("sss", search);
   // console.log("filteredUsers", filteredUsers);
@@ -71,9 +73,10 @@ export default function User_Creation_Table({ search }) {
           </tr>
         </thead>
         <tbody>
-          {filteredUsers?.map((user, index) => {
+          {userCreations?.map((user, index) => {
             return (
               <tr key={user.id}>
+                {console.log(user.status)}
                 <td>
                   <div className="ms-4">{index + 1}</div>
                 </td>
@@ -82,7 +85,7 @@ export default function User_Creation_Table({ search }) {
                     <div className="avatar-wrapper">
                       <div className="avatar me-2">
                         <img
-                          src={avatar10}
+                          src="https://www.citypng.com/public/uploads/preview/hd-man-user-illustration-icon-transparent-png-701751694974843ybexneueic.png"
                           alt={user.name}
                           className="rounded-circle"
                         />
@@ -122,6 +125,7 @@ export default function User_Creation_Table({ search }) {
                       user.status === 1 ? "bg-label-success" : "bg-label-danger"
                     }`}
                   >
+                    {console.log(typeof user.status)}
                     {user.status === 1 ? "Active" : "Deactive"}
                   </span>
                 </td>

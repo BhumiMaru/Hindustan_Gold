@@ -1,7 +1,7 @@
 import React from "react";
-import SearchBar from "../../Common/SearchBar/SearchBar";
+import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import Vendor_List_Table from "./Vendor_List_Table";
-import Pagination from "../../Common/Pagination/Pagination";
+import Pagination from "../../../../../components/Common/Pagination/Pagination";
 
 export default function Vendor_List_List() {
   return (

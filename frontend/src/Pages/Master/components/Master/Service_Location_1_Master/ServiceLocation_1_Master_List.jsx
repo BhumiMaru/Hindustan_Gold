@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useUIContext } from "../../../../../Context/UIContext";
 import { useServiceLocation1Master } from "../../../../../Context/Master/ServiceLocation1MasterContext";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
-import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import ServiceLocation_1_Master_Table from "./ServiceLocation_1_Master_Table";
+import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import ServiceLocation_1_Master_Form from "./ServiceLocation_1_Master_Form";
 
 export default function ServiceLocation_1_Master_List() {

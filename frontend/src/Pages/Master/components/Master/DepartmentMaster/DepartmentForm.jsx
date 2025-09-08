@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useUIContext } from "../../../Context/UIContext";
-import { validateTextInput } from "../../../utils/validation";
 import { toast } from "react-toastify";
-import { useDepartment } from "../../../Context/Master/DepartmentContext";
+import { useUIContext } from "../../../../../Context/UIContext";
+import { useDepartment } from "../../../../../Context/Master/DepartmentContext";
+import { validateTextInput } from "../../../../../utils/validation";
 
 export default function DepartmentForm() {
   const { handleClose } = useUIContext();
