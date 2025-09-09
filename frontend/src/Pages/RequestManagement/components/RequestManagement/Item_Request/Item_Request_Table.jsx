@@ -1,5 +1,4 @@
 import React from "react";
-// import avatar10 from "../../../../public/assets/img/avatars/10.png";
 
 export default function Item_Request_Table() {
   return (
@@ -105,7 +104,7 @@ export default function Item_Request_Table() {
                 <div className="avatar-wrapper">
                   <div className="avatar me-2">
                     <img
-                      src={avatar10}
+                      src="https://www.citypng.com/public/uploads/preview/hd-man-user-illustration-icon-transparent-png-701751694974843ybexneueic.png"
                       alt="Avatar"
                       className="rounded-circle"
                     />
@@ -164,7 +163,7 @@ export default function Item_Request_Table() {
                 <div className="avatar-wrapper">
                   <div className="avatar me-2">
                     <img
-                      src={avatar10}
+                      src="https://www.citypng.com/public/uploads/preview/hd-man-user-illustration-icon-transparent-png-701751694974843ybexneueic.png"
                       alt="Avatar"
                       className="rounded-circle"
                     />
@@ -220,7 +219,7 @@ export default function Item_Request_Table() {
                 <div className="avatar-wrapper">
                   <div className="avatar me-2">
                     <img
-                      src={avatar10}
+                      src="https://www.citypng.com/public/uploads/preview/hd-man-user-illustration-icon-transparent-png-701751694974843ybexneueic.png"
                       alt="Avatar"
                       className="rounded-circle"
                     />
@@ -264,7 +263,7 @@ export default function Item_Request_Table() {
                 <div className="avatar-wrapper">
                   <div className="avatar me-2">
                     <img
-                      src={avatar10}
+                      src="https://www.citypng.com/public/uploads/preview/hd-man-user-illustration-icon-transparent-png-701751694974843ybexneueic.png"
                       alt="Avatar"
                       className="rounded-circle"
                     />

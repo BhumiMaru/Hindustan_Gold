@@ -20,20 +20,35 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
     selectedSl2: null,
   });
   const [serviceLocation3EditId, setServiceLocation3EditId] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    total: 0,
+  });
 
   // Fetch All
   const fetchServiceLocations3 = async (
     search = "",
     serviceLocation1Id = null,
-    serviceLocation2Id = null
+    serviceLocation2Id = null,
+    page = 1,
+    perPage = 10
   ) => {
     try {
       const res = await getData(ENDPOINTS.SERVICES_LOCATION_3_MASTER.LIST, {
         search,
         service_location_1_id: serviceLocation1Id,
         service_location_2_id: serviceLocation2Id,
+        page,
+        per_page: perPage,
       });
-      setServiceLocation3(res.data.data);
+      const apiData = res.data;
+      setServiceLocation3(apiData.data);
+      setPagination({
+        currentPage: apiData.current_page,
+        perPage: apiData.per_page,
+        total: apiData.total,
+      });
     } catch (error) {
       toast.error(`Service Location 3 Master Fetch Error: ${error.message}`);
     }
@@ -133,6 +148,7 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
         serviceLocation3EditId,
         setServiceLocation3EditId,
         serviceL3,
+        pagination,
 
         fetchSL3Filter,
         fetchServiceLocations3,

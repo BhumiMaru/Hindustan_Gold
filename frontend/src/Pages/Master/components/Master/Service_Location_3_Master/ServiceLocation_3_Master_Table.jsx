@@ -4,7 +4,7 @@ import { useServiceLocation3Master } from "../../../../../Context/Master/Service
 
 export default function ServiceLocation_3_Master_Table() {
   const { handleOpen } = useUIContext();
-  const { serviceLocation3, deleteServiceLocation3, startEditing } =
+  const { serviceLocation3, deleteServiceLocation3, startEditing, pagination } =
     useServiceLocation3Master();
   return (
     <>
@@ -29,7 +29,11 @@ export default function ServiceLocation_3_Master_Table() {
             return (
               <tr key={serviceLocation3.id}>
                 <td>
-                  <div className="ms-4">{index + 1}</div>
+                  <div className="ms-4">
+                    {" "}
+                    {(pagination.currentPage - 1) * pagination.perPage +
+                      (index + 1)}
+                  </div>
                 </td>
                 <td>{serviceLocation3.service_location_3_name}</td>
                 <td>{serviceLocation3?.sl2?.service_location_2_name} </td>

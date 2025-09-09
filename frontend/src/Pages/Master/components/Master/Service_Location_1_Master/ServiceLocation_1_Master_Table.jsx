@@ -4,7 +4,7 @@ import { useServiceLocation1Master } from "../../../../../Context/Master/Service
 
 export default function ServiceLocation_1_Master_Table() {
   const { handleOpen } = useUIContext();
-  const { serviceLocation, startEditing, deleteServiceLocation } =
+  const { serviceLocation, startEditing, deleteServiceLocation, pagination } =
     useServiceLocation1Master();
 
   return (
@@ -27,37 +27,50 @@ export default function ServiceLocation_1_Master_Table() {
             return (
               <tr key={serviceLocation1.id}>
                 <td>
-                  <div className="ms-4">{index + 1}</div>
+                  <div className="ms-4">
+                    {" "}
+                    {(pagination.currentPage - 1) * pagination.perPage +
+                      (index + 1)}
+                  </div>
                 </td>
                 <td>{serviceLocation1.service_location_name}</td>
+
                 <td>
                   <div className="d-inline-flex gap-2">
-                    <button
-                      type="button"
-                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                      data-bs-toggle="modal"
-                      data-bs-target="#smallModal"
-                      onClick={() => {
-                        startEditing(
-                          serviceLocation1.id,
-                          serviceLocation1.service_location_name
-                        );
-                        handleOpen("addNewServiceLocation1");
-                      }}
+                    <a
+                      className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
                     >
-                      <i className="icon-base ti tabler-edit icon-22px"></i>
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                      data-bs-toggle="modal"
-                      data-bs-target="#deleteModal"
-                      onClick={() => {
-                        deleteServiceLocation(serviceLocation1.id);
-                      }}
-                    >
-                      <i className="icon-base ti tabler-trash text-danger icon-22px"></i>
-                    </button>
+                      <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
+                    </a>
+                    <div className="d-inline-block">
+                      <div className="dropdown-menu dropdown-menu-end m-0">
+                        <button
+                          // key={user.id}
+                          className="dropdown-item waves-effect"
+                          onClick={() => {
+                            startEditing(
+                              serviceLocation1.id,
+                              serviceLocation1.service_location_name
+                            );
+                            handleOpen("addNewServiceLocation1");
+                          }}
+                        >
+                          Edit
+                        </button>
+
+                        {/* <div className="dropdown-divider"></div> */}
+                        <a
+                          className="dropdown-item text-danger delete-record waves-effect"
+                          onClick={() => {
+                            deleteServiceLocation(serviceLocation1.id);
+                          }}
+                        >
+                          Delete
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </td>
               </tr>

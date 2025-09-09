@@ -3,7 +3,8 @@ import { useCompanyMaster } from "../../../../../Context/Master/CompanyMasterCon
 import { useUIContext } from "../../../../../Context/UIContext";
 
 export default function Company_Master_Table() {
-  const { companies, deleteCompany, startEditing } = useCompanyMaster();
+  const { companies, deleteCompany, startEditing, pagination } =
+    useCompanyMaster();
   const { handleOpen } = useUIContext();
   return (
     <>
@@ -25,7 +26,10 @@ export default function Company_Master_Table() {
             return (
               <tr key={company.id}>
                 <td>
-                  <div className="ms-4">{index + 1}</div>
+                  <div className="ms-4">
+                    {(pagination.currentPage - 1) * pagination.perPage +
+                      (index + 1)}
+                  </div>
                 </td>
                 <td>{company.company_name}</td>
                 <td>

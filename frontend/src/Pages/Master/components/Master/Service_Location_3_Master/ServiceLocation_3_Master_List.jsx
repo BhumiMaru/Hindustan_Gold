@@ -16,6 +16,7 @@ export default function ServiceLocation_3_Master_List() {
     fetchServiceLocations3,
     serviceLocation3Data,
     setServiceLocation3Data,
+    pagination,
   } = useServiceLocation3Master();
   const { serviceLocation, fetchServiceLocations } =
     useServiceLocation1Master();
@@ -29,13 +30,23 @@ export default function ServiceLocation_3_Master_List() {
     fetchServiceLocations3(
       search,
       serviceLocation3Data?.selectedSl1,
-      serviceLocation3Data?.selectedSl2
+      serviceLocation3Data?.selectedSl2,
+      pagination.currentPage,
+      pagination.perPage
     );
   }, [
     search,
     serviceLocation3Data?.selectedSl1,
     serviceLocation3Data?.selectedSl2,
   ]);
+
+  const handlePageChange = (page) => {
+    fetchServiceLocations3(search, page, pagination.perPage);
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    fetchServiceLocations3(search, 1, size); // reset to page 1 when changing size
+  };
 
   return (
     <>
@@ -116,7 +127,13 @@ export default function ServiceLocation_3_Master_List() {
           </div>
           <div className="card-datatable table-responsive pt-0">
             <ServiceLocation_3_Master_Table />
-            <Pagination />
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalItems={pagination.total}
+              itemsPerPage={pagination.perPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
           </div>
         </div>
       </div>

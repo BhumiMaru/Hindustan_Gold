@@ -23,12 +23,27 @@ export const SubCategoryProvider = ({ children }) => {
   });
   const [isSubEditId, setIsSubEditId] = useState(null);
   const [filterSubCategory, setFilterSubCategory] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    total: 0,
+  });
 
   //   Fetch user Creaions
-  const fetchSubCategoryData = async (search = "") => {
+  const fetchSubCategoryData = async (search = "", page = 1, perPage = 10) => {
     try {
-      const res = await getData(ENDPOINTS.SUBCATEGORY_MASTER.LIST, { search });
-      setSubCategory(res.data.data);
+      const res = await getData(ENDPOINTS.SUBCATEGORY_MASTER.LIST, {
+        search,
+        page,
+        per_page: perPage,
+      });
+      const apiData = res.data;
+      setSubCategory(apiData.data);
+      setPagination({
+        currentPage: apiData.current_page,
+        perPage: apiData.per_page,
+        total: apiData.total,
+      });
     } catch (error) {
       console.log(error);
       toast.error("Failed to fetch Sub Category");
@@ -135,6 +150,7 @@ export const SubCategoryProvider = ({ children }) => {
         isSubEditId,
         setSubCategoryData,
         filterSubCategory,
+        pagination,
 
         EditSubCategory,
         fetchSubCategoryData,

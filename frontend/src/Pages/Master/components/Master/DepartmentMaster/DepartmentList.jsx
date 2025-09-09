@@ -8,12 +8,21 @@ import DepartmentForm from "./DepartmentForm";
 
 export default function DepartmentList() {
   const { modal, handleOpen } = useUIContext();
-  const { fetchDepartments } = useDepartment();
+  const { fetchDepartments, pagination, setPagination } = useDepartment();
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetchDepartments(search);
+    fetchDepartments(search, pagination.currentPage, pagination.perPage);
   }, [search]); // ✅ re-fetch when search changes
+
+  const handlePageChange = (page) => {
+    fetchDepartments(search, page, pagination.perPage);
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    fetchDepartments(search, 1, size); // reset to page 1 when changing size
+  };
+
   return (
     <>
       {/* ---------------------Start DepartmentList --------------------- */}
@@ -46,7 +55,13 @@ export default function DepartmentList() {
             </div>
             <div className="card-datatable table-responsive pt-0">
               <DepartmentTable />
-              <Pagination />
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalItems={pagination.total}
+                itemsPerPage={pagination.perPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
             </div>
           </div>
           {modal.addNewDepartment && <DepartmentForm />}

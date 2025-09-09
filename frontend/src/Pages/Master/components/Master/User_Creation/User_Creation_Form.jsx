@@ -70,9 +70,7 @@ export default function User_Creation_Form() {
         resetUserData();
         setIsEditUserId(null);
       } else {
-        console.log("user payload", payload);
         const newUser = await createUser(payload); // ✅ get response
-        console.log("newUser form", newUser);
         if (newUser?.id) {
           navigate(`/master/user-create/${newUser.id}`); // ✅ use real id
         }

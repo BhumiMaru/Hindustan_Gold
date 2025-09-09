@@ -46,6 +46,11 @@ export const UserCreationProvider = ({ children }) => {
   // };
 
   const [isEditUserId, setIsEditUserId] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    total: 0,
+  });
 
   // user Permission List
   const [userPermission, setUserPermission] = useState([]);
@@ -58,7 +63,6 @@ export const UserCreationProvider = ({ children }) => {
     user_id: null,
   });
 
-  // console.log(isEditUserId);
   // Fetch Users
   const fetchUserCreationData = async ({
     search = "",
@@ -66,6 +70,8 @@ export const UserCreationProvider = ({ children }) => {
     department_id = null,
     zone_id = null,
     status = null,
+    page = 1,
+    perPage = 10,
   } = {}) => {
     try {
       const res = await getData(ENDPOINTS.USER_CREATION.LIST, {
@@ -74,8 +80,16 @@ export const UserCreationProvider = ({ children }) => {
         department_id,
         zone_id,
         status,
+        page,
+        per_page: perPage,
       });
-      setUserCreations(res.data.data);
+      const apiData = res.data;
+      setUserCreations(apiData.data);
+      setPagination({
+        currentPage: apiData.current_page,
+        perPage: apiData.per_page,
+        total: apiData.total,
+      });
     } catch (error) {
       console.error(error);
       toast.error("Failed to fetch users");
@@ -305,7 +319,6 @@ export const UserCreationProvider = ({ children }) => {
     try {
       await postData(ENDPOINTS.USER_CREATION.PERMISSION_ADD_UPDATE, payload);
       toast.success("Permission updated successfully");
-      console.log("user ", payload);
       if (payload.user_id) {
         fetchUserPermission(payload.user_id);
       }
@@ -356,6 +369,8 @@ export const UserCreationProvider = ({ children }) => {
         filterUser,
         setFilterUser,
         userPermission,
+        pagination,
+        setPagination,
 
         fetchUserById,
         fetchUserFilter,

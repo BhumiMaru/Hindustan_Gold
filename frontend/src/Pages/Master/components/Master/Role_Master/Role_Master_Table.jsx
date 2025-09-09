@@ -5,7 +5,9 @@ import { useRoleMaster } from "../../../../../Context/Master/RoleMasterContext";
 
 export default function Role_Master_Table() {
   const { handleOpen } = useUIContext();
-  const { roles, startEditing, deleteRole } = useRoleMaster();
+  const { roles, startEditing, deleteRole, pagination } = useRoleMaster();
+  console.log("roles", roles);
+
   return (
     <>
       {/* ---------------------START ROLE MASTER TABLE---------------------- */}
@@ -22,11 +24,15 @@ export default function Role_Master_Table() {
           </tr>
         </thead>
         <tbody>
-          {roles.map((role, index) => {
+          {roles?.map((role, index) => {
             return (
               <tr key={role.id}>
                 <td>
-                  <div className="ms-4">{index + 1}</div>
+                  <div className="ms-4">
+                    {" "}
+                    {(pagination.currentPage - 1) * pagination.perPage +
+                      (index + 1)}
+                  </div>
                 </td>
                 <td>{role.role_name}</td>
                 <td>

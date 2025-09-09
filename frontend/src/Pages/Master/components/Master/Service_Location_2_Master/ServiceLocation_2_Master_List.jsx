@@ -38,7 +38,7 @@ export default function ServiceLocation_2_Master_List() {
             </div>
             <div className="d-flex gap-1">
               <div className="position-relative">
-                <CustomSelect
+                {/* <CustomSelect
                   options={serviceLocation?.map((loc) => ({
                     value: loc.id,
                     label: loc.service_location_name,
@@ -53,7 +53,7 @@ export default function ServiceLocation_2_Master_List() {
                       width: "250px", // 👈 fixed width here
                     }),
                   }}
-                />
+                /> */}
               </div>
 
               <button

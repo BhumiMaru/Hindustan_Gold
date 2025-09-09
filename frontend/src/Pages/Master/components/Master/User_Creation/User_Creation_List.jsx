@@ -8,15 +8,19 @@ import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import User_Creation_Table from "./User_Creation_Table";
+import View_User_Details from "./View_User_Details";
+import { useUIContext } from "../../../../../Context/UIContext";
 
 export default function User_Creation_List() {
+  const { modal } = useUIContext();
   const [search, setSearch] = useState("");
   const [roleId, setRoleId] = useState(null);
   const [deptId, setDeptId] = useState(null);
   const [zoneId, setZoneId] = useState(null);
   const [status, setStatus] = useState(null);
 
-  const { fetchUserCreationData } = useUserCreation();
+  const { fetchUserCreationData, pagination, setPagination } =
+    useUserCreation();
   const { zoneFilter, fetchZoneFilter } = useZone();
   const { deptFilter, fetchDeptFilter } = useDepartment();
   const { filterRole, fetchRoleFilter } = useRoleMaster();
@@ -36,8 +40,26 @@ export default function User_Creation_List() {
       department_id: deptId,
       zone_id: zoneId,
       status,
+      page: pagination.currentPage,
+      perPage: pagination.perPage,
     });
-  }, [search, roleId, deptId, zoneId, status]);
+  }, [
+    search,
+    roleId,
+    deptId,
+    zoneId,
+    status,
+    pagination.currentPage,
+    pagination.perPage,
+  ]);
+
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
+  };
 
   return (
     <>
@@ -142,10 +164,21 @@ export default function User_Creation_List() {
           {/* Table */}
           <div className="card-datatable table-responsive pt-0">
             <User_Creation_Table search={search} />
-            <Pagination />
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalItems={pagination.total}
+              itemsPerPage={pagination.perPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
           </div>
         </div>
       </div>
+      {modal.viewUserDetails && (
+        <>
+          <View_User_Details />
+        </>
+      )}
     </>
   );
 }

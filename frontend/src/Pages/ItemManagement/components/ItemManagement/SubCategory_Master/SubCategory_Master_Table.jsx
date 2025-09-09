@@ -3,7 +3,13 @@ import { useSubCategory } from "../../../../../Context/ItemManagement/SubCategor
 import { useUIContext } from "../../../../../Context/UIContext";
 
 export default function SubCategory_Master_Table() {
-  const { subCategory, StartEditing, deleteSubCategory } = useSubCategory();
+  const {
+    subCategory,
+    StartEditing,
+    deleteSubCategory,
+    pagination,
+    setSubCategoryData,
+  } = useSubCategory();
   const { handleOpen } = useUIContext();
   return (
     <>
@@ -30,7 +36,11 @@ export default function SubCategory_Master_Table() {
             return (
               <tr key={subCat.id}>
                 <td>
-                  <div className="ms-4">{index + 1}</div>
+                  <div className="ms-4">
+                    {" "}
+                    {(pagination.currentPage - 1) * pagination.perPage +
+                      (index + 1)}
+                  </div>
                 </td>
 
                 <td>{subCat.sub_category_name}</td>
@@ -61,6 +71,7 @@ export default function SubCategory_Master_Table() {
                     >
                       <i className="icon-base ti tabler-edit icon-22px"></i>
                     </button>
+
                     <button
                       type="button"
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
@@ -69,6 +80,18 @@ export default function SubCategory_Master_Table() {
                       onClick={() => deleteSubCategory(subCat.id)}
                     >
                       <i className="icon-base ti tabler-trash text-danger icon-22px"></i>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-text-info rounded-pill btn-icon waves-effect"
+                      data-bs-toggle="modal"
+                      data-bs-target="#smallModal"
+                      onClick={() => {
+                        handleOpen("viewSubCategory");
+                        setSubCategoryData(subCat);
+                      }}
+                    >
+                      <i className="icon-base ti tabler-eye text-info icon-22px" />
                     </button>
                   </div>
                 </td>

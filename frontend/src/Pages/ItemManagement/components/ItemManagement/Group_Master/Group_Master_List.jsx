@@ -9,11 +9,19 @@ import Group_Master_Form from "./Group_Master_Form";
 export default function Group_Master_List() {
   const { handleOpen, modal } = useUIContext();
   const [search, setSearch] = useState("");
-  const { fetchGroupData } = useGroupMasterContext();
+  const { fetchGroupData, pagination } = useGroupMasterContext();
 
   useEffect(() => {
-    fetchGroupData(search);
+    fetchGroupData(search, pagination.currentPage, pagination.perPage);
   }, [search]);
+
+  const handlePageChange = (page) => {
+    fetchGroupData(search, page, pagination.perPage);
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    fetchGroupData(search, 1, size); // reset to page 1 when changing size
+  };
 
   return (
     <>
@@ -46,7 +54,13 @@ export default function Group_Master_List() {
           </div>
           <div className="card-datatable table-responsive pt-0">
             <Group_Master_Table />
-            <Pagination />
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalItems={pagination.total}
+              itemsPerPage={pagination.perPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
           </div>
         </div>
       </div>

@@ -16,6 +16,11 @@ export const RoleMasterProvider = ({ children }) => {
   const [filterRole, setFilterRole] = useState([]);
   const [roleName, setRoleName] = useState("");
   const [roleEditId, setRoleEditId] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    total: 0,
+  });
 
   // role Permission List
   const [permission, setPermission] = useState([]);
@@ -27,10 +32,23 @@ export const RoleMasterProvider = ({ children }) => {
   });
 
   //   Fetch Role
-  const fetchRoleData = async (search = "") => {
+  // Fetch Role Data with pagination
+  const fetchRoleData = async (search = "", page = 1, perPage = 10) => {
     try {
-      const res = await getData(ENDPOINTS.ROLE_MASTER.LIST, { search });
-      setRoles(res.data.data);
+      const res = await getData(ENDPOINTS.ROLE_MASTER.LIST, {
+        search,
+        page,
+        per_page: perPage,
+      });
+
+      const apiData = res.data; // 👈 your API response structure
+      setRoles(apiData.data); // table data
+
+      setPagination({
+        currentPage: apiData.current_page,
+        perPage: perPage,
+        total: apiData.total,
+      });
     } catch (error) {
       console.log(error);
       toast.error("Failed to fetch Roles");
@@ -130,7 +148,6 @@ export const RoleMasterProvider = ({ children }) => {
       toast.success("Role Permission Created/Updated Successfully");
       setRolePermissionData(res.data.data);
 
-      // console.log(payload);
       if (payload.role_id) {
         fetchRolePermission(payload.role_id);
       }
@@ -152,6 +169,8 @@ export const RoleMasterProvider = ({ children }) => {
         filterRole,
         setFilterRole,
         permission,
+        pagination,
+        setPagination,
 
         fetchRoleData,
         fetchRoleFilter,

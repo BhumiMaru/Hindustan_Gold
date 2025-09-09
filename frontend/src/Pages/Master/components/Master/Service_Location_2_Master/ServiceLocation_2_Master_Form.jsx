@@ -45,11 +45,11 @@ export default function ServiceLocation_2_Master_Form() {
         updateServiceLocation2(
           serviceLocation2EditId,
           serviceLocation2Name,
-          selectedOption.value
+          selectedOption
         );
       } else {
         // ✅ create new
-        createServiceLocation2(serviceLocation2Name, selectedOption.value);
+        createServiceLocation2(serviceLocation2Name, selectedOption);
       }
 
       // ✅ reset state after success
