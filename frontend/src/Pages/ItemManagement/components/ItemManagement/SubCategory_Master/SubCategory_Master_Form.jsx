@@ -162,9 +162,6 @@ export default function SubCategory_Master_Form() {
                   </div>
                   {/* Primary */}
                   <div className="col-md-12 mb-4">
-                    {/* <label htmlFor="select2info1" className="form-label">
-                      Categary Owner
-                    </label> */}
                     <div className="select2-info">
                       <div className="position-relative">
                         <CustomSelect

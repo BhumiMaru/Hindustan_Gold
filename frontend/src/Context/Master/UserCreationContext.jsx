@@ -74,15 +74,21 @@ export const UserCreationProvider = ({ children }) => {
     perPage = 10,
   } = {}) => {
     try {
-      const res = await getData(ENDPOINTS.USER_CREATION.LIST, {
-        search,
-        role_id,
-        department_id,
-        zone_id,
-        status,
-        page,
-        per_page: perPage,
-      });
+      const params = { search, page, per_page: perPage };
+
+      if (role_id) {
+        params.role_id = role_id;
+      }
+
+      if (department_id) {
+        params.department_id = department_id;
+      }
+
+      if (zone_id) {
+        params.zone_id = zone_id;
+      }
+
+      const res = await getData(ENDPOINTS.USER_CREATION.LIST, params);
       const apiData = res.data;
       setUserCreations(apiData.data);
       setPagination({

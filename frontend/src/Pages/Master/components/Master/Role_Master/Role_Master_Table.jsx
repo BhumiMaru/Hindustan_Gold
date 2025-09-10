@@ -6,7 +6,6 @@ import { useRoleMaster } from "../../../../../Context/Master/RoleMasterContext";
 export default function Role_Master_Table() {
   const { handleOpen } = useUIContext();
   const { roles, startEditing, deleteRole, pagination } = useRoleMaster();
-  console.log("roles", roles);
 
   return (
     <>
@@ -37,27 +36,6 @@ export default function Role_Master_Table() {
                 <td>{role.role_name}</td>
                 <td>
                   <div className="d-inline-flex gap-2">
-                    <button
-                      type="button"
-                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                      data-bs-toggle="modal"
-                      data-bs-target="#smallModal"
-                      onClick={() => {
-                        handleOpen("addNewRole");
-                        startEditing(role.id, role.role_name);
-                      }}
-                    >
-                      <i className="icon-base ti tabler-edit icon-22px"></i>
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                      data-bs-toggle="modal"
-                      data-bs-target="#deleteModal"
-                      onClick={() => deleteRole(role.id)}
-                    >
-                      <i className="icon-base ti tabler-trash text-danger icon-22px"></i>
-                    </button>
                     <Link
                       to={`/role-permission/${role.id}`}
                       type="button"
@@ -65,6 +43,46 @@ export default function Role_Master_Table() {
                     >
                       <i className="icon-base ti tabler-article text-info icon-22px"></i>
                     </Link>
+                  </div>
+                  <div className="d-inline-flex gap-2">
+                    <a
+                      className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="true"
+                    >
+                      <i className="icon-base ti tabler-dots-vertical icon-20px" />
+                    </a>
+                    <div className="d-inline-block">
+                      <div
+                        className="dropdown-menu dropdown-menu-end m-0"
+                        style={{
+                          position: "absolute",
+                          inset: "auto 0px 0px auto",
+                          margin: 0,
+                          transform: "translate(-24px, -136px)",
+                        }}
+                        data-popper-placement="top-end"
+                      >
+                        <button
+                          // key={user.id}
+                          className="dropdown-item waves-effect"
+                          onClick={() => {
+                            handleOpen("addNewRole");
+                            startEditing(role.id, role.role_name);
+                          }}
+                        >
+                          Edit
+                        </button>
+
+                        <div className="dropdown-divider" />
+                        <a
+                          className="dropdown-item text-danger delete-record waves-effect"
+                          onClick={() => deleteRole(role.id)}
+                        >
+                          Delete
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </td>
               </tr>

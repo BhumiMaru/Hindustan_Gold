@@ -94,6 +94,7 @@ export const ZoneProvider = ({ children }) => {
   const deleteZone = async (id) => {
     try {
       const res = await deleteData(`${ENDPOINTS.ZONES.DELETE}/${id}`); // 👈 delete uses body, not params
+
       toast.success("Zone deleted successfully");
       fetchZones();
     } catch (err) {

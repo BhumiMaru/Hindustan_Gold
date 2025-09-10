@@ -28,51 +28,65 @@ export default function ServiceLocation_3_Master_Form() {
   }, []);
 
   const handleSave = () => {
-    // ✅ validate text input
-    const { valid, error } = validateTextInput(
-      serviceLocation3Data.serviceLocation3Name
-    );
-    if (!valid) {
-      toast.error(error);
-      return;
-    }
-
-    // ✅ validate select input
-    if (!serviceLocation3Data.selectedSl1) {
-      toast.error("Please select Service Location 1");
-      return;
-    }
-
-    if (!serviceLocation3Data.selectedSl2) {
-      toast.error("Please select Service Location 2");
-      return;
+    // Validate name only if present
+    if (serviceLocation3Data.service_location_3_name) {
+      const { valid, error } = validateTextInput(
+        serviceLocation3Data.service_location_3_name
+      );
+      if (!valid) {
+        toast.error(error);
+        return;
+      }
     }
 
     if (serviceLocation3EditId) {
-      // update
-      updateServiceLocation3(
-        serviceLocation3EditId,
-        serviceLocation3Data.serviceLocation3Name,
-        serviceLocation3Data.selectedSl1.value,
-        serviceLocation3Data.selectedSl2.value
-      );
+      // --- UPDATE MODE ---
+      let updatePayload = {};
+
+      if (serviceLocation3Data.service_location_3_name) {
+        updatePayload.service_location_3_name =
+          serviceLocation3Data.service_location_3_name;
+      }
+
+      if (serviceLocation3Data.selectedSl1) {
+        updatePayload.service_location_1_id = serviceLocation3Data.selectedSl1;
+      }
+
+      if (serviceLocation3Data.selectedSl2) {
+        updatePayload.service_location_2_id = serviceLocation3Data.selectedSl2;
+      }
+
+      updateServiceLocation3(serviceLocation3EditId, {
+        id: serviceLocation3EditId,
+        ...updatePayload,
+      });
     } else {
-      // create
+      // --- CREATE MODE ---
+      if (
+        !serviceLocation3Data.selectedSl1 ||
+        !serviceLocation3Data.selectedSl2
+      ) {
+        toast.error("Please select Service Location 1 & 2 for new entry");
+        return;
+      }
+
       createServiceLocation3(
-        serviceLocation3Data.serviceLocation3Name,
-        serviceLocation3Data.selectedSl1.value,
-        serviceLocation3Data.selectedSl2.value
+        serviceLocation3Data.service_location_3_name,
+        serviceLocation3Data.selectedSl1,
+        serviceLocation3Data.selectedSl2
       );
     }
 
+    // reset form
     handleClose("addNewServiceLocation3");
     setServiceLocation3EditId(null);
     setServiceLocation3Data({
-      serviceLocation3Name: "",
+      service_location_3_name: "",
       selectedSl1: null,
       selectedSl2: null,
     });
   };
+
   return (
     <>
       {/* -----------------START SERVICE LOCATION 3 MASTER Form-------------------- */}
@@ -106,16 +120,13 @@ export default function ServiceLocation_3_Master_Form() {
             <div className="modal-body">
               <div className="row">
                 <div className="col-md-12 mb-2">
-                  {/* <label htmlFor="select2Basic" className="form-label">
-                    Service Location 1
-                  </label> */}
                   <div className="position-relative">
                     <CustomSelect
                       options={serviceLocation1?.map((loc) => ({
                         value: loc.id,
                         label: loc.service_location_name,
                       }))}
-                      value={serviceLocation3Data.selectedSl1}
+                      value={serviceLocation3Data?.selectedSl1} // ✅ always full object
                       onChange={(val) =>
                         setServiceLocation3Data((prev) => ({
                           ...prev,
@@ -124,32 +135,25 @@ export default function ServiceLocation_3_Master_Form() {
                       }
                       label="Service Location 1"
                       placeholder="Select Service Location 1"
-                      id="serviceLocation1"
-                      required
                     />
                   </div>
                 </div>
                 <div className="col-md-12 mb-2">
-                  {/* <label htmlFor="select3Basic" className="form-label">
-                    Service Location 2
-                  </label> */}
                   <div className="position-relative">
                     <CustomSelect
                       options={serviceLocation2?.map((loc) => ({
                         value: loc.id,
                         label: loc.service_location_2_name,
                       }))}
-                      value={serviceLocation3Data.selectedSl2}
+                      value={serviceLocation3Data?.selectedSl2} // ✅ always full object
                       onChange={(val) =>
                         setServiceLocation3Data((prev) => ({
                           ...prev,
                           selectedSl2: val,
                         }))
                       }
-                      placeholder="Select Service Location 2"
-                      id="serviceLocation2"
                       label="Service Location 2"
-                      required
+                      placeholder="Select Service Location 2"
                     />
                   </div>
                 </div>
@@ -162,14 +166,18 @@ export default function ServiceLocation_3_Master_Form() {
                     id="nameSmall"
                     className="form-control"
                     placeholder="Enter Service Location 3 Name"
-                    value={serviceLocation3Data.serviceLocation3Name}
+                    value={serviceLocation3Data.service_location_3_name}
                     onChange={(e) =>
                       setServiceLocation3Data((prev) => ({
                         ...prev,
-                        serviceLocation3Name: e.target.value,
+                        service_location_3_name: e.target.value,
                       }))
                     }
                   />
+                  {console.log(
+                    "serviceLocation3Data.service_location_3_name",
+                    serviceLocation3Data.service_location_3_name
+                  )}
                 </div>
               </div>
             </div>

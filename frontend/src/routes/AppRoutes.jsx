@@ -176,7 +176,7 @@ export default function AppRoutes() {
         <Route path="/item/subcategory" element={<SubCategory_Master_Page />} />
         <Route path="/item/item-master" element={<Item_Master_Page />} />
         <Route
-          path="/item/item-create-material"
+          path="/item/item-create/:type"
           element={
             <ItemMasterProvider>
               <CategoryMasterProvider>
@@ -195,14 +195,14 @@ export default function AppRoutes() {
             </ItemMasterProvider>
           }
         />
-        <Route
+        {/* <Route
           path="/item/item-create-service"
           element={<Item_Create_Service_Form />}
         />
         <Route
           path="/item/item-create-asset"
           element={<Item_Create_Asset_Form />}
-        />
+        /> */}
 
         {/* Request Management */}
         <Route

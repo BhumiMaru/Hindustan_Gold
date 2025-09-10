@@ -9,8 +9,10 @@ import Item_Master_Table from "./Item_Master_Table";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 
 export default function Item_Master_List() {
+  const [selectedType, setSelectedType] = useState(""); // default from URL
+
   const [search, setSearch] = useState(""); // what user types
-  const [type, setType] = useState("");
+  // const [type, setType] = useState("");
   const [categoryId, setCategoryId] = useState(null);
   const [subCategoryId, setSubCategoryId] = useState(null);
   const [status, setStatus] = useState(null);
@@ -24,12 +26,12 @@ export default function Item_Master_List() {
     fetchSubCategoryFilter();
     fetchItemMaster({
       search,
-      type: type,
-      category_id: categoryId,
-      subcategory_id: subCategoryId,
+      type: selectedType,
+      c_id: categoryId,
+      sub_c_id: subCategoryId,
       status,
     }); // fetch only when query changes
-  }, [search, type, categoryId, subCategoryId, status]);
+  }, [search, selectedType, categoryId, subCategoryId, status]);
 
   return (
     <>
@@ -107,21 +109,21 @@ export default function Item_Master_List() {
             </div>
             <div className="d-flex flex-wrap gap-1">
               <Link
-                to="/item/item-create-material"
+                to="/item/item-create/material"
                 className="btn btn-primary waves-effect waves-light"
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2" />
                 Add Material
               </Link>
               <Link
-                to="/item/item-create-service"
+                to="/item/item-create/service"
                 className="btn btn-info waves-effect waves-light"
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2" />
                 Add Service
               </Link>
               <Link
-                to="/item/item-create-asset"
+                to="/item/item-create/asset"
                 className="btn btn-success waves-effect waves-light"
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2" />

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
 import { useCategoryMaster } from "../../../../../Context/ItemManagement/CategoryMasterContext";
 import { useZone } from "../../../../../Context/Master/ZoneContext";
@@ -10,12 +10,16 @@ import { useSubCategory } from "../../../../../Context/ItemManagement/SubCategor
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 
 export default function Item_Create_Material_Form() {
+  const { type } = useParams();
   const {
     itemMasterData,
     setItemMasterData,
     isItemEditId,
     EditItemMaster,
     createItemMaster,
+    itemSubCategoryId,
+    setItemSubCategoryId,
+    getCategoryGroupAndItemCodeBySubCategoryId,
   } = useItemMaster();
   const navigate = useNavigate();
   const { filterCategory, fetchCategoryFilter } = useCategoryMaster();
@@ -26,13 +30,19 @@ export default function Item_Create_Material_Form() {
   const { filterSubCategory, fetchSubCategoryFilter } = useSubCategory();
 
   useEffect(() => {
+    // Set the item type based on URL param
+    setItemMasterData((prev) => ({
+      ...prev,
+      type: type,
+      item_type: type, // Set both if needed
+    }));
     fetchSL1Filter();
     fetchSL2Filter();
     fetchSL3Filter();
     fetchSubCategoryFilter();
     fetchZoneFilter();
     fetchCategoryFilter();
-  }, []);
+  }, [type]);
 
   // Save Item Material Data
   const handleSave = async () => {
@@ -42,9 +52,8 @@ export default function Item_Create_Material_Form() {
         await EditItemMaster(isItemEditId, payload);
       } else {
         await createItemMaster(payload);
+        navigate("/item/item-master");
       }
-
-      navigate("/item/item-master");
     } catch (error) {
       console.log("item save error", error);
     }
@@ -130,6 +139,7 @@ export default function Item_Create_Material_Form() {
                         value="material"
                       />
                     </div>
+                    {/* Group */}
                     <div className="col-sm-3 mb-4">
                       <label htmlFor="Group" className="form-label">
                         Group
@@ -140,7 +150,7 @@ export default function Item_Create_Material_Form() {
                         id="Group"
                         placeholder="Group"
                         // defaultValue=""
-                        disabled=""
+                        disabled
                         readOnly=""
                         value={itemMasterData.group_id}
                         onChange={(e) =>
@@ -151,6 +161,7 @@ export default function Item_Create_Material_Form() {
                         }
                       />
                     </div>
+                    {/* Category */}
                     <div className="col-sm-3 mb-4">
                       <label htmlFor="Category" className="form-label">
                         Category
@@ -160,7 +171,7 @@ export default function Item_Create_Material_Form() {
                         className="form-control"
                         id="Category"
                         placeholder="Category"
-                        disabled=""
+                        disabled
                         defaultValue="Categary"
                         readOnly=""
                         value={itemMasterData.c_id}
@@ -172,8 +183,21 @@ export default function Item_Create_Material_Form() {
                         }
                       />
                     </div>
+                    {/* Sub Category */}
                     <div className="col-sm-3 mb-4">
                       <div className="position-relative">
+                        {/* Type - Hidden Field */}
+                        <input
+                          type="hidden"
+                          value={type}
+                          onChange={(e) =>
+                            setItemMasterData({
+                              ...itemMasterData,
+                              type: e.target.value,
+                              item_type: e.target.value, // Also set item_type if needed by backend
+                            })
+                          }
+                        />
                         <CustomSelect
                           id="selectSubCategory"
                           label="Subcategory"
@@ -182,83 +206,188 @@ export default function Item_Create_Material_Form() {
                             label: subcat.sub_category_name,
                           }))}
                           value={itemMasterData.sub_c_id}
-                          onChange={(val) =>
-                            setItemMasterData({
-                              ...itemMasterData,
-                              sub_c_id: val,
-                            })
-                          }
+                          onChange={(val) => {
+                            console.log("🔹 SubCategory Selected:", val);
+                            console.log(
+                              "🔹 Current type (from URL params):",
+                              type
+                            );
+                            console.log(
+                              "🔹 Previous itemMasterData:",
+                              itemMasterData
+                            );
+
+                            setItemMasterData((prev) => {
+                              const updated = {
+                                ...prev,
+                                sub_c_id: val,
+                                item_type: type, // ✅ always set item_type from param
+                              };
+                              console.log(
+                                "🔹 Updated itemMasterData (before setState):",
+                                updated
+                              );
+                              return updated;
+                            });
+
+                            // ✅ API call with correct values
+                            getCategoryGroupAndItemCodeBySubCategoryId(
+                              type,
+                              val
+                            );
+                          }}
                           placeholder="Select SubCategory"
                           required
                         />
+                        {console.log(
+                          "🔹 Rendered SubCategory ID:",
+                          itemMasterData.sub_c_id
+                        )}
                       </div>
                     </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="Itemname" className="form-label">
-                        Item
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="Itemname"
-                        placeholder="Enter Item Name"
-                        value={itemMasterData.item_name}
-                        onChange={(e) =>
-                          setItemMasterData({
-                            ...itemMasterData,
-                            item_name: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <div className="position-relative">
-                        <CustomSelect
-                          id="selectuom"
-                          label="Unit Of Measure"
-                          options={[
-                            {
-                              value: "kg",
-                              label: "KG",
-                            },
-                            {
-                              value: "ltr",
-                              label: "Ltr",
-                            },
-                          ]}
-                          value={itemMasterData.uom}
-                          onChange={(val) =>
+                    {/* Item Name */}
+                    {type === "material" && (
+                      <div className="col-sm-3 mb-4">
+                        <label htmlFor="Itemname" className="form-label">
+                          Item
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="Itemname"
+                          placeholder="Enter Item Name"
+                          value={itemMasterData.item_name}
+                          onChange={(e) =>
                             setItemMasterData({
                               ...itemMasterData,
-                              uom: val,
+                              item_name: e.target.value,
                             })
                           }
-                          placeholder="Select Unit of Measure"
-                          required
                         />
                       </div>
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="ItemCode" className="form-label">
-                        Item Code
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="ItemCode"
-                        placeholder="Item Code"
-                        defaultValue="AS-DN-001"
-                        disabled=""
-                        readOnly=""
-                        value={itemMasterData.item_code}
-                        onChange={(e) =>
-                          setItemMasterData({
-                            ...itemMasterData,
-                            item_code: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
+                    )}
+
+                    {/* Unit Of Measure */}
+                    {type === "material" && (
+                      <div className="col-sm-3 mb-4">
+                        <div className="position-relative">
+                          <CustomSelect
+                            id="selectuom"
+                            label="Unit Of Measure"
+                            options={[
+                              {
+                                value: "kg",
+                                label: "KG",
+                              },
+                              {
+                                value: "ltr",
+                                label: "Ltr",
+                              },
+                            ]}
+                            value={itemMasterData.uom}
+                            onChange={(val) =>
+                              setItemMasterData({
+                                ...itemMasterData,
+                                uom: val,
+                              })
+                            }
+                            placeholder="Select Unit of Measure"
+                            required
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Item Code */}
+                    {type === "material" && (
+                      <div className="col-sm-3 mb-4">
+                        <label htmlFor="ItemCode" className="form-label">
+                          Item Code
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="ItemCode"
+                          placeholder="Item Code"
+                          defaultValue="AS-DN-001"
+                          disabled
+                          readOnly=""
+                          value={itemMasterData.item_code}
+                          onChange={(e) =>
+                            setItemMasterData({
+                              ...itemMasterData,
+                              item_code: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    )}
+
+                    {/* Service Name */}
+                    {type === "service" && (
+                      <div className="col-sm-3 mb-4">
+                        <label htmlFor="Servicename" className="form-label">
+                          Service
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="Servicename"
+                          placeholder="Enter Service Name"
+                        />
+                      </div>
+                    )}
+                    {/* Service Code */}
+                    {type === "service" && (
+                      <div className="col-sm-3 mb-4">
+                        <label htmlFor="ServiceCode" className="form-label">
+                          Service Code
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="ServiceCode"
+                          placeholder="Service Code"
+                          defaultValue="AS-DN-001"
+                          disabled
+                          readOnly=""
+                        />
+                      </div>
+                    )}
+
+                    {/* Asset Name */}
+                    {type === "asset" && (
+                      <div className="col-sm-3 mb-4">
+                        <label htmlFor="Assetname" className="form-label">
+                          Asset
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="Assetname"
+                          placeholder="Enter Asset Name"
+                        />
+                      </div>
+                    )}
+                    {/* Asset Code */}
+                    {type === "asset" && (
+                      <div className="col-sm-3 mb-4">
+                        <label htmlFor="AssetCode" className="form-label">
+                          Asset Code
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="AssetCode"
+                          placeholder="Service Code"
+                          defaultValue="AS-DN-001"
+                          disabled=""
+                          readOnly=""
+                        />
+                      </div>
+                    )}
+
+                    {/* Description */}
                     <div className="col-sm-6 mb-4">
                       <label htmlFor="Description" className="form-label">
                         Description
@@ -276,116 +405,163 @@ export default function Item_Create_Material_Form() {
                         }
                       />
                     </div>
+
                     {/* Is Purpose Required? */}
-                    <div className="col-sm-3 mb-4">
-                      <label className="form-label">Is Purpose Required?</label>
-                      <div>
-                        <div className="form-check form-check-inline mt-4">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="purposeRequired"
-                            id="purposeYes"
-                            value="1"
-                            checked={itemMasterData.is_purpose_required === 1}
-                            onChange={(e) =>
-                              setItemMasterData({
-                                ...itemMasterData,
-                                is_purpose_required: Number(e.target.value),
-                              })
-                            }
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="purposeYes"
-                          >
-                            Yes
-                          </label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="purposeRequired"
-                            id="purposeNo"
-                            value="0"
-                            checked={itemMasterData.is_purpose_required === 0}
-                            onChange={(e) =>
-                              setItemMasterData({
-                                ...itemMasterData,
-                                is_purpose_required: Number(e.target.value),
-                              })
-                            }
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="purposeNo"
-                          >
-                            No
-                          </label>
+                    {type !== "asset" && (
+                      <div className="col-sm-3 mb-4">
+                        <label className="form-label">
+                          Is Purpose Required?
+                        </label>
+                        <div>
+                          <div className="form-check form-check-inline mt-4">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="purposeRequired"
+                              id="purposeYes"
+                              value="1"
+                              checked={itemMasterData.is_purpose_required === 1}
+                              onChange={(e) =>
+                                setItemMasterData({
+                                  ...itemMasterData,
+                                  is_purpose_required: Number(e.target.value),
+                                })
+                              }
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="purposeYes"
+                            >
+                              Yes
+                            </label>
+                          </div>
+                          <div className="form-check form-check-inline">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="purposeRequired"
+                              id="purposeNo"
+                              value="0"
+                              checked={itemMasterData.is_purpose_required === 0}
+                              onChange={(e) =>
+                                setItemMasterData({
+                                  ...itemMasterData,
+                                  is_purpose_required: Number(e.target.value),
+                                })
+                              }
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="purposeNo"
+                            >
+                              No
+                            </label>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
 
                     {/* Is Approval Required? */}
-                    <div className="col-sm-3 mb-4">
-                      <label className="form-label">
-                        Is Approval Required?
-                      </label>
-                      <div>
-                        <div className="form-check form-check-inline mt-4">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="approvalRequired"
-                            id="approvalYes"
-                            value="1"
-                            checked={itemMasterData.is_approval_required === 1}
-                            onChange={(e) =>
-                              setItemMasterData({
-                                ...itemMasterData,
-                                is_approval_required: Number(e.target.value),
-                              })
-                            }
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="approvalYes"
-                          >
-                            Yes
-                          </label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="approvalRequired"
-                            id="approvalNo"
-                            value="0"
-                            checked={itemMasterData.is_approval_required === 0}
-                            onChange={(e) =>
-                              setItemMasterData({
-                                ...itemMasterData,
-                                is_approval_required: Number(e.target.value),
-                              })
-                            }
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="approvalNo"
-                          >
-                            No
-                          </label>
+                    {type !== "asset" && (
+                      <div className="col-sm-3 mb-4">
+                        <label className="form-label">
+                          Is Approval Required?
+                        </label>
+                        <div>
+                          <div className="form-check form-check-inline mt-4">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="approvalRequired"
+                              id="approvalYes"
+                              value="1"
+                              checked={
+                                itemMasterData.is_approval_required === 1
+                              }
+                              onChange={(e) =>
+                                setItemMasterData({
+                                  ...itemMasterData,
+                                  is_approval_required: Number(e.target.value),
+                                })
+                              }
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="approvalYes"
+                            >
+                              Yes
+                            </label>
+                          </div>
+                          <div className="form-check form-check-inline">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="approvalRequired"
+                              id="approvalNo"
+                              value="0"
+                              checked={
+                                itemMasterData.is_approval_required === 0
+                              }
+                              onChange={(e) =>
+                                setItemMasterData({
+                                  ...itemMasterData,
+                                  is_approval_required: Number(e.target.value),
+                                })
+                              }
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="approvalNo"
+                            >
+                              No
+                            </label>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
+
+                    {/* Is Movable Required? */}
+                    {type === "asset" && (
+                      <div className="col-sm-3 mb-4">
+                        <label className="form-label">Is Movable?</label>
+                        <div>
+                          <div className="form-check form-check-inline mt-4">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="inlineRadioOptions"
+                              id="inlineRadio112"
+                              defaultValue="option1"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="inlineRadio1"
+                            >
+                              Yes
+                            </label>
+                          </div>
+                          <div className="form-check form-check-inline">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="inlineRadioOptions"
+                              id="inlineRadio212"
+                              defaultValue="option2"
+                            />
+                            <label
+                              className="form-check-label"
+                              htmlFor="inlineRadio2"
+                            >
+                              No
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Primary */}
                     {/* service location 1 */}
-                    <div className="col-sm-3 mb-4">
-                      {/* <label htmlFor="select2Primary" className="form-label">
-                        Storage Location
-                      </label> */}
+                    {/* <div className="col-sm-3 mb-4">
                       <div className="select2-primary">
                         <div className="position-relative">
                           <CustomSelect
@@ -407,12 +583,9 @@ export default function Item_Create_Material_Form() {
                           />
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                     {/* service location 2 */}
-                    <div className="col-sm-3 mb-4">
-                      {/* <label htmlFor="select2Primary" className="form-label">
-                        Storage Location
-                      </label> */}
+                    {/* <div className="col-sm-3 mb-4">
                       <div className="select2-primary">
                         <div className="position-relative">
                           <CustomSelect
@@ -434,15 +607,14 @@ export default function Item_Create_Material_Form() {
                           />
                         </div>
                       </div>
-                    </div>
-                    {/* service location 2 */}
+                    </div> */}
+
+                    {/* service location 3 */}
                     <div className="col-sm-3 mb-4">
-                      {/* <label htmlFor="select2Primary" className="form-label">
-                        Storage Location
-                      </label> */}
                       <div className="select2-primary">
                         <div className="position-relative">
                           <CustomSelect
+                            multiple={true}
                             options={serviceL3?.map((loc) => ({
                               value: loc.id,
                               label: loc.service_location_3_name,
@@ -462,7 +634,7 @@ export default function Item_Create_Material_Form() {
                         </div>
                       </div>
                     </div>
-                    {/* Primary */}
+                    {/* Primary Zone */}
                     <div className="col-sm-3 mb-4">
                       <label htmlFor="select2info" className="form-label">
                         Zone
@@ -471,6 +643,7 @@ export default function Item_Create_Material_Form() {
                         <div className="position-relative">
                           <CustomSelect
                             id="selectZone"
+                            multiple={true}
                             options={zoneFilter?.map((zone) => ({
                               value: zone.id,
                               label: zone.zone_name,
@@ -487,64 +660,117 @@ export default function Item_Create_Material_Form() {
                         </div>
                       </div>
                     </div>
+                    {/* Stock */}
+                    {type === "material" && (
+                      <div className="col-sm-3 mb-4">
+                        <label htmlFor="Stock" className="form-label">
+                          Stock
+                        </label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          id="Stock"
+                          placeholder="Stock"
+                          value={itemMasterData.stock}
+                          onChange={(e) =>
+                            setItemMasterData({
+                              ...itemMasterData,
+                              stock: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    )}
+
+                    {/*  Stock Value */}
+                    {type === "material" && (
+                      <div className="col-sm-3 mb-4">
+                        <label htmlFor="StockValue" className="form-label">
+                          Stock Value
+                        </label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          id="StockValue"
+                          placeholder="Stock Value"
+                          value={itemMasterData.stock_value}
+                          onChange={(e) =>
+                            setItemMasterData({
+                              ...itemMasterData,
+                              stock_value: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    )}
+
+                    {/* Minimum Stock */}
+                    {type === "material" && (
+                      <div className="col-sm-3 mb-4">
+                        <label htmlFor="MinimumStock" className="form-label">
+                          Minimum Stock
+                        </label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          id="MinimumStock"
+                          placeholder="Minimum Stock"
+                          value={itemMasterData.minimum_stock}
+                          onChange={(e) =>
+                            setItemMasterData({
+                              ...itemMasterData,
+                              minimum_stock: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    )}
+
+                    {/* Purchase Date */}
+                    {type === "asset" && (
+                      <div className="col-sm-3 mb-4">
+                        <label htmlFor="PurchaseDate" className="form-label">
+                          Purchase Date
+                        </label>
+                        <input
+                          type="date"
+                          className="form-control"
+                          id="PurchaseDate"
+                          placeholder="Purchase Date"
+                        />
+                      </div>
+                    )}
+                    {/* Warranty Expiry */}
+                    {type === "asset" && (
+                      <div className="col-sm-3 mb-4">
+                        <label htmlFor="WarrantyExpiry" className="form-label">
+                          Warranty Expiry
+                        </label>
+                        <input
+                          type="date"
+                          className="form-control"
+                          id="WarrantyExpiry"
+                          placeholder="Warranty Expiry Date"
+                        />
+                      </div>
+                    )}
+                    {/* Quantity */}
+                    {type === "asset" && (
+                      <div className="col-sm-3 mb-4">
+                        <label htmlFor="Quantity" className="form-label">
+                          Quantity
+                        </label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          id="Quantity"
+                          placeholder="Enter Quantity"
+                        />
+                      </div>
+                    )}
+
+                    {/* Status */}
                     <div className="col-sm-3 mb-4">
-                      <label htmlFor="Stock" className="form-label">
-                        Stock
-                      </label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        id="Stock"
-                        placeholder="Stock"
-                        value={itemMasterData.stock}
-                        onChange={(e) =>
-                          setItemMasterData({
-                            ...itemMasterData,
-                            stock: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="StockValue" className="form-label">
-                        Stock Value
-                      </label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        id="StockValue"
-                        placeholder="Stock Value"
-                        value={itemMasterData.stock_value}
-                        onChange={(e) =>
-                          setItemMasterData({
-                            ...itemMasterData,
-                            stock_value: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="MinimumStock" className="form-label">
-                        Minimum Stock
-                      </label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        id="MinimumStock"
-                        placeholder="Minimum Stock"
-                        value={itemMasterData.minimum_stock}
-                        onChange={(e) =>
-                          setItemMasterData({
-                            ...itemMasterData,
-                            minimum_stock: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      {/* <label htmlFor="status" className="form-label">
-                        Status
-                      </label> */}
                       <div className="position-relative">
                         <CustomSelect
                           id="selectStatus"
@@ -572,6 +798,8 @@ export default function Item_Create_Material_Form() {
                         />
                       </div>
                     </div>
+
+                    {/* Save Btn */}
                     <div className="col-lg-12 text-end">
                       <button
                         className="btn btn-primary waves-effect waves-light"

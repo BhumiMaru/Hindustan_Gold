@@ -10,16 +10,30 @@ import ServiceLocation_2_Master_Form from "./ServiceLocation_2_Master_Form";
 
 export default function ServiceLocation_2_Master_List() {
   const { handleOpen, modal } = useUIContext();
-  const { fetchServiceLocations2, selectedOption, setSelectedOption } =
-    useServiceLocation2Master();
+  const {
+    fetchServiceLocations2,
+    selectedOption,
+    setSelectedOption,
+    filterSelectedOption,
+    setFilterSelectedOption,
+  } = useServiceLocation2Master();
   const { serviceLocation, fetchServiceLocations } =
     useServiceLocation1Master();
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetchServiceLocations();
-    fetchServiceLocations2(search, selectedOption);
-  }, [search, selectedOption]);
+    fetchServiceLocations2(search, filterSelectedOption);
+  }, [search, filterSelectedOption]);
+
+  // Create options with "All" option
+  const locationOptions = [
+    { value: "all", label: "All" },
+    ...(serviceLocation?.map((loc) => ({
+      value: loc.id,
+      label: loc.service_location_name,
+    })) || []),
+  ];
   return (
     <>
       {/* -----------------START SERVICE LOCATION 2 MASTER List-------------------- */}
@@ -38,22 +52,22 @@ export default function ServiceLocation_2_Master_List() {
             </div>
             <div className="d-flex gap-1">
               <div className="position-relative">
-                {/* <CustomSelect
-                  options={serviceLocation?.map((loc) => ({
-                    value: loc.id,
-                    label: loc.service_location_name,
-                  }))}
-                  value={selectedOption}
-                  onChange={setSelectedOption}
+                <CustomSelect
+                  options={locationOptions}
+                  value={filterSelectedOption}
+                  onChange={(value) => {
+                    // If "all" is selected, pass null to show all records
+                    setFilterSelectedOption(value === "all" ? null : value);
+                  }}
                   placeholder="Service Location 1"
                   required
                   styles={{
                     container: (base) => ({
                       ...base,
-                      width: "250px", // 👈 fixed width here
+                      width: "250px",
                     }),
                   }}
-                /> */}
+                />
               </div>
 
               <button

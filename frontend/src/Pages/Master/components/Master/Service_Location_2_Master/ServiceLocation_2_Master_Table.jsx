@@ -36,35 +36,43 @@ export default function ServiceLocation_2_Master_Table() {
 
                 <td>
                   <div className="d-inline-flex gap-2">
-                    <button
-                      type="button"
-                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                      data-bs-toggle="modal"
-                      data-bs-target="#smallModal"
-                      onClick={() => {
-                        startEditing(
-                          serviceLocation2.id,
-                          serviceLocation2.service_location_2_name,
-                          serviceLocation2.service_location_1_id,
-                          serviceLocation2.service_location1
-                            ?.service_location_name
-                        );
-                        handleOpen("addNewServiceLocation2");
-                      }}
+                    <a
+                      className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
                     >
-                      <i className="icon-base ti tabler-edit icon-22px"></i>
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                      data-bs-toggle="modal"
-                      data-bs-target="#deleteModal"
-                      onClick={() => {
-                        deleteServiceLocation2(serviceLocation2.id);
-                      }}
-                    >
-                      <i className="icon-base ti tabler-trash text-danger icon-22px"></i>
-                    </button>
+                      <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
+                    </a>
+                    <div className="d-inline-block">
+                      <div className="dropdown-menu dropdown-menu-end m-0">
+                        <button
+                          // key={user.id}
+                          className="dropdown-item waves-effect"
+                          onClick={() => {
+                            startEditing(
+                              serviceLocation2.id,
+                              serviceLocation2.service_location_2_name,
+                              serviceLocation2.service_location_1_id,
+                              serviceLocation2.service_location1
+                                ?.service_location_name
+                            );
+                            handleOpen("addNewServiceLocation2");
+                          }}
+                        >
+                          Edit
+                        </button>
+
+                        {/* <div className="dropdown-divider"></div> */}
+                        <a
+                          className="dropdown-item text-danger delete-record waves-effect"
+                          onClick={() => {
+                            deleteServiceLocation2(serviceLocation2.id);
+                          }}
+                        >
+                          Delete
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </td>
               </tr>

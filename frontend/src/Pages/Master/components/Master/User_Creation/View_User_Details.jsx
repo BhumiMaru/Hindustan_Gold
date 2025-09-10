@@ -67,7 +67,7 @@ export default function View_User_Details() {
                       <p>
                         {
                           useCreationData?.servicelocation1
-                            .service_location_name
+                            ?.service_location_name
                         }
                       </p>
                     </div>
@@ -77,7 +77,7 @@ export default function View_User_Details() {
                         {" "}
                         {
                           useCreationData?.servicelocation2
-                            .service_location_2_name
+                            ?.service_location_2_name
                         }{" "}
                       </p>
                     </div>
@@ -87,7 +87,7 @@ export default function View_User_Details() {
                         {" "}
                         {
                           useCreationData?.servicelocation3
-                            .service_location_3_name
+                            ?.service_location_3_name
                         }{" "}
                       </p>
                     </div>

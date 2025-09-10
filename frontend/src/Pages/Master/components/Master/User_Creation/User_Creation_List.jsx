@@ -61,6 +61,42 @@ export default function User_Creation_List() {
     setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
   };
 
+  // Create options with "All" option
+  const roleOptions = [
+    { value: "all", label: "All" },
+    ...(filterRole?.map((role) => ({
+      value: role.id,
+      label: role.role_name,
+    })) || []),
+  ];
+
+  // Create options with "All" option
+  const deptOptions = [
+    { value: "all", label: "All" },
+    ...(deptFilter?.map((dept) => ({
+      value: dept.id,
+      label: dept.department_name,
+    })) || []),
+  ];
+
+  // Create options with "All" option
+  const zoneOptions = [
+    { value: "all", label: "All" },
+    ...(zoneFilter?.map((zone) => ({
+      value: zone.id,
+      label: zone.zone_name,
+    })) || []),
+  ];
+
+  // Create options with "All" option
+  // const roleOptions = [
+  //   { value: "all", label: "All" },
+  //   ...(filterRole?.map((role) => ({
+  //     value: role.id,
+  //     label: role.role_name,
+  //   })) || []),
+  // ];
+
   return (
     <>
       <div className="container-xxl flex-grow-1 container-p-y">
@@ -90,12 +126,11 @@ export default function User_Creation_List() {
             <div className="col-lg-3">
               <CustomSelect
                 id="selectRole"
-                options={filterRole.map((role) => ({
-                  value: role.id,
-                  label: role.role_name,
-                }))}
+                options={roleOptions}
                 value={roleId}
-                onChange={setRoleId}
+                onChange={(option) =>
+                  setRoleId(option === "all" ? null : option)
+                }
                 placeholder="Select Role"
                 styles={{
                   container: (base) => ({
@@ -108,12 +143,11 @@ export default function User_Creation_List() {
             <div className="col-lg-3">
               <CustomSelect
                 id="selectDepartment"
-                options={deptFilter.map((dept) => ({
-                  value: dept.id,
-                  label: dept.department_name,
-                }))}
+                options={deptOptions}
                 value={deptId}
-                onChange={setDeptId}
+                onChange={(option) =>
+                  setDeptId(option === "all" ? null : option)
+                }
                 placeholder="Select Department"
                 styles={{
                   container: (base) => ({
@@ -126,12 +160,11 @@ export default function User_Creation_List() {
             <div className="col-lg-3">
               <CustomSelect
                 id="selectZone"
-                options={zoneFilter.map((zone) => ({
-                  value: zone.id,
-                  label: zone.zone_name,
-                }))}
+                options={zoneOptions}
                 value={zoneId}
-                onChange={setZoneId}
+                onChange={(option) =>
+                  setZoneId(option === "all" ? null : option)
+                }
                 placeholder="Select Zone"
                 styles={{
                   container: (base) => ({

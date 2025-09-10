@@ -63,7 +63,7 @@ export default function Item_Master_Table({ search }) {
                 <td>
                   <div className="d-inline-flex gap-2">
                     <Link
-                      to="/item/item-create-material"
+                      to={`/item/item-create/${item.type}`}
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                     >
                       <i className="icon-base ti tabler-edit icon-22px" />

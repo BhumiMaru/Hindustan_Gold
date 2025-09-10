@@ -16,6 +16,7 @@ export const ItemMasterProvider = ({ children }) => {
   const [isItemEditId, setItemEditId] = useState(null);
   const [itemMasterData, setItemMasterData] = useState({
     item_code: "",
+    item_type: "",
     type: "",
     item_name: "",
     c_id: null,
@@ -38,25 +39,23 @@ export const ItemMasterProvider = ({ children }) => {
     service_location3: null,
     status: null,
   });
+  const [itemSubCategoryId, setItemSubCategoryId] = useState(null);
 
   // Get All Item Master Data
   const fetchItemMaster = async ({
     search = "",
     type = "",
-    category_id = null,
-    subcategory_id = null,
+    c_id = null,
+    sub_c_id = null,
     status = null,
   }) => {
     try {
-      const res = await getData(
-        `${ENDPOINTS.ITEM_MASTER.LIST}?search=${search}`,
-        {
-          type,
-          category_id,
-          subcategory_id,
-          status,
-        }
-      );
+      const res = await getData(ENDPOINTS.ITEM_MASTER.LIST, {
+        type,
+        c_id,
+        sub_c_id,
+        status,
+      });
 
       if (res.data && res.data.status === false) {
         // Backend says no data
@@ -152,6 +151,42 @@ export const ItemMasterProvider = ({ children }) => {
     });
   };
 
+  // Get Category , Group And Item code from Sub category id
+  // Get Category , Group And Item code from Sub category id
+  const getCategoryGroupAndItemCodeBySubCategoryId = async (type, sub_c_id) => {
+    try {
+      const res = await postData(ENDPOINTS.ITEM_MASTER.CODEGET, {
+        item_type: type, // Changed from 'type' to 'item_type'
+        sub_c_id,
+      });
+
+      if (res.data) {
+        const { item_code, category, group } = res.data;
+
+        // auto update itemMasterData with category, group, and item_code
+        setItemMasterData((prev) => ({
+          ...prev,
+          item_code: item_code,
+          c_id: category?.id,
+          group_id: group?.id,
+          sub_c_id: sub_c_id,
+        }));
+
+        return res.data; // return full data in case needed
+      } else {
+        toast.error(res.data.message || "Failed to generate item code");
+        return null;
+      }
+    } catch (error) {
+      console.log(
+        "item master getCategoryGroupAndItemCodeBySubCategoryId error:",
+        error
+      );
+      toast.error("Failed to generate item code");
+      return null;
+    }
+  };
+
   return (
     <ItemMasterContext.Provider
       value={{
@@ -159,7 +194,10 @@ export const ItemMasterProvider = ({ children }) => {
         isItemEditId,
         itemMasterData,
         setItemMasterData,
+        itemSubCategoryId,
+        setItemSubCategoryId,
 
+        getCategoryGroupAndItemCodeBySubCategoryId,
         fetchItemMaster,
         createItemMaster,
         deleteItemMaster,

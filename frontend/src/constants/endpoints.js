@@ -77,5 +77,6 @@ export const ENDPOINTS = {
     ADD_UPDATE: "/item/add/update",
     DELETE: "/item/delete",
     DETAILS: "/item/detail",
+    CODEGET: "/item/codeget",
   },
 };
