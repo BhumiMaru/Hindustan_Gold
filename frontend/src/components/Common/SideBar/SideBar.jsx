@@ -5,6 +5,7 @@ import "../../../../public/assets/vendor/libs/perfect-scrollbar/perfect-scrollba
 import "../../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css";
 import { Link } from "react-router-dom";
 import { useUIContext } from "../../../Context/UIContext";
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function SideBar() {
   const { activeMenu, toggleMenu, activeSubMenu, handleSubMenuClick } =
@@ -64,7 +65,7 @@ export default function SideBar() {
             <span className="app-brand-logo demo">
               <span className="text-primary">
                 <img
-                  src="../../../../public/assets/img/logo.png"
+                  src={`${publicUrl}/assets/img/logo.png`}
                   className="img-fluid"
                 />
               </span>
@@ -84,7 +85,7 @@ export default function SideBar() {
             }`}
             onClick={() => toggleMenu("Dashboard")}
           >
-            <Link to="/" className="menu-link cursor-pointer">
+            <Link to="/dashboard" className="menu-link cursor-pointer">
               <i className="menu-icon icon-base ti tabler-smart-home"></i>
               <div data-i="Dashboard">Dashboard</div>
             </Link>

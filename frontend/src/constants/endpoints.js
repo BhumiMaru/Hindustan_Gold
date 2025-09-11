@@ -79,4 +79,9 @@ export const ENDPOINTS = {
     DETAILS: "/item/detail",
     CODEGET: "/item/codeget",
   },
+
+  // Authentication
+  AUTH: {
+    LOGIN: "/login",
+  },
 };

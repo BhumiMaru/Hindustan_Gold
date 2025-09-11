@@ -151,25 +151,43 @@ export const ItemMasterProvider = ({ children }) => {
     });
   };
 
-  // Get Category , Group And Item code from Sub category id
+  // Item Type
+  const ItemType = {
+    material: "Material",
+    service: "Service",
+    asset: "Asset",
+  };
+
   // Get Category , Group And Item code from Sub category id
   const getCategoryGroupAndItemCodeBySubCategoryId = async (type, sub_c_id) => {
     try {
+      console.log("ItemType", ItemType);
+      const mappedType = ItemType[type];
+
+      console.log("🔹 Payload sending to API:", {
+        item_type: mappedType,
+        sub_c_id,
+      });
+
       const res = await postData(ENDPOINTS.ITEM_MASTER.CODEGET, {
-        item_type: type, // Changed from 'type' to 'item_type'
+        item_type: mappedType, // Changed from 'type' to 'item_type'
         sub_c_id,
       });
 
       if (res.data) {
-        const { item_code, category, group } = res.data;
+        const { item_code, category, group, subcategory } = res.data;
 
         // auto update itemMasterData with category, group, and item_code
         setItemMasterData((prev) => ({
           ...prev,
           item_code: item_code,
           c_id: category?.id,
+          c_name: category?.category_name,
           group_id: group?.id,
+          group_name: group?.group_name,
           sub_c_id: sub_c_id,
+          sub_c_name: subcategory?.sub_category_name,
+          item_type: mappedType, // ✅ also update item_type in state
         }));
 
         return res.data; // return full data in case needed

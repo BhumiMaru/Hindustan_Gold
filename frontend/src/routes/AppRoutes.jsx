@@ -41,6 +41,7 @@ import CompanyMasterPage from "../Pages/Master/CompanyMasterPage";
 import { CompanyMasterProvider } from "../Context/Master/CompanyMasterContext";
 import Item_Create_Material_Form from "../Pages/ItemManagement/components/ItemManagement/Item_Create/Item_Create_Material_Form";
 import Vendor_List_page from "../Pages/PaymentManagement/Vendor_List_page";
+import LoginPage from "../Pages/Authentication/Login/LoginMasterPage";
 
 export default function AppRoutes() {
   return (
@@ -49,8 +50,10 @@ export default function AppRoutes() {
       <Routes>
         {/* Default redirect */}
         {/* <Route path="/" element={<Navigate to="/dashboard" replace />} /> */}
+        {/* Login Routes */}
+
         {/* Dashboard */}
-        <Route path="/" element={<DashboardPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         {/* Master Routes */}
         <Route path="/master/department" element={<DepartmentMasterPage />} />
         <Route path="/master/zone" element={<ZoneMasterpage />} />

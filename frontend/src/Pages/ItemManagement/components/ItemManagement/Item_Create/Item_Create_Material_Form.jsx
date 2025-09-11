@@ -152,7 +152,7 @@ export default function Item_Create_Material_Form() {
                         // defaultValue=""
                         disabled
                         readOnly=""
-                        value={itemMasterData.group_id}
+                        value={itemMasterData.group_name}
                         onChange={(e) =>
                           setItemMasterData({
                             ...itemMasterData,
@@ -174,7 +174,7 @@ export default function Item_Create_Material_Form() {
                         disabled
                         defaultValue="Categary"
                         readOnly=""
-                        value={itemMasterData.c_id}
+                        value={itemMasterData.c_name}
                         onChange={(e) =>
                           setItemMasterData({
                             ...itemMasterData,
@@ -207,26 +207,13 @@ export default function Item_Create_Material_Form() {
                           }))}
                           value={itemMasterData.sub_c_id}
                           onChange={(val) => {
-                            console.log("🔹 SubCategory Selected:", val);
-                            console.log(
-                              "🔹 Current type (from URL params):",
-                              type
-                            );
-                            console.log(
-                              "🔹 Previous itemMasterData:",
-                              itemMasterData
-                            );
-
                             setItemMasterData((prev) => {
                               const updated = {
                                 ...prev,
                                 sub_c_id: val,
                                 item_type: type, // ✅ always set item_type from param
                               };
-                              console.log(
-                                "🔹 Updated itemMasterData (before setState):",
-                                updated
-                              );
+
                               return updated;
                             });
 
@@ -239,10 +226,6 @@ export default function Item_Create_Material_Form() {
                           placeholder="Select SubCategory"
                           required
                         />
-                        {console.log(
-                          "🔹 Rendered SubCategory ID:",
-                          itemMasterData.sub_c_id
-                        )}
                       </div>
                     </div>
                     {/* Item Name */}
@@ -351,6 +334,13 @@ export default function Item_Create_Material_Form() {
                           defaultValue="AS-DN-001"
                           disabled
                           readOnly=""
+                          value={itemMasterData.item_code}
+                          onChange={(e) =>
+                            setItemMasterData({
+                              ...itemMasterData,
+                              item_code: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     )}
@@ -381,8 +371,14 @@ export default function Item_Create_Material_Form() {
                           id="AssetCode"
                           placeholder="Service Code"
                           defaultValue="AS-DN-001"
-                          disabled=""
                           readOnly=""
+                          value={itemMasterData.item_code}
+                          onChange={(e) =>
+                            setItemMasterData({
+                              ...itemMasterData,
+                              item_code: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     )}
