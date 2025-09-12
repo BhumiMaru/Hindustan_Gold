@@ -106,7 +106,7 @@ export const AuthProvider = ({ children }) => {
       try {
         // 🔓 decrypt session storage
         const decrypted = decryptData(savedAuth);
-        console.log("decrypted", decrypted);
+        // console.log("decrypted", decrypted);
         if (decrypted) {
           setAuthData(decrypted); // ✅ now it's the plain object {token, user}
         }

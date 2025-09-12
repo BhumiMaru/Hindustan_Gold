@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
 import { useCategoryMaster } from "../../../../../Context/ItemManagement/CategoryMasterContext";
 import { useZone } from "../../../../../Context/Master/ZoneContext";
 import { useServiceLocation1Master } from "../../../../../Context/Master/ServiceLocation1MasterContext";
@@ -8,19 +7,25 @@ import { useServiceLocation2Master } from "../../../../../Context/Master/Service
 import { useServiceLocation3Master } from "../../../../../Context/Master/ServiceLocation3MasterContext";
 import { useSubCategory } from "../../../../../Context/ItemManagement/SubCategoryContext";
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
+import { toast } from "react-toastify";
+import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
 
 export default function Item_Create_Material_Form() {
-  const { type } = useParams();
+  const { type, id } = useParams();
   const {
-    itemMasterData,
     setItemMasterData,
-    isItemEditId,
     EditItemMaster,
     createItemMaster,
     itemSubCategoryId,
     setItemSubCategoryId,
     getCategoryGroupAndItemCodeBySubCategoryId,
+    fetchItemMaster,
+    itemMasterData,
+    isItemEditId,
+    fetchitemById,
+    StartEditing,
   } = useItemMaster();
+
   const navigate = useNavigate();
   const { filterCategory, fetchCategoryFilter } = useCategoryMaster();
   const { zoneFilter, fetchZoneFilter } = useZone();
@@ -29,13 +34,22 @@ export default function Item_Create_Material_Form() {
   const { serviceL3, fetchSL3Filter } = useServiceLocation3Master();
   const { filterSubCategory, fetchSubCategoryFilter } = useSubCategory();
 
+  // Fetch item data when in edit mode
+  useEffect(() => {
+    if (id) {
+      StartEditing(id);
+      fetchitemById(id);
+    }
+  }, [id]);
+
   useEffect(() => {
     // Set the item type based on URL param
     setItemMasterData((prev) => ({
       ...prev,
       type: type,
-      item_type: type, // Set both if needed
+      item_type: type,
     }));
+
     fetchSL1Filter();
     fetchSL2Filter();
     fetchSL3Filter();
@@ -46,99 +60,66 @@ export default function Item_Create_Material_Form() {
 
   // Save Item Material Data
   const handleSave = async () => {
-    const payload = { ...itemMasterData };
+    // Basic validation
+    if (!itemMasterData.item_name) {
+      toast.error("Item name is required");
+      return;
+    }
+
+    if (!itemMasterData.sub_c_id) {
+      toast.error("Subcategory is required");
+      return;
+    }
+
+    const payload = {
+      ...itemMasterData,
+      service_location_3_id: Array.isArray(itemMasterData.service_location_3_id)
+        ? itemMasterData.service_location_3_id
+        : [],
+      zone_id: Array.isArray(itemMasterData.zone_id)
+        ? itemMasterData.zone_id
+        : [],
+    };
+
     try {
-      if (isItemEditId) {
-        await EditItemMaster(isItemEditId, payload);
+      if (id) {
+        await EditItemMaster(id, payload);
+        toast.success("Item Updated Successfully!");
+        fetchItemMaster();
+        navigate("/item/item-master");
       } else {
         await createItemMaster(payload);
+        toast.success("Item Created Successfully!");
         navigate("/item/item-master");
+        fetchItemMaster();
       }
     } catch (error) {
       console.log("item save error", error);
+      toast.error("Failed to save item");
     }
   };
+
   return (
     <>
-      {/* ---------------START ITEM CREATE MATERIAL FORM-------------- */}
       <div className="container-xxl flex-grow-1 container-p-y">
-        {/* DataTable with Buttons */}
         <div className="card h-100 mt-2">
           <div className="card-body">
             <div className="nav-align-top">
-              {/* <ul
-                className="nav nav-tabs nav-fill rounded-0 timeline-indicator-advanced"
-                role="tablist"
-              >
-                <li className="nav-item" role="presentation">
-                  <button
-                    type="button"
-                    className="nav-link waves-effect active"
-                    role="tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#Item"
-                    aria-controls="Item"
-                    aria-selected="true"
-                    tabIndex={-1}
-                  >
-                    Material
-                  </button>
-                </li>
-                <li className="nav-item" role="presentation">
-                  <button
-                    type="button"
-                    className="nav-link waves-effect"
-                    role="tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#Services"
-                    aria-controls="Services"
-                    aria-selected="false"
-                    tabIndex={-1}
-                  >
-                    Services
-                  </button>
-                </li>
-                <li className="nav-item" role="presentation">
-                  <button
-                    type="button"
-                    className="nav-link waves-effect "
-                    role="tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#Assets"
-                    aria-controls="Assets"
-                    aria-selected="false"
-                    tabIndex={-1}
-                  >
-                    Assets
-                  </button>
-                </li>
-              </ul> */}
-
-              <div className="tab-content border-0  mx-1">
+              <div className="tab-content border-0 mx-1">
                 <div
                   className="tab-pane fade active show"
                   id="Item"
                   role="tabpanel"
                 >
                   <h5 className="modal-title" id="exampleModalLabel2">
-                    {/* {isItemEditId ? "Edit Material" : "Add Material"} */}
+                    {id ? "Edit Material" : "Add Material"}
                   </h5>
                   <div className="row p-3">
-                    {/* Type */}
+                    {/* Type - Hidden */}
                     <div className="col-sm-3 mb-4 d-none">
-                      <label htmlFor="Group" className="form-label">
-                        Type
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="type"
-                        placeholder="type"
-                        disabled=""
-                        readOnly=""
-                        value="material"
-                      />
+                      <input type="text" value={type} readOnly />
                     </div>
+
                     {/* Group */}
                     <div className="col-sm-3 mb-4">
                       <label htmlFor="Group" className="form-label">
@@ -149,18 +130,11 @@ export default function Item_Create_Material_Form() {
                         className="form-control"
                         id="Group"
                         placeholder="Group"
-                        // defaultValue=""
-                        disabled
-                        readOnly=""
-                        value={itemMasterData.group_name}
-                        onChange={(e) =>
-                          setItemMasterData({
-                            ...itemMasterData,
-                            group_id: e.target.value,
-                          })
-                        }
+                        readOnly
+                        value={itemMasterData?.group_name || ""}
                       />
                     </div>
+
                     {/* Category */}
                     <div className="col-sm-3 mb-4">
                       <label htmlFor="Category" className="form-label">
@@ -171,63 +145,38 @@ export default function Item_Create_Material_Form() {
                         className="form-control"
                         id="Category"
                         placeholder="Category"
-                        disabled
-                        defaultValue="Categary"
-                        readOnly=""
-                        value={itemMasterData.c_name}
-                        onChange={(e) =>
-                          setItemMasterData({
-                            ...itemMasterData,
-                            c_id: e.target.value,
-                          })
-                        }
+                        readOnly
+                        value={itemMasterData?.c_name || ""}
                       />
                     </div>
+
                     {/* Sub Category */}
                     <div className="col-sm-3 mb-4">
                       <div className="position-relative">
-                        {/* Type - Hidden Field */}
-                        <input
-                          type="hidden"
-                          value={type}
-                          onChange={(e) =>
-                            setItemMasterData({
-                              ...itemMasterData,
-                              type: e.target.value,
-                              item_type: e.target.value, // Also set item_type if needed by backend
-                            })
-                          }
-                        />
                         <CustomSelect
                           id="selectSubCategory"
                           label="Subcategory"
                           options={filterSubCategory?.map((subcat) => ({
-                            value: subcat.id,
+                            value: Number(subcat.id),
                             label: subcat.sub_category_name,
                           }))}
-                          value={itemMasterData.sub_c_id}
+                          value={Number(itemMasterData?.sub_c_id) || null}
                           onChange={(val) => {
-                            setItemMasterData((prev) => {
-                              const updated = {
-                                ...prev,
-                                sub_c_id: val,
-                                item_type: type, // ✅ always set item_type from param
-                              };
-
-                              return updated;
-                            });
-
-                            // ✅ API call with correct values
+                            setItemMasterData((prev) => ({
+                              ...prev,
+                              sub_c_id: Number(val),
+                              item_type: type,
+                            }));
                             getCategoryGroupAndItemCodeBySubCategoryId(
                               type,
                               val
                             );
                           }}
                           placeholder="Select SubCategory"
-                          required
                         />
                       </div>
                     </div>
+
                     {/* Item Name */}
                     {type === "material" && (
                       <div className="col-sm-3 mb-4">
@@ -239,7 +188,7 @@ export default function Item_Create_Material_Form() {
                           className="form-control"
                           id="Itemname"
                           placeholder="Enter Item Name"
-                          value={itemMasterData.item_name}
+                          value={itemMasterData?.item_name || ""}
                           onChange={(e) =>
                             setItemMasterData({
                               ...itemMasterData,
@@ -258,16 +207,10 @@ export default function Item_Create_Material_Form() {
                             id="selectuom"
                             label="Unit Of Measure"
                             options={[
-                              {
-                                value: "kg",
-                                label: "KG",
-                              },
-                              {
-                                value: "ltr",
-                                label: "Ltr",
-                              },
+                              { value: "kg", label: "KG" },
+                              { value: "ltr", label: "Ltr" },
                             ]}
-                            value={itemMasterData.uom}
+                            value={itemMasterData?.uom || ""}
                             onChange={(val) =>
                               setItemMasterData({
                                 ...itemMasterData,
@@ -275,7 +218,6 @@ export default function Item_Create_Material_Form() {
                               })
                             }
                             placeholder="Select Unit of Measure"
-                            required
                           />
                         </div>
                       </div>
@@ -292,16 +234,8 @@ export default function Item_Create_Material_Form() {
                           className="form-control"
                           id="ItemCode"
                           placeholder="Item Code"
-                          defaultValue="AS-DN-001"
-                          disabled
-                          readOnly=""
-                          value={itemMasterData.item_code}
-                          onChange={(e) =>
-                            setItemMasterData({
-                              ...itemMasterData,
-                              item_code: e.target.value,
-                            })
-                          }
+                          readOnly
+                          value={itemMasterData?.item_code || ""}
                         />
                       </div>
                     )}
@@ -317,9 +251,17 @@ export default function Item_Create_Material_Form() {
                           className="form-control"
                           id="Servicename"
                           placeholder="Enter Service Name"
+                          value={itemMasterData?.item_name || ""}
+                          onChange={(e) =>
+                            setItemMasterData({
+                              ...itemMasterData,
+                              item_name: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     )}
+
                     {/* Service Code */}
                     {type === "service" && (
                       <div className="col-sm-3 mb-4">
@@ -331,16 +273,8 @@ export default function Item_Create_Material_Form() {
                           className="form-control"
                           id="ServiceCode"
                           placeholder="Service Code"
-                          defaultValue="AS-DN-001"
-                          disabled
-                          readOnly=""
-                          value={itemMasterData.item_code}
-                          onChange={(e) =>
-                            setItemMasterData({
-                              ...itemMasterData,
-                              item_code: e.target.value,
-                            })
-                          }
+                          readOnly
+                          value={itemMasterData?.item_code || ""}
                         />
                       </div>
                     )}
@@ -356,9 +290,17 @@ export default function Item_Create_Material_Form() {
                           className="form-control"
                           id="Assetname"
                           placeholder="Enter Asset Name"
+                          value={itemMasterData?.item_name || ""}
+                          onChange={(e) =>
+                            setItemMasterData({
+                              ...itemMasterData,
+                              item_name: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     )}
+
                     {/* Asset Code */}
                     {type === "asset" && (
                       <div className="col-sm-3 mb-4">
@@ -370,15 +312,8 @@ export default function Item_Create_Material_Form() {
                           className="form-control"
                           id="AssetCode"
                           placeholder="Service Code"
-                          defaultValue="AS-DN-001"
-                          readOnly=""
-                          value={itemMasterData.item_code}
-                          onChange={(e) =>
-                            setItemMasterData({
-                              ...itemMasterData,
-                              item_code: e.target.value,
-                            })
-                          }
+                          readOnly
+                          value={itemMasterData?.item_code || ""}
                         />
                       </div>
                     )}
@@ -391,8 +326,7 @@ export default function Item_Create_Material_Form() {
                       <textarea
                         id="Description"
                         className="form-control"
-                        defaultValue={""}
-                        value={itemMasterData.description}
+                        value={itemMasterData?.description || ""}
                         onChange={(e) =>
                           setItemMasterData({
                             ...itemMasterData,
@@ -416,7 +350,9 @@ export default function Item_Create_Material_Form() {
                               name="purposeRequired"
                               id="purposeYes"
                               value="1"
-                              checked={itemMasterData.is_purpose_required === 1}
+                              checked={
+                                itemMasterData?.is_purpose_required === 1
+                              }
                               onChange={(e) =>
                                 setItemMasterData({
                                   ...itemMasterData,
@@ -438,7 +374,10 @@ export default function Item_Create_Material_Form() {
                               name="purposeRequired"
                               id="purposeNo"
                               value="0"
-                              checked={itemMasterData.is_purpose_required === 0}
+                              checked={
+                                itemMasterData?.is_purpose_required === 0 ||
+                                itemMasterData?.is_purpose_required === null
+                              }
                               onChange={(e) =>
                                 setItemMasterData({
                                   ...itemMasterData,
@@ -472,7 +411,7 @@ export default function Item_Create_Material_Form() {
                               id="approvalYes"
                               value="1"
                               checked={
-                                itemMasterData.is_approval_required === 1
+                                itemMasterData?.is_approval_required === 1
                               }
                               onChange={(e) =>
                                 setItemMasterData({
@@ -496,7 +435,8 @@ export default function Item_Create_Material_Form() {
                               id="approvalNo"
                               value="0"
                               checked={
-                                itemMasterData.is_approval_required === 0
+                                itemMasterData?.is_approval_required === 0 ||
+                                itemMasterData?.is_approval_required === null
                               }
                               onChange={(e) =>
                                 setItemMasterData({
@@ -525,13 +465,20 @@ export default function Item_Create_Material_Form() {
                             <input
                               className="form-check-input"
                               type="radio"
-                              name="inlineRadioOptions"
-                              id="inlineRadio112"
-                              defaultValue="option1"
+                              name="isMovable"
+                              id="movableYes"
+                              value="1"
+                              checked={itemMasterData?.is_movable === 1}
+                              onChange={(e) =>
+                                setItemMasterData({
+                                  ...itemMasterData,
+                                  is_movable: Number(e.target.value),
+                                })
+                              }
                             />
                             <label
                               className="form-check-label"
-                              htmlFor="inlineRadio1"
+                              htmlFor="movableYes"
                             >
                               Yes
                             </label>
@@ -540,13 +487,23 @@ export default function Item_Create_Material_Form() {
                             <input
                               className="form-check-input"
                               type="radio"
-                              name="inlineRadioOptions"
-                              id="inlineRadio212"
-                              defaultValue="option2"
+                              name="isMovable"
+                              id="movableNo"
+                              value="0"
+                              checked={
+                                itemMasterData?.is_movable === 0 ||
+                                itemMasterData?.is_movable === null
+                              }
+                              onChange={(e) =>
+                                setItemMasterData({
+                                  ...itemMasterData,
+                                  is_movable: Number(e.target.value),
+                                })
+                              }
                             />
                             <label
                               className="form-check-label"
-                              htmlFor="inlineRadio2"
+                              htmlFor="movableNo"
                             >
                               No
                             </label>
@@ -555,81 +512,38 @@ export default function Item_Create_Material_Form() {
                       </div>
                     )}
 
-                    {/* Primary */}
-                    {/* service location 1 */}
-                    {/* <div className="col-sm-3 mb-4">
-                      <div className="select2-primary">
-                        <div className="position-relative">
-                          <CustomSelect
-                            options={serviceL1?.map((loc) => ({
-                              value: loc.id,
-                              label: loc.service_location_name,
-                            }))}
-                            value={itemMasterData.service_location_1_id}
-                            onChange={(val) =>
-                              setItemMasterData((prev) => ({
-                                ...itemMasterData,
-                                service_location_1_id: val,
-                              }))
-                            }
-                            label="Service Location 1"
-                            placeholder="Select Service Location 1"
-                            id="serviceLocation1"
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div> */}
-                    {/* service location 2 */}
-                    {/* <div className="col-sm-3 mb-4">
-                      <div className="select2-primary">
-                        <div className="position-relative">
-                          <CustomSelect
-                            options={serviceL2?.map((loc) => ({
-                              value: loc.id,
-                              label: loc.service_location_2_name,
-                            }))}
-                            value={itemMasterData.service_location_2_id}
-                            onChange={(val) =>
-                              setItemMasterData((prev) => ({
-                                ...itemMasterData,
-                                service_location_2_id: val,
-                              }))
-                            }
-                            label="Service Location 2"
-                            placeholder="Select Service Location 2"
-                            id="serviceLocation2"
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div> */}
-
-                    {/* service location 3 */}
+                    {/* Service Location 3 */}
                     <div className="col-sm-3 mb-4">
                       <div className="select2-primary">
                         <div className="position-relative">
                           <CustomSelect
-                            multiple={true}
+                            multiple
                             options={serviceL3?.map((loc) => ({
-                              value: loc.id,
+                              value: Number(loc.id),
                               label: loc.service_location_3_name,
                             }))}
-                            value={itemMasterData.service_location_3_id}
+                            value={
+                              Array.isArray(
+                                itemMasterData?.service_location_3_id
+                              )
+                                ? itemMasterData.service_location_3_id.map(
+                                    Number
+                                  )
+                                : []
+                            }
                             onChange={(val) =>
-                              setItemMasterData((prev) => ({
+                              setItemMasterData({
                                 ...itemMasterData,
-                                service_location_3_id: val,
-                              }))
+                                service_location_3_id: val.map(Number),
+                              })
                             }
                             label="Service Location 3"
                             placeholder="Select Service Location 3"
-                            id="serviceLocation3"
-                            required
                           />
                         </div>
                       </div>
                     </div>
+
                     {/* Primary Zone */}
                     <div className="col-sm-3 mb-4">
                       <label htmlFor="select2info" className="form-label">
@@ -638,17 +552,20 @@ export default function Item_Create_Material_Form() {
                       <div className="select2-info">
                         <div className="position-relative">
                           <CustomSelect
-                            id="selectZone"
-                            multiple={true}
+                            multiple
                             options={zoneFilter?.map((zone) => ({
-                              value: zone.id,
+                              value: Number(zone.id),
                               label: zone.zone_name,
                             }))}
-                            value={itemMasterData.zone_id}
+                            value={
+                              Array.isArray(itemMasterData?.zone_id)
+                                ? itemMasterData.zone_id.map(Number)
+                                : []
+                            }
                             onChange={(val) =>
                               setItemMasterData({
                                 ...itemMasterData,
-                                zone_id: val,
+                                zone_id: val.map(Number),
                               })
                             }
                             placeholder="Select Zone"
@@ -656,6 +573,7 @@ export default function Item_Create_Material_Form() {
                         </div>
                       </div>
                     </div>
+
                     {/* Stock */}
                     {type === "material" && (
                       <div className="col-sm-3 mb-4">
@@ -667,18 +585,18 @@ export default function Item_Create_Material_Form() {
                           className="form-control"
                           id="Stock"
                           placeholder="Stock"
-                          value={itemMasterData.stock}
+                          value={itemMasterData?.stock || 0}
                           onChange={(e) =>
                             setItemMasterData({
                               ...itemMasterData,
-                              stock: e.target.value,
+                              stock: Number(e.target.value),
                             })
                           }
                         />
                       </div>
                     )}
 
-                    {/*  Stock Value */}
+                    {/* Stock Value */}
                     {type === "material" && (
                       <div className="col-sm-3 mb-4">
                         <label htmlFor="StockValue" className="form-label">
@@ -689,11 +607,11 @@ export default function Item_Create_Material_Form() {
                           className="form-control"
                           id="StockValue"
                           placeholder="Stock Value"
-                          value={itemMasterData.stock_value}
+                          value={itemMasterData?.stock_value || 0}
                           onChange={(e) =>
                             setItemMasterData({
                               ...itemMasterData,
-                              stock_value: e.target.value,
+                              stock_value: Number(e.target.value),
                             })
                           }
                         />
@@ -711,11 +629,11 @@ export default function Item_Create_Material_Form() {
                           className="form-control"
                           id="MinimumStock"
                           placeholder="Minimum Stock"
-                          value={itemMasterData.minimum_stock}
+                          value={itemMasterData?.minimum_stock || 0}
                           onChange={(e) =>
                             setItemMasterData({
                               ...itemMasterData,
-                              minimum_stock: e.target.value,
+                              minimum_stock: Number(e.target.value),
                             })
                           }
                         />
@@ -733,9 +651,17 @@ export default function Item_Create_Material_Form() {
                           className="form-control"
                           id="PurchaseDate"
                           placeholder="Purchase Date"
+                          value={itemMasterData?.purchase_date || ""}
+                          onChange={(e) =>
+                            setItemMasterData({
+                              ...itemMasterData,
+                              purchase_date: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     )}
+
                     {/* Warranty Expiry */}
                     {type === "asset" && (
                       <div className="col-sm-3 mb-4">
@@ -747,9 +673,17 @@ export default function Item_Create_Material_Form() {
                           className="form-control"
                           id="WarrantyExpiry"
                           placeholder="Warranty Expiry Date"
+                          value={itemMasterData?.warranty_expiry || ""}
+                          onChange={(e) =>
+                            setItemMasterData({
+                              ...itemMasterData,
+                              warranty_expiry: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     )}
+
                     {/* Quantity */}
                     {type === "asset" && (
                       <div className="col-sm-3 mb-4">
@@ -761,6 +695,13 @@ export default function Item_Create_Material_Form() {
                           className="form-control"
                           id="Quantity"
                           placeholder="Enter Quantity"
+                          value={itemMasterData?.stock || 0}
+                          onChange={(e) =>
+                            setItemMasterData({
+                              ...itemMasterData,
+                              stock: Number(e.target.value),
+                            })
+                          }
                         />
                       </div>
                     )}
@@ -772,25 +713,17 @@ export default function Item_Create_Material_Form() {
                           id="selectStatus"
                           label="Status"
                           options={[
-                            {
-                              value: 1,
-                              label: "Active",
-                            },
-                            {
-                              value: 0,
-                              label: "Deactive",
-                            },
+                            { value: 1, label: "Active" },
+                            { value: 0, label: "Deactive" },
                           ]}
-                          value={itemMasterData?.status}
+                          value={itemMasterData?.status === 0 ? 0 : 1}
                           onChange={(val) =>
                             setItemMasterData({
                               ...itemMasterData,
-                              status: val,
+                              status: Number(val),
                             })
                           }
                           placeholder="Select Status"
-                          // data-select2-id="10"
-                          required
                         />
                       </div>
                     </div>
@@ -811,8 +744,6 @@ export default function Item_Create_Material_Form() {
           </div>
         </div>
       </div>
-
-      {/* ---------------END ITEM CREATE MATERIAL FORM-------------- */}
     </>
   );
 }

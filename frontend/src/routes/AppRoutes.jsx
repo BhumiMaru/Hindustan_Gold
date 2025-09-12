@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardPage from "../Pages/Dashboard/DashboardPage";
 import DepartmentMasterPage from "../Pages/Master/DepartmentMasterPage";
 import ZoneMasterpage from "../Pages/Master/ZoneMasterpAGE";
@@ -42,6 +42,7 @@ import { CompanyMasterProvider } from "../Context/Master/CompanyMasterContext";
 import Item_Create_Material_Form from "../Pages/ItemManagement/components/ItemManagement/Item_Create/Item_Create_Material_Form";
 import Vendor_List_page from "../Pages/PaymentManagement/Vendor_List_page";
 import LoginPage from "../Pages/Authentication/Login/LoginMasterPage";
+import { decryptData } from "../utils/decryptData";
 
 export default function AppRoutes() {
   return (
@@ -177,9 +178,36 @@ export default function AppRoutes() {
         <Route path="/item/group" element={<Group_Master_Page />} />
         <Route path="/item/category" element={<Category_Master_Page />} />
         <Route path="/item/subcategory" element={<SubCategory_Master_Page />} />
-        <Route path="/item/item-master" element={<Item_Master_Page />} />
+        <Route
+          path="/item/item-master"
+          element={
+            <ItemMasterProvider>
+              <Item_Master_Page />
+            </ItemMasterProvider>
+          }
+        />
         <Route
           path="/item/item-create/:type"
+          element={
+            <ItemMasterProvider>
+              <CategoryMasterProvider>
+                <SubCategoryProvider>
+                  <ZoneProvider>
+                    <ServiceLocation1MasterProvider>
+                      <ServiceLocation2MasterProvider>
+                        <ServiceLocation3MasterProvider>
+                          <Item_Create_Material_Form />
+                        </ServiceLocation3MasterProvider>
+                      </ServiceLocation2MasterProvider>
+                    </ServiceLocation1MasterProvider>
+                  </ZoneProvider>
+                </SubCategoryProvider>
+              </CategoryMasterProvider>
+            </ItemMasterProvider>
+          }
+        />
+        <Route
+          path="/item/item-create/:type/:id"
           element={
             <ItemMasterProvider>
               <CategoryMasterProvider>

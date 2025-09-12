@@ -5,11 +5,29 @@ import "../../../../public/assets/vendor/libs/perfect-scrollbar/perfect-scrollba
 import "../../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css";
 import { Link } from "react-router-dom";
 import { useUIContext } from "../../../Context/UIContext";
+import { decryptData } from "../../../utils/decryptData";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function SideBar() {
   const { activeMenu, toggleMenu, activeSubMenu, handleSubMenuClick } =
     useUIContext();
+
+  // ✅ Get saved auth data
+  const savedAuth = sessionStorage.getItem("authData");
+  let user = null;
+
+  if (savedAuth) {
+    try {
+      const decrypted = decryptData(savedAuth);
+      user = decrypted?.user || null;
+    } catch (error) {
+      console.error("Error decrypting auth data", error);
+    }
+  }
+
+  // ✅ Check if current user is Admin (id === 54)
+  const isAdmin = user?.id === 54;
+
   const masterRoutes = {
     "Department Master": "/master/department",
     "Zone Master": "/master/zone",
@@ -91,198 +109,207 @@ export default function SideBar() {
             </Link>
           </li>
 
-          {/* Master */}
-          <li
-            className={`menu-item ${
-              activeMenu === "Master" ? "open active" : ""
-            } cursor-pointer`}
-            onClick={() => toggleMenu("Master")}
-          >
-            <a className="menu-link menu-toggle">
-              <i className="menu-icon icon-base ti tabler-book"></i>
-              <div data-i="Master">Master</div>
-            </a>
-            {/* import {Link} from "react-router-dom"; */}
-            <ul
-              className={`menu-sub dropdown ${
-                activeMenu === "Master" ? "open" : ""
-              }`}
+          {/* ✅ Master menu only for Admin */}
+          {isAdmin && (
+            <li
+              className={`menu-item ${
+                activeMenu === "Master" ? "open active" : ""
+              } cursor-pointer`}
+              onClick={() => toggleMenu("Master")}
             >
-              {Object.keys(masterRoutes).map((item) => (
-                <li
-                  key={item}
-                  className={`menu-item ${
-                    activeSubMenu === item ? "active" : ""
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSubMenuClick("Master", item);
-                  }}
-                >
-                  <Link
-                    to={masterRoutes[item]}
-                    className="menu-link cursor-pointer"
+              <a className="menu-link menu-toggle">
+                <i className="menu-icon icon-base ti tabler-book"></i>
+                <div data-i="Master">Master</div>
+              </a>
+              <ul
+                className={`menu-sub dropdown ${
+                  activeMenu === "Master" ? "open" : ""
+                }`}
+              >
+                {Object.keys(masterRoutes).map((item) => (
+                  <li
+                    key={item}
+                    className={`menu-item ${
+                      activeSubMenu === item ? "active" : ""
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSubMenuClick("Master", item);
+                    }}
                   >
-                    <div>{item}</div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
+                    <Link
+                      to={masterRoutes[item]}
+                      className="menu-link cursor-pointer"
+                    >
+                      <div>{item}</div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          )}
 
           {/* Item Management */}
-          <li
-            className={`menu-item ${
-              activeMenu === "Item" ? "open active" : ""
-            } cursor-pointer`}
-            onClick={() => toggleMenu("Item")}
-          >
-            <a className="menu-link menu-toggle">
-              <i className="menu-icon icon-base ti tabler-color-swatch"></i>
-              <div data-i="Item Management">Item Management</div>
-            </a>
-            <ul
-              className={`menu-sub dropdown ${
-                activeMenu === "Item" ? "open" : ""
-              }`}
+          {!isAdmin && (
+            <li
+              className={`menu-item ${
+                activeMenu === "Item" ? "open active" : ""
+              } cursor-pointer`}
+              onClick={() => toggleMenu("Item")}
             >
-              {Object.keys(itemRoutes).map((item) => (
-                <li
-                  key={item}
-                  className={`menu-item ${
-                    activeSubMenu === item ? "active" : ""
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSubMenuClick("Item", item);
-                  }}
-                >
-                  <Link
-                    to={itemRoutes[item]}
-                    className="menu-link cursor-pointer"
+              <a className="menu-link menu-toggle">
+                <i className="menu-icon icon-base ti tabler-color-swatch"></i>
+                <div data-i="Item Management">Item Management</div>
+              </a>
+              <ul
+                className={`menu-sub dropdown ${
+                  activeMenu === "Item" ? "open" : ""
+                }`}
+              >
+                {Object.keys(itemRoutes).map((item) => (
+                  <li
+                    key={item}
+                    className={`menu-item ${
+                      activeSubMenu === item ? "active" : ""
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSubMenuClick("Item", item);
+                    }}
                   >
-                    <div data-i={item}>{item}</div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
+                    <Link
+                      to={itemRoutes[item]}
+                      className="menu-link cursor-pointer"
+                    >
+                      <div data-i={item}>{item}</div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          )}
 
           {/* Request Management */}
-          <li
-            className={`menu-item ${
-              activeMenu === "Request" ? "open active" : ""
-            } cursor-pointer`}
-            onClick={() => toggleMenu("Request")}
-          >
-            <a className="menu-link menu-toggle">
-              <i className="menu-icon icon-base ti tabler-forms"></i>
-              <div data-i="Request Management">Request Management</div>
-            </a>
-            <ul
-              className={`menu-sub dropdown ${
-                activeMenu === "Request" ? "open" : ""
-              }`}
+          {!isAdmin && (
+            <li
+              className={`menu-item ${
+                activeMenu === "Request" ? "open active" : ""
+              } cursor-pointer`}
+              onClick={() => toggleMenu("Request")}
             >
-              {Object.keys(requestManagementRoutes).map((item) => (
-                <li
-                  key={item}
-                  className={`menu-item ${
-                    activeSubMenu === item ? "active" : ""
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSubMenuClick("Request", item);
-                  }}
-                >
-                  <Link
-                    to={requestManagementRoutes[item]}
-                    className="menu-link cursor-pointer"
+              <a className="menu-link menu-toggle">
+                <i className="menu-icon icon-base ti tabler-forms"></i>
+                <div data-i="Request Management">Request Management</div>
+              </a>
+              <ul
+                className={`menu-sub dropdown ${
+                  activeMenu === "Request" ? "open" : ""
+                }`}
+              >
+                {Object.keys(requestManagementRoutes).map((item) => (
+                  <li
+                    key={item}
+                    className={`menu-item ${
+                      activeSubMenu === item ? "active" : ""
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSubMenuClick("Request", item);
+                    }}
                   >
-                    <div data-i={item}>{item}</div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
+                    <Link
+                      to={requestManagementRoutes[item]}
+                      className="menu-link cursor-pointer"
+                    >
+                      <div data-i={item}>{item}</div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          )}
 
           {/* PO & Material Management */}
-          <li
-            className={`menu-item ${
-              activeMenu === "PO" ? "open active" : ""
-            } cursor-pointer`}
-            onClick={() => toggleMenu("PO")}
-          >
-            <a className="menu-link menu-toggle">
-              <i className="menu-icon icon-base ti tabler-truck"></i>
-              <div data-i="PO & Material Management">
-                PO & Material Management
-              </div>
-            </a>
-            <ul
-              className={`menu-sub dropdown ${
-                activeMenu === "PO" ? "open" : ""
-              }`}
+          {!isAdmin && (
+            <li
+              className={`menu-item ${
+                activeMenu === "PO" ? "open active" : ""
+              } cursor-pointer`}
+              onClick={() => toggleMenu("PO")}
             >
-              {Object.keys(piAndMaterialManagementRoutes).map((item) => (
-                <li
-                  key={item}
-                  className={`menu-item ${
-                    activeSubMenu === item ? "active" : ""
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSubMenuClick("PO", item);
-                  }}
-                >
-                  <Link
-                    to={piAndMaterialManagementRoutes[item]}
-                    className="menu-link cursor-pointer"
+              <a className="menu-link menu-toggle">
+                <i className="menu-icon icon-base ti tabler-truck"></i>
+                <div data-i="PO & Material Management">
+                  PO & Material Management
+                </div>
+              </a>
+              <ul
+                className={`menu-sub dropdown ${
+                  activeMenu === "PO" ? "open" : ""
+                }`}
+              >
+                {Object.keys(piAndMaterialManagementRoutes).map((item) => (
+                  <li
+                    key={item}
+                    className={`menu-item ${
+                      activeSubMenu === item ? "active" : ""
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSubMenuClick("PO", item);
+                    }}
                   >
-                    <div data-i={item}>{item}</div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
+                    <Link
+                      to={piAndMaterialManagementRoutes[item]}
+                      className="menu-link cursor-pointer"
+                    >
+                      <div data-i={item}>{item}</div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          )}
 
           {/* Payment Management */}
-          <li
-            className={`menu-item ${
-              activeMenu === "Payment" ? "open active" : ""
-            } cursor-pointer`}
-            onClick={() => toggleMenu("Payment")}
-          >
-            <a className="menu-link menu-toggle">
-              <i className="menu-icon icon-base ti tabler-file-dollar"></i>
-              <div data-i="Payment Management">Payment Management</div>
-            </a>
-            <ul
-              className={`menu-sub dropdown ${
-                activeMenu === "Payment" ? "open" : ""
-              }`}
+          {!isAdmin && (
+            <li
+              className={`menu-item ${
+                activeMenu === "Payment" ? "open active" : ""
+              } cursor-pointer`}
+              onClick={() => toggleMenu("Payment")}
             >
-              {Object.keys(paymentManagementRoutes).map((item) => (
-                <li
-                  key={item}
-                  className={`menu-item ${
-                    activeSubMenu === item ? "active" : ""
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSubMenuClick("Payment", item);
-                  }}
-                >
-                  <Link
-                    to={paymentManagementRoutes[item]}
-                    className="menu-link cursor-pointer"
+              <a className="menu-link menu-toggle">
+                <i className="menu-icon icon-base ti tabler-file-dollar"></i>
+                <div data-i="Payment Management">Payment Management</div>
+              </a>
+              <ul
+                className={`menu-sub dropdown ${
+                  activeMenu === "Payment" ? "open" : ""
+                }`}
+              >
+                {Object.keys(paymentManagementRoutes).map((item) => (
+                  <li
+                    key={item}
+                    className={`menu-item ${
+                      activeSubMenu === item ? "active" : ""
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSubMenuClick("Payment", item);
+                    }}
                   >
-                    <div data-i={item}>{item}</div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </li>
+                    <Link
+                      to={paymentManagementRoutes[item]}
+                      className="menu-link cursor-pointer"
+                    >
+                      <div data-i={item}>{item}</div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          )}
         </ul>
       </aside>
     </>
