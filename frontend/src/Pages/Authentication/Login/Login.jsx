@@ -22,6 +22,8 @@ export default function Login() {
     // console.log("✅ Login result:", result);
 
     if (result) {
+      localStorage.setItem("activeMenu", "Dashboard");
+      localStorage.removeItem("activeSubMenu");
       navigate("/dashboard"); // redirect after success
     }
   };

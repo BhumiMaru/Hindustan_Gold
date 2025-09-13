@@ -7,6 +7,7 @@ const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function Navbar() {
   const { activeMenu, toggleMenu, activeSubMenu } = useUIContext();
+
   const navigate = useNavigate();
   // Decide what to show in Navbar title
   const pageTitle = activeSubMenu || activeMenu;
@@ -81,7 +82,7 @@ export default function Navbar() {
                       <div className="flex-shrink-0 me-2">
                         <div className="avatar avatar-online">
                           <img
-                            src="assets/img/avatars/1.png"
+                            src={`${publicUrl}/assets/img/avatars/1.png`}
                             alt=""
                             className="rounded-circle"
                           />
@@ -119,8 +120,8 @@ export default function Navbar() {
                         navigate("/");
                       }}
                     >
-                      <small className="align-middle">Logout</small>
-                      <i className="icon-base ti tabler-logout ms-2 icon-14px"></i>
+                      <small className="align-middle text-white">Logout</small>
+                      <i className="icon-base ti tabler-logout ms-2 icon-14px text-white"></i>
                     </a>
                   </div>
                 </li>

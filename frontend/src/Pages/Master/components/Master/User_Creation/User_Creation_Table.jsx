@@ -141,20 +141,20 @@ export default function User_Creation_Table() {
                   </span>
                 </td>
                 <td>
-                  <div className="d-inline-flex gap-2">
-                    {/* <a
+                  {/* <div className="d-inline-flex gap-2">
+                    <a
                       href="user-create.html"
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                     >
                       <i className="icon-base ti tabler-edit icon-22px"></i>
-                    </a> */}
-                    {/* <Link
+                    </a>
+                    <Link
                       to="/user-permission"
                       type="button"
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                     >
                       <i className="icon-base ti tabler-article text-info icon-22px"></i>
-                    </Link> */}
+                    </Link>
                     <Link
                       to={`/user-permission/${user.id}`}
                       type="button"
@@ -162,7 +162,7 @@ export default function User_Creation_Table() {
                     >
                       <i className="icon-base ti tabler-article text-info icon-22px"></i>
                     </Link>
-                  </div>
+                  </div> */}
                   <div className="d-inline-flex gap-2">
                     <a
                       className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
