@@ -78,7 +78,7 @@ export default function Role_Permission() {
                           Material Code
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
+                          <div className="form-check d-flex justify-content-center invisible">
                             <input
                               className="form-check-input"
                               type="checkbox"
@@ -87,7 +87,7 @@ export default function Role_Permission() {
                           </div>
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
+                          <div className="form-check d-flex justify-content-center invisible">
                             <input
                               className="form-check-input"
                               type="checkbox"
@@ -97,7 +97,7 @@ export default function Role_Permission() {
                           </div>
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
+                          <div className="form-check d-flex justify-content-center invisible">
                             <input
                               className="form-check-input"
                               type="checkbox"

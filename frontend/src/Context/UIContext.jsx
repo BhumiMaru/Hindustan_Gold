@@ -10,18 +10,40 @@ export const useUIContext = () => {
 // UI Context Provider
 export const UIProvider = ({ children }) => {
   // Is Open Dropdown in SIDEBAR
-  const [activeMenu, setActiveMenu] = useState(null); // For parent menu
-  const [activeSubMenu, setActiveSubMenu] = useState(null); // For submenu item
+  // const [activeMenu, setActiveMenu] = useState(null); // For parent menu
+  // const [activeSubMenu, setActiveSubMenu] = useState(null); // For submenu item
   // Toggle parent menu
+  // const toggleMenu = (menuName) => {
+  //   setActiveMenu(activeMenu === menuName ? null : menuName);
+  //   setActiveSubMenu(null); // reset submenu when switching parent
+  // };
+
+  const [activeMenu, setActiveMenu] = useState(
+    localStorage.getItem("activeMenu") || null
+  );
+  const [activeSubMenu, setActiveSubMenu] = useState(
+    localStorage.getItem("activeSubMenu") || null
+  );
+
   const toggleMenu = (menuName) => {
-    setActiveMenu(activeMenu === menuName ? null : menuName);
-    setActiveSubMenu(null); // reset submenu when switching parent
+    const newMenu = activeMenu === menuName ? null : menuName;
+    setActiveMenu(newMenu);
+    localStorage.setItem("activeMenu", newMenu);
+    setActiveSubMenu(null);
+    localStorage.removeItem("activeSubMenu");
   };
 
   // Handle submenu click (keep parent open)
+  // const handleSubMenuClick = (parentMenu, subMenu) => {
+  //   setActiveMenu(parentMenu); // 🔑 ensure parent stays open
+  //   setActiveSubMenu(subMenu); // highlight submenu
+  // };
+
   const handleSubMenuClick = (parentMenu, subMenu) => {
-    setActiveMenu(parentMenu); // 🔑 ensure parent stays open
-    setActiveSubMenu(subMenu); // highlight submenu
+    setActiveMenu(parentMenu);
+    setActiveSubMenu(subMenu);  
+    localStorage.setItem("activeMenu", parentMenu);
+    localStorage.setItem("activeSubMenu", subMenu);
   };
 
   //--------------------------SIDEBAR-------------------------- //

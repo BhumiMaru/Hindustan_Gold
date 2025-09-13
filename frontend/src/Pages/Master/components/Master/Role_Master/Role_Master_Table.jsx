@@ -37,7 +37,7 @@ export default function Role_Master_Table() {
                 <td>
                   <div className="d-inline-flex gap-2">
                     <Link
-                      to={`/role-permission/${role.id}`}
+                      to={`/super_admin/role-permission/${role.id}`}
                       type="button"
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                     >
