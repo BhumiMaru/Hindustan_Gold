@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../Context/Authentication/LoginContext";
+import { useUIContext } from "../../../Context/UIContext";
 
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function Login() {
+  const { setActiveMenu, setActiveSubMenu } = useUIContext();
   const { login, form, setForm } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -22,9 +24,11 @@ export default function Login() {
     // console.log("✅ Login result:", result);
 
     if (result) {
-      localStorage.setItem("activeMenu", "Dashboard");
-      localStorage.removeItem("activeSubMenu");
-      navigate("/dashboard"); // redirect after success
+      sessionStorage.setItem("activeMenu", "Dashboard");
+      sessionStorage.removeItem("activeSubMenu");
+      setActiveMenu("Dashboard"); // directly update context
+      setActiveSubMenu(null);
+      navigate("/dashboard");
     }
   };
 
