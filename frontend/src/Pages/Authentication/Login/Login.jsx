@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../Context/Authentication/LoginContext";
 
@@ -6,6 +6,7 @@ const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function Login() {
   const { login, form, setForm } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -44,6 +45,7 @@ export default function Login() {
                       src="assets/img/logo_vertical.png"
                       className="img-fluid"
                       alt="Logo"
+                      style={{ maxWidth: "52%" }}
                     />
                   </div>
                 </div>
@@ -66,7 +68,7 @@ export default function Login() {
                     />
                   </div>
 
-                  <div className="mb-4">
+                  {/* <div className="mb-4">
                     <label htmlFor="password" className="form-label">
                       Password
                     </label>
@@ -80,6 +82,30 @@ export default function Login() {
                       onChange={handleChange}
                       required
                     />
+                  </div> */}
+
+                  <div className="input-group input-group-merge has-validation">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      className="form-control"
+                      name="password"
+                      placeholder="············"
+                      aria-describedby="password"
+                      value={form.password}
+                      onChange={handleChange}
+                      required
+                    />
+                    <span
+                      className="input-group-text cursor-pointer"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <i
+                        className={`icon-base ti tabler-${
+                          showPassword ? "eye" : "eye-off"
+                        }`}
+                      />
+                    </span>
                   </div>
 
                   <div className="d-flex justify-content-between my-3">
