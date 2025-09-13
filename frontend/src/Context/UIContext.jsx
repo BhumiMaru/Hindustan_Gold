@@ -19,18 +19,18 @@ export const UIProvider = ({ children }) => {
   // };
 
   const [activeMenu, setActiveMenu] = useState(
-    localStorage.getItem("activeMenu") || null
+    sessionStorage.getItem("activeMenu") || null
   );
   const [activeSubMenu, setActiveSubMenu] = useState(
-    localStorage.getItem("activeSubMenu") || null
+    sessionStorage.getItem("activeSubMenu") || null
   );
 
   const toggleMenu = (menuName) => {
     const newMenu = activeMenu === menuName ? null : menuName;
     setActiveMenu(newMenu);
-    localStorage.setItem("activeMenu", newMenu);
+    sessionStorage.setItem("activeMenu", newMenu);
     setActiveSubMenu(null);
-    localStorage.removeItem("activeSubMenu");
+    sessionStorage.removeItem("activeSubMenu");
   };
 
   // Handle submenu click (keep parent open)
@@ -41,9 +41,9 @@ export const UIProvider = ({ children }) => {
 
   const handleSubMenuClick = (parentMenu, subMenu) => {
     setActiveMenu(parentMenu);
-    setActiveSubMenu(subMenu);  
-    localStorage.setItem("activeMenu", parentMenu);
-    localStorage.setItem("activeSubMenu", subMenu);
+    setActiveSubMenu(subMenu);
+    sessionStorage.setItem("activeMenu", parentMenu);
+    sessionStorage.setItem("activeSubMenu", subMenu);
   };
 
   //--------------------------SIDEBAR-------------------------- //
@@ -84,6 +84,8 @@ export const UIProvider = ({ children }) => {
         toggleMenu,
         activeSubMenu,
         handleSubMenuClick,
+        setActiveMenu,
+        setActiveSubMenu,
       }}
     >
       {children}

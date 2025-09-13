@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }) => {
         const encryptedToStore = encryptData(decrypted);
 
         sessionStorage.setItem("authData", encryptedToStore);
-        toast.success(res.message || "Login successful ✅");
+        // toast.success(res.message || "Login successful ✅");
 
         return decrypted;
       } else {
