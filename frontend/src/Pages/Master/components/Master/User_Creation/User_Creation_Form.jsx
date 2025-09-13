@@ -67,15 +67,17 @@ export default function User_Creation_Form() {
     try {
       if (id) {
         await updateUser(id, payload);
+        resetUserData();
+        setIsEditUserId(null);
       } else {
-        await createUser(payload);
+        const newUser = await createUser(payload); // ✅ get response
+        if (newUser?.id) {
+          navigate(`/master/user-create/${newUser.id}`); // ✅ use real id
+        }
       }
     } catch (error) {
       console.log(error);
     }
-    navigate("/master/user");
-    resetUserData();
-    setIsEditUserId(null);
   };
 
   return (
@@ -453,8 +455,12 @@ export default function User_Creation_Form() {
             </div>
           </div>
         </div>
-        <h3 className="mt-4">User Permissions</h3>
-        <User_Creation_Permission />
+        {id && (
+          <>
+            <h3 className="mt-4">User Permissions</h3>
+            <User_Creation_Permission />
+          </>
+        )}
       </div>
 
       {/* ------------------END USER CREATION FORM------------------- */}

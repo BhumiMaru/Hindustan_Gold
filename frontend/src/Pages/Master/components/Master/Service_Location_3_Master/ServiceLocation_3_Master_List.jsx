@@ -16,6 +16,11 @@ export default function ServiceLocation_3_Master_List() {
     fetchServiceLocations3,
     serviceLocation3Data,
     setServiceLocation3Data,
+    pagination,
+    filterSelectedSl1,
+    setFilterSelectedSl1,
+    filterSelectedSl2,
+    setFilterSelectedSl2,
   } = useServiceLocation3Master();
   const { serviceLocation, fetchServiceLocations } =
     useServiceLocation1Master();
@@ -28,14 +33,38 @@ export default function ServiceLocation_3_Master_List() {
     fetchServiceLocations2();
     fetchServiceLocations3(
       search,
-      serviceLocation3Data?.selectedSl1,
-      serviceLocation3Data?.selectedSl2
+      filterSelectedSl1,
+      filterSelectedSl2,
+      pagination.currentPage,
+      pagination.perPage
     );
-  }, [
-    search,
-    serviceLocation3Data?.selectedSl1,
-    serviceLocation3Data?.selectedSl2,
-  ]);
+  }, [search, filterSelectedSl1, filterSelectedSl2]);
+
+  const handlePageChange = (page) => {
+    fetchServiceLocations3(search, page, pagination.perPage);
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    fetchServiceLocations3(search, 1, size); // reset to page 1 when changing size
+  };
+
+  // Create options with "All" option
+  const locationOptions1 = [
+    { value: "all", label: "All" },
+    ...(serviceLocation?.map((loc) => ({
+      value: loc.id,
+      label: loc.service_location_name,
+    })) || []),
+  ];
+
+  // Create options with "All" option
+  const locationOptions2 = [
+    { value: "all", label: "All" },
+    ...(serviceLocation2?.map((loc) => ({
+      value: loc.id,
+      label: loc.service_location_2_name,
+    })) || []),
+  ];
 
   return (
     <>
@@ -58,16 +87,10 @@ export default function ServiceLocation_3_Master_List() {
               <div className="position-relative">
                 {/* ✅ Service Location 1 filter */}
                 <CustomSelect
-                  options={serviceLocation?.map((loc) => ({
-                    value: loc.id,
-                    label: loc.service_location_name,
-                  }))}
-                  value={serviceLocation3Data.selectedSl1}
+                  options={locationOptions1}
+                  value={filterSelectedSl1}
                   onChange={(option) =>
-                    setServiceLocation3Data((prev) => ({
-                      ...prev,
-                      selectedSl1: option,
-                    }))
+                    setFilterSelectedSl1(option === "all" ? null : option)
                   }
                   placeholder="Service Location 1"
                   styles={{
@@ -81,16 +104,10 @@ export default function ServiceLocation_3_Master_List() {
               <div className="position-relative">
                 {/* ✅ Service Location 2 filter */}
                 <CustomSelect
-                  options={serviceLocation2?.map((loc) => ({
-                    value: loc.id,
-                    label: loc.service_location_2_name,
-                  }))}
-                  value={serviceLocation3Data.selectedSl2}
+                  options={locationOptions2}
+                  value={filterSelectedSl2}
                   onChange={(option) =>
-                    setServiceLocation3Data((prev) => ({
-                      ...prev,
-                      selectedSl2: option,
-                    }))
+                    setFilterSelectedSl2(option === "all" ? null : option)
                   }
                   placeholder="Service Location 2"
                   styles={{
@@ -116,7 +133,13 @@ export default function ServiceLocation_3_Master_List() {
           </div>
           <div className="card-datatable table-responsive pt-0">
             <ServiceLocation_3_Master_Table />
-            <Pagination />
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalItems={pagination.total}
+              itemsPerPage={pagination.perPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
           </div>
         </div>
       </div>

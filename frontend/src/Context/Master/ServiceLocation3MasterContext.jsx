@@ -15,25 +15,48 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
   const [serviceLocation3, setServiceLocation3] = useState([]);
   const [serviceL3, setServiceL3] = useState([]);
   const [serviceLocation3Data, setServiceLocation3Data] = useState({
-    serviceLocation3Name: "",
+    service_location_3_name: "",
     selectedSl1: null,
     selectedSl2: null,
   });
   const [serviceLocation3EditId, setServiceLocation3EditId] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    total: 0,
+  });
+
+  const [filterSelectedSl1, setFilterSelectedSl1] = useState(null); // 🔹 separate state
+  const [filterSelectedSl2, setFilterSelectedSl2] = useState(null);
 
   // Fetch All
   const fetchServiceLocations3 = async (
     search = "",
     serviceLocation1Id = null,
-    serviceLocation2Id = null
+    serviceLocation2Id = null,
+    page = 1,
+    perPage = 10
   ) => {
     try {
-      const res = await getData(ENDPOINTS.SERVICES_LOCATION_3_MASTER.LIST, {
-        search,
-        service_location_1_id: serviceLocation1Id,
-        service_location_2_id: serviceLocation2Id,
+      const params = { search };
+      if (params.serviceLocation1Id !== null) {
+        params.service_location_1_id = serviceLocation1Id;
+      }
+      if (params.serviceLocation2Id !== null) {
+        params.service_location_2_id = serviceLocation2Id;
+      }
+      const res = await getData(
+        ENDPOINTS.SERVICES_LOCATION_3_MASTER.LIST,
+        params
+      );
+
+      const apiData = res.data;
+      setServiceLocation3(apiData.data);
+      setPagination({
+        currentPage: apiData.current_page,
+        perPage: apiData.per_page,
+        total: apiData.total,
       });
-      setServiceLocation3(res.data.data);
     } catch (error) {
       toast.error(`Service Location 3 Master Fetch Error: ${error.message}`);
     }
@@ -57,11 +80,15 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
     service_location_2_id
   ) => {
     try {
-      await postData(ENDPOINTS.SERVICES_LOCATION_3_MASTER.ADD_UPDATE, {
-        service_location_3_name,
-        service_location_1_id,
-        service_location_2_id,
-      });
+      const res = await postData(
+        ENDPOINTS.SERVICES_LOCATION_3_MASTER.ADD_UPDATE,
+        {
+          service_location_3_name,
+          service_location_1_id,
+          service_location_2_id,
+        }
+      );
+      console.log("res", res);
       toast.success("Service Location 3 Created Successfully");
       fetchServiceLocations3();
     } catch (error) {
@@ -70,23 +97,46 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
   };
 
   // Update
-  const updateServiceLocation3 = async (
-    id,
-    service_location_3_name,
-    service_location_1_id,
-    service_location_2_id
-  ) => {
+  // const updateServiceLocation3 = async (
+  //   id,
+  //   service_location_3_name,
+  //   service_location_1_id,
+  //   service_location_2_id
+  // ) => {
+  //   try {
+  //     const res = await postData(
+  //       ENDPOINTS.SERVICES_LOCATION_3_MASTER.ADD_UPDATE,
+  //       {
+  //         id,
+  //         service_location_3_name,
+  //         service_location_1_id,
+  //         service_location_2_id,
+  //       }
+  //     );
+  //     console.log("res", res);
+  //     toast.success("Service Location 3 Updated Successfully");
+  //     fetchServiceLocations3();
+  //   } catch (error) {
+  //     toast.error(`Service Location 3 Update Error: ${error.message}`);
+  //   }
+  // };
+  const updateServiceLocation3 = async (id, payload) => {
     try {
-      await postData(ENDPOINTS.SERVICES_LOCATION_3_MASTER.ADD_UPDATE, {
-        id,
-        service_location_3_name,
-        service_location_1_id,
-        service_location_2_id,
-      });
-      toast.success("Service Location 3 Updated Successfully");
-      fetchServiceLocations3();
+      // ✅ include id inside payload
+      const finalPayload = { id, ...payload };
+
+      const response = await postData(
+        ENDPOINTS.SERVICES_LOCATION_3_MASTER.ADD_UPDATE,
+        finalPayload
+      );
+
+      console.log("res", response);
+
+      toast.success("Service Location 3 updated successfully");
+      fetchServiceLocations3(); // refresh list
     } catch (error) {
-      toast.error(`Service Location 3 Update Error: ${error.message}`);
+      console.error("Service Location 3 Update Error", error);
+      toast.error("Failed to update Service Location 3");
     }
   };
 
@@ -101,15 +151,9 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
   ) => {
     setServiceLocation3EditId(id);
     setServiceLocation3Data({
-      serviceLocation3Name: service_location_3_name,
-      selectedSl1: {
-        value: service_location_1_id,
-        label: service_location1Name || "N/A",
-      },
-      selectedSl2: {
-        value: service_location_2_id,
-        label: service_location2Name || "N/A",
-      },
+      service_location_3_name: service_location_3_name,
+      selectedSl1: service_location_1_id,
+      selectedSl2: service_location_2_id,
     });
   };
 
@@ -133,6 +177,11 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
         serviceLocation3EditId,
         setServiceLocation3EditId,
         serviceL3,
+        pagination,
+        filterSelectedSl1,
+        setFilterSelectedSl1,
+        filterSelectedSl2,
+        setFilterSelectedSl2,
 
         fetchSL3Filter,
         fetchServiceLocations3,

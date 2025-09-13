@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardPage from "../Pages/Dashboard/DashboardPage";
 import DepartmentMasterPage from "../Pages/Master/DepartmentMasterPage";
 import ZoneMasterpage from "../Pages/Master/ZoneMasterpAGE";
@@ -41,6 +41,8 @@ import CompanyMasterPage from "../Pages/Master/CompanyMasterPage";
 import { CompanyMasterProvider } from "../Context/Master/CompanyMasterContext";
 import Item_Create_Material_Form from "../Pages/ItemManagement/components/ItemManagement/Item_Create/Item_Create_Material_Form";
 import Vendor_List_page from "../Pages/PaymentManagement/Vendor_List_page";
+import LoginPage from "../Pages/Authentication/Login/LoginMasterPage";
+import { decryptData } from "../utils/decryptData";
 
 export default function AppRoutes() {
   return (
@@ -49,27 +51,32 @@ export default function AppRoutes() {
       <Routes>
         {/* Default redirect */}
         {/* <Route path="/" element={<Navigate to="/dashboard" replace />} /> */}
+        {/* Login Routes */}
+
         {/* Dashboard */}
-        <Route path="/" element={<DashboardPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         {/* Master Routes */}
-        <Route path="/master/department" element={<DepartmentMasterPage />} />
-        <Route path="/master/zone" element={<ZoneMasterpage />} />
         <Route
-          path="/master/service-location-1"
+          path="/super_admin/master/department"
+          element={<DepartmentMasterPage />}
+        />
+        <Route path="/super_admin/master/zone" element={<ZoneMasterpage />} />
+        <Route
+          path="/super_admin/master/service-location-1"
           element={<ServiceLocation1MasterPage />}
         />
         <Route
-          path="/master/service-location-2"
+          path="/super_admin/master/service-location-2"
           element={<ServiceLocation2MasterPage />}
         />
         <Route
-          path="/master/service-location-3"
+          path="/super_admin/master/service-location-3"
           element={<ServiceLocation3MasterPage />}
         />
-        <Route path="/master/role" element={<RoleMasterPage />} />
+        <Route path="/super_admin/master/role" element={<RoleMasterPage />} />
 
         <Route
-          path="/role-permission"
+          path="/super_admin/role-permission"
           element={
             <div className="container-xxl flex-grow-1 container-p-y">
               <RoleMasterProvider>
@@ -79,7 +86,7 @@ export default function AppRoutes() {
           }
         />
         <Route
-          path="/role-permission/:id"
+          path="/super_admin/role-permission/:id"
           element={
             <div className="container-xxl flex-grow-1 container-p-y">
               <RoleMasterProvider>
@@ -90,7 +97,7 @@ export default function AppRoutes() {
         />
 
         <Route
-          path="/user-permission"
+          path="/super_admin/user-permission"
           element={
             <div className="container-xxl flex-grow-1 container-p-y">
               <RoleMasterProvider>
@@ -103,7 +110,7 @@ export default function AppRoutes() {
         />
 
         <Route
-          path="/user-permission/:id"
+          path="/super_admin/user-permission/:id"
           element={
             <div className="container-xxl flex-grow-1 container-p-y">
               <RoleMasterProvider>
@@ -115,9 +122,12 @@ export default function AppRoutes() {
           }
         />
 
-        <Route path="/master/company" element={<CompanyMasterPage />} />
         <Route
-          path="/master/user"
+          path="/super_admin/master/company"
+          element={<CompanyMasterPage />}
+        />
+        <Route
+          path="/super_admin/master/user"
           element={
             <UserCreationProvider>
               <User_Creation_Page />
@@ -125,7 +135,7 @@ export default function AppRoutes() {
           }
         />
         <Route
-          path="/master/user-create"
+          path="/super_admin/master/user-create"
           element={
             <UserCreationProvider>
               <RoleMasterProvider>
@@ -148,7 +158,7 @@ export default function AppRoutes() {
         />
 
         <Route
-          path="/master/user-create/:id"
+          path="/super_admin/master/user-create/:id"
           element={
             <UserCreationProvider>
               <RoleMasterProvider>
@@ -174,9 +184,16 @@ export default function AppRoutes() {
         <Route path="/item/group" element={<Group_Master_Page />} />
         <Route path="/item/category" element={<Category_Master_Page />} />
         <Route path="/item/subcategory" element={<SubCategory_Master_Page />} />
-        <Route path="/item/item-master" element={<Item_Master_Page />} />
         <Route
-          path="/item/item-create-material"
+          path="/item/item-master"
+          element={
+            <ItemMasterProvider>
+              <Item_Master_Page />
+            </ItemMasterProvider>
+          }
+        />
+        <Route
+          path="/item/item-create/:type"
           element={
             <ItemMasterProvider>
               <CategoryMasterProvider>
@@ -196,13 +213,33 @@ export default function AppRoutes() {
           }
         />
         <Route
+          path="/item/item-create/:type/:id"
+          element={
+            <ItemMasterProvider>
+              <CategoryMasterProvider>
+                <SubCategoryProvider>
+                  <ZoneProvider>
+                    <ServiceLocation1MasterProvider>
+                      <ServiceLocation2MasterProvider>
+                        <ServiceLocation3MasterProvider>
+                          <Item_Create_Material_Form />
+                        </ServiceLocation3MasterProvider>
+                      </ServiceLocation2MasterProvider>
+                    </ServiceLocation1MasterProvider>
+                  </ZoneProvider>
+                </SubCategoryProvider>
+              </CategoryMasterProvider>
+            </ItemMasterProvider>
+          }
+        />
+        {/* <Route
           path="/item/item-create-service"
           element={<Item_Create_Service_Form />}
         />
         <Route
           path="/item/item-create-asset"
           element={<Item_Create_Asset_Form />}
-        />
+        /> */}
 
         {/* Request Management */}
         <Route

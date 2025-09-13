@@ -46,6 +46,11 @@ export const UserCreationProvider = ({ children }) => {
   // };
 
   const [isEditUserId, setIsEditUserId] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    total: 0,
+  });
 
   // user Permission List
   const [userPermission, setUserPermission] = useState([]);
@@ -58,7 +63,6 @@ export const UserCreationProvider = ({ children }) => {
     user_id: null,
   });
 
-  // console.log(isEditUserId);
   // Fetch Users
   const fetchUserCreationData = async ({
     search = "",
@@ -66,16 +70,32 @@ export const UserCreationProvider = ({ children }) => {
     department_id = null,
     zone_id = null,
     status = null,
+    page = 1,
+    perPage = 10,
   } = {}) => {
     try {
-      const res = await getData(ENDPOINTS.USER_CREATION.LIST, {
-        search,
-        role_id,
-        department_id,
-        zone_id,
-        status,
+      const params = { search, page, per_page: perPage };
+
+      if (role_id) {
+        params.role_id = role_id;
+      }
+
+      if (department_id) {
+        params.department_id = department_id;
+      }
+
+      if (zone_id) {
+        params.zone_id = zone_id;
+      }
+
+      const res = await getData(ENDPOINTS.USER_CREATION.LIST, params);
+      const apiData = res.data;
+      setUserCreations(apiData.data);
+      setPagination({
+        currentPage: apiData.current_page,
+        perPage: apiData.per_page,
+        total: apiData.total,
       });
-      setUserCreations(res.data.data);
     } catch (error) {
       console.error(error);
       toast.error("Failed to fetch users");
@@ -94,12 +114,39 @@ export const UserCreationProvider = ({ children }) => {
   };
 
   // Create User
-  // const createUser = async (payload) => {
+  const createUser = async (payload) => {
+    try {
+      const res = await postData(ENDPOINTS.USER_CREATION.ADD_UPDATE, payload);
+      setUserCreationData(res.data);
+      toast.success("User created successfully");
+      return res.data;
+      // fetchUserCreationData();
+    } catch (error) {
+      // ✅ Check if backend sent validation errors
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+        Object.values(errors).forEach((errArray) => {
+          errArray.forEach((msg) => toast.error(msg)); // Show all error messages
+        });
+      } else {
+        toast.error(error.response?.data?.message || "Failed to create user");
+      }
+    }
+  };
+
+  //   const createUser = async (payload) => {
   //   try {
   //     const res = await postData(ENDPOINTS.USER_CREATION.ADD_UPDATE, payload);
-  //     setUserCreationData(res.data.data);
+
+  //     const newUser = res.data; // backend response should include id
+  //     setUserCreationData(newUser);
+  //     console.log(" newUser?.id", newUser?.id);
+  //     if (res.success && newUser?.id) {
+  //       setIsEditUserId(newUser.id);
+  //     }
+
   //     toast.success("User created successfully");
-  //     fetchUserCreationData();
+  //     return newUser; // ✅ return created user object
   //   } catch (error) {
   //     // ✅ Check if backend sent validation errors
   //     if (error.response && error.response.data && error.response.data.errors) {
@@ -113,27 +160,28 @@ export const UserCreationProvider = ({ children }) => {
   //   }
   // };
 
-  const createUser = async (payload) => {
-    try {
-      const res = await postData(ENDPOINTS.USER.CREATE, payload);
+  // const createUser = async (payload) => {
+  //   try {
+  //     const res = await postData(ENDPOINTS.USER_CREATION.ADD_UPDATE, payload);
 
-      const newUserId = res.data.data.id; // assuming backend returns id
-      toast.success("User created successfully");
+  //     // const newUserId = res.data.data.id; // assuming backend returns id
+  //     // toast.success("User created successfully");
 
-      // Save form data + new user_id
-      setUserCreationData({
-        ...payload,
-        id: newUserId,
-      });
+  //     // Save form data + new user_id
+  //     setUserCreationData({
+  //       ...payload,
+  //       id: newUserId,
+  //     });
 
-      // ✅ Immediately fetch permissions for this role
-      // fetchRolePermission(payload.role_id);
+  //     // ✅ Immediately fetch permissions for this role
+  //     // fetchRolePermission(payload.role_id);
 
-      return res.data;
-    } catch (error) {
-      toast.error("Failed to create user");
-    }
-  };
+  //     return res.data;
+  //   } catch (error) {
+  //     toast.error("Failed to create user");
+  //     console.log("Failed to create user", error);
+  //   }
+  // };
 
   // Update User
   const updateUser = async (id, payload) => {
@@ -277,7 +325,6 @@ export const UserCreationProvider = ({ children }) => {
     try {
       await postData(ENDPOINTS.USER_CREATION.PERMISSION_ADD_UPDATE, payload);
       toast.success("Permission updated successfully");
-      console.log("user ", payload);
       if (payload.user_id) {
         fetchUserPermission(payload.user_id);
       }
@@ -328,6 +375,8 @@ export const UserCreationProvider = ({ children }) => {
         filterUser,
         setFilterUser,
         userPermission,
+        pagination,
+        setPagination,
 
         fetchUserById,
         fetchUserFilter,

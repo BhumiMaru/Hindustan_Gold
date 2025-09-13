@@ -36,10 +36,12 @@ export const UIProvider = ({ children }) => {
     addNewServiceLocation3: false,
     addNewRole: false,
     addNewCompany: false,
+    viewUserDetails: false,
     // ITEM MANAGEMENT
     addNewGroup: false,
     addNewCategory: false,
     addNewSubCategory: false,
+    viewSubCategory: false,
   });
 
   const handleOpen = (name) => {

@@ -9,11 +9,19 @@ import ZoneForm from "./ZoneForm";
 export default function ZoneList() {
   const { modal, handleOpen } = useUIContext();
   const [search, setSearch] = useState("");
-  const { fetchZones } = useZone();
+  const { fetchZones, pagination } = useZone();
 
   useEffect(() => {
-    fetchZones(search);
+    fetchZones(search, pagination.currentPage, pagination.perPage);
   }, [search]); // ✅ re-fetch when search changes
+
+  const handlePageChange = (page) => {
+    fetchZones(search, page, pagination.perPage);
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    fetchZones(search, 1, size); // reset to page 1 when changing size
+  };
 
   return (
     <>
@@ -47,7 +55,13 @@ export default function ZoneList() {
             </div>
             <div className="card-datatable table-responsive pt-0">
               <ZoneTable />
-              <Pagination />
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalItems={pagination.total}
+                itemsPerPage={pagination.perPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
             </div>
           </div>
         </div>

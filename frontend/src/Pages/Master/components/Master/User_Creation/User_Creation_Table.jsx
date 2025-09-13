@@ -2,11 +2,19 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
+import { useUIContext } from "../../../../../Context/UIContext";
 
-export default function User_Creation_Table({ search }) {
+export default function User_Creation_Table() {
   const navigate = useNavigate();
-  const { userCreations, deleteUser, startEditing, setIsEditUserId } =
-    useUserCreation();
+  const { handleOpen } = useUIContext();
+  const {
+    userCreations,
+    deleteUser,
+    startEditing,
+    pagination,
+    setUserCreationData,
+  } = useUserCreation();
+  // console.log("userCreations", userCreations);
   // console.log("userCreations", userCreations);
   // Derived filtered list
   // Derived filtered list
@@ -47,9 +55,9 @@ export default function User_Creation_Table({ search }) {
   // console.log("filteredUsers", filteredUsers);
 
   const handleEditClick = (user) => {
-    console.log("user", user);
+    // console.log("user", user);
     startEditing(user.id); // set edit data in context
-    navigate(`/master/user-create/${user.id}`); // then navigate
+    navigate(`/super_admin/master/user-create/${user.id}`); // then navigate
   };
 
   return (
@@ -76,9 +84,12 @@ export default function User_Creation_Table({ search }) {
           {userCreations?.map((user, index) => {
             return (
               <tr key={user.id}>
-                {console.log(user.status)}
+                {/* {console.log(user.status)} */}
                 <td>
-                  <div className="ms-4">{index + 1}</div>
+                  <div className="ms-4">
+                    {(pagination.currentPage - 1) * pagination.perPage +
+                      (index + 1)}
+                  </div>
                 </td>
                 <td>
                   <div className="d-flex justify-content-start align-items-center user-name">
@@ -125,7 +136,7 @@ export default function User_Creation_Table({ search }) {
                       user.status === 1 ? "bg-label-success" : "bg-label-danger"
                     }`}
                   >
-                    {console.log(typeof user.status)}
+                    {/* {console.log(typeof user.status)} */}
                     {user.status === 1 ? "Active" : "Deactive"}
                   </span>
                 </td>
@@ -180,6 +191,10 @@ export default function User_Creation_Table({ search }) {
                           className="dropdown-item waves-effect"
                           data-bs-toggle="modal"
                           data-bs-target="#grnCreateModel"
+                          onClick={() => {
+                            handleOpen("viewUserDetails");
+                            setUserCreationData(user);
+                          }}
                         >
                           View
                         </a>

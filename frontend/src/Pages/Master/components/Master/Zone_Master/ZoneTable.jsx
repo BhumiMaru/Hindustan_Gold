@@ -4,7 +4,7 @@ import { useUIContext } from "../../../../../Context/UIContext";
 
 export default function ZoneTable() {
   const { handleOpen } = useUIContext();
-  const { zones, deleteZone, startEdit } = useZone();
+  const { zones, deleteZone, startEdit, pagination } = useZone();
   return (
     <>
       {/* -----------------START ZONE TABLE------------------ */}
@@ -26,7 +26,11 @@ export default function ZoneTable() {
             return (
               <tr key={zone.id}>
                 <td>
-                  <div className="ms-2">{index + 1}</div>
+                  <div className="ms-2">
+                    {" "}
+                    {(pagination.currentPage - 1) * pagination.perPage +
+                      (index + 1)}
+                  </div>
                 </td>
                 <td>{zone.zone_name}</td>
                 <td>
@@ -39,29 +43,38 @@ export default function ZoneTable() {
                     }}
                   ></div>
                 </td>
+
                 <td>
                   <div className="d-inline-flex gap-2">
-                    <button
-                      type="button"
-                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                      data-bs-toggle="modal"
-                      data-bs-target="#smallModal"
-                      onClick={() => {
-                        startEdit(zone);
-                        handleOpen("addNewZone");
-                      }}
+                    <a
+                      className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
                     >
-                      <i className="icon-base ti tabler-edit icon-22px"></i>
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                      data-bs-toggle="modal"
-                      data-bs-target="#deleteModal"
-                      onClick={() => deleteZone(zone.id)}
-                    >
-                      <i className="icon-base ti tabler-trash text-danger icon-22px"></i>
-                    </button>
+                      <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
+                    </a>
+                    <div className="d-inline-block">
+                      <div className="dropdown-menu dropdown-menu-end m-0">
+                        <button
+                          // key={user.id}
+                          className="dropdown-item waves-effect"
+                          onClick={() => {
+                            startEdit(zone);
+                            handleOpen("addNewZone");
+                          }}
+                        >
+                          Edit
+                        </button>
+
+                        {/* <div className="dropdown-divider"></div> */}
+                        <a
+                          className="dropdown-item text-danger delete-record waves-effect"
+                          onClick={() => deleteZone(zone.id)}
+                        >
+                          Delete
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </td>
               </tr>

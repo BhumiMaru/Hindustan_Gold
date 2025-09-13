@@ -70,7 +70,7 @@ export default function User_Creation_Permission() {
                   <table className="table">
                     <thead>
                       <tr>
-                        <th className="text-nowrap w-50"></th>
+                        <th className="text-nowrap w-50">Type</th>
                         <th className="text-nowrap text-center w-px-50"></th>
                         <th className="text-nowrap text-center w-px-50"></th>
                         <th className="text-nowrap text-center w-px-50"></th>
@@ -124,10 +124,10 @@ export default function User_Creation_Permission() {
                                 !!userPermission?.some(
                                   (p) =>
                                     String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name === "Item Request Module" &&
-                                    p.type === "Material Handover" &&
-                                    p.permission === "all_rights" &&
-                                    p.status === 1
+                                    p.module_name ===
+                                      "Item Management Module" &&
+                                    p.type === "Material Code" &&
+                                    p.permission === "all_rights"
                                 )
                               }
                               onChange={(e) =>
@@ -186,8 +186,9 @@ export default function User_Creation_Permission() {
                                 !!userPermission?.some(
                                   (p) =>
                                     String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name === "Item Request Module" &&
-                                    p.type === "Material Handover" &&
+                                    p.module_name ===
+                                      "Item Management Module" &&
+                                    p.type === "Service Code" &&
                                     p.permission === "all_rights"
                                 )
                               }
@@ -242,8 +243,9 @@ export default function User_Creation_Permission() {
                                 !!userPermission?.some(
                                   (p) =>
                                     String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name === "Item Request Module" &&
-                                    p.type === "Material Handover" &&
+                                    p.module_name ===
+                                      "Item Management Module" &&
+                                    p.type === "Asset Code" &&
                                     p.permission === "all_rights"
                                 )
                               }

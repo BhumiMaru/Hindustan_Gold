@@ -1,24 +1,38 @@
 import React, { useEffect, useState } from "react";
-import SearchBar from "../../Common/SearchBar/SearchBar";
+import { useUIContext } from "../../../../../Context/UIContext";
+import { useGroupMasterContext } from "../../../../../Context/ItemManagement/GroupMasterContext";
+import { useCategoryMaster } from "../../../../../Context/ItemManagement/CategoryMasterContext";
+import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 import Category_Master_Table from "./Category_Master_Table";
-import Pagination from "../../Common/Pagination/Pagination";
-import { useCategoryMaster } from "../../../Context/Item Management/CategoryMasterContext";
-import { useUIContext } from "../../../Context/UIContext";
+import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import Category_Master_Form from "./Category_Master_Form";
-import CustomSelect from "../../Common/CustomSelect/CustomSelect";
-import { useGroupMasterContext } from "../../../Context/Item Management/GroupMasterContext";
 
 export default function Category_Master_List() {
   const { modal, handleOpen } = useUIContext();
   const { groups, fetchGroupData } = useGroupMasterContext();
-  const { fetchCategories, selectedGroup, setSelectedGroup } =
+  const { fetchCategories, selectedGroup, setSelectedGroup, pagination } =
     useCategoryMaster();
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetchGroupData();
-    fetchCategories(search, selectedGroup?.value);
+    fetchCategories(
+      search,
+      selectedGroup,
+      pagination.currentPage,
+      pagination.perPage
+    );
   }, [search, selectedGroup]);
+
+  const handlePageChange = (page) => {
+    fetchCategories(search, page, pagination.perPage);
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    fetchCategories(search, 1, size); // reset to page 1 when changing size
+  };
+
   return (
     <>
       {/* ---------------START CATEGORY MASTER LIST----------------- */}
@@ -69,7 +83,13 @@ export default function Category_Master_List() {
             </div>
             <div className="card-datatable table-responsive pt-0">
               <Category_Master_Table />
-              <Pagination />
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalItems={pagination.total}
+                itemsPerPage={pagination.perPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
             </div>
           </div>
         </div>

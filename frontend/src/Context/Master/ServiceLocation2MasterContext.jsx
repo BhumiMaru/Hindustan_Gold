@@ -17,6 +17,7 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
   const [serviceLocation2Name, setServiceLocation2Name] = useState("");
   const [serviceLocation2EditId, setServiceLocation2EditId] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [filterSelectedOption, setFilterSelectedOption] = useState(null);
 
   // Fetch All
   const fetchServiceLocations2 = async (
@@ -24,10 +25,16 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
     serviceLocation1Id = null
   ) => {
     try {
-      const res = await getData(ENDPOINTS.SERVICES_LOCATION_2_MASTER.LIST, {
-        search,
-        service_location_1_id: serviceLocation1Id,
-      });
+      // If serviceLocation1Id is null, don't include it in the request
+      const params = { search };
+      if (serviceLocation1Id !== null) {
+        params.service_location_1_id = serviceLocation1Id;
+      }
+
+      const res = await getData(
+        ENDPOINTS.SERVICES_LOCATION_2_MASTER.LIST,
+        params
+      );
       setServiceLocation2(res.data.data);
     } catch (error) {
       toast.error(`Service Location 2 Master Fetch Error: ${error.message}`);
@@ -93,10 +100,7 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
     setServiceLocation2Name(service_location_2_name);
 
     // prefill dropdown
-    setSelectedOption({
-      value: service_location_1_id,
-      label: service_location1Name || "N/A",
-    });
+    setSelectedOption(service_location_1_id);
   };
 
   // Delete
@@ -121,6 +125,8 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
         selectedOption,
         setSelectedOption,
         serviceL2,
+        filterSelectedOption,
+        setFilterSelectedOption,
 
         fetchSL2Filter,
         fetchServiceLocations2,

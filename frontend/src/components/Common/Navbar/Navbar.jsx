@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../../../../public/assets/vendor/css/core.css";
 import "../../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css";
 import { useUIContext } from "../../../Context/UIContext";
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function Navbar() {
   const { activeMenu, toggleMenu, activeSubMenu } = useUIContext();
@@ -59,7 +60,7 @@ export default function Navbar() {
               >
                 <div className="avatar avatar-online">
                   <img
-                    src="../../../../public/assets/img/avatars/1.png"
+                    src={`${publicUrl}/assets/img/avatars/1.png`}
                     alt=""
                     className="rounded-circle"
                   />

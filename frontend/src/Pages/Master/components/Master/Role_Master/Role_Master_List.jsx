@@ -9,11 +9,20 @@ import Role_Master_Table from "./Role_Master_Table";
 export default function Role_Master_List() {
   const { modal, handleOpen } = useUIContext();
   const [search, setSearch] = useState("");
-  const { fetchRoleData } = useRoleMaster();
+  const { fetchRoleData, pagination } = useRoleMaster();
 
   useEffect(() => {
-    fetchRoleData(search);
-  }, [search]);
+    fetchRoleData(search, pagination.currentPage, pagination.perPage);
+  }, [search, pagination.currentPage, pagination.perPage]);
+
+  const handlePageChange = (page) => {
+    fetchRoleData(search, page, pagination.perPage);
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    fetchRoleData(search, 1, size); // reset to page 1 when changing size
+  };
+
   return (
     <>
       {/* -----------------START ROLE MASTER List-------------------- */}
@@ -46,7 +55,13 @@ export default function Role_Master_List() {
             </div>
             <div className="card-datatable table-responsive pt-0">
               <Role_Master_Table />
-              <Pagination />
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalItems={pagination.total}
+                itemsPerPage={pagination.perPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
             </div>
           </div>
         </div>

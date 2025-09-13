@@ -16,12 +16,27 @@ export const CompanyMasterProvider = ({ children }) => {
   const [companyFilter, setCompanyFilter] = useState([]);
   const [companyName, setCompanyName] = useState("");
   const [companyEditId, setCompanyEditId] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    total: 0,
+  });
 
   //   Fetch Company
-  const fetchCompanyData = async (search = "") => {
+  const fetchCompanyData = async (search = "", page = 1, perPage = 10) => {
     try {
-      const res = await getData(ENDPOINTS.COMPANY_MASTER.LIST, { search });
-      setCompanies(res.data.data);
+      const res = await getData(ENDPOINTS.COMPANY_MASTER.LIST, {
+        search,
+        page,
+        per_page: perPage,
+      });
+      const apiData = res.data;
+      setCompanies(apiData.data);
+      setPagination({
+        currentPage: apiData.current_page,
+        perPage: apiData.per_page,
+        total: apiData.total,
+      });
     } catch (error) {
       console.log(error);
       toast.error("Failed to fetch Company");
@@ -86,6 +101,7 @@ export const CompanyMasterProvider = ({ children }) => {
   return (
     <CompanyMasterContext.Provider
       value={{
+        pagination,
         companyName,
         setCompanyName,
         fetchCompanyFilter,

@@ -17,14 +17,28 @@ export const ZoneProvider = ({ children }) => {
   const [zoneName, setZoneName] = useState("");
   const [colorCode, setColorCode] = useState("");
   const [editId, setEditId] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    total: 0,
+  });
 
   // ✅ Fetch Zones (GET)
-  const fetchZones = async (search = "") => {
+  const fetchZones = async (search = "", page = 1, perPage = 10) => {
     try {
-      const res = await getData(ENDPOINTS.ZONES.LIST, { search });
-      // if (res.status) {
-      setZones(res.data.data); // res.data.data contains the array
-      // }
+      const res = await getData(ENDPOINTS.ZONES.LIST, {
+        search,
+        page,
+        per_page: perPage,
+      });
+
+      const apiData = res.data;
+      setZones(apiData.data);
+      setPagination({
+        currentPage: apiData.current_page,
+        perPage: apiData.per_page,
+        total: apiData.total,
+      });
     } catch (err) {
       toast.error("Failed to fetch zones");
       console.error(err);
@@ -49,11 +63,9 @@ export const ZoneProvider = ({ children }) => {
         zone_name: zoneName,
         color_code: colorCode,
       });
-      if (res.status) {
-        toast.success("Zone added successfully");
-        fetchZones();
-        resetForm();
-      }
+      toast.success("Zone added successfully");
+      fetchZones();
+      resetForm();
     } catch (err) {
       toast.error("Failed to add zone");
       console.error(err);
@@ -68,12 +80,10 @@ export const ZoneProvider = ({ children }) => {
         zone_name: zoneName,
         color_code: colorCode,
       });
-      if (res.status) {
-        toast.success("Zone updated successfully");
-        fetchZones();
-        setEditId(null);
-        resetForm();
-      }
+      toast.success("Zone updated successfully");
+      fetchZones();
+      setEditId(null);
+      resetForm();
     } catch (err) {
       toast.error("Failed to update zone");
       console.error(err);
@@ -84,10 +94,9 @@ export const ZoneProvider = ({ children }) => {
   const deleteZone = async (id) => {
     try {
       const res = await deleteData(`${ENDPOINTS.ZONES.DELETE}/${id}`); // 👈 delete uses body, not params
-      if (res.status) {
-        toast.success("Zone deleted successfully");
-        fetchZones();
-      }
+
+      toast.success("Zone deleted successfully");
+      fetchZones();
     } catch (err) {
       toast.error("Failed to delete zone");
       console.error(err);
@@ -124,6 +133,7 @@ export const ZoneProvider = ({ children }) => {
         editId,
         setEditId,
         zoneFilter,
+        pagination,
 
         fetchZoneFilter,
         fetchZones,

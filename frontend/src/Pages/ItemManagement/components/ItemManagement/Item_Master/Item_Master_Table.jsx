@@ -1,8 +1,9 @@
 import React from "react";
 import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
+import { Link } from "react-router-dom";
 
 export default function Item_Master_Table({ search }) {
-  const { itemMaster, deleteItemMaster } = useItemMaster();
+  const { itemMaster, deleteItemMaster, StartEditing } = useItemMaster();
 
   // Local filter on top of context data
   const filteredData = itemMaster.filter((item) => {
@@ -61,12 +62,16 @@ export default function Item_Master_Table({ search }) {
                 </td>
                 <td>
                   <div className="d-inline-flex gap-2">
-                    <a
-                      href="item-create.html"
+                    <Link
+                      to={`/item/item-create/${item.type}/${item.id}`}
+                      onClick={() => {
+                        StartEditing(item.id);
+                        console.log("id", item.id);
+                      }}
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                     >
                       <i className="icon-base ti tabler-edit icon-22px" />
-                    </a>
+                    </Link>
                     <a
                       href="#"
                       type="button"

@@ -3,7 +3,8 @@ import { useGroupMasterContext } from "../../../../../Context/ItemManagement/Gro
 import { useUIContext } from "../../../../../Context/UIContext";
 
 export default function Group_Master_Table() {
-  const { groups, startEditing, deleteGroup } = useGroupMasterContext();
+  const { groups, startEditing, deleteGroup, pagination } =
+    useGroupMasterContext();
   const { handleOpen } = useUIContext();
   return (
     <>
@@ -25,7 +26,11 @@ export default function Group_Master_Table() {
             return (
               <tr key={group.id}>
                 <td>
-                  <div className="ms-2">{index + 1}</div>
+                  <div className="ms-2">
+                    {" "}
+                    {(pagination.currentPage - 1) * pagination.perPage +
+                      (index + 1)}
+                  </div>
                 </td>
                 <td>{group.group_name}</td>
                 <td>

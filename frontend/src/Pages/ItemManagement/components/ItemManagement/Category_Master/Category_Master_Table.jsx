@@ -4,7 +4,8 @@ import { useCategoryMaster } from "../../../../../Context/ItemManagement/Categor
 
 export default function Category_Master_Table() {
   const { handleOpen } = useUIContext();
-  const { categories, startEditing, deleteCategory } = useCategoryMaster();
+  const { categories, startEditing, deleteCategory, pagination } =
+    useCategoryMaster();
   return (
     <>
       {/* ---------------START CATEGORY MASTER TABLE----------------- */}
@@ -27,7 +28,11 @@ export default function Category_Master_Table() {
             return (
               <tr key={category.id}>
                 <td>
-                  <div className="ms-4">{index + 1}</div>
+                  <div className="ms-4">
+                    {" "}
+                    {(pagination.currentPage - 1) * pagination.perPage +
+                      (index + 1)}
+                  </div>
                 </td>
                 <td>{category.category_name}</td>
                 <td>{category.group.group_name}</td>

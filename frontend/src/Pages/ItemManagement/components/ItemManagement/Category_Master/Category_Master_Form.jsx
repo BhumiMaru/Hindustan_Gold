@@ -105,21 +105,11 @@ export default function Category_Master_Form() {
                           value: grp.id,
                           label: grp.group_name,
                         }))}
-                        value={
-                          categoryData.group_id
-                            ? {
-                                value: categoryData.group_id,
-                                label:
-                                  groups.find(
-                                    (g) => g.id === categoryData.group_id
-                                  )?.group_name || "N/A",
-                              }
-                            : null
-                        }
+                        value={categoryData.group_id}
                         onChange={(opt) =>
                           setCategoryData({
                             ...categoryData,
-                            group_id: opt.value,
+                            group_id: opt,
                           })
                         }
                       />

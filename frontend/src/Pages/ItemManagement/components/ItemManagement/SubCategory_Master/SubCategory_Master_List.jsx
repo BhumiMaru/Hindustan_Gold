@@ -9,6 +9,7 @@ import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSe
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import SubCategory_Master_Form from "./SubCategory_Master_Form";
 import SubCategory_Master_Table from "./SubCategory_Master_Table";
+import View_Sub_Category_Details from "./View_Sub_Category_Details";
 
 export default function SubCategory_Master_List() {
   const { modal, handleOpen } = useUIContext();
@@ -21,14 +22,22 @@ export default function SubCategory_Master_List() {
   const { filterCategory, fetchCategoryFilter } = useCategoryMaster();
   const { filterGroup, fetchGroupFilter } = useGroupMasterContext();
   const { filterUser, fetchUserFilter } = useUserCreation();
-  const { fetchSubCategoryData } = useSubCategory();
+  const { fetchSubCategoryData, pagination } = useSubCategory();
 
   useEffect(() => {
     fetchCategoryFilter();
     fetchGroupFilter();
     fetchUserFilter();
-    fetchSubCategoryData(search);
+    fetchSubCategoryData(search, pagination.currentPage, pagination.perPage);
   }, [search]);
+
+  const handlePageChange = (page) => {
+    fetchSubCategoryData(search, page, pagination.perPage);
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    fetchSubCategoryData(search, 1, size); // reset to page 1 when changing size
+  };
 
   return (
     <>
@@ -162,7 +171,13 @@ export default function SubCategory_Master_List() {
 
             <div className="card-datatable table-responsive pt-0">
               <SubCategory_Master_Table />
-              <Pagination />
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalItems={pagination.total}
+                itemsPerPage={pagination.perPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
             </div>
           </div>
         </div>
@@ -170,6 +185,11 @@ export default function SubCategory_Master_List() {
         {modal.addNewSubCategory && (
           <>
             <SubCategory_Master_Form />
+          </>
+        )}
+        {modal.viewSubCategory && (
+          <>
+            <View_Sub_Category_Details />
           </>
         )}
       </>

@@ -16,6 +16,7 @@ export const ItemMasterProvider = ({ children }) => {
   const [isItemEditId, setItemEditId] = useState(null);
   const [itemMasterData, setItemMasterData] = useState({
     item_code: "",
+    item_type: "",
     type: "",
     item_name: "",
     c_id: null,
@@ -38,25 +39,23 @@ export const ItemMasterProvider = ({ children }) => {
     service_location3: null,
     status: null,
   });
+  const [itemSubCategoryId, setItemSubCategoryId] = useState(null);
 
   // Get All Item Master Data
   const fetchItemMaster = async ({
     search = "",
     type = "",
-    category_id = null,
-    subcategory_id = null,
+    c_id = null,
+    sub_c_id = null,
     status = null,
-  }) => {
+  } = {}) => {
     try {
-      const res = await getData(
-        `${ENDPOINTS.ITEM_MASTER.LIST}?search=${search}`,
-        {
-          type,
-          category_id,
-          subcategory_id,
-          status,
-        }
-      );
+      const res = await getData(ENDPOINTS.ITEM_MASTER.LIST, {
+        type,
+        c_id,
+        sub_c_id,
+        status,
+      });
 
       if (res.data && res.data.status === false) {
         // Backend says no data
@@ -76,10 +75,24 @@ export const ItemMasterProvider = ({ children }) => {
   // Create Item Master
   const createItemMaster = async (payload) => {
     try {
-      const res = await postData(ENDPOINTS.ITEM_MASTER.ADD_UPDATE, payload);
+      const sanitizedPayload = {
+        ...payload,
+        is_movable: payload.is_movable !== null ? payload.is_movable : 0, // default to 0
+        stock: payload.stock ? Number(payload.stock) : 0,
+        stock_value: payload.stock_value ? Number(payload.stock_value) : 0,
+        minimum_stock: payload.minimum_stock
+          ? Number(payload.minimum_stock)
+          : 0,
+      };
+
+      const res = await postData(
+        ENDPOINTS.ITEM_MASTER.ADD_UPDATE,
+        sanitizedPayload
+      );
+      console.log("res", res.data);
       setItemMasterData(res.data.data);
-      toast.success("Item Created Successfully!");
-      fetchItemMaster();
+
+      return res.data.data;
     } catch (error) {
       console.log("item master create error:", error);
       toast.error("item master create error");
@@ -90,22 +103,71 @@ export const ItemMasterProvider = ({ children }) => {
   const EditItemMaster = async (item_id, payload) => {
     try {
       const res = await postData(ENDPOINTS.ITEM_MASTER.ADD_UPDATE, {
-        item_id,
+        id: item_id,
         ...payload,
       });
+
+      console.log("res", res);
       setItemMasterData(res.data.data);
-      toast.success("Item Updated Successfully!");
-      fetchItemMaster();
+      // toast.success("Item Updated Successfully!");
+      // fetchItemMaster();
     } catch (error) {
       console.log("Failed to Edit Item", error);
       toast.error("Failed to Edit Item");
     }
   };
 
+  const fetchitemById = async (id) => {
+    try {
+      const res = await postData(ENDPOINTS.ITEM_MASTER.DETAILS, { id });
+      const item = res.data;
+
+      setItemMasterData({
+        item_code: item?.item_code || "",
+        item_type: item?.item_type || "",
+        type: item?.type || "",
+        item_name: item?.item_name || "",
+        c_id: item?.c_id || null,
+        c_name: item?.category?.category_name || "", // ✅ for Category display
+        sub_c_id: item?.sub_c_id ? Number(item.sub_c_id) : null,
+        sub_c_name: item?.subcategory?.sub_category_name || "", // ✅ for Subcategory
+        group_id: item?.group_id || null,
+        group_name: item?.group?.group_name || "", // ✅ for Group
+        uom: item?.uom || "",
+        description: item?.description || "",
+        is_purpose_required: Number(item?.is_purpose_required) ?? 0,
+        is_approval_required: Number(item?.is_approval_required) ?? 0,
+        is_movable: Number(item?.is_movable) ?? 0,
+        service_location_1_id: item?.service_location_1_id || null,
+        service_location_2_id: item?.service_location_2_id || null,
+        service_location_3_id: Array.isArray(item?.service_location_3_id)
+          ? item.service_location_3_id.map(Number)
+          : item?.service_location_3_id
+          ? [Number(item.service_location_3_id)]
+          : [],
+
+        zone_id: Array.isArray(item?.zone_id)
+          ? item.zone_id.map(Number)
+          : item?.zone_id
+          ? [Number(item.zone_id)]
+          : [],
+        stock: item?.stock ?? 0,
+        stock_value: item?.stock_value ?? 0,
+        minimum_stock: item?.minimum_stock ?? 0,
+        purchase_date: item?.purchase_date || "",
+        warranty_expiry: item?.warranty_expiry || "",
+        status: Number(item?.status) ?? 1,
+      });
+    } catch (error) {
+      console.log("fetchitemById error:", error);
+    }
+  };
+
   // Start Editing
-  const StartEditing = (item_id, item) => {
+  const StartEditing = (item_id) => {
+    console.log("StartEditing called with:", item_id);
     setItemEditId(item_id);
-    setItemMasterData(item);
+    fetchitemById(item_id);
   };
 
   // Delete Item Master
@@ -152,6 +214,60 @@ export const ItemMasterProvider = ({ children }) => {
     });
   };
 
+  // Item Type
+  const ItemType = {
+    material: "material",
+    service: "service",
+    asset: "asset",
+  };
+
+  // Get Category , Group And Item code from Sub category id
+  const getCategoryGroupAndItemCodeBySubCategoryId = async (type, sub_c_id) => {
+    try {
+      console.log("ItemType", ItemType);
+      const mappedType = ItemType[type];
+
+      console.log("🔹 Payload sending to API:", {
+        item_type: mappedType,
+        sub_c_id,
+      });
+
+      const res = await postData(ENDPOINTS.ITEM_MASTER.CODEGET, {
+        item_type: mappedType, // Changed from 'type' to 'item_type'
+        sub_c_id,
+      });
+
+      if (res.data) {
+        const { item_code, category, group, subcategory } = res.data;
+
+        // auto update itemMasterData with category, group, and item_code
+        setItemMasterData((prev) => ({
+          ...prev,
+          item_code: item_code,
+          c_id: category?.id,
+          c_name: category?.category_name,
+          group_id: group?.id,
+          group_name: group?.group_name,
+          sub_c_id: sub_c_id,
+          sub_c_name: subcategory?.sub_category_name,
+          item_type: mappedType, // ✅ also update item_type in state
+        }));
+
+        return res.data; // return full data in case needed
+      } else {
+        toast.error(res.data.message || "Failed to generate item code");
+        return null;
+      }
+    } catch (error) {
+      console.log(
+        "item master getCategoryGroupAndItemCodeBySubCategoryId error:",
+        error
+      );
+      toast.error("Failed to generate item code");
+      return null;
+    }
+  };
+
   return (
     <ItemMasterContext.Provider
       value={{
@@ -159,7 +275,11 @@ export const ItemMasterProvider = ({ children }) => {
         isItemEditId,
         itemMasterData,
         setItemMasterData,
+        itemSubCategoryId,
+        setItemSubCategoryId,
+        fetchitemById,
 
+        getCategoryGroupAndItemCodeBySubCategoryId,
         fetchItemMaster,
         createItemMaster,
         deleteItemMaster,

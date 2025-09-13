@@ -8,12 +8,21 @@ import ServiceLocation_1_Master_Form from "./ServiceLocation_1_Master_Form";
 
 export default function ServiceLocation_1_Master_List() {
   const { handleOpen, modal } = useUIContext();
-  const { fetchServiceLocations } = useServiceLocation1Master();
+  const { fetchServiceLocations, pagination } = useServiceLocation1Master();
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetchServiceLocations(search);
+    fetchServiceLocations(search, pagination.currentPage, pagination.perPage);
   }, [search]);
+
+  const handlePageChange = (page) => {
+    fetchServiceLocations(search, page, pagination.perPage);
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    fetchServiceLocations(search, 1, size); // reset to page 1 when changing size
+  };
+
   return (
     <>
       {/* -----------------START SERVICE LOCATION 1 MASTER List-------------------- */}
@@ -46,7 +55,13 @@ export default function ServiceLocation_1_Master_List() {
             </div>
             <div className="card-datatable table-responsive pt-0">
               <ServiceLocation_1_Master_Table />
-              <Pagination />
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalItems={pagination.total}
+                itemsPerPage={pagination.perPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
             </div>
           </div>
           {modal.addNewServiceLocation1 && <ServiceLocation_1_Master_Form />}

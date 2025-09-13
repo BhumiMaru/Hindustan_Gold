@@ -16,14 +16,27 @@ export const ServiceLocation1MasterProvider = ({ children }) => {
   const [serviceL1, setServiceL1] = useState([]);
   const [serviceLocationName, setServiceLocationName] = useState("");
   const [serviceLocation1EditId, setServiceLocation1EditId] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    total: 0,
+  });
 
   // Fetch All
-  const fetchServiceLocations = async (search = "") => {
+  const fetchServiceLocations = async (search = "", page = 1, perPage = 10) => {
     try {
       const res = await getData(ENDPOINTS.SERVICES_LOCATION_1_MASTER.LIST, {
         search,
+        page,
+        per_page: perPage,
       });
-      setServiceLocation(res.data.data);
+      const apiData = res.data;
+      setServiceLocation(apiData.data);
+      setPagination({
+        currentPage: apiData.current_page,
+        perPage: apiData.per_page,
+        total: apiData.total,
+      });
     } catch (error) {
       toast.error(`Service Location 1 Master Fetch Error: ${error.message}`);
     }
@@ -92,6 +105,7 @@ export const ServiceLocation1MasterProvider = ({ children }) => {
         setServiceLocation1EditId,
         serviceL1,
         fetchSL1Filter,
+        pagination,
         fetchServiceLocations,
         createServiceLocation,
         updateServiceLocation,

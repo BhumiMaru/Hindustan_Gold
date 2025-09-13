@@ -19,13 +19,28 @@ export const DepartmentProvider = ({ children }) => {
   const [deptFilter, setDeptFilter] = useState([]);
   const [deptName, setDeptName] = useState("");
   const [deptEditId, setDeptEditId] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    total: 0,
+  });
 
   // Fetch departments
-  const fetchDepartments = async (search = "") => {
+  const fetchDepartments = async (search = "", page = 1, perPage = 10) => {
     try {
-      const res = await getData(ENDPOINTS.DEPARTMENTS.LIST, { search }); // ✅ pass search as query param
+      const res = await getData(ENDPOINTS.DEPARTMENTS.LIST, {
+        search,
+        page,
+        per_page: perPage,
+      }); // ✅ pass search as query param
       // if (res.status) {
-      setDepartments(res);
+      const apiData = res.data;
+      setDepartments(apiData.data);
+      setPagination({
+        currentPage: apiData.current_page,
+        perPage: apiData.per_page,
+        total: apiData.total,
+      });
       // }
     } catch (error) {
       console.log(error);
@@ -85,6 +100,7 @@ export const DepartmentProvider = ({ children }) => {
         deptName,
         setDeptName,
         deptFilter,
+        pagination,
 
         fetchDeptFilter,
         fetchDepartments,

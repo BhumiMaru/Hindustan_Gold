@@ -24,15 +24,33 @@ export const CategoryMasterProvider = ({ children }) => {
   const [filterCategory, setFilterCategory] = useState([]);
   //   Group Filter
   const [selectedGroup, setSelectedGroup] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    total: 0,
+  });
 
   // ✅ Fetch All Categories
-  const fetchCategories = async (search = "", group_id = "") => {
+  const fetchCategories = async (
+    search = "",
+    group_id = "",
+    page = 1,
+    perPage = 10
+  ) => {
     try {
       const res = await getData(ENDPOINTS.CATEGORY_MASTER.LIST, {
         search,
         group_id,
+        page,
+        per_page: perPage,
       });
-      setCategories(res.data.data); // `data.data` based on your API
+      const apiData = res.data;
+      setCategories(apiData.data);
+      setPagination({
+        currentPage: apiData.current_page,
+        perPage: apiData.per_page,
+        total: apiData.total,
+      });
     } catch (error) {
       toast.error(`Category Fetch Error: ${error.message}`);
     }
@@ -57,6 +75,7 @@ export const CategoryMasterProvider = ({ children }) => {
       fetchCategories(); // refresh
       return res;
     } catch (error) {
+      console.log(`Create Category Error: ${error.message}`, error);
       toast.error(`Create Category Error: ${error.message}`);
     }
   };
@@ -110,6 +129,7 @@ export const CategoryMasterProvider = ({ children }) => {
         selectedGroup,
         setSelectedGroup,
         filterCategory,
+        pagination,
 
         fetchCategoryFilter,
         fetchCategories,

@@ -9,11 +9,19 @@ import Company_Master_Form from "./Company_Master_Form";
 export default function Company_Master_List() {
   const { handleOpen, modal } = useUIContext();
   const [search, setSearch] = useState("");
-  const { fetchCompanyData } = useCompanyMaster();
+  const { fetchCompanyData, pagination } = useCompanyMaster();
 
   useEffect(() => {
-    fetchCompanyData(search);
+    fetchCompanyData(search, pagination.currentPage, pagination.perPage);
   }, [search]);
+
+  const handlePageChange = (page) => {
+    fetchCompanyData(search, page, pagination.perPage);
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    fetchCompanyData(search, 1, size); // reset to page 1 when changing size
+  };
 
   return (
     <>
@@ -49,7 +57,13 @@ export default function Company_Master_List() {
             </div>
             <div className="card-datatable table-responsive pt-0">
               <Company_Master_Table />
-              <Pagination />
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalItems={pagination.total}
+                itemsPerPage={pagination.perPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
             </div>
           </div>
         </div>
