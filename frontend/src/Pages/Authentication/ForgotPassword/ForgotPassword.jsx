@@ -6,7 +6,7 @@ export default function ForgotPassword() {
     <>
       <link
         rel="stylesheet"
-        href={`${publicUrl}/assets/vendor/css/pages/page-auth.css`}
+        href={`${publicUrl}assets/vendor/css/pages/page-auth.css`}
       />
       {/* ------------------START FORGOT PASSWORD ----------------- */}
       <div className="container-xxl">
