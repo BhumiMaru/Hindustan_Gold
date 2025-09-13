@@ -1,29 +1,145 @@
-import { createContext, useContext, useState } from "react";
+// import { createContext, useContext, useEffect, useState } from "react";
+
+// const UIContext = createContext();
+
+// // Custom Context
+// export const useUIContext = () => {
+//   return useContext(UIContext);
+// };
+
+// // UI Context Provider
+// export const UIProvider = ({ children }) => {
+//   // Is Open Dropdown in SIDEBAR
+//   // const [activeMenu, setActiveMenu] = useState(null); // For parent menu
+//   // const [activeSubMenu, setActiveSubMenu] = useState(null); // For submenu item
+//   // Toggle parent menu
+//   // const toggleMenu = (menuName) => {
+//   //   setActiveMenu(activeMenu === menuName ? null : menuName);
+//   //   setActiveSubMenu(null); // reset submenu when switching parent
+//   // };
+
+//   const [activeMenu, setActiveMenu] = useState(
+//     sessionStorage.getItem("activeMenu") || null
+//   );
+//   const [activeSubMenu, setActiveSubMenu] = useState(
+//     sessionStorage.getItem("activeSubMenu") || null
+//   );
+
+//   // small screen sidebar toggle state
+//   const [isOpenSmallSidebar, setIsOpenSmallSidebar] = useState(false);
+
+//   const toggleMenu = (menuName) => {
+//     const newMenu = activeMenu === menuName ? null : menuName;
+//     setActiveMenu(newMenu);
+//     sessionStorage.setItem("activeMenu", newMenu);
+//     setActiveSubMenu(null);
+//     sessionStorage.removeItem("activeSubMenu");
+//   };
+
+//   // Handle submenu click (keep parent open)
+//   // const handleSubMenuClick = (parentMenu, subMenu) => {
+//   //   setActiveMenu(parentMenu); // 🔑 ensure parent stays open
+//   //   setActiveSubMenu(subMenu); // highlight submenu
+//   // };
+
+//   const handleSubMenuClick = (parentMenu, subMenu) => {
+//     setActiveMenu(parentMenu);
+//     setActiveSubMenu(subMenu);
+//     sessionStorage.setItem("activeMenu", parentMenu);
+//     sessionStorage.setItem("activeSubMenu", subMenu);
+//   };
+
+//   //--------------------------SIDEBAR-------------------------- //
+
+//   // Popup Modal For All
+//   const [modal, setModal] = useState({
+//     // MASTER
+//     addNewDepartment: false,
+//     addNewZone: false,
+//     addNewServiceLocation1: false,
+//     addNewServiceLocation2: false,
+//     addNewServiceLocation3: false,
+//     addNewRole: false,
+//     addNewCompany: false,
+//     viewUserDetails: false,
+//     // ITEM MANAGEMENT
+//     addNewGroup: false,
+//     addNewCategory: false,
+//     addNewSubCategory: false,
+//     viewSubCategory: false,
+//   });
+
+//   useEffect(() => {
+//     const html = document.documentElement;
+
+//     html.classList.add(
+//       "layout-navbar-fixed",
+//       "layout-menu-fixed",
+//       "layout-compact"
+//     );
+
+//     if (isOpenSmallSidebar) {
+//       html.classList.add("layout-menu-expanded");
+//     } else {
+//       html.classList.remove("layout-menu-expanded");
+//     }
+//   }, [isOpenSmallSidebar]);
+
+//   const handleOpen = (name) => {
+//     setModal((prev) => ({ ...prev, [name]: true }));
+//   };
+
+//   const handleClose = (name) => {
+//     setModal((prev) => ({ ...prev, [name]: false }));
+//   };
+
+//   // ✅ Small sidebar toggler
+//   const toggleSidebar = () => {
+//     setIsSidebarCollapsed((prev) => !prev);
+//   };
+
+//   const closeSmallSidebar = () => setIsOpenSmallSidebar(false);
+
+//   return (
+//     <UIContext.Provider
+//       value={{
+//         modal,
+//         handleClose,
+//         handleOpen,
+//         activeMenu,
+//         toggleMenu,
+//         activeSubMenu,
+//         handleSubMenuClick,
+//         setActiveMenu,
+//         setActiveSubMenu,
+//         isOpenSmallSidebar,
+//         setIsOpenSmallSidebar,
+//         closeSmallSidebar,
+//         toggleSidebar,
+//       }}
+//     >
+//       {children}
+//     </UIContext.Provider>
+//   );
+// };
+
+import { createContext, useContext, useEffect, useState } from "react";
 
 const UIContext = createContext();
 
-// Custom Context
-export const useUIContext = () => {
-  return useContext(UIContext);
-};
+export const useUIContext = () => useContext(UIContext);
 
-// UI Context Provider
 export const UIProvider = ({ children }) => {
-  // Is Open Dropdown in SIDEBAR
-  // const [activeMenu, setActiveMenu] = useState(null); // For parent menu
-  // const [activeSubMenu, setActiveSubMenu] = useState(null); // For submenu item
-  // Toggle parent menu
-  // const toggleMenu = (menuName) => {
-  //   setActiveMenu(activeMenu === menuName ? null : menuName);
-  //   setActiveSubMenu(null); // reset submenu when switching parent
-  // };
-
   const [activeMenu, setActiveMenu] = useState(
-    sessionStorage.getItem("activeMenu") || null
+    sessionStorage.getItem("activeMenu") || "Dashboard"
   );
   const [activeSubMenu, setActiveSubMenu] = useState(
     sessionStorage.getItem("activeSubMenu") || null
   );
+
+  // Sidebar state
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); // ✅ collapsed/expanded
+  const [isOpenSmallSidebar, setIsOpenSmallSidebar] = useState(false); // ✅ for mobile/small screens
 
   const toggleMenu = (menuName) => {
     const newMenu = activeMenu === menuName ? null : menuName;
@@ -33,12 +149,6 @@ export const UIProvider = ({ children }) => {
     sessionStorage.removeItem("activeSubMenu");
   };
 
-  // Handle submenu click (keep parent open)
-  // const handleSubMenuClick = (parentMenu, subMenu) => {
-  //   setActiveMenu(parentMenu); // 🔑 ensure parent stays open
-  //   setActiveSubMenu(subMenu); // highlight submenu
-  // };
-
   const handleSubMenuClick = (parentMenu, subMenu) => {
     setActiveMenu(parentMenu);
     setActiveSubMenu(subMenu);
@@ -46,25 +156,22 @@ export const UIProvider = ({ children }) => {
     sessionStorage.setItem("activeSubMenu", subMenu);
   };
 
-  //--------------------------SIDEBAR-------------------------- //
+  // Add/remove HTML classes based on sidebar state
+  useEffect(() => {
+    const html = document.documentElement;
 
-  // Popup Modal For All
-  const [modal, setModal] = useState({
-    // MASTER
-    addNewDepartment: false,
-    addNewZone: false,
-    addNewServiceLocation1: false,
-    addNewServiceLocation2: false,
-    addNewServiceLocation3: false,
-    addNewRole: false,
-    addNewCompany: false,
-    viewUserDetails: false,
-    // ITEM MANAGEMENT
-    addNewGroup: false,
-    addNewCategory: false,
-    addNewSubCategory: false,
-    viewSubCategory: false,
-  });
+    html.classList.add(
+      "layout-navbar-fixed",
+      "layout-menu-fixed",
+      "layout-compact"
+    );
+
+    if (isOpenSmallSidebar) {
+      html.classList.add("layout-menu-expanded");
+    } else {
+      html.classList.remove("layout-menu-expanded");
+    }
+  }, [isOpenSmallSidebar]);
 
   const handleOpen = (name) => {
     setModal((prev) => ({ ...prev, [name]: true }));
@@ -73,6 +180,26 @@ export const UIProvider = ({ children }) => {
   const handleClose = (name) => {
     setModal((prev) => ({ ...prev, [name]: false }));
   };
+
+  // ✅ Sidebar togglers
+  const toggleSidebar = () => setIsSidebarCollapsed((prev) => !prev);
+  const closeSmallSidebar = () => setIsOpenSmallSidebar(false);
+
+  // Popup Modal State
+  const [modal, setModal] = useState({
+    addNewDepartment: false,
+    addNewZone: false,
+    addNewServiceLocation1: false,
+    addNewServiceLocation2: false,
+    addNewServiceLocation3: false,
+    addNewRole: false,
+    addNewCompany: false,
+    viewUserDetails: false,
+    addNewGroup: false,
+    addNewCategory: false,
+    addNewSubCategory: false,
+    viewSubCategory: false,
+  });
 
   return (
     <UIContext.Provider
@@ -86,6 +213,11 @@ export const UIProvider = ({ children }) => {
         handleSubMenuClick,
         setActiveMenu,
         setActiveSubMenu,
+        isSidebarCollapsed,
+        toggleSidebar,
+        isOpenSmallSidebar,
+        setIsOpenSmallSidebar,
+        closeSmallSidebar,
       }}
     >
       {children}

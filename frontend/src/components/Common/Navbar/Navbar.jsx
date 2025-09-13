@@ -3,10 +3,19 @@ import "../../../../public/assets/vendor/css/core.css";
 import "../../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css";
 import { useUIContext } from "../../../Context/UIContext";
 import { useNavigate } from "react-router-dom";
+import Small_Screen_Sidebar from "../SideBar/Small_Screen_Sidebar";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function Navbar() {
-  const { activeMenu, toggleMenu, activeSubMenu } = useUIContext();
+  const {
+    activeMenu,
+    toggleMenu,
+    activeSubMenu,
+    isOpenSmallSidebar,
+    setIsOpenSmallSidebar,
+    closeSmallSidebar,
+    toggleSmallSidebar,
+  } = useUIContext();
 
   const navigate = useNavigate();
   // Decide what to show in Navbar title
@@ -21,8 +30,10 @@ export default function Navbar() {
       >
         <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
           <a
-            className="nav-item nav-link px-0 me-xl-6"
-            //   href="javascript:void(0)"
+            className="nav-item nav-link px-0 me-xl-6 cursor-pointer"
+            onClick={() => {
+              setIsOpenSmallSidebar(!isOpenSmallSidebar);
+            }}
           >
             <i className="icon-base ti tabler-menu-2 icon-md"></i>
           </a>
@@ -132,6 +143,7 @@ export default function Navbar() {
         </div>
       </nav>
       {/* </div> */}
+
       {/* ----------------------END NAVBAR--------------------------- */}
     </>
   );

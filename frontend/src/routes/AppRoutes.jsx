@@ -43,8 +43,11 @@ import Item_Create_Material_Form from "../Pages/ItemManagement/components/ItemMa
 import Vendor_List_page from "../Pages/PaymentManagement/Vendor_List_page";
 import LoginPage from "../Pages/Authentication/Login/LoginMasterPage";
 import { decryptData } from "../utils/decryptData";
+import { useUIContext } from "../Context/UIContext";
+import Small_Screen_Sidebar from "../components/Common/SideBar/Small_Screen_Sidebar";
 
 export default function AppRoutes() {
+  const { isOpenSmallSidebar, closeSmallSidebar } = useUIContext();
   return (
     <>
       {/* ------------------Start App Routes------------------- */}
@@ -288,6 +291,7 @@ export default function AppRoutes() {
           }
         />
       </Routes>
+
       {/* ------------------End App Routes------------------- */}
     </>
   );

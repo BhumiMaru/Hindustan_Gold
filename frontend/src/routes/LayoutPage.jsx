@@ -7,10 +7,13 @@ import Footer from "../components/Common/Footer/Footer";
 import LoginPage from "../Pages/Authentication/Login/LoginMasterPage";
 import ForgotPassword from "../Pages/Authentication/ForgotPassword/ForgotPassword";
 import { decryptData } from "../utils/decryptData";
+import { useUIContext } from "../Context/UIContext";
+import Small_Screen_Sidebar from "../components/Common/SideBar/Small_Screen_Sidebar";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function LayoutPage() {
   const location = useLocation();
+  const { isOpenSmallSidebar, closeSmallSidebar } = useUIContext();
 
   const savedAuth = sessionStorage.getItem("authData");
 
@@ -61,7 +64,7 @@ export default function LayoutPage() {
     <>
       <link
         rel="stylesheet"
-        href={`${publicUrl}/assets/vendor/css/pages/page-auth.css`}
+        href={`${publicUrl}assets/vendor/css/pages/page-auth.css`}
       />
       {/* ---------------START LAYOUT PAGE------------------ */}
       <div className="layout-wrapper layout-content-navbar">
@@ -79,6 +82,10 @@ export default function LayoutPage() {
               <Footer />
             </div>
           </div>
+
+          {isOpenSmallSidebar && (
+            <Small_Screen_Sidebar onClose={closeSmallSidebar} />
+          )}
         </div>
       </div>
       {/* ---------------END LAYOUT PAGE------------------ */}

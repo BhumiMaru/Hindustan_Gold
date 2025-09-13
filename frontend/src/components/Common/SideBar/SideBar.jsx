@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../../../../public/assets/vendor/css/core.css";
 import "../../../../public/assets/css/demo.css";
 import "../../../../public/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css";
@@ -9,8 +9,33 @@ import { decryptData } from "../../../utils/decryptData";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function SideBar() {
-  const { activeMenu, toggleMenu, activeSubMenu, handleSubMenuClick } =
-    useUIContext();
+  const {
+    activeMenu,
+    toggleMenu,
+    activeSubMenu,
+    handleSubMenuClick,
+    isSidebarCollapsed,
+    toggleSidebar,
+    isOpenSmallSidebar,
+  } = useUIContext();
+
+  // Add/remove HTML classes based on sidebar state
+  useEffect(() => {
+    const html = document.documentElement;
+
+    html.classList.add(
+      "layout-navbar-fixed",
+      "layout-menu-fixed",
+      "layout-compact",
+      "layout-menu-100vh"
+    );
+
+    if (isSidebarCollapsed) {
+      html.classList.add("layout-menu-collapsed");
+    } else {
+      html.classList.remove("layout-menu-collapsed");
+    }
+  }, [isSidebarCollapsed]);
 
   // ✅ Get saved auth data
   const savedAuth = sessionStorage.getItem("authData");
@@ -70,7 +95,10 @@ export default function SideBar() {
       {/* Sidebar Menu */}
       <aside
         id="layout-menu"
-        className="layout-menu menu-vertical menu"
+        className={`layout-menu menu-vertical menu ${
+          isSidebarCollapsed ? "layout-menu-collapsed" : ""
+        }`}
+        // className="layout-menu menu-vertical menu"
         style={{
           touchAction: "none",
           userSelect: "none",
@@ -89,7 +117,10 @@ export default function SideBar() {
               </span>
             </span>
           </a>
-          <a className="layout-menu-toggle menu-link text-large ms-auto">
+          <a
+            className="layout-menu-toggle menu-link text-large ms-auto cursor-pointer"
+            onClick={toggleSidebar}
+          >
             <i className="icon-base ti menu-toggle-icon d-none d-xl-block"></i>
             <i className="icon-base ti tabler-x d-block d-xl-none"></i>
           </a>

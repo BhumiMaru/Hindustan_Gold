@@ -8,11 +8,11 @@ export default function Dashboard() {
       <>
         <link
           rel="stylesheet"
-          href={`${publicUrl}/assets/vendor/css/core.css`}
+          href={`${publicUrl}assets/vendor/css/core.css`}
         />
         <link
           rel="stylesheet"
-          href={`${publicUrl}/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css`}
+          href={`${publicUrl}assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css`}
         />
         <div className="container-xxl flex-grow-1 container-p-y">
           <div className="row g-6">

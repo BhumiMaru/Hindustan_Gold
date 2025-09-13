@@ -36,7 +36,7 @@ export default function Login() {
     <>
       <link
         rel="stylesheet"
-        href={`${publicUrl}/assets/vendor/css/pages/page-auth.css`}
+        href={`${publicUrl}assets/vendor/css/pages/page-auth.css`}
       />
 
       <div className="container-xxl">
