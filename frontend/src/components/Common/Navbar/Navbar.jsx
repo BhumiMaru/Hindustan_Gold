@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import "../../../../public/assets/vendor/css/core.css";
 import "../../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css";
 import { useUIContext } from "../../../Context/UIContext";
+import { useNavigate } from "react-router-dom";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function Navbar() {
   const { activeMenu, toggleMenu, activeSubMenu } = useUIContext();
+  const navigate = useNavigate();
   // Decide what to show in Navbar title
   const pageTitle = activeSubMenu || activeMenu;
   return (
@@ -110,8 +112,12 @@ export default function Navbar() {
                   <div className="d-grid px-2 pt-2 pb-1">
                     <a
                       className="btn btn-sm btn-danger d-flex waves-effect waves-light"
-                      href="login.html"
-                      target="_blank"
+                      // href="login.html"
+                      // target="_blank"
+                      onClick={() => {
+                        sessionStorage.clear("authData");
+                        navigate("/");
+                      }}
                     >
                       <small className="align-middle">Logout</small>
                       <i className="icon-base ti tabler-logout ms-2 icon-14px"></i>
