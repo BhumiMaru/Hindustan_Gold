@@ -103,9 +103,11 @@ export const ItemMasterProvider = ({ children }) => {
   const EditItemMaster = async (item_id, payload) => {
     try {
       const res = await postData(ENDPOINTS.ITEM_MASTER.ADD_UPDATE, {
-        item_id,
+        id: item_id,
         ...payload,
       });
+
+      console.log("res", res);
       setItemMasterData(res.data.data);
       // toast.success("Item Updated Successfully!");
       // fetchItemMaster();
@@ -214,9 +216,9 @@ export const ItemMasterProvider = ({ children }) => {
 
   // Item Type
   const ItemType = {
-    material: "Material",
-    service: "Service",
-    asset: "Asset",
+    material: "material",
+    service: "service",
+    asset: "asset",
   };
 
   // Get Category , Group And Item code from Sub category id

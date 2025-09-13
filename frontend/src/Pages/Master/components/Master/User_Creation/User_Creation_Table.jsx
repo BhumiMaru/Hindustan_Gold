@@ -57,7 +57,7 @@ export default function User_Creation_Table() {
   const handleEditClick = (user) => {
     // console.log("user", user);
     startEditing(user.id); // set edit data in context
-    navigate(`/master/user-create/${user.id}`); // then navigate
+    navigate(`/super_admin/master/user-create/${user.id}`); // then navigate
   };
 
   return (

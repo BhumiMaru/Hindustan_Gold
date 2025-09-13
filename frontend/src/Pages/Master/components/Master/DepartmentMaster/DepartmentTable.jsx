@@ -9,11 +9,36 @@ export default function DepartmentTable() {
 
   return (
     <>
+      <style>
+        {`
+        .table thead tr th{
+           padding: 0.7rem 0.4rem !important;
+          }
+
+        .table > :not(caption) > * > *{
+              padding: 0rem 0.4rem !important;
+          }
+
+        .btn[class*=btn-text-]{
+            width:30px;
+           height:30px;
+        }
+       
+        .btn.show{
+           width:30px;
+           height:30px;
+         }
+
+        `}
+      </style>
       {/* ---------------------Start DepartmentTable----------------------- */}
       <table className="table datatables-basic align-middle">
         <thead>
           <tr>
-            <th scope="col" style={{ width: "80px" }}>
+            <th
+              scope="col"
+              style={{ width: "80px", padding: "0.5rem 0.4rem !important" }}
+            >
               <div className="ms-2">Sr#</div>
             </th>
             <th scope="col">Department</th>
@@ -41,7 +66,7 @@ export default function DepartmentTable() {
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
+                      <i className="icon-base ti tabler-dots-vertical icon-18px"></i>
                     </a>
                     <div className="d-inline-block">
                       <div className="dropdown-menu dropdown-menu-end m-0">

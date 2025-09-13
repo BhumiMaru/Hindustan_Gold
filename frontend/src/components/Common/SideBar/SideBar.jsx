@@ -26,17 +26,17 @@ export default function SideBar() {
   }
 
   // ✅ Check if current user is Admin (id === 54)
-  const isAdmin = user?.id === 54;
+  const isAdmin = user?.id === 56;
 
   const masterRoutes = {
-    "Department Master": "/master/department",
-    "Zone Master": "/master/zone",
-    "Service Location 1 Master": "/master/service-location-1",
-    "Service Location 2 Master": "/master/service-location-2",
-    "Service Location 3 Master": "/master/service-location-3",
-    "Role Master": "/master/role",
-    "Company Master": "/master/company",
-    "User Creation": "/master/user",
+    "Department Master": "/super_admin/master/department",
+    "Zone Master": "/super_admin/master/zone",
+    "Service Location 1 Master": "/super_admin/master/service-location-1",
+    "Service Location 2 Master": "/super_admin/master/service-location-2",
+    "Service Location 3 Master": "/super_admin/master/service-location-3",
+    "Role Master": "/super_admin/master/role",
+    "Company Master": "/super_admin/master/company",
+    "User Creation": "/super_admin/master/user",
   };
 
   const itemRoutes = {

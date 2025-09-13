@@ -56,24 +56,27 @@ export default function AppRoutes() {
         {/* Dashboard */}
         <Route path="/dashboard" element={<DashboardPage />} />
         {/* Master Routes */}
-        <Route path="/master/department" element={<DepartmentMasterPage />} />
-        <Route path="/master/zone" element={<ZoneMasterpage />} />
         <Route
-          path="/master/service-location-1"
+          path="/super_admin/master/department"
+          element={<DepartmentMasterPage />}
+        />
+        <Route path="/super_admin/master/zone" element={<ZoneMasterpage />} />
+        <Route
+          path="/super_admin/master/service-location-1"
           element={<ServiceLocation1MasterPage />}
         />
         <Route
-          path="/master/service-location-2"
+          path="/super_admin/master/service-location-2"
           element={<ServiceLocation2MasterPage />}
         />
         <Route
-          path="/master/service-location-3"
+          path="/super_admin/master/service-location-3"
           element={<ServiceLocation3MasterPage />}
         />
-        <Route path="/master/role" element={<RoleMasterPage />} />
+        <Route path="/super_admin/master/role" element={<RoleMasterPage />} />
 
         <Route
-          path="/role-permission"
+          path="/super_admin/role-permission"
           element={
             <div className="container-xxl flex-grow-1 container-p-y">
               <RoleMasterProvider>
@@ -83,7 +86,7 @@ export default function AppRoutes() {
           }
         />
         <Route
-          path="/role-permission/:id"
+          path="/super_admin/role-permission/:id"
           element={
             <div className="container-xxl flex-grow-1 container-p-y">
               <RoleMasterProvider>
@@ -94,7 +97,7 @@ export default function AppRoutes() {
         />
 
         <Route
-          path="/user-permission"
+          path="/super_admin/user-permission"
           element={
             <div className="container-xxl flex-grow-1 container-p-y">
               <RoleMasterProvider>
@@ -107,7 +110,7 @@ export default function AppRoutes() {
         />
 
         <Route
-          path="/user-permission/:id"
+          path="/super_admin/user-permission/:id"
           element={
             <div className="container-xxl flex-grow-1 container-p-y">
               <RoleMasterProvider>
@@ -119,9 +122,12 @@ export default function AppRoutes() {
           }
         />
 
-        <Route path="/master/company" element={<CompanyMasterPage />} />
         <Route
-          path="/master/user"
+          path="/super_admin/master/company"
+          element={<CompanyMasterPage />}
+        />
+        <Route
+          path="/super_admin/master/user"
           element={
             <UserCreationProvider>
               <User_Creation_Page />
@@ -129,7 +135,7 @@ export default function AppRoutes() {
           }
         />
         <Route
-          path="/master/user-create"
+          path="/super_admin/master/user-create"
           element={
             <UserCreationProvider>
               <RoleMasterProvider>
@@ -152,7 +158,7 @@ export default function AppRoutes() {
         />
 
         <Route
-          path="/master/user-create/:id"
+          path="/super_admin/master/user-create/:id"
           element={
             <UserCreationProvider>
               <RoleMasterProvider>

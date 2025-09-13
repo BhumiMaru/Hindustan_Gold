@@ -84,6 +84,7 @@ export default function Item_Create_Material_Form() {
     try {
       if (id) {
         await EditItemMaster(id, payload);
+        console.log("payload update", payload);
         toast.success("Item Updated Successfully!");
         fetchItemMaster();
         navigate("/item/item-master");

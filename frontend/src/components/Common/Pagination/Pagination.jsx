@@ -18,7 +18,7 @@ export default function Pagination({
   return (
     <>
       {/* -----------------------Start Common Pagination------------------------------ */}
-      <div className="d-flex justify-content-between align-items-center mt-4 mx-2">
+      <div className="d-flex justify-content-between align-items-center mt-2 mx-2">
         <div className="align-items-center d-flex">
           <div>
             Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
@@ -42,7 +42,10 @@ export default function Pagination({
         <div>
           {/* Right side: Pagination */}
           <nav aria-label="Page navigation ">
-            <ul className="pagination pagination-rounded ">
+            <ul
+              className="pagination pagination-rounded"
+              style={{ marginTop: "6px !important" }}
+            >
               {/* First */}
               <li
                 className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
