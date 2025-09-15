@@ -84,4 +84,12 @@ export const ENDPOINTS = {
   AUTH: {
     LOGIN: "/login",
   },
+
+  // ITEM REQUEST
+  ITEM_REQUEST: {
+    LIST: "/item/request/list",
+    ADD_UPDATE: "/item/request/add/update",
+    DELETE: "/item/request/delete",
+    DETAILS: "/item/request/detail",
+  },
 };

@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Item_Request_Table from "./Item_Request_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
+import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
 
 export default function Item_Request_List() {
+  const { getItemRequestData } = useItemRequest();
+  useEffect(() => {
+    getItemRequestData();
+  }, []);
   return (
     <>
       {/* -----------------START ITEM REQUEST LIST---------------- */}
@@ -76,14 +81,14 @@ export default function Item_Request_List() {
               </div>
               <div className=" d-sm-block d-lg-flex gap-2">
                 <Link
-                  to="/request/request-create"
+                  to="/user/request/request-create"
                   className="btn btn-primary text-white waves-effect waves-light"
                 >
                   <span className="icon-xs icon-base ti tabler-plus me-2"></span>
                   Material Request
                 </Link>
                 <Link
-                  to="/request/request-create"
+                  to="/user/request/request-create"
                   className="btn btn-info waves-effect waves-light"
                 >
                   <span className="icon-xs icon-base ti tabler-plus me-2"></span>

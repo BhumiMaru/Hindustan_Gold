@@ -1,6 +1,24 @@
 import React from "react";
+import { useServiceLocation1Master } from "../../../../../Context/Master/ServiceLocation1MasterContext";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
+import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
 
 export default function Item_Request_Form() {
+  const { serviceL1, fetchSL1Filter } = useServiceLocation1Master();
+  const { itemRequestData, setItemRequestData, createItemRequest } =
+    useItemRequest();
+
+  // handle input changes
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setItemRequestData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createItemRequest();
+  };
+
   return (
     <>
       {/* -----------------START ITEM REQUEST FORM---------------- */}
@@ -35,44 +53,6 @@ export default function Item_Request_Form() {
                     <option value="HI">Item 3</option>
                     <option value="HI">Item 4</option>
                   </select>
-                  <span
-                    className="select2 select2-container select2-container--default"
-                    dir="ltr"
-                    data-select2-id="1"
-                    style={{ width: "236.75px" }}
-                  >
-                    <span className="selection">
-                      <span
-                        className="select2-selection select2-selection--single"
-                        role="combobox"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                        tabIndex="0"
-                        aria-disabled="false"
-                        aria-labelledby="select2-SelectItem-container"
-                      >
-                        <span
-                          className="select2-selection__rendered"
-                          id="select2-SelectItem-container"
-                          role="textbox"
-                          aria-readonly="true"
-                          title="Item 1"
-                        >
-                          Item 1
-                        </span>
-                        <span
-                          className="select2-selection__arrow"
-                          role="presentation"
-                        >
-                          <b role="presentation"></b>
-                        </span>
-                      </span>
-                    </span>
-                    <span
-                      className="dropdown-wrapper"
-                      aria-hidden="true"
-                    ></span>
-                  </span>
                 </div>
               </div>
 
@@ -85,9 +65,10 @@ export default function Item_Request_Form() {
                   className="form-control"
                   id="Category"
                   placeholder="Category"
-                  value="Category 1"
-                  disabled=""
-                  readonly=""
+                  disabled
+                  readOnly=""
+                  value={itemRequestData.c_id || ""}
+                  onChange={handleChange}
                 />
               </div>
               <div className="col-sm-3 mb-4">
@@ -100,8 +81,8 @@ export default function Item_Request_Form() {
                   id="Subcategory"
                   placeholder="Subcategory"
                   value="Subcategory 1"
-                  disabled=""
-                  readonly=""
+                  disabled
+                  readOnly=""
                 />
               </div>
               <div className="col-sm-3 mb-4">
@@ -114,23 +95,30 @@ export default function Item_Request_Form() {
                   id="Code"
                   placeholder="Code"
                   value="MAT_STR_SDR_000001"
-                  disabled=""
-                  readonly=""
+                  disabled
+                  readOnly=""
                 />
               </div>
 
               <div className="col-sm-3 mb-4">
-                <label htmlFor="ServiceLocation" className="form-label">
-                  Service Location{" "}
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="ServiceLocation"
-                  placeholder=""
-                  value="Location 1"
-                  disabled=""
-                  readonly=""
+                <CustomSelect
+                  id="selectServiceLocation"
+                  label="Service Location 1"
+                  options={serviceL1.map((sl1) => {
+                    return {
+                      value: sl1.id,
+                      label: sl1.service_location_name,
+                    };
+                  })}
+                  value={itemRequestData?.service_location_1_id}
+                  onChange={(selected) => {
+                    setUserCreationData({
+                      ...itemRequestData,
+                      service_location_1_id: selected,
+                    });
+                  }}
+                  placeholder="Select Service Location"
+                  required
                 />
               </div>
               <div className="col-sm-3 mb-4">
@@ -152,44 +140,6 @@ export default function Item_Request_Form() {
                     <option value="HI">Purpose 3</option>
                     <option value="HI">Purpose 4</option>
                   </select>
-                  <span
-                    className="select2 select2-container select2-container--default"
-                    dir="ltr"
-                    data-select2-id="3"
-                    style={{ width: "236.75px" }}
-                  >
-                    <span className="selection">
-                      <span
-                        className="select2-selection select2-selection--single"
-                        role="combobox"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                        tabIndex="0"
-                        aria-disabled="false"
-                        aria-labelledby="select2-Purpose-container"
-                      >
-                        <span
-                          className="select2-selection__rendered"
-                          id="select2-Purpose-container"
-                          role="textbox"
-                          aria-readonly="true"
-                          title="Purpose 1"
-                        >
-                          Purpose 1
-                        </span>
-                        <span
-                          className="select2-selection__arrow"
-                          role="presentation"
-                        >
-                          <b role="presentation"></b>
-                        </span>
-                      </span>
-                    </span>
-                    <span
-                      className="dropdown-wrapper"
-                      aria-hidden="true"
-                    ></span>
-                  </span>
                 </div>
               </div>
               <div className="col-sm-3 mb-4">
@@ -202,6 +152,8 @@ export default function Item_Request_Form() {
                   id="Quantity"
                   placeholder=""
                   min="0"
+                  value={itemRequestData.quantity || ""}
+                  onChange={handleChange}
                 />
               </div>
 
@@ -215,8 +167,8 @@ export default function Item_Request_Form() {
                   id="UnitofMeasure"
                   placeholder=""
                   value="KG"
-                  disabled=""
-                  readonly=""
+                  disabled
+                  readOnly=""
                 />
               </div>
               <div className="col-sm-6 mb-4">
@@ -228,6 +180,8 @@ export default function Item_Request_Form() {
                   className="form-control"
                   id="Remarks"
                   placeholder=""
+                  value={itemRequestData.remarks || ""}
+                  onChange={handleChange}
                 />
               </div>
               <div className="col-sm-3 mb-4">
@@ -239,6 +193,8 @@ export default function Item_Request_Form() {
                   className="form-control"
                   id="ReceivingPerson"
                   placeholder=""
+                  value={itemRequestData.receiving_person || ""}
+                  onChange={handleChange}
                 />
               </div>
               {/* <!-- <div className="col-sm-3 mb-4">
@@ -259,7 +215,10 @@ export default function Item_Request_Form() {
               </div>
 
               <div className="col-lg-12 text-end">
-                <button className="btn btn-primary waves-effect waves-light">
+                <button
+                  className="btn btn-primary waves-effect waves-light"
+                  onClick={handleSubmit}
+                >
                   Submit
                 </button>
               </div>

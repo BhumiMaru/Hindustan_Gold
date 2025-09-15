@@ -24,6 +24,7 @@ export default function Item_Create_Material_Form() {
     isItemEditId,
     fetchitemById,
     StartEditing,
+    ResetItemMaster,
   } = useItemMaster();
 
   const navigate = useNavigate();
@@ -88,11 +89,13 @@ export default function Item_Create_Material_Form() {
         toast.success("Item Updated Successfully!");
         fetchItemMaster();
         navigate("/item/item-master");
+        ResetItemMaster();
       } else {
         await createItemMaster(payload);
         toast.success("Item Created Successfully!");
         navigate("/item/item-master");
         fetchItemMaster();
+        ResetItemMaster();
       }
     } catch (error) {
       console.log("item save error", error);
@@ -113,7 +116,7 @@ export default function Item_Create_Material_Form() {
                   role="tabpanel"
                 >
                   <h5 className="modal-title" id="exampleModalLabel2">
-                    {id ? "Edit Material" : "Add Material"}
+                    {/* {id ? "Edit M aterial" : "Add Material"} */}
                   </h5>
                   <div className="row p-3">
                     {/* Type - Hidden */}

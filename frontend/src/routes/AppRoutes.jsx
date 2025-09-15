@@ -45,6 +45,10 @@ import LoginPage from "../Pages/Authentication/Login/LoginMasterPage";
 import { decryptData } from "../utils/decryptData";
 import { useUIContext } from "../Context/UIContext";
 import Small_Screen_Sidebar from "../components/Common/SideBar/Small_Screen_Sidebar";
+import {
+  ItemRequestContext,
+  ItemRequestProvider,
+} from "../Context/Request Management/Item_Request";
 
 export default function AppRoutes() {
   const { isOpenSmallSidebar, closeSmallSidebar } = useUIContext();
@@ -246,10 +250,19 @@ export default function AppRoutes() {
 
         {/* Request Management */}
         <Route
-          path="/request/request-list"
+          path="/user/request/request-list"
           element={<Request_Management_Page />}
         />
-        <Route path="/request/request-create" element={<Item_Request_Form />} />
+        <Route
+          path="/user/request/request-create"
+          element={
+            <ItemRequestProvider>
+              <ServiceLocation1MasterProvider>
+                <Item_Request_Form />
+              </ServiceLocation1MasterProvider>
+            </ItemRequestProvider>
+          }
+        />
 
         {/* PO & Material Management */}
         <Route
