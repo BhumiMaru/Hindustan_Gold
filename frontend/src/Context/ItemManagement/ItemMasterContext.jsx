@@ -89,7 +89,7 @@ export const ItemMasterProvider = ({ children }) => {
         ENDPOINTS.ITEM_MASTER.ADD_UPDATE,
         sanitizedPayload
       );
-      console.log("res", res.data);
+      // console.log("res", res.data);
       setItemMasterData(res.data.data);
 
       return res.data.data;
@@ -107,7 +107,7 @@ export const ItemMasterProvider = ({ children }) => {
         ...payload,
       });
 
-      console.log("res", res);
+      // console.log("res", res);
       setItemMasterData(res.data.data);
       // toast.success("Item Updated Successfully!");
       // fetchItemMaster();
@@ -165,7 +165,7 @@ export const ItemMasterProvider = ({ children }) => {
 
   // Start Editing
   const StartEditing = (item_id) => {
-    console.log("StartEditing called with:", item_id);
+    // console.log("StartEditing called with:", item_id);
     setItemEditId(item_id);
     fetchitemById(item_id);
   };
@@ -224,13 +224,13 @@ export const ItemMasterProvider = ({ children }) => {
   // Get Category , Group And Item code from Sub category id
   const getCategoryGroupAndItemCodeBySubCategoryId = async (type, sub_c_id) => {
     try {
-      console.log("ItemType", ItemType);
+      // console.log("ItemType", ItemType);
       const mappedType = ItemType[type];
 
-      console.log("🔹 Payload sending to API:", {
-        item_type: mappedType,
-        sub_c_id,
-      });
+      // console.log("🔹 Payload sending to API:", {
+      //   item_type: mappedType,
+      //   sub_c_id,
+      // });
 
       const res = await postData(ENDPOINTS.ITEM_MASTER.CODEGET, {
         item_type: mappedType, // Changed from 'type' to 'item_type'

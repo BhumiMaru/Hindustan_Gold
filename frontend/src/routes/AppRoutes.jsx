@@ -254,12 +254,26 @@ export default function AppRoutes() {
           element={<Request_Management_Page />}
         />
         <Route
-          path="/user/request/request-create"
+          path="/user/request/request-create/:type"
           element={
             <ItemRequestProvider>
-              <ServiceLocation1MasterProvider>
-                <Item_Request_Form />
-              </ServiceLocation1MasterProvider>
+              <ItemMasterProvider>
+                <ServiceLocation3MasterProvider>
+                  <Item_Request_Form />
+                </ServiceLocation3MasterProvider>
+              </ItemMasterProvider>
+            </ItemRequestProvider>
+          }
+        />
+        <Route
+          path="/user/request/request-create/:type/:id"
+          element={
+            <ItemRequestProvider>
+              <ItemMasterProvider>
+                <ServiceLocation3MasterProvider>
+                  <Item_Request_Form />
+                </ServiceLocation3MasterProvider>
+              </ItemMasterProvider>
             </ItemRequestProvider>
           }
         />

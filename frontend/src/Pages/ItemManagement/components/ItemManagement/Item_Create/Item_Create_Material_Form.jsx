@@ -85,7 +85,7 @@ export default function Item_Create_Material_Form() {
     try {
       if (id) {
         await EditItemMaster(id, payload);
-        console.log("payload update", payload);
+        // console.log("payload update", payload);
         toast.success("Item Updated Successfully!");
         fetchItemMaster();
         navigate("/item/item-master");
@@ -515,6 +515,64 @@ export default function Item_Create_Material_Form() {
                         </div>
                       </div>
                     )}
+
+                    {/* Primary */}
+                    {/* service location 1 */}
+                    <div className="col-sm-3 mb-4">
+                      {/* <label htmlFor="select2Primary" className="form-label">
+                        Storage Location
+                      </label> */}
+                      <div className="select2-primary">
+                        <div className="position-relative">
+                          <CustomSelect
+                            options={serviceL1?.map((loc) => ({
+                              value: loc.id,
+                              label: loc.service_location_name,
+                            }))}
+                            value={itemMasterData.service_location_1_id}
+                            onChange={(val) =>
+                              setItemMasterData((prev) => ({
+                                ...itemMasterData,
+                                service_location_1_id: val,
+                              }))
+                            }
+                            label="Service Location 1"
+                            placeholder="Select Service Location 1"
+                            id="serviceLocation1"
+                            required
+                            multiple
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* service location 2 */}
+                    <div className="col-sm-3 mb-4">
+                      {/* <label htmlFor="select2Primary" className="form-label">
+                        Storage Location
+                      </label> */}
+                      <div className="select2-primary">
+                        <div className="position-relative">
+                          <CustomSelect
+                            options={serviceL2?.map((loc) => ({
+                              value: loc.id,
+                              label: loc.service_location_2_name,
+                            }))}
+                            value={itemMasterData.service_location_2_id}
+                            onChange={(val) =>
+                              setItemMasterData((prev) => ({
+                                ...itemMasterData,
+                                service_location_2_id: val,
+                              }))
+                            }
+                            label="Service Location 2"
+                            placeholder="Select Service Location 2"
+                            id="serviceLocation2"
+                            required
+                            multiple
+                          />
+                        </div>
+                      </div>
+                    </div>
 
                     {/* Service Location 3 */}
                     <div className="col-sm-3 mb-4">

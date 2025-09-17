@@ -199,6 +199,7 @@ export const UIProvider = ({ children }) => {
 
   // Popup Modal State
   const [modal, setModal] = useState({
+    // MASTER
     addNewDepartment: false,
     addNewZone: false,
     addNewServiceLocation1: false,
@@ -207,10 +208,13 @@ export const UIProvider = ({ children }) => {
     addNewRole: false,
     addNewCompany: false,
     viewUserDetails: false,
+    // ITEM MANAGEMENT
     addNewGroup: false,
     addNewCategory: false,
     addNewSubCategory: false,
     viewSubCategory: false,
+    // REQUEST MANAGEMENT
+    viewItemRequest: false,
   });
 
   return (

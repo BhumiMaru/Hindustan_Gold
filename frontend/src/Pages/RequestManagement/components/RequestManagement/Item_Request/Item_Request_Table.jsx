@@ -1,8 +1,17 @@
 import React from "react";
 import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
+import { Link, useNavigate } from "react-router-dom";
+import { useUIContext } from "../../../../../Context/UIContext";
 
 export default function Item_Request_Table() {
-  const { itemRequest } = useItemRequest();
+  const navigate = useNavigate();
+  const { handleOpen } = useUIContext();
+  const {
+    itemRequest,
+    fetchItemRequestById,
+    deleteItemRequest,
+    setItemRequestData,
+  } = useItemRequest();
 
   return (
     <>
@@ -20,7 +29,7 @@ export default function Item_Request_Table() {
             <th scope="col">Request&nbsp;Person&nbsp;Name</th>
             <th scope="col">Quantity</th>
             <th scope="col">UOM</th>
-            <th scope="col">Unit&nbsp;Price</th>
+            {/* <th scope="col">Unit&nbsp;Price</th> */}
             <th scope="col">Total&nbsp;Amount</th>
 
             <th scope="col">Status</th>
@@ -45,7 +54,7 @@ export default function Item_Request_Table() {
                     : ""}
                 </td>
 
-                <td>{item?.item_request.item_type}</td>
+                <td>{item?.item_request?.item_type}</td>
                 <td>Mouse</td>
                 <td>
                   <div className="d-flex justify-content-start align-items-center user-name">
@@ -74,40 +83,62 @@ export default function Item_Request_Table() {
                     </div>
                   </div>
                 </td>
-                <td>{item?.item_request.quantity}</td>
-                <td>{item?.item_request.uom}</td>
-                <td>{item?.item_request.unit_price}</td>
-                <td>{item?.item_request.total_amount}</td>
-
+                <td>{item?.item_request?.quantity}</td>
+                <td>{item?.item_request?.uom}</td>
+                {/* <td>{item?.item_request?.unit_price}</td> */}
+                <td>{item?.item_request?.total_amount}</td>
                 <td>
                   <span className="badge bg-label-warning">
-                    {item?.item_request.final_approve_status}
+                    {item?.item_request?.final_approve_status}
                   </span>
                 </td>
                 <td>
                   <div className="d-inline-flex gap-2">
                     <a
-                      href="request-list.html"
-                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
+                      className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
                     >
-                      <i className="icon-base ti tabler-edit icon-22px"></i>
+                      <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
                     </a>
-                    <a
-                      href="#"
-                      type="button"
-                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                    >
-                      <i className="icon-base ti tabler-trash text-danger icon-22px"></i>
-                    </a>
-                    <a
-                      href="#"
-                      type="button"
-                      className="btn btn-text-info rounded-pill btn-icon waves-effect"
-                      data-bs-toggle="modal"
-                      data-bs-target="#smallModal"
-                    >
-                      <i className="icon-base ti tabler-eye text-info icon-22px"></i>
-                    </a>
+                    <div className="d-inline-block">
+                      <div className="dropdown-menu dropdown-menu-end m-0">
+                        <button
+                          key={item.id}
+                          className="dropdown-item waves-effect"
+                          onClick={() => {
+                            fetchItemRequestById(item?.item_request_id);
+                            navigate(
+                              `/user/request/request-create/${item?.item_request?.item_type}/${item?.item_request_id}`
+                            );
+                          }}
+                        >
+                          Edit
+                        </button>
+
+                        <a
+                          href="#"
+                          className="dropdown-item waves-effect"
+                          data-bs-toggle="modal"
+                          data-bs-target="#grnCreateModel"
+                          onClick={() => {
+                            handleOpen("viewItemRequest");
+                            setItemRequestData(item);
+                          }}
+                        >
+                          View
+                        </a>
+                        <div className="dropdown-divider"></div>
+                        <a
+                          className="dropdown-item text-danger delete-record waves-effect"
+                          onClick={() =>
+                            deleteItemRequest(item?.item_request_id)
+                          }
+                        >
+                          Delete
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </td>
               </tr>
