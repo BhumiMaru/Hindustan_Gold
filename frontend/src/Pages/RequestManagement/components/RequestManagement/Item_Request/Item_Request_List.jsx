@@ -1,9 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Item_Request_Table from "./Item_Request_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
+import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
+import View_Item_Request_Details from "./View_Item_Request_Details";
+import { useUIContext } from "../../../../../Context/UIContext";
+import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 
 export default function Item_Request_List() {
+  const { getItemRequestData, pagination, setPagination } = useItemRequest();
+  const [search, setSearch] = useState("");
+  const { modal } = useUIContext();
+
+  useEffect(() => {
+    getItemRequestData({
+      search,
+      page: pagination.currentPage,
+      perPage: pagination.perPage,
+    });
+  }, [search, pagination.currentPage, pagination.perPage]);
+
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
+  };
+
   return (
     <>
       {/* -----------------START ITEM REQUEST LIST---------------- */}
@@ -61,29 +85,23 @@ export default function Item_Request_List() {
             <div className="d-sm-block d-lg-flex justify-content-between px-3 pt-1">
               <div className="d-flex align-items-center ">
                 {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
-                <div className="input-group input-group-merge">
-                  <span className="input-group-text" id="basic-addon-search31">
-                    <i className="icon-base ti tabler-search"></i>
-                  </span>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search Request..."
-                    aria-label="Search Request..."
-                    aria-describedby="basic-addon-search31"
-                  />
-                </div>
+                <SearchBar
+                  placeholder="Search Request..."
+                  value={search}
+                  onChange={setSearch}
+                  onSubmit={(val) => setSearch(val)}
+                />
               </div>
               <div className=" d-sm-block d-lg-flex gap-2">
                 <Link
-                  to="/request/request-create"
+                  to="/user/request/request-create/material"
                   className="btn btn-primary text-white waves-effect waves-light"
                 >
                   <span className="icon-xs icon-base ti tabler-plus me-2"></span>
                   Material Request
                 </Link>
                 <Link
-                  to="/request/request-create"
+                  to="/user/request/request-create/service"
                   className="btn btn-info waves-effect waves-light"
                 >
                   <span className="icon-xs icon-base ti tabler-plus me-2"></span>
@@ -136,12 +154,20 @@ export default function Item_Request_List() {
             </div>
 
             <div className="card-datatable table-responsive pt-0">
-              <Item_Request_Table />
-              <Pagination />
+              <Item_Request_Table search={search} />
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalItems={pagination.total}
+                itemsPerPage={pagination.perPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
             </div>
           </div>
         </div>
       </>
+
+      {modal.viewItemRequest && <View_Item_Request_Details />}
       {/* -----------------END ITEM REQUEST LIST---------------- */}
     </>
   );

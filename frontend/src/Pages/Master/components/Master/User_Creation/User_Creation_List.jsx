@@ -196,7 +196,7 @@ export default function User_Creation_List() {
 
           {/* Table */}
           <div className="card-datatable table-responsive pt-0">
-            <User_Creation_Table search={search} />
+            <User_Creation_Table />
             <Pagination
               currentPage={pagination.currentPage}
               totalItems={pagination.total}

@@ -9,6 +9,7 @@ export default function CustomSelect({
   required = false,
   id,
   multiple = false,
+  disabled = false,
 }) {
   const selectRef = useRef();
   const containerRef = useRef();
@@ -68,6 +69,7 @@ export default function CustomSelect({
         className="form-select"
         defaultValue={value || (multiple ? [] : "")}
         multiple={multiple}
+        disabled={disabled}
       >
         {!multiple && <option value="">{placeholder}</option>}
         {options.map((opt, idx) => (

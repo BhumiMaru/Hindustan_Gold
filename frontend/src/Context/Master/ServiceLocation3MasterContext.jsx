@@ -130,7 +130,7 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
         finalPayload
       );
 
-      console.log("res", response);
+      // console.log("res", response);
 
       toast.success("Service Location 3 updated successfully");
       fetchServiceLocations3(); // refresh list
@@ -173,6 +173,7 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
       value={{
         serviceLocation3,
         serviceLocation3Data,
+        setServiceLocation3,
         setServiceLocation3Data,
         serviceLocation3EditId,
         setServiceLocation3EditId,

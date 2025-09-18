@@ -66,7 +66,7 @@ export default function Item_Master_Table({ search }) {
                       to={`/item/item-create/${item.type}/${item.id}`}
                       onClick={() => {
                         StartEditing(item.id);
-                        console.log("id", item.id);
+                        // console.log("id", item.id);
                       }}
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                     >
