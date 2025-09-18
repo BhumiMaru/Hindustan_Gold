@@ -91,5 +91,8 @@ export const ENDPOINTS = {
     ADD_UPDATE: "/item/request/add/update",
     DELETE: "/item/request/delete",
     DETAILS: "/item/request/detail",
+    APPROVE: "/item/request/handover",
+    HANDOVER: "/item/request/handover",
+    REJECT: "/item/request/reject",
   },
 };

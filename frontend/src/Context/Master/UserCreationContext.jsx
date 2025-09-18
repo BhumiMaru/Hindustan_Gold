@@ -84,7 +84,7 @@ export const UserCreationProvider = ({ children }) => {
         params.department_id = department_id;
       }
 
-      if (zone_id) {
+      if (zone_id) {  
         params.zone_id = zone_id;
       }
 

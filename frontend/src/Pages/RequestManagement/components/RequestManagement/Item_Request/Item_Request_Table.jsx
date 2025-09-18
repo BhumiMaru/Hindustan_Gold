@@ -3,7 +3,7 @@ import { useItemRequest } from "../../../../../Context/Request Management/Item_R
 import { Link, useNavigate } from "react-router-dom";
 import { useUIContext } from "../../../../../Context/UIContext";
 
-export default function Item_Request_Table() {
+export default function Item_Request_Table({ search }) {
   const navigate = useNavigate();
   const { handleOpen } = useUIContext();
   const {
@@ -12,6 +12,21 @@ export default function Item_Request_Table() {
     deleteItemRequest,
     setItemRequestData,
   } = useItemRequest();
+
+  // 🔎 Filter table data locally based on search
+  const filteredData = itemRequest.filter((item) => {
+    const searchLower = search.toLowerCase();
+    return (
+      item?.item_request?.item_type?.toLowerCase().includes(searchLower) ||
+      item?.item_request?.item_master?.item_name
+        ?.toLowerCase()
+        .includes(searchLower) ||
+      item?.item_request?.workflows.some((user) =>
+        user?.request_user?.name?.toLowerCase().includes(searchLower)
+      ) ||
+      item?.item_request?.item_request_id?.toString().includes(searchLower)
+    );
+  });
 
   return (
     <>
@@ -39,7 +54,7 @@ export default function Item_Request_Table() {
           </tr>
         </thead>
         <tbody>
-          {itemRequest.map((item, index) => {
+          {filteredData.map((item, index) => {
             return (
               <tr key={item.item_request_id}>
                 <td>
@@ -55,7 +70,7 @@ export default function Item_Request_Table() {
                 </td>
 
                 <td>{item?.item_request?.item_type}</td>
-                <td>Mouse</td>
+                <td>{item?.item_request?.item_master?.item_name}</td>
                 <td>
                   <div className="d-flex justify-content-start align-items-center user-name">
                     <div className="avatar-wrapper">
@@ -67,7 +82,7 @@ export default function Item_Request_Table() {
                         />
                       </div>
                     </div>
-                    <div className="d-flex flex-column">
+                    {/* <div className="d-flex flex-column">
                       <span className="emp_name text-truncate text-heading fw-medium">
                         {item?.item_request?.workflows.map((user) => {
                           return user?.request_user?.name;
@@ -80,6 +95,16 @@ export default function Item_Request_Table() {
                           </small>
                         );
                       })}
+                    </div> */}
+                    <div className="d-flex flex-column">
+                      <span className="emp_name text-truncate text-heading fw-medium">
+                        {item?.item_request?.workflows?.[0]?.request_user
+                          ?.name || "-"}
+                      </span>
+                      <small className="emp_post text-truncate">
+                        {item?.item_request?.workflows?.[0]?.request_user
+                          ?.role_id || "-"}
+                      </small>
                     </div>
                   </div>
                 </td>
@@ -128,6 +153,33 @@ export default function Item_Request_Table() {
                         >
                           View
                         </a>
+
+                        <a
+                          href="#"
+                          className="dropdown-item waves-effect"
+                          data-bs-toggle="modal"
+                          data-bs-target="#grnCreateModel"
+                          onClick={() => {
+                            handleOpen("viewApprove");
+                            // setItemRequestData(item);
+                          }}
+                        >
+                          Approve
+                        </a>
+
+                        <a
+                          href="#"
+                          className="dropdown-item waves-effect"
+                          data-bs-toggle="modal"
+                          data-bs-target="#grnCreateModel"
+                          onClick={() => {
+                            handleOpen("viewReject");
+                            // setItemRequestData(item);
+                          }}
+                        >
+                          Reject
+                        </a>
+
                         <div className="dropdown-divider"></div>
                         <a
                           className="dropdown-item text-danger delete-record waves-effect"

@@ -215,6 +215,8 @@ export const UIProvider = ({ children }) => {
     viewSubCategory: false,
     // REQUEST MANAGEMENT
     viewItemRequest: false,
+    viewApprove: false,
+    viewReject: false,
   });
 
   return (

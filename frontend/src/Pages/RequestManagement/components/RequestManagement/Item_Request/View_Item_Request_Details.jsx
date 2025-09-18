@@ -1,6 +1,11 @@
 import React from "react";
+import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
+import { useUIContext } from "../../../../../Context/UIContext";
 
 export default function View_Item_Request_Details() {
+  const { handleClose } = useUIContext();
+  const { itemRequestData } = useItemRequest();
+  console.log("itemRequestData", itemRequestData);
   return (
     <>
       {/* ---------------------START VIEW ITEM REQUEST DETAILS----------------------- */}
@@ -23,6 +28,7 @@ export default function View_Item_Request_Details() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                onClick={() => handleClose("viewItemRequest")}
               />
             </div>
             <div className="modal-body">
@@ -34,75 +40,81 @@ export default function View_Item_Request_Details() {
                   <div className="row">
                     <div className="col-lg-4">
                       <label className="form-label">Request&nbsp;ID</label>
-                      <p>REQ_000001 </p>
+                      <p>{itemRequestData?.item_request_id} </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Date</label>
-                      <p>03-08-2025</p>
+                      <p>{itemRequestData?.item_request?.created_at}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Item&nbsp;Type</label>
-                      <p>Material</p>
+                      <p>{itemRequestData?.item_request?.item_type}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Item&nbsp;Name</label>
-                      <p>Mouse</p>
+                      <p>
+                        {itemRequestData?.item_request?.item_master?.item_name}
+                      </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Category</label>
-                      <p>Category 1</p>
+                      <p> {itemRequestData?.item_request?.item_master?.c_id}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Subcategory</label>
-                      <p>Subcategory 1</p>
+                      <p>{itemRequestData?.item_request?.sub_c_id}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Item Code </label>
-                      <p>MAT_STR_SDR_000001</p>
+                      <p>{itemRequestData?.item_request?.item_code}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Service Location </label>
-                      <p>Service Location 1</p>
+                      <p>
+                        {itemRequestData?.item_request?.service_location_3_id}
+                      </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Purpose </label>
-                      <p>Purpose</p>
+                      <p>{itemRequestData?.item_request?.purpose}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">
                         Request&nbsp;Person&nbsp;Name
                       </label>
-                      <p>Evangelina Carnock</p>
+                      <p>{itemRequestData?.item_request?.request_user_id}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Quantity</label>
-                      <p>10</p>
+                      <p>{itemRequestData?.item_request?.quantity}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">UOM</label>
-                      <p>NOS</p>
+                      <p>{itemRequestData?.item_request?.uom}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Unit&nbsp;Price</label>
-                      <p>500</p>
+                      <p>{itemRequestData?.item_request?.unit_price}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Total&nbsp;Amount</label>
-                      <p>5000</p>
+                      <p>{itemRequestData?.item_request?.total_amount}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Total&nbsp;Status</label>
                       <p>
-                        <span className="badge bg-label-warning">Pending</span>
+                        <span className="badge bg-label-warning">
+                          {itemRequestData?.item_request?.final_approve_status}
+                        </span>
                       </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Remarks</label>
-                      <p />
+                      <p>{itemRequestData?.item_request?.remarks}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Receiving Person</label>
-                      <p>Akash Patel</p>
+                      <p>{itemRequestData?.item_request?.receiving_person}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">File </label>
@@ -133,7 +145,7 @@ export default function View_Item_Request_Details() {
                   </h5>
                   <div className=" h-100">
                     <div className="card-body">
-                      <ul className="timeline mb-0">
+                      {/* <ul className="timeline mb-0">
                         <li className="timeline-item timeline-item-transparent">
                           <span className="timeline-point timeline-point-info" />
                           <div className="timeline-event">
@@ -258,7 +270,7 @@ export default function View_Item_Request_Details() {
                                 11-08-2025&nbsp;11:25&nbsp;AM
                               </small>
                             </div>
-                            {/*<p class="mb-2">6 team members in a project</p>*/}
+                            <p class="mb-2">6 team members in a project</p>
                             <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
                               <div className="d-flex flex-wrap align-items-center mb-50">
                                 <div className="avatar avatar-sm me-2">
@@ -278,6 +290,69 @@ export default function View_Item_Request_Details() {
                             </div>
                           </div>
                         </li>
+                      </ul> */}
+                      <ul className="timeline mb-0">
+                        {itemRequestData?.item_request?.workflows?.map(
+                          (workflow) => {
+                            const user =
+                              workflow.assign_user || workflow.request_user; // fallback
+                            return (
+                              <li
+                                className="timeline-item timeline-item-transparent"
+                                key={workflow.id}
+                              >
+                                <span className="timeline-point timeline-point-info" />
+                                <div className="timeline-event">
+                                  <div className="timeline-header mb-3">
+                                    <h6 className="mb-0">
+                                      {workflow.status}{" "}
+                                      {/* e.g., Approved / Pending */}
+                                    </h6>
+                                    <small className="text-body-secondary">
+                                      {new Date(
+                                        workflow.updated_at
+                                      ).toLocaleString()}
+                                    </small>
+                                  </div>
+
+                                  <p>
+                                    {workflow.status === "Pending"
+                                      ? "Waiting for approval"
+                                      : `Approved by ${user?.name}`}
+                                  </p>
+
+                                  <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
+                                    <div className="d-flex flex-wrap align-items-center mb-50">
+                                      <div className="avatar avatar-sm me-2">
+                                        <img
+                                          src={
+                                            user?.profile_photo
+                                              ? `/uploads/${user.profile_photo}`
+                                              : "assets/img/avatars/1.png"
+                                          }
+                                          alt="Avatar"
+                                          className="rounded-circle"
+                                        />
+                                      </div>
+                                      <div>
+                                        <p className="mb-0 small fw-medium">
+                                          {user?.name}
+                                        </p>
+                                        <small>
+                                          {workflow.task_level === 1
+                                            ? "Reporting Manager"
+                                            : workflow.task_level === 2
+                                            ? "Store Head"
+                                            : "Category Head"}
+                                        </small>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </li>
+                            );
+                          }
+                        )}
                       </ul>
                     </div>
                   </div>
