@@ -73,7 +73,7 @@ export default function SideBar() {
   };
 
   const requestManagementRoutes = {
-    "Item Request": "/request/request-list",
+    "Item Request": "/user/request/request-list",
   };
 
   const piAndMaterialManagementRoutes = {
@@ -104,6 +104,14 @@ export default function SideBar() {
           userSelect: "none",
           WebkitUserDrag: "none",
           WebkitTapHighlightColor: "rgba(0, 0, 0, 0)",
+        }}
+        onMouseEnter={() => {
+          if (isSidebarCollapsed) {
+            document.documentElement.classList.add("layout-menu-hover");
+          }
+        }}
+        onMouseLeave={() => {
+          document.documentElement.classList.remove("layout-menu-hover");
         }}
       >
         <div className="app-brand demo">
@@ -145,7 +153,7 @@ export default function SideBar() {
             <li
               className={`menu-item ${
                 activeMenu === "Master" ? "open active" : ""
-              } cursor-pointer`}
+              }`}
               onClick={() => toggleMenu("Master")}
             >
               <a className="menu-link menu-toggle">

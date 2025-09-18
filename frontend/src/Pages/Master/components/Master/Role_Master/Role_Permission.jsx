@@ -362,7 +362,7 @@ export default function Role_Permission() {
                       </tr>
                       <tr>
                         <td className="text-nowrap text-heading">
-                          Material Handover
+                          Item Request Approval
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center">
@@ -375,14 +375,14 @@ export default function Role_Permission() {
                                   (p) =>
                                     String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name === "Item Request Module" &&
-                                    p.type === "Material Handover" &&
+                                    p.type === "Item Request Approval" &&
                                     p.permission === "view"
                                 )
                               }
                               onChange={(e) =>
                                 handlePermissionChange(
                                   "Item Request Module",
-                                  "Material Handover",
+                                  "Item Request Approval",
                                   "view",
                                   e
                                 )

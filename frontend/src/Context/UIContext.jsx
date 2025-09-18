@@ -122,7 +122,6 @@
 //     </UIContext.Provider>
 //   );
 // };
-
 import { createContext, useContext, useEffect, useState } from "react";
 
 const UIContext = createContext();
@@ -137,14 +136,18 @@ export const UIProvider = ({ children }) => {
     sessionStorage.getItem("activeSubMenu") || null
   );
 
-  // Sidebar state
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); // ✅ collapsed/expanded
-  const [isOpenSmallSidebar, setIsOpenSmallSidebar] = useState(false); // ✅ for mobile/small screens
+  // ✅ Load sidebar state from sessionStorage
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(
+    sessionStorage.getItem("isSidebarCollapsed") === "true" ? true : false
+  );
+  const [isOpenSmallSidebar, setIsOpenSmallSidebar] = useState(
+    sessionStorage.getItem("isOpenSmallSidebar") === "true" ? true : false
+  );
 
   const toggleMenu = (menuName) => {
     const newMenu = activeMenu === menuName ? null : menuName;
     setActiveMenu(newMenu);
-    sessionStorage.setItem("activeMenu", newMenu);
+    sessionStorage.setItem("activeMenu", newMenu || "");
     setActiveSubMenu(null);
     sessionStorage.removeItem("activeSubMenu");
   };
@@ -156,7 +159,16 @@ export const UIProvider = ({ children }) => {
     sessionStorage.setItem("activeSubMenu", subMenu);
   };
 
-  // Add/remove HTML classes based on sidebar state
+  // ✅ Watch & persist sidebar state in sessionStorage
+  useEffect(() => {
+    sessionStorage.setItem("isSidebarCollapsed", isSidebarCollapsed);
+  }, [isSidebarCollapsed]);
+
+  useEffect(() => {
+    sessionStorage.setItem("isOpenSmallSidebar", isOpenSmallSidebar);
+  }, [isOpenSmallSidebar]);
+
+  // ✅ Add/remove HTML classes based on sidebar state
   useEffect(() => {
     const html = document.documentElement;
 
@@ -187,6 +199,7 @@ export const UIProvider = ({ children }) => {
 
   // Popup Modal State
   const [modal, setModal] = useState({
+    // MASTER
     addNewDepartment: false,
     addNewZone: false,
     addNewServiceLocation1: false,
@@ -195,10 +208,15 @@ export const UIProvider = ({ children }) => {
     addNewRole: false,
     addNewCompany: false,
     viewUserDetails: false,
+    // ITEM MANAGEMENT
     addNewGroup: false,
     addNewCategory: false,
     addNewSubCategory: false,
     viewSubCategory: false,
+    // REQUEST MANAGEMENT
+    viewItemRequest: false,
+    viewApprove: false,
+    viewReject: false,
   });
 
   return (
