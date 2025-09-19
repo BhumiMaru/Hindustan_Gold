@@ -5,7 +5,7 @@ import { useUIContext } from "../../../../../Context/UIContext";
 export default function View_Item_Request_Details() {
   const { handleClose } = useUIContext();
   const { itemRequestData } = useItemRequest();
-  console.log("itemRequestData", itemRequestData);
+  // console.log("itemRequestData", itemRequestData);
   return (
     <>
       {/* ---------------------START VIEW ITEM REQUEST DETAILS----------------------- */}

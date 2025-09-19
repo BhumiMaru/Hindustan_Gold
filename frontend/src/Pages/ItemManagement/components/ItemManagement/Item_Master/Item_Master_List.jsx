@@ -41,9 +41,15 @@ export default function Item_Master_List() {
           {/* ---------- Filters ---------- */}
           <div className="row px-3 pt-2">
             <div className="col-lg-3">
-              <select id="select10Basic" className="select2 form-select">
+              <select
+                id="select10Basic"
+                className="select2 form-select"
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+              >
+                {console.log("selected", selectedType)}
                 <option value="">Select&nbsp;Type</option>
-                <option value="item">Item</option>
+                <option value="material">Material</option>
                 <option value="service">Services</option>
                 <option value="asset">Asset</option>
               </select>

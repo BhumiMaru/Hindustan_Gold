@@ -4,6 +4,7 @@ import "../../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstra
 import { useUIContext } from "../../../Context/UIContext";
 import { useNavigate } from "react-router-dom";
 import Small_Screen_Sidebar from "../SideBar/Small_Screen_Sidebar";
+import { decryptData } from "../../../utils/decryptData";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function Navbar() {
@@ -20,6 +21,11 @@ export default function Navbar() {
   const navigate = useNavigate();
   // Decide what to show in Navbar title
   const pageTitle = activeSubMenu || activeMenu;
+
+  const getAuthData = sessionStorage.getItem("authData");
+  const decryptAuthData = decryptData(getAuthData);
+  console.log(decryptAuthData);
+
   return (
     <>
       {/* ----------------------START NAVBAR--------------------------- */}
@@ -100,10 +106,11 @@ export default function Navbar() {
                         </div>
                       </div>
                       <div className="flex-grow-1">
-                        <h6 className="mb-0">John Doe</h6>
+                        <h6 className="mb-0">{decryptAuthData?.user?.name}</h6>
                         <small className="text-body-secondary">
                           Super Admin
                         </small>
+                        <small>user:id {decryptAuthData?.user?.id}</small>
                       </div>
                     </div>
                   </a>

@@ -6,19 +6,58 @@ import { useItemRequest } from "../../../../../Context/Request Management/Item_R
 import View_Item_Request_Details from "./View_Item_Request_Details";
 import { useUIContext } from "../../../../../Context/UIContext";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
+import Approve_Request_Modal from "./Approve_Request_Modal";
+import Reject_Request_Modal from "./Reject_Request_Modal";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
+import Loader from "../../../../../components/Common/Loader/Loader";
 
 export default function Item_Request_List() {
   const { getItemRequestData, pagination, setPagination } = useItemRequest();
   const [search, setSearch] = useState("");
   const { modal } = useUIContext();
+  const {
+    getItemNameAndId,
+    itemList,
+    setItemRequestData,
+    activeTab,
+    setActiveTab,
+    itemRequest,
+    loading,
+  } = useItemRequest();
+  const [selectedType, setSelectedType] = useState("");
+  const [itemNameId, setItemNameId] = useState(null);
+
+  // when type changes, fetch items and update itemRequestData
+  // useEffect(() => {
+  //   if (selectedType) {
+  //     getItemNameAndId(selectedType);
+  //     setItemRequestData((prev) => ({ ...prev, item_type: selectedType }));
+  //   }
+  // }, [selectedType]);
+
+  // // when item name changes, update item_id in itemRequestData
+  // useEffect(() => {
+  //   if (itemNameId) {
+  //     setItemRequestData((prev) => ({ ...prev, id: itemNameId }));
+  //   }
+  // }, [itemNameId]);
 
   useEffect(() => {
     getItemRequestData({
       search,
+      type: activeTab,
+      item_type: selectedType,
       page: pagination.currentPage,
       perPage: pagination.perPage,
     });
-  }, [search, pagination.currentPage, pagination.perPage]);
+  }, [
+    search,
+    activeTab,
+    selectedType,
+    pagination.currentPage,
+    pagination.perPage,
+  ]);
+  console.log("item", itemRequest);
 
   const handlePageChange = (page) => {
     setPagination((prev) => ({ ...prev, currentPage: page }));
@@ -44,12 +83,15 @@ export default function Item_Request_List() {
                   <li className="nav-item mb-1 mb-sm-0" role="presentation">
                     <button
                       type="button"
-                      className="nav-link active waves-effect waves-light"
+                      className={`nav-link waves-effect waves-light ${
+                        activeTab === "my_request" ? "active" : ""
+                      }`}
                       role="tab"
                       data-bs-toggle="tab"
                       data-bs-target="#navs-pills-justified-home"
                       aria-controls="navs-pills-justified-home"
                       aria-selected="true"
+                      onClick={() => setActiveTab("my_request")}
                     >
                       <span className="d-none d-sm-inline-flex align-items-center">
                         <i className="icon-base ti tabler-home icon-sm me-1_5"></i>
@@ -61,21 +103,32 @@ export default function Item_Request_List() {
                   <li className="nav-item mb-1 mb-sm-0" role="presentation">
                     <button
                       type="button"
-                      className="nav-link waves-effect waves-light"
+                      className={`nav-link waves-effect waves-light ${
+                        activeTab === "approval_request" ? "active" : ""
+                      }`}
                       role="tab"
                       data-bs-toggle="tab"
                       data-bs-target="#navs-pills-justified-profile"
                       aria-controls="navs-pills-justified-profile"
                       aria-selected="false"
                       tabIndex="-1"
+                      onClick={() => setActiveTab("approval_request")}
                     >
                       <span className="d-none d-sm-inline-flex align-items-center">
                         <i className="icon-base ti tabler-user icon-sm me-1_5"></i>
-                        Approvel Request
+                        Approval Request
                       </span>
-                      <span className="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1_5">
-                        3
-                      </span>
+                      {activeTab === "approval_request" && (
+                        // (loading ? (
+                        //   <span className="h-px-20 w-px-20 d-flex align-items-center justify-content-center">
+                        //     <Loader />
+                        //   </span>
+                        // ) : (
+                        <span className="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1_5">
+                          {itemRequest.length}
+                        </span>
+                      )}
+
                       <i className="icon-base ti tabler-user icon-sm d-sm-none"></i>
                     </button>
                   </li>
@@ -122,20 +175,42 @@ export default function Item_Request_List() {
             </div>
             <div className="row px-3 pt-2 pb-2">
               <div className="col-lg-3">
-                <select id="select10Basic" className="select2 form-select">
-                  <option value="AK">Select&nbsp;Type</option>
-                  <option value="HI">Item</option>
-                  <option value="CA">Services</option>
-                  <option value="NV">Asset</option>
+                <select
+                  id="select10Basic"
+                  className="select2 form-select"
+                  value={selectedType}
+                  onChange={(e) =>
+                    setSelectedType({
+                      ...prev,
+                      item_type: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Select&nbsp;Type</option>
+                  <option value="material">Material</option>
+                  <option value="Services">Services</option>
+                  <option value="Asset">Asset</option>
                 </select>
               </div>
               <div className="col-lg-3">
-                <select id="select7Basic" className="select2 form-select">
+                {/* <select id="select7Basic" className="select2 form-select">
                   <option value="AK">Select&nbsp;Item</option>
                   <option value="HI">Category</option>
                   <option value="CA">Category</option>
                   <option value="NV">Category</option>
-                </select>
+                </select> */}
+                <CustomSelect
+                  id="selectItemName"
+                  options={itemList?.map((item) => ({
+                    value: item.id,
+                    label: item.item_name,
+                  }))}
+                  value={itemNameId}
+                  onChange={setItemNameId}
+                  placeholder="Select Item"
+                />
+                {/* {console.log("item name", itemNameId)}
+                {console.log("itemList", itemList)} */}
               </div>
               <div className="col-lg-3">
                 <select id="select9Basic" className="select2 form-select">
@@ -168,6 +243,8 @@ export default function Item_Request_List() {
       </>
 
       {modal.viewItemRequest && <View_Item_Request_Details />}
+      {modal.viewApprove && <Approve_Request_Modal />}
+      {modal.viewReject && <Reject_Request_Modal />}
       {/* -----------------END ITEM REQUEST LIST---------------- */}
     </>
   );

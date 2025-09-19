@@ -274,6 +274,7 @@ export const ItemMasterProvider = ({ children }) => {
         itemMaster,
         isItemEditId,
         itemMasterData,
+        setItemMaster,
         setItemMasterData,
         itemSubCategoryId,
         setItemSubCategoryId,

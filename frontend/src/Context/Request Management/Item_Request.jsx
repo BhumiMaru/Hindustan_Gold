@@ -12,7 +12,10 @@ export const useItemRequest = () => {
 
 // Item Request Provider
 export const ItemRequestProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
+  const [itemList, setItemList] = useState([]); // separate state for items
   const [itemRequest, setItemRequest] = useState([]);
+  const [activeTab, setActiveTab] = useState("my_request");
   const [itemRequestData, setItemRequestData] = useState({
     type: "",
     item_type: "",
@@ -39,15 +42,19 @@ export const ItemRequestProvider = ({ children }) => {
   // Get All Item Request Data
   const getItemRequestData = async ({
     search = "",
+    item_type = "",
     page = 1,
     perPage = 10,
   } = {}) => {
     try {
-      const params = { search, page, per_page: perPage };
+      setItemRequest([]);
+      // setLoading(true); // ✅ start loading
+      const params = { search, item_type, page, per_page: perPage };
       const res = await postData(ENDPOINTS.ITEM_REQUEST.LIST, {
-        type: "my_request",
+        type: activeTab,
         params,
       });
+      // console.log("res", res.data);
       // setItemRequest(res.data.data);
       const apiData = res.data;
       setItemRequest(apiData.data);
@@ -59,6 +66,9 @@ export const ItemRequestProvider = ({ children }) => {
     } catch (error) {
       console.log("item request error:", error);
     }
+    // finally {
+    //   setLoading(false); // ✅ stop loading
+    // }
   };
 
   // Get Item Request Details for update prefill values
@@ -74,18 +84,39 @@ export const ItemRequestProvider = ({ children }) => {
   //   }
   // };
 
+  // Get Item_name and id
+
+  const getItemNameAndId = async (itemType) => {
+    if (!itemType) return;
+    try {
+      const res = await postData(ENDPOINTS.ITEM_REQUEST.ITEMLIST, {
+        item_type: itemType,
+      });
+
+      console.log("Item list response:", res.data);
+
+      if (res.message === "Data fetched successfully") {
+        setItemList(res.data); // ✅ store only data list
+      } else {
+        setItemList([]);
+      }
+    } catch (error) {
+      console.log("Get Item name Error:", error);
+      setItemList([]);
+    }
+  };
+
   // Create Item Request
   const createItemRequest = async () => {
+    // setLoading(true);
     try {
       const res = await postData(
         ENDPOINTS.ITEM_REQUEST.ADD_UPDATE,
         itemRequestData
       );
       if (res.data.success) {
-        // console.log("Item Request Created:", res.data.data);
-        getItemRequestData(); // refresh list after create
+        await getItemRequestData();
       }
-      // console.log("res", res.data);
       if (res.data) {
         setItemRequestData(res.data);
         toast.success("Created Successfully");
@@ -93,6 +124,9 @@ export const ItemRequestProvider = ({ children }) => {
     } catch (error) {
       console.log("Create Item Request Error:", error);
     }
+    // finally {
+    //   setLoading(false);
+    // }
   };
 
   // Prefill Data while edit [workflowid , item request id]
@@ -158,27 +192,59 @@ export const ItemRequestProvider = ({ children }) => {
     }
   };
 
+  const resetData = () => {
+    setItemRequestData({
+      type: "",
+      item_type: "",
+      c_id: null,
+      sub_c_id: null,
+      item_code: null,
+      service_location_1_id: null,
+      service_location_2_id: null,
+      service_location_3_id: null,
+      purpose: "",
+      quantity: null,
+      uom: null,
+      remarks: "",
+      workflowId: null,
+      receiving_person: "",
+    });
+  };
+
   // ---------------- Request Management [Approve, HandOver, Reject] -------------------- //
 
-  // approve request
+  // Approve request
   const approveRequest = async (workflow_id) => {
     try {
-      const res = await postData(ENDPOINTS.ITEM_REQUEST.APPROVE, workflow_id);
-      setItemRequestData(res.data);
-      toast.success("Request Approve");
+      const res = await postData(ENDPOINTS.ITEM_REQUEST.APPROVE, {
+        workflow_id, // send as object
+      });
+      // console.log("workflow", res);
+
+      if (res.status) {
+        toast.success(res.message);
+        getItemRequestData(); // refresh list
+      }
     } catch (error) {
-      console.log("approve Request error:", error);
+      console.error("approve Request error:", error);
+      toast.error("Failed to approve request");
     }
   };
 
   // HandOver request
   const handOverRequest = async (id) => {
     try {
-      const res = await postData(ENDPOINTS.ITEM_REQUEST.HANDOVER, id);
-      setItemRequestData(res.data);
-      toast.success("Request HandOver");
+      const res = await postData(ENDPOINTS.ITEM_REQUEST.HANDOVER, {
+        id,
+      });
+
+      if (res.data.success) {
+        toast.success("Request Handed Over Successfully");
+        // getItemRequestData(); // refresh list
+      }
     } catch (error) {
-      console.log("handOver Request error:", error);
+      console.error("handOver Request error:", error);
+      toast.error("Failed to handover request");
     }
   };
 
@@ -190,10 +256,14 @@ export const ItemRequestProvider = ({ children }) => {
         workflow_id,
         reject_reason,
       });
-      setItemRequestData(res.data);
-      toast.success("Request Rejected");
+
+      if (res.data.success) {
+        toast.success("Request Rejected Successfully");
+        // getItemRequestData(); // refresh list
+      }
     } catch (error) {
-      console.log("Reject Request error:", error);
+      console.error("Reject Request error:", error);
+      toast.error("Failed to reject request");
     }
   };
 
@@ -203,6 +273,12 @@ export const ItemRequestProvider = ({ children }) => {
         itemRequest,
         itemRequestData,
         pagination,
+        itemList,
+        activeTab,
+        loading,
+        setLoading,
+        setActiveTab,
+        setItemList,
         setPagination,
         setItemRequestData,
         getItemRequestData,
@@ -213,6 +289,8 @@ export const ItemRequestProvider = ({ children }) => {
         approveRequest,
         handOverRequest,
         rejectRequest,
+        getItemNameAndId,
+        resetData,
       }}
     >
       {children}

@@ -127,14 +127,14 @@ export default function User_Creation_Permission() {
                                     p.module_name ===
                                       "Item Management Module" &&
                                     p.type === "Material Code" &&
-                                    p.permission === "all_rights"
+                                    p.permission === "allrights"
                                 )
                               }
                               onChange={(e) =>
                                 handlePermissionChange(
                                   "Item Management Module",
                                   "Material Code",
-                                  "all_rights",
+                                  "allrights",
                                   e
                                 )
                               }
@@ -189,14 +189,14 @@ export default function User_Creation_Permission() {
                                     p.module_name ===
                                       "Item Management Module" &&
                                     p.type === "Service Code" &&
-                                    p.permission === "all_rights"
+                                    p.permission === "allrights"
                                 )
                               }
                               onChange={(e) =>
                                 handlePermissionChange(
                                   "Item Management Module",
                                   "Service Code",
-                                  "all_rights",
+                                  "allrights",
                                   e
                                 )
                               }
@@ -246,14 +246,14 @@ export default function User_Creation_Permission() {
                                     p.module_name ===
                                       "Item Management Module" &&
                                     p.type === "Asset Code" &&
-                                    p.permission === "all_rights"
+                                    p.permission === "allrights"
                                 )
                               }
                               onChange={(e) =>
                                 handlePermissionChange(
                                   "Item Management Module",
                                   "Asset Code",
-                                  "all_rights",
+                                  "allrights",
                                   e
                                 )
                               }
@@ -281,6 +281,9 @@ export default function User_Creation_Permission() {
                         </th>
                         <th className="text-nowrap text-center w-px-50">
                           Delete
+                        </th>
+                        <th className="text-nowrap text-center w-px-50">
+                          Approval
                         </th>
                       </tr>
                     </thead>
@@ -367,10 +370,11 @@ export default function User_Creation_Permission() {
                             />
                           </div>
                         </td>
+                        <td></td>
                       </tr>
                       <tr>
                         <td className="text-nowrap text-heading">
-                          Material Handover
+                          Material Approval
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center">
@@ -383,14 +387,14 @@ export default function User_Creation_Permission() {
                                   (p) =>
                                     String(p.user_id) === String(id) && // normalize ID comparison
                                     p.module_name === "Item Request Module" &&
-                                    p.type === "Material Handover" &&
+                                    p.type === "Material Approval" &&
                                     p.permission === "view"
                                 )
                               }
                               onChange={(e) =>
                                 handlePermissionChange(
                                   "Item Request Module",
-                                  "Material Handover",
+                                  "Material Approval",
                                   "view",
                                   e
                                 )
@@ -400,6 +404,32 @@ export default function User_Creation_Permission() {
                         </td>
                         <td></td>
                         <td></td>
+                        <td>
+                          <div className="form-check d-flex justify-content-center">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              id="defaultCheck_cust_4"
+                              checked={
+                                !!userPermission?.some(
+                                  (p) =>
+                                    String(p.user_id) === String(id) && // normalize ID comparison
+                                    p.module_name === "Item Request Module" &&
+                                    p.type === "Material Approval" &&
+                                    p.permission === "approve"
+                                )
+                              }
+                              onChange={(e) =>
+                                handlePermissionChange(
+                                  "Item Request Module",
+                                  "Material Approval",
+                                  "approve",
+                                  e
+                                )
+                              }
+                            />
+                          </div>
+                        </td>
                       </tr>
                       <tr className="border-transparent">
                         <td className="text-nowrap text-heading">

@@ -1,6 +1,8 @@
 import React from "react";
+import { useUIContext } from "../../../../../Context/UIContext";
 
 export default function Reject_Request_Modal() {
+  const { handleClose } = useUIContext();
   return (
     <>
       {/* ---------------------START REJECT REQUEST MODAL------------------- */}
@@ -24,6 +26,7 @@ export default function Reject_Request_Modal() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                onClick={() => handleClose("viewReject")}
               />
             </div>
             <div className="mx-4 mb-4">
@@ -45,7 +48,7 @@ export default function Reject_Request_Modal() {
           </div>
         </div>
       </div>
-
+      <div className="modal-backdrop fade show"></div>
       {/* ---------------------END REJECT REQUEST MODAL------------------- */}
     </>
   );
