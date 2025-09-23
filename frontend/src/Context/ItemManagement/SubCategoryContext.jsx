@@ -29,7 +29,7 @@ export const SubCategoryProvider = ({ children }) => {
     total: 0,
   });
 
-  //   Fetch user Creaions
+  //   Fetch user Creations
   const fetchSubCategoryData = async (search = "", page = 1, perPage = 10) => {
     try {
       const res = await getData(ENDPOINTS.SUBCATEGORY_MASTER.LIST, {
@@ -57,7 +57,7 @@ export const SubCategoryProvider = ({ children }) => {
       setFilterSubCategory(res.data);
     } catch (error) {
       console.log(error);
-      toast.error("Failed to fetch Group Filter");
+      toast.error("Failed to fetch SubCat Filter");
     }
   };
 

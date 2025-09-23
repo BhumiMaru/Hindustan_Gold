@@ -12,19 +12,21 @@ import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSe
 import Loader from "../../../../../components/Common/Loader/Loader";
 
 export default function Item_Request_List() {
-  const { getItemRequestData, pagination, setPagination } = useItemRequest();
-  const [search, setSearch] = useState("");
-  const { modal } = useUIContext();
   const {
-    getItemNameAndId,
+    getItemRequestData,
+    pagination,
+    setPagination,
     itemList,
-    setItemRequestData,
     activeTab,
     setActiveTab,
     itemRequest,
-    loading,
+    filterItem,
+    fetchItemFilter,
   } = useItemRequest();
-  const [selectedType, setSelectedType] = useState("");
+  const [search, setSearch] = useState("");
+  const { modal } = useUIContext();
+  const [selectedType, setSelectedType] = useState("all"); // item type filter
+  const [statusFilter, setStatusFilter] = useState("all"); // status filter
   const [itemNameId, setItemNameId] = useState(null);
 
   // when type changes, fetch items and update itemRequestData
@@ -46,18 +48,20 @@ export default function Item_Request_List() {
     getItemRequestData({
       search,
       type: activeTab,
-      item_type: selectedType,
+      item_type: selectedType === "all" ? "" : selectedType,
+      status: statusFilter === "all" ? "" : statusFilter,
       page: pagination.currentPage,
       perPage: pagination.perPage,
     });
+    fetchItemFilter();
   }, [
     search,
     activeTab,
     selectedType,
+    statusFilter,
     pagination.currentPage,
     pagination.perPage,
   ]);
-  console.log("item", itemRequest);
 
   const handlePageChange = (page) => {
     setPagination((prev) => ({ ...prev, currentPage: page }));
@@ -175,22 +179,46 @@ export default function Item_Request_List() {
             </div>
             <div className="row px-3 pt-2 pb-2">
               <div className="col-lg-3">
-                <select
+                {/* <select
                   id="select10Basic"
                   className="select2 form-select"
                   value={selectedType}
-                  onChange={(e) =>
-                    setSelectedType({
-                      ...prev,
-                      item_type: e.target.value,
-                    })
-                  }
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSelectedType(value);
+                    console.log("item type:", value);
+                  }}
                 >
-                  <option value="">Select&nbsp;Type</option>
+                  {console.log("selected type:", selectedType)}
+                  <option value="">Select Type</option>
                   <option value="material">Material</option>
-                  <option value="Services">Services</option>
-                  <option value="Asset">Asset</option>
-                </select>
+                  <option value="service">Service</option>
+                  <option value="asset">Asset</option>
+                </select> */}
+                <CustomSelect
+                  id="selectItemType"
+                  options={[
+                    {
+                      value: "all",
+                      label: "Select Item Type",
+                    },
+                    {
+                      value: "material",
+                      label: "Material",
+                    },
+                    {
+                      value: "service",
+                      label: "Service",
+                    },
+                    {
+                      value: "asset",
+                      label: "Asset",
+                    },
+                  ]}
+                  value={selectedType}
+                  onChange={setSelectedType}
+                  placeholder="Select Item"
+                />
               </div>
               <div className="col-lg-3">
                 {/* <select id="select7Basic" className="select2 form-select">
@@ -201,23 +229,42 @@ export default function Item_Request_List() {
                 </select> */}
                 <CustomSelect
                   id="selectItemName"
-                  options={itemList?.map((item) => ({
-                    value: item.id,
+                  options={filterItem?.map((item) => ({
+                    value: item.item_id,
                     label: item.item_name,
                   }))}
-                  value={itemNameId}
-                  onChange={setItemNameId}
+                  // value={itemNameId}
+                  // onChange={setItemNameId}
                   placeholder="Select Item"
                 />
-                {/* {console.log("item name", itemNameId)}
-                {console.log("itemList", itemList)} */}
+                {/* {/* {console.log("item name", itemNameId)} */}
+                {console.log("filterItem", filterItem)}
               </div>
               <div className="col-lg-3">
-                <select id="select9Basic" className="select2 form-select">
-                  <option value="AK">Select&nbsp;Status</option>
-                  <option value="HI">Active</option>
-                  <option value="CA">Deactive</option>
-                </select>
+                <CustomSelect
+                  id="selectItemStatus"
+                  options={[
+                    {
+                      value: "all",
+                      label: "Select Status",
+                    },
+                    {
+                      value: "pending",
+                      label: "Pending",
+                    },
+                    {
+                      value: "completed",
+                      label: "Completed",
+                    },
+                    {
+                      value: "reject",
+                      label: "Reject",
+                    },
+                  ]}
+                  value={statusFilter}
+                  onChange={setStatusFilter}
+                  placeholder="Select Item Status"
+                />
               </div>
               <div className="col-lg-3">
                 <input

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
 import { Link, useNavigate } from "react-router-dom";
 import { useUIContext } from "../../../../../Context/UIContext";
@@ -16,18 +16,28 @@ export default function Item_Request_Table({ search }) {
     loading,
     approveRequest,
     handOverRequest,
+    serviceReceived,
+    startEditing,
   } = useItemRequest();
 
-  console.log("item data", itemRequest);
+  // Initialize Bootstrap tooltips
+  useEffect(() => {
+    const tooltipTriggerList = Array.from(
+      document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    );
+    tooltipTriggerList.forEach((tooltipTriggerEl) => {
+      new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  }, [itemRequest]);
+
+  console.log("itemRequest itemRequest", itemRequest);
 
   // 🔎 Filter table data locally based on search
   const filteredData = itemRequest.filter((item) => {
     const searchLower = search.toLowerCase();
     return (
       item?.item_request?.item_type?.toLowerCase().includes(searchLower) ||
-      item?.item_request?.item_master?.item_name
-        ?.toLowerCase()
-        .includes(searchLower) ||
+      item?.item_request?.item_name?.toLowerCase().includes(searchLower) ||
       item?.item_request?.workflows.some((user) =>
         user?.request_user?.name?.toLowerCase().includes(searchLower)
       ) ||
@@ -73,7 +83,6 @@ export default function Item_Request_Table({ search }) {
             filteredData.map((item, index) => {
               return (
                 <tr key={index}>
-                  {/* {console.log("item", item)} */}
                   <td>
                     <div className="ms-4">{index + 1}</div>
                   </td>
@@ -135,8 +144,14 @@ export default function Item_Request_Table({ search }) {
                   <td>
                     <span
                       className={`badge ${
-                        item?.status === "Approve" && "bg-label-success"
-                      } ${item?.status === "Pending" && "bg-label-warning"}`}
+                        item?.final_approve_status === "Approve" ||
+                        item?.final_approve_status === "Completed"
+                          ? "bg-label-success"
+                          : item?.final_approve_status === "Pending" ||
+                            item?.final_approve_status === "Reject"
+                          ? "bg-label-warning"
+                          : "bg-label-secondary"
+                      }`}
                     >
                       {item?.final_approve_status}
                     </span>
@@ -163,9 +178,9 @@ export default function Item_Request_Table({ search }) {
                                     : ""
                                 }`}
                                 onClick={() => {
-                                  fetchItemRequestById(item?.item_request_id);
+                                  fetchItemRequestById(item?.id);
                                   navigate(
-                                    `/user/request/request-create/${item?.item_request?.item_type}/${item?.item_request_id}`
+                                    `/user/request/request-create/${item?.item_request?.item_type}`
                                   );
                                 }}
                               >
@@ -239,36 +254,64 @@ export default function Item_Request_Table({ search }) {
 
                       {activeTab === "approval_request" && (
                         <div className="d-inline-flex gap-2">
-                          <button
-                            className={`btn btn-success btn-sm waves-effect waves-light ${
-                              item?.status === "Approve" ? "d-none" : ""
-                            }`}
-                            data-bs-toggle="modal"
-                            data-bs-target="#servicesModal"
-                            onClick={() => {
-                              // const workflow_id = item?.id;
-                              const workflow_id =
-                                item?.item_request?.workflows[0]?.id;
-                              if (item.item_type === "service") {
-                                handleOpen("viewApprove");
-                              } else {
-                                approveRequest(workflow_id);
+                          {item?.status === "Approve" &&
+                            item?.final_approve_status === "Approve" && (
+                              <button
+                                className={`btn btn-success btn-sm waves-effect waves-light ${
+                                  item?.status === "Approve" ? "d-none" : ""
+                                }`}
+                                data-bs-toggle="modal"
+                                data-bs-target="#servicesModal"
+                                onClick={() => {
+                                  // const workflow_id = item?.id;
+                                  const workflow_id =
+                                    item?.item_request?.workflows[0]?.id;
+                                  if (
+                                    item.item_type === "service" &&
+                                    item?.task_level === 4
+                                  ) {
+                                    handleOpen("viewApprove");
+                                  } else {
+                                    approveRequest(workflow_id);
+                                  }
+                                }}
+                              >
+                                Approve
+                              </button>
+                            )}
+
+                          {item?.status === "Reject" &&
+                            item?.final_approve_status === "Reject" && (
+                              <button
+                                className={`btn btn-danger btn-sm waves-effect waves-light ${
+                                  item?.status === "Reject" ? "d-none" : ""
+                                }`}
+                                data-bs-toggle="modal"
+                                data-bs-target="#rejectRemarkModal"
+                                onClick={() => {
+                                  handleOpen("viewReject");
+                                  setItemRequestData(item);
+                                }}
+                              >
+                                Reject
+                              </button>
+                            )}
+
+                          {item?.final_approve_status === "Reject" && (
+                            <button
+                              type="button"
+                              className="btn btn-text-danger rounded-pill btn-icon waves-effect"
+                              data-bs-toggle="tooltip"
+                              data-bs-placement="top"
+                              aria-label={item?.item_request?.reject_reason}
+                              data-bs-original-title={
+                                item?.item_request?.reject_reason
                               }
-                            }}
-                          >
-                            {console.log(item?.item_request?.workflows[0]?.id)}
-                            Approve
-                          </button>
-                          <button
-                            className={`btn btn-danger btn-sm waves-effect waves-light ${
-                              item?.status === "Approve" ? "d-none" : ""
-                            }`}
-                            data-bs-toggle="modal"
-                            data-bs-target="#rejectRemarkModal"
-                            onClick={() => handleOpen("viewReject")}
-                          >
-                            Reject
-                          </button>
+                              aria-describedby="tooltip578088"
+                            >
+                              <i className="icon-base ti tabler-info-circle text-danger  icon-20px" />
+                            </button>
+                          )}
 
                           {item?.status === "Approve" &&
                             item?.task_level === 5 &&
@@ -284,9 +327,21 @@ export default function Item_Request_Table({ search }) {
                                 Handover
                               </button>
                             )}
+
+                          {item?.task_level === 4 &&
+                            item?.status === "Pending" &&
+                            item?.final_approve_status === "Approve" && (
+                              <button
+                                className="btn btn-success btn-sm waves-effect waves-light"
+                                onClick={() =>
+                                  serviceReceived(item?.item_request_id)
+                                }
+                              >
+                                Service Received
+                              </button>
+                            )}
                         </div>
                       )}
-                      {console.log("item", item)}
                     </div>
                   </td>
                 </tr>

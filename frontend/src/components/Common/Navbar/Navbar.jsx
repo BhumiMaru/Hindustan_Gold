@@ -24,7 +24,7 @@ export default function Navbar() {
 
   const getAuthData = sessionStorage.getItem("authData");
   const decryptAuthData = decryptData(getAuthData);
-  console.log(decryptAuthData);
+  // console.log(decryptAuthData);
 
   return (
     <>

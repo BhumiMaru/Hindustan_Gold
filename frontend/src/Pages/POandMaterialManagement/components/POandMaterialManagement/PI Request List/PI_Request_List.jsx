@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import PI_Request_Table from "./PI_Request_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
+import { usePIRequest } from "../../../../../Context/PIAndPoManagement/PIRequestList";
 
 export default function PI_Request_List() {
+  const { getPIRequest, activeTab } = usePIRequest();
+
+  useEffect(() => {
+    getPIRequest({
+      type: activeTab,
+    });
+  }, [activeTab]);
+
   return (
     <>
       {/* ------------------START PI REUEST LIST-------------------- */}
@@ -65,14 +74,14 @@ export default function PI_Request_List() {
             </div>
             <div className="d-flex gap-2">
               <Link
-                to="/po-material/pi-request-create"
+                to="/po-material/pi-request-create/material"
                 className="btn btn-primary waves-effect waves-light"
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2" />
                 Material PI
               </Link>
               <Link
-                to="/po-material/pi-request-create"
+                to="/po-material/pi-request-create/service"
                 className="btn btn-info waves-effect waves-light"
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2" />
@@ -108,41 +117,6 @@ export default function PI_Request_List() {
                   <option value="CA">Services</option>
                   <option value="NV">Asset</option>
                 </select>
-                <span
-                  className="select2 select2-container select2-container--default"
-                  dir="ltr"
-                  data-select2-id={1}
-                  style={{ width: "236.75px" }}
-                >
-                  <span className="selection">
-                    <span
-                      className="select2-selection select2-selection--single"
-                      role="combobox"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      tabIndex={0}
-                      aria-disabled="false"
-                      aria-labelledby="select2-select10Basic-container"
-                    >
-                      <span
-                        className="select2-selection__rendered"
-                        id="select2-select10Basic-container"
-                        role="textbox"
-                        aria-readonly="true"
-                        title="Select Type"
-                      >
-                        Select&nbsp;Type
-                      </span>
-                      <span
-                        className="select2-selection__arrow"
-                        role="presentation"
-                      >
-                        <b role="presentation" />
-                      </span>
-                    </span>
-                  </span>
-                  <span className="dropdown-wrapper" aria-hidden="true" />
-                </span>
               </div>
             </div>
             <div className="col-lg-3">
@@ -161,41 +135,6 @@ export default function PI_Request_List() {
                   <option value="CA">Item 2</option>
                   <option value="NV">Item 3</option>
                 </select>
-                <span
-                  className="select2 select2-container select2-container--default"
-                  dir="ltr"
-                  data-select2-id={3}
-                  style={{ width: "236.75px" }}
-                >
-                  <span className="selection">
-                    <span
-                      className="select2-selection select2-selection--single"
-                      role="combobox"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      tabIndex={0}
-                      aria-disabled="false"
-                      aria-labelledby="select2-select7Basic-container"
-                    >
-                      <span
-                        className="select2-selection__rendered"
-                        id="select2-select7Basic-container"
-                        role="textbox"
-                        aria-readonly="true"
-                        title="Select Item"
-                      >
-                        Select&nbsp;Item
-                      </span>
-                      <span
-                        className="select2-selection__arrow"
-                        role="presentation"
-                      >
-                        <b role="presentation" />
-                      </span>
-                    </span>
-                  </span>
-                  <span className="dropdown-wrapper" aria-hidden="true" />
-                </span>
               </div>
             </div>
             <div className="col-lg-3">
@@ -214,41 +153,6 @@ export default function PI_Request_List() {
                   <option value="CA">Department</option>
                   <option value="NV">Department</option>
                 </select>
-                <span
-                  className="select2 select2-container select2-container--default"
-                  dir="ltr"
-                  data-select2-id={5}
-                  style={{ width: "236.75px" }}
-                >
-                  <span className="selection">
-                    <span
-                      className="select2-selection select2-selection--single"
-                      role="combobox"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      tabIndex={0}
-                      aria-disabled="false"
-                      aria-labelledby="select2-select12Basic-container"
-                    >
-                      <span
-                        className="select2-selection__rendered"
-                        id="select2-select12Basic-container"
-                        role="textbox"
-                        aria-readonly="true"
-                        title="Select Department"
-                      >
-                        Select&nbsp;Department
-                      </span>
-                      <span
-                        className="select2-selection__arrow"
-                        role="presentation"
-                      >
-                        <b role="presentation" />
-                      </span>
-                    </span>
-                  </span>
-                  <span className="dropdown-wrapper" aria-hidden="true" />
-                </span>
               </div>
             </div>
             <div className="col-lg-3 ">
@@ -267,41 +171,6 @@ export default function PI_Request_List() {
                   <option value="CA">Created</option>
                   <option value="NV">Created</option>
                 </select>
-                <span
-                  className="select2 select2-container select2-container--default"
-                  dir="ltr"
-                  data-select2-id={7}
-                  style={{ width: "236.75px" }}
-                >
-                  <span className="selection">
-                    <span
-                      className="select2-selection select2-selection--single"
-                      role="combobox"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      tabIndex={0}
-                      aria-disabled="false"
-                      aria-labelledby="select2-select11Basic-container"
-                    >
-                      <span
-                        className="select2-selection__rendered"
-                        id="select2-select11Basic-container"
-                        role="textbox"
-                        aria-readonly="true"
-                        title="Select Created By"
-                      >
-                        Select&nbsp;Created By
-                      </span>
-                      <span
-                        className="select2-selection__arrow"
-                        role="presentation"
-                      >
-                        <b role="presentation" />
-                      </span>
-                    </span>
-                  </span>
-                  <span className="dropdown-wrapper" aria-hidden="true" />
-                </span>
               </div>
             </div>
             <div className="col-lg-3 mt-2">
@@ -319,41 +188,6 @@ export default function PI_Request_List() {
                   <option value="HI">Active</option>
                   <option value="CA">Deactive</option>
                 </select>
-                <span
-                  className="select2 select2-container select2-container--default"
-                  dir="ltr"
-                  data-select2-id={9}
-                  style={{ width: "236.75px" }}
-                >
-                  <span className="selection">
-                    <span
-                      className="select2-selection select2-selection--single"
-                      role="combobox"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      tabIndex={0}
-                      aria-disabled="false"
-                      aria-labelledby="select2-select9Basic-container"
-                    >
-                      <span
-                        className="select2-selection__rendered"
-                        id="select2-select9Basic-container"
-                        role="textbox"
-                        aria-readonly="true"
-                        title="Select Status"
-                      >
-                        Select&nbsp;Status
-                      </span>
-                      <span
-                        className="select2-selection__arrow"
-                        role="presentation"
-                      >
-                        <b role="presentation" />
-                      </span>
-                    </span>
-                  </span>
-                  <span className="dropdown-wrapper" aria-hidden="true" />
-                </span>
               </div>
             </div>
             <div className="col-lg-3 mt-2">

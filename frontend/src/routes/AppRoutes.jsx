@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import DashboardPage from "../Pages/Dashboard/DashboardPage";
 import DepartmentMasterPage from "../Pages/Master/DepartmentMasterPage";
 import ZoneMasterpage from "../Pages/Master/ZoneMasterpAGE";
@@ -25,8 +25,6 @@ import Item_Master_Page from "../Pages/ItemManagement/Item_Master_Page";
 import { ItemMasterProvider } from "../Context/ItemManagement/ItemMasterContext";
 import { CategoryMasterProvider } from "../Context/ItemManagement/CategoryMasterContext";
 import { SubCategoryProvider } from "../Context/ItemManagement/SubCategoryContext";
-import Item_Create_Service_Form from "../Pages/ItemManagement/components/ItemManagement/Item_Create/Item_Create_Service_Form";
-import Item_Create_Asset_Form from "../Pages/ItemManagement/components/ItemManagement/Item_Create/Item_Create_Asset_Form";
 import Request_Management_Page from "../Pages/RequestManagement/Request_Management_Page";
 import Item_Request_Form from "../Pages/RequestManagement/components/RequestManagement/Item_Request/Item_Request_Form";
 import PI_Item_Request_Page from "../Pages/POandMaterialManagement/PI_Item_Request_Page";
@@ -41,14 +39,8 @@ import CompanyMasterPage from "../Pages/Master/CompanyMasterPage";
 import { CompanyMasterProvider } from "../Context/Master/CompanyMasterContext";
 import Item_Create_Material_Form from "../Pages/ItemManagement/components/ItemManagement/Item_Create/Item_Create_Material_Form";
 import Vendor_List_page from "../Pages/PaymentManagement/Vendor_List_page";
-import LoginPage from "../Pages/Authentication/Login/LoginMasterPage";
-import { decryptData } from "../utils/decryptData";
 import { useUIContext } from "../Context/UIContext";
-import Small_Screen_Sidebar from "../components/Common/SideBar/Small_Screen_Sidebar";
-import {
-  ItemRequestContext,
-  ItemRequestProvider,
-} from "../Context/Request Management/Item_Request";
+import { ItemRequestProvider } from "../Context/Request Management/Item_Request";
 
 export default function AppRoutes() {
   const { isOpenSmallSidebar, closeSmallSidebar } = useUIContext();
@@ -266,7 +258,7 @@ export default function AppRoutes() {
           }
         />
         <Route
-          path="/user/request/request-create/:type/:id"
+          path="/user/request/request-create/:type"
           element={
             <ItemRequestProvider>
               <ItemMasterProvider>
@@ -280,7 +272,7 @@ export default function AppRoutes() {
 
         {/* PO & Material Management */}
         <Route
-          path="/po-material/pi-request-create"
+          path="/po-material/pi-request-create/:type"
           element={<PI_Item_Request_Page />}
         />
         <Route

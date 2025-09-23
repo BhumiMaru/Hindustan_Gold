@@ -47,7 +47,7 @@ export default function Item_Master_List() {
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
               >
-                {console.log("selected", selectedType)}
+                {/* {console.log("selected", selectedType)} */}
                 <option value="">Select&nbsp;Type</option>
                 <option value="material">Material</option>
                 <option value="service">Services</option>

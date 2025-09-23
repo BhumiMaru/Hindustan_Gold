@@ -9,7 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 export default function Item_Request_Form() {
   const { type, id } = useParams();
   const navigate = useNavigate();
-  const { serviceLocation3, fetchServiceLocations3, setServiceLocation3 } =
+  const { serviceLocation3, fetchServiceLocations3 } =
     useServiceLocation3Master();
   const {
     itemRequestData,
@@ -20,7 +20,7 @@ export default function Item_Request_Form() {
     getItemRequestData,
     editItemRequest,
   } = useItemRequest();
-  const { itemMaster, setItemMaster, fetchItemMaster } = useItemMaster();
+  const { itemMaster, fetchItemMaster } = useItemMaster();
 
   useEffect(() => {
     getItemRequestData();
@@ -42,15 +42,17 @@ export default function Item_Request_Form() {
     if (id) {
       // find workflowId for this id from already loaded list
       const existing = itemRequest.find((req) => {
-        return req?.item_request.id === Number(id);
+        console.log("id", req.id === id);
+        return req?.id === Number(id);
       });
-      const workflowId = existing?.first_workflow_id;
+      console.log("itemRequest", itemRequest);
+      console.log("existing", existing);
 
-      if (workflowId) {
-        fetchItemRequestById(id, workflowId);
+      if (existing) {
+        fetchItemRequestById(existing);
       }
     }
-  }, [id, itemRequest]);
+  }, [itemRequest]);
 
   // handle input changes
   const handleChange = (e) => {

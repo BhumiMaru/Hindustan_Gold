@@ -95,5 +95,16 @@ export const ENDPOINTS = {
     HANDOVER: "/item/request/handover",
     REJECT: "/item/request/reject",
     ITEMLIST: "/request/itemlist",
+    SERVICERECEIVE: "/item/request/servicereceive",
+    FILTER: "/item/filter",
+  },
+
+  // PO & Material Management
+  // PI REQUEST LIST
+  PI_REQUEST: {
+    LIST: "/pi/request/list",
+    DETAILS: "/pi/request/detail",
+    ADD_UPDATE: "/pi/request/add/update",
+    DELETE: "/pi/request/delete",
   },
 };

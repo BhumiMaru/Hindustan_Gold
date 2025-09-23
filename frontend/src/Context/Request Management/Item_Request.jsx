@@ -16,6 +16,8 @@ export const ItemRequestProvider = ({ children }) => {
   const [itemList, setItemList] = useState([]); // separate state for items
   const [itemRequest, setItemRequest] = useState([]);
   const [activeTab, setActiveTab] = useState("my_request");
+  const [filterItem, setFilterItem] = useState(null);
+  const [editId, setEditId] = useState(null);
   const [itemRequestData, setItemRequestData] = useState({
     type: "",
     item_type: "",
@@ -43,32 +45,54 @@ export const ItemRequestProvider = ({ children }) => {
   const getItemRequestData = async ({
     search = "",
     item_type = "",
+    status = "",
     page = 1,
     perPage = 10,
+    type = activeTab, // default to current tab
   } = {}) => {
     try {
       setItemRequest([]);
-      // setLoading(true); // ✅ start loading
-      const params = { search, item_type, page, per_page: perPage };
-      const res = await postData(ENDPOINTS.ITEM_REQUEST.LIST, {
-        type: activeTab,
-        params,
-      });
-      // console.log("res", res.data);
-      // setItemRequest(res.data.data);
+      setLoading(true);
+
+      const payload = {
+        type,
+        search,
+        item_type,
+        status,
+        page,
+        per_page: perPage,
+      };
+
+      // console.log("Request payload:", payload);
+
+      const res = await postData(ENDPOINTS.ITEM_REQUEST.LIST, payload);
+
+      // console.log("Response:", res);
+
       const apiData = res.data;
-      setItemRequest(apiData.data);
+      setItemRequest(apiData.data || []);
       setPagination({
-        currentPage: apiData.current_page,
-        perPage: apiData.per_page,
-        total: apiData.total,
+        currentPage: apiData.current_page || 1,
+        perPage: apiData.per_page || perPage,
+        total: apiData.total || 0,
       });
     } catch (error) {
       console.log("item request error:", error);
+    } finally {
+      setLoading(false);
     }
-    // finally {
-    //   setLoading(false); // ✅ stop loading
-    // }
+  };
+
+  // Fetch item request Filter
+  const fetchItemFilter = async () => {
+    try {
+      const res = await postData(ENDPOINTS.ITEM_REQUEST.FILTER);
+      // console.log("res", res);
+      setFilterItem(res.data);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch Item Request Filter");
+    }
   };
 
   // Get Item Request Details for update prefill values
@@ -93,7 +117,7 @@ export const ItemRequestProvider = ({ children }) => {
         item_type: itemType,
       });
 
-      console.log("Item list response:", res.data);
+      // console.log("Item list response:", res.data);
 
       if (res.message === "Data fetched successfully") {
         setItemList(res.data); // ✅ store only data list
@@ -130,16 +154,16 @@ export const ItemRequestProvider = ({ children }) => {
   };
 
   // Prefill Data while edit [workflowid , item request id]
-  const fetchItemRequestById = async (id, workflowId) => {
+  // In ItemRequestProvider
+  const fetchItemRequestById = async (workflowId) => {
     try {
-      const res = await postData(`${ENDPOINTS.ITEM_REQUEST.DETAILS}?id=${id}`, {
-        workflowId: workflowId,
+      const res = await postData(ENDPOINTS.ITEM_REQUEST.DETAILS, {
+        workflowId,
       });
-      // console.log("res", res);
+
       if (res.data) {
-        const data = res?.data.item_request; // Adjust depending on response shape
-        // console.log("data", data);
-        // Map your response fields to itemRequestData structure
+        const data = res.data; // adjust if backend wraps response
+
         setItemRequestData((prev) => ({
           ...prev,
           item_id: data.item_id,
@@ -155,12 +179,16 @@ export const ItemRequestProvider = ({ children }) => {
           uom: data.uom,
           remarks: data.remarks,
           receiving_person: data.receiving_person,
-          // any other needed fields...
         }));
       }
     } catch (error) {
       console.error("fetchItemRequestById error", error);
     }
+  };
+
+  const startEditing = (itemid) => {
+    setEditId(itemid);
+    fetchItemRequestById(itemid);
   };
 
   // Create or Update Item Request
@@ -238,9 +266,9 @@ export const ItemRequestProvider = ({ children }) => {
         id,
       });
 
-      if (res.data.success) {
-        toast.success("Request Handed Over Successfully");
-        // getItemRequestData(); // refresh list
+      if (res.status) {
+        toast.success(res.message);
+        getItemRequestData(); // refresh list
       }
     } catch (error) {
       console.error("handOver Request error:", error);
@@ -257,13 +285,27 @@ export const ItemRequestProvider = ({ children }) => {
         reject_reason,
       });
 
-      if (res.data.success) {
-        toast.success("Request Rejected Successfully");
-        // getItemRequestData(); // refresh list
+      if (res.status) {
+        toast.success(res.message);
+        getItemRequestData(); // refresh list
       }
     } catch (error) {
       console.error("Reject Request error:", error);
       toast.error("Failed to reject request");
+    }
+  };
+
+  // Service Received
+  const serviceReceived = async (id) => {
+    try {
+      const res = await postData(ENDPOINTS.ITEM_REQUEST.SERVICERECEIVE, { id });
+      if (res.status) {
+        toast.success(res.message);
+        getItemRequestData(); // refresh list
+      }
+    } catch (error) {
+      console.error("Service Received Request error:", error);
+      toast.error("Failed to Service Received");
     }
   };
 
@@ -276,6 +318,8 @@ export const ItemRequestProvider = ({ children }) => {
         itemList,
         activeTab,
         loading,
+        filterItem,
+        setFilterItem,
         setLoading,
         setActiveTab,
         setItemList,
@@ -289,8 +333,11 @@ export const ItemRequestProvider = ({ children }) => {
         approveRequest,
         handOverRequest,
         rejectRequest,
+        serviceReceived,
         getItemNameAndId,
         resetData,
+        fetchItemFilter,
+        startEditing,
       }}
     >
       {children}

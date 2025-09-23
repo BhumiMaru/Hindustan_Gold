@@ -10,6 +10,7 @@ import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import SubCategory_Master_Form from "./SubCategory_Master_Form";
 import SubCategory_Master_Table from "./SubCategory_Master_Table";
 import View_Sub_Category_Details from "./View_Sub_Category_Details";
+import View_Sub_Cat_Owners_Name from "./View_Sub_Cat_Owners_Name";
 
 export default function SubCategory_Master_List() {
   const { modal, handleOpen } = useUIContext();
@@ -190,6 +191,12 @@ export default function SubCategory_Master_List() {
         {modal.viewSubCategory && (
           <>
             <View_Sub_Category_Details />
+          </>
+        )}
+
+        {modal.viewSubCatOwnersName && (
+          <>
+            <View_Sub_Cat_Owners_Name />
           </>
         )}
       </>

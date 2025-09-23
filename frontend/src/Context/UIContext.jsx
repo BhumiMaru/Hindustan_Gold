@@ -212,6 +212,7 @@ export const UIProvider = ({ children }) => {
     addNewGroup: false,
     addNewCategory: false,
     addNewSubCategory: false,
+    viewSubCatOwnersName: false,
     viewSubCategory: false,
     // REQUEST MANAGEMENT
     viewItemRequest: false,
