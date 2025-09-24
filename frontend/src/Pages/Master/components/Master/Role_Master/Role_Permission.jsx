@@ -601,7 +601,7 @@ export default function Role_Permission() {
                       </tr>
                       <tr>
                         <td className="text-nowrap text-heading">
-                          Vendor Quotation
+                          Get Quotation
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center">
@@ -615,14 +615,14 @@ export default function Role_Permission() {
                                     String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
-                                    p.type === "Vendor Quotation" &&
+                                    p.type === "Get Quotation" &&
                                     p.permission === "view"
                                 )
                               }
                               onChange={(e) =>
                                 handlePermissionChange(
                                   "PO & Material Management Module",
-                                  "Vendor Quotation",
+                                  "Get Quotation",
                                   "view",
                                   e
                                 )
@@ -642,14 +642,14 @@ export default function Role_Permission() {
                                     String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
-                                    p.type === "Vendor Quotation" &&
+                                    p.type === "Get Quotation" &&
                                     p.permission === "add"
                                 )
                               }
                               onChange={(e) =>
                                 handlePermissionChange(
                                   "PO & Material Management Module",
-                                  "Vendor Quotation",
+                                  "Get Quotation",
                                   "add",
                                   e
                                 )
@@ -669,14 +669,14 @@ export default function Role_Permission() {
                                     String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
-                                    p.type === "Vendor Quotation" &&
+                                    p.type === "Get Quotation" &&
                                     p.permission === "edit"
                                 )
                               }
                               onChange={(e) =>
                                 handlePermissionChange(
                                   "PO & Material Management Module",
-                                  "Vendor Quotation",
+                                  "Get Quotation",
                                   "edit",
                                   e
                                 )
@@ -696,14 +696,14 @@ export default function Role_Permission() {
                                     String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
-                                    p.type === "Vendor Quotation" &&
+                                    p.type === "Get Quotation" &&
                                     p.permission === "delete"
                                 )
                               }
                               onChange={(e) =>
                                 handlePermissionChange(
                                   "PO & Material Management Module",
-                                  "Vendor Quotation",
+                                  "Get Quotation",
                                   "delete",
                                   e
                                 )

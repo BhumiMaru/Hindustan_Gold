@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import { usePIRequest } from "../../../../../Context/PIAndPoManagement/PIRequestList";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function PI_Request_Table() {
-  const { piRequest } = usePIRequest();
+  const { type, id } = useParams();
+  const { piRequest, StartEditing, DeletePiRequest, pagination } =
+    usePIRequest();
   const [expandedRows, setExpandedRows] = useState({});
+  const navigate = useNavigate();
 
   const toggleRow = (id) => {
     setExpandedRows((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  console.log("piRequest", piRequest);
   return (
     <>
       {/* ----------------START PI REQUEST TABLE------------------ */}
@@ -26,7 +29,7 @@ export default function PI_Request_Table() {
             <th>Get Quote</th>
             <th>PO</th>
             <th>Status</th>
-            <th style={{ width: 180 }}>Action</th>
+            <th style={{ width: "180px" }}>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -43,7 +46,11 @@ export default function PI_Request_Table() {
                     } icon-22px`}
                   />
                 </td>
-                <td>{index + 1}</td>
+                <td>
+                  {" "}
+                  {(pagination.currentPage - 1) * pagination.perPage +
+                    (index + 1)}
+                </td>
                 <td>{pi.pi_date}</td>
                 <td>{pi.pi_type}</td>
                 <td>Ronak Patel</td>
@@ -63,6 +70,12 @@ export default function PI_Request_Table() {
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                       data-bs-toggle="modal"
                       data-bs-target="#smallModal"
+                      onClick={() => {
+                        navigate(
+                          `/po-material/pi-request-create/${pi.pi_type}/${pi.id}`
+                        );
+                        StartEditing(pi.id);
+                      }}
                     >
                       <i className="icon-base ti tabler-edit icon-22px" />
                     </button>
@@ -71,6 +84,7 @@ export default function PI_Request_Table() {
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                       data-bs-toggle="modal"
                       data-bs-target="#deleteModal"
+                      onClick={() => DeletePiRequest(pi.id)}
                     >
                       <i className="icon-base ti tabler-trash text-danger icon-22px" />
                     </button>
@@ -79,7 +93,7 @@ export default function PI_Request_Table() {
               </tr>
 
               {expandedRows[pi.id] && pi?.items.length > 0 && (
-                <tr>
+                <tr key={pi.id}>
                   <style
                     dangerouslySetInnerHTML={{
                       __html:

@@ -17,7 +17,7 @@ export default function Item_Master_List() {
   const [subCategoryId, setSubCategoryId] = useState(null);
   const [status, setStatus] = useState(null);
 
-  const { fetchItemMaster } = useItemMaster();
+  const { fetchItemMaster, setPagination, pagination } = useItemMaster();
   const { filterCategory, fetchCategoryFilter } = useCategoryMaster();
   const { filterSubCategory, fetchSubCategoryFilter } = useSubCategory();
 
@@ -30,8 +30,26 @@ export default function Item_Master_List() {
       c_id: categoryId,
       sub_c_id: subCategoryId,
       status,
+      page: pagination.currentPage,
+      perPage: pagination.perPage,
     }); // fetch only when query changes
-  }, [search, selectedType, categoryId, subCategoryId, status]);
+  }, [
+    search,
+    selectedType,
+    categoryId,
+    subCategoryId,
+    status,
+    pagination.currentPage,
+    pagination.perPage,
+  ]);
+
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
+  };
 
   return (
     <>
@@ -41,18 +59,17 @@ export default function Item_Master_List() {
           {/* ---------- Filters ---------- */}
           <div className="row px-3 pt-2">
             <div className="col-lg-3">
-              <select
-                id="select10Basic"
-                className="select2 form-select"
+              <CustomSelect
+                id="selectType"
+                options={[
+                  { value: "material", label: "Material" },
+                  { value: "service", label: "Services" },
+                  { value: "asset", label: "Asset" },
+                ]}
                 value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-              >
-                {/* {console.log("selected", selectedType)} */}
-                <option value="">Select&nbsp;Type</option>
-                <option value="material">Material</option>
-                <option value="service">Services</option>
-                <option value="asset">Asset</option>
-              </select>
+                onChange={setSelectedType}
+                placeholder="Select Type"
+              />
 
               {/* <CustomSelect
                 id="selectType"
@@ -141,7 +158,13 @@ export default function Item_Master_List() {
           {/* ---------- Table ---------- */}
           <div className="card-datatable table-responsive pt-0">
             <Item_Master_Table search={search} />
-            <Pagination />
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalItems={pagination.total}
+              itemsPerPage={pagination.perPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
           </div>
         </div>
       </div>

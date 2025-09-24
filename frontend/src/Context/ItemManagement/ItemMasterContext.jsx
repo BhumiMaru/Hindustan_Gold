@@ -39,8 +39,15 @@ export const ItemMasterProvider = ({ children }) => {
     service_location3: null,
     status: null,
   });
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    total: 0,
+  });
+
   const [itemSubCategoryId, setItemSubCategoryId] = useState(null);
 
+  // Get All Item Master Data
   // Get All Item Master Data
   const fetchItemMaster = async ({
     search = "",
@@ -48,27 +55,39 @@ export const ItemMasterProvider = ({ children }) => {
     c_id = null,
     sub_c_id = null,
     status = null,
+    page = 1,
+    perPage = 10,
   } = {}) => {
     try {
       const res = await getData(ENDPOINTS.ITEM_MASTER.LIST, {
+        search,
         type,
         c_id,
         sub_c_id,
         status,
+        page,
+        per_page: perPage,
       });
 
       if (res.data && res.data.status === false) {
-        // Backend says no data
         setItemMaster([]);
-        console.warn(res.data.message); // "No items found."
-        // Optional: show toast.info instead of error
-        // toast.info(res.data.message);
+        setPagination({
+          currentPage: 1,
+          perPage,
+          total: 0,
+        });
       } else {
-        setItemMaster(res.data.data || []);
+        const apiData = res.data;
+        setItemMaster(apiData.data || []);
+        setPagination({
+          currentPage: apiData.current_page,
+          perPage: apiData.per_page,
+          total: apiData.total,
+        });
       }
     } catch (error) {
       console.error("item master fetch error:", error);
-      // toast.error("Failed to fetch item master");
+      toast.error("Failed to fetch item master");
     }
   };
 
@@ -279,6 +298,8 @@ export const ItemMasterProvider = ({ children }) => {
         itemSubCategoryId,
         setItemSubCategoryId,
         fetchitemById,
+        pagination,
+        setPagination,
 
         getCategoryGroupAndItemCodeBySubCategoryId,
         fetchItemMaster,

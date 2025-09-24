@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import PI_Request_Table from "./PI_Request_Table";
@@ -6,13 +6,31 @@ import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import { usePIRequest } from "../../../../../Context/PIAndPoManagement/PIRequestList";
 
 export default function PI_Request_List() {
-  const { getPIRequest, activeTab } = usePIRequest();
+  const [search, setSearch] = useState("");
+  const {
+    getPIRequest,
+    activeTab,
+    pagination,
+    setPagination,
+    setActiveTab,
+    piRequest,
+  } = usePIRequest();
 
   useEffect(() => {
     getPIRequest({
       type: activeTab,
+      page: pagination.currentPage,
+      perPage: pagination.perPage,
     });
-  }, [activeTab]);
+  }, [activeTab, pagination.currentPage, pagination.perPage]);
+
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
+  };
 
   return (
     <>
@@ -29,12 +47,15 @@ export default function PI_Request_List() {
                 <li className="nav-item mb-1 mb-sm-0" role="presentation">
                   <button
                     type="button"
-                    className="nav-link active waves-effect waves-light"
+                    className={`nav-link waves-effect waves-light ${
+                      activeTab === "my_request" ? "active" : ""
+                    }`}
                     role="tab"
                     data-bs-toggle="tab"
                     data-bs-target="#navs-pills-justified-home"
                     aria-controls="navs-pills-justified-home"
                     aria-selected="true"
+                    onClick={() => setActiveTab("my_request")}
                   >
                     <span className="d-none d-sm-inline-flex align-items-center">
                       <i className="icon-base ti tabler-home icon-sm me-1_5" />
@@ -46,21 +67,31 @@ export default function PI_Request_List() {
                 <li className="nav-item mb-1 mb-sm-0" role="presentation">
                   <button
                     type="button"
-                    className="nav-link waves-effect waves-light"
+                    className={`nav-link waves-effect waves-light ${
+                      activeTab === "approval_request" ? "active" : ""
+                    }`}
                     role="tab"
                     data-bs-toggle="tab"
                     data-bs-target="#navs-pills-justified-profile"
                     aria-controls="navs-pills-justified-profile"
                     aria-selected="false"
                     tabIndex={-1}
+                    onClick={() => setActiveTab("approval_request")}
                   >
                     <span className="d-none d-sm-inline-flex align-items-center">
                       <i className="icon-base ti tabler-user icon-sm me-1_5" />
                       Approvel Request
                     </span>
-                    <span className="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1_5">
-                      3
-                    </span>
+                    {activeTab === "approval_request" && (
+                      // (loading ? (
+                      //   <span className="h-px-20 w-px-20 d-flex align-items-center justify-content-center">
+                      //     <Loader />
+                      //   </span>
+                      // ) : (
+                      <span className="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1_5">
+                        {piRequest.length}
+                      </span>
+                    )}
                     <i className="icon-base ti tabler-user icon-sm d-sm-none" />
                   </button>
                 </li>
@@ -70,7 +101,12 @@ export default function PI_Request_List() {
           <div className="d-flex justify-content-between px-3 pb-2">
             <div className="d-flex align-items-center ">
               {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
-              <SearchBar />
+              <SearchBar
+                placeholder="Search Request..."
+                value={search}
+                onChange={setSearch}
+                onSubmit={(val) => setSearch(val)}
+              />
             </div>
             <div className="d-flex gap-2">
               <Link
@@ -200,7 +236,13 @@ export default function PI_Request_List() {
           </div>
           <div className="card-datatable">
             <PI_Request_Table />
-            <Pagination />
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalItems={pagination.total}
+              itemsPerPage={pagination.perPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
           </div>
         </div>
       </div>

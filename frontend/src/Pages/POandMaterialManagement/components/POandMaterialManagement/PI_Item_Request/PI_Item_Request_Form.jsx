@@ -1,61 +1,775 @@
+// import React, { useEffect, useState } from "react";
+// import { useParams } from "react-router-dom";
+// import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
+// import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
+// import { usePIRequest } from "../../../../../Context/PIAndPoManagement/PIRequestList";
+// import { toast } from "react-toastify";
+
+// export default function PI_Item_Request_Form() {
+//   const { type, id } = useParams();
+//   const { CreatePIRequest, items, setItems, findById, editPiRequest } =
+//     usePIRequest();
+
+//   // State to hold multiple items
+//   // const [items, setItems] = useState([
+//   //   {
+//   //     id: 1,
+//   //     requestedItem: "",
+//   //     category: "Category 1",
+//   //     subcategory: "Subcategory 1",
+//   //     qty: "",
+//   //     uom: "KG",
+//   //     serviceLocation: "Location 1",
+//   //     zone: "Zone 1",
+//   //     purpose: "",
+//   //     priority: "",
+//   //     requestDate: "",
+//   //     remarks: "",
+//   //     file: null,
+//   //   },
+//   // ]);
+//   const { itemMaster, fetchItemMaster } = useItemMaster();
+
+//   useEffect(() => {
+//     fetchItemMaster();
+//   }, []);
+
+//   useEffect(() => {
+//     console.log("id", id);
+//     if (id) {
+//       findById(id);
+//     }
+//   }, [id]);
+
+//   // Add new item
+//   const handleAddItem = () => {
+//     setItems([
+//       ...items,
+//       {
+//         id: items.length + 1,
+//         requestedItem: "",
+//         category: "Category 1",
+//         subcategory: "Subcategory 1",
+//         qty: "",
+//         uom: "KG",
+//         serviceLocation: "Location 1",
+//         zone: "Zone 1",
+//         purpose: "",
+//         priority: "",
+//         requestDate: "",
+//         remarks: "",
+//         file: null,
+//         tentative_consumption_day: "",
+//       },
+//     ]);
+//   };
+
+//   // Delete One Item Form
+//   const DeleteItem = (id) => {
+//     if (items.length === 1) {
+//       toast.info("At least one item is required.");
+//       return;
+//     }
+//     setItems(items.filter((item) => item.id !== id));
+//   };
+
+//   // Handle Save (API Call)
+//   // const handleSave = async () => {
+//   //   try {
+//   //     const formData = new FormData();
+
+//   //     // top-level fields
+//   //     if (id) formData.append("id", id);
+//   //     // formData.append("pi_date", "2025-09-21"); // or your dynamic date
+//   //     formData.append("pi_type", type || "Imported Purchase");
+//   //     // formData.append("order_by", 1); // dynamic: logged-in user id
+//   //     // formData.append("departmant_id", 24);
+//   //     formData.append("total_item", items.length);
+//   //     // formData.append("po_total", 18000); // calculate if needed
+//   //     // formData.append("status", "submitted");
+//   //     // formData.append("get_quoate", "hello");
+
+//   //     // items array → flatten into FormData
+//   //     items.forEach((item, index) => {
+//   //       // Only send id if item exists (edit case)
+//   //       if (item.id && item.existing) {
+//   //         formData.append(`items[${index}][id]`, item.id);
+//   //       }
+
+//   //       formData.append(`items[${index}][item_id]`, item.requestedItem || "");
+//   //       console.log(`items[${index}][item_id]`, item.requestedItem);
+//   //       formData.append(`items[${index}][item_name]`, item.item_name || "");
+//   //       formData.append(`items[${index}][qty]`, item.qty || 0);
+//   //       formData.append(`items[${index}][uom]`, item.uom || "");
+//   //       formData.append(`items[${index}][priority]`, item.priority || "");
+//   //       formData.append(`items[${index}][purpose]`, item.purpose || "");
+//   //       formData.append(
+//   //         `items[${index}][tentative_consumption_day]`,
+//   //         item.tentative_consumption_day || 1
+//   //       );
+//   //       formData.append(`items[${index}][remark]`, item.remarks || "");
+//   //       formData.append(`items[${index}][status]`, item.status || "");
+
+//   //       if (item.file) {
+//   //         formData.append(`items[${index}][file]`, item.file);
+//   //       }
+//   //     });
+
+//   //     // send to API
+//   //     if (id) {
+//   //       console.log("formData", formData);
+//   //       await editPiRequest(id, formData);
+//   //     } else {
+//   //       await CreatePIRequest(formData);
+//   //     }
+//   //   } catch (err) {
+//   //     toast.error("Error saving PI Request");
+//   //     console.error("handleSave error:", err);
+//   //   }
+//   // };
+
+//   // const handleSave = async () => {
+//   //   try {
+//   //     const formData = new FormData();
+
+//   //     // Top-level fields
+//   //     if (id) formData.append("id", id); // edit
+//   //     console.log("ii", id);
+//   //     console.log("pi_type", type);
+//   //     formData.append("pi_type", type); // mandatory
+//   //     formData.append("total_item", items.length);
+
+//   //     // Flatten items array properly
+//   //     // items.forEach((item, index) => {
+//   //     //   formData.append(`items[${index}][item_id]`, item.requestedItem || "");
+//   //     //   formData.append(`items[${index}][item_name]`, item.item_name || "");
+//   //     //   formData.append(`items[${index}][qty]`, item.qty || 0);
+//   //     //   formData.append(`items[${index}][uom]`, item.uom || "");
+//   //     //   formData.append(`items[${index}][priority]`, item.priority || "");
+//   //     //   formData.append(`items[${index}][purpose]`, item.purpose || "");
+//   //     //   formData.append(
+//   //     //     `items[${index}][tentative_consumption_day]`,
+//   //     //     item.tentative_consumption_day || 1
+//   //     //   );
+//   //     //   formData.append(`items[${index}][remark]`, item.remarks || "");
+//   //     //   formData.append(`items[${index}][status]`, item.status || "");
+
+//   //     //   // Include file if exists
+//   //     //   if (item.file) {
+//   //     //     formData.append(`items[${index}][file]`, item.file);
+//   //     //   }
+
+//   //     //   // Include item ID if existing (edit case)
+//   //     //   if (item.existing && item.dbId) {
+//   //     //     formData.append(`items[${index}][id]`, item.dbId); // send real DB id
+//   //     //   }
+//   //     // });
+
+//   //     items.forEach((item, index) => {
+//   //       console.log("iiitems", item);
+//   //       const uom = item.uom; // fallback default
+//   //       formData.append(`items[${index}][uom]`, uom);
+
+//   //       formData.append(`items[${index}][item_id]`, item.requestedItem || "");
+//   //       formData.append(`items[${index}][item_name]`, item.item_name || "");
+//   //       formData.append(`items[${index}][qty]`, item.qty || 0);
+//   //       formData.append(`items[${index}][priority]`, item.priority || "");
+//   //       formData.append(`items[${index}][purpose]`, item.purpose || "");
+//   //       formData.append(
+//   //         `items[${index}][tentative_consumption_day]`,
+//   //         item.tentative_consumption_day || 1
+//   //       );
+//   //       formData.append(`items[${index}][remark]`, item.remarks || "");
+//   //       formData.append(`items[${index}][status]`, item.status || "");
+//   //       if (item.existing && item.dbId) {
+//   //         formData.append(`items[${index}][id]`, item.dbId);
+//   //       }
+//   //       if (item.file) {
+//   //         formData.append(`items[${index}][file]`, item.file);
+//   //       }
+//   //     });
+
+//   //     // Send to API
+//   //     if (id) {
+//   //       await editPiRequest(id, formData);
+//   //       console.log("formData edit", formData);
+//   //     } else {
+//   //       await CreatePIRequest(formData);
+//   //     }
+//   //   } catch (err) {
+//   //     toast.error("Error saving PI Request");
+//   //     console.error("handleSave error:", err);
+//   //   }
+//   // };
+//   const handleSave = async () => {
+//     try {
+//       const formData = new FormData();
+
+//       if (id) formData.append("id", id);
+//       formData.append("pi_type", type);
+//       formData.append("total_item", items.length);
+
+//       items.forEach((item, index) => {
+//         formData.append(`items[${index}][item_id]`, item.requestedItem || "");
+//         formData.append(`items[${index}][item_name]`, item.item_name || "");
+//         formData.append(`items[${index}][qty]`, item.qty || 0);
+//         formData.append(`items[${index}][uom]`, item.uom || "KG");
+//         formData.append(`items[${index}][priority]`, item.priority || "");
+//         formData.append(`items[${index}][purpose]`, item.purpose || "");
+//         formData.append(
+//           `items[${index}][tentative_consumption_day]`,
+//           item.tentative_consumption_day || 1
+//         );
+//         formData.append(`items[${index}][remark]`, item.remarks || "");
+//         formData.append(`items[${index}][status]`, item.status || "pending");
+
+//         if (item.existing && item.dbId) {
+//           formData.append(`items[${index}][id]`, item.dbId);
+//         }
+//         if (item.file) {
+//           formData.append(`items[${index}][file]`, item.file);
+//         }
+//       });
+
+//       if (id) {
+//         await editPiRequest(id, formData);
+//       } else {
+//         await CreatePIRequest(formData);
+//       }
+//     } catch (err) {
+//       toast.error("Error saving PI Request");
+//       console.error("handleSave error:", err);
+//     }
+//   };
+
+//   // Handle individual field changes
+//   const handleItemChange = (itemId, field, value) => {
+//     setItems((prev) =>
+//       prev.map((item) =>
+//         item.id === itemId ? { ...item, [field]: value } : item
+//       )
+//     );
+//   };
+
+//   // Handle select changes for specific items
+//   const handleSelectChange = (itemId, field, selectedValue) => {
+//     setItems((prev) =>
+//       prev.map((item) =>
+//         item.id === itemId ? { ...item, [field]: selectedValue } : item
+//       )
+//     );
+//   };
+
+//   // Handle item selection from item master
+//   const handleItemSelect = (itemId, selectedId) => {
+//     const selectedItem = itemMaster.find(
+//       (itm) => itm.id === Number(selectedId)
+//     );
+
+//     if (selectedItem) {
+//       const storage = selectedItem?.storage_locations?.[0];
+//       const zone = selectedItem?.zones?.[0]?.zone;
+
+//       setItems((prev) =>
+//         prev.map((item) =>
+//           item.id === itemId
+//             ? {
+//                 ...item,
+//                 requestedItem: selectedId,
+//                 item_name: selectedItem?.item_name || "",
+//                 category: selectedItem?.category?.category_name || "",
+//                 subcategory: selectedItem?.subcategory?.sub_category_name || "",
+//                 uom: selectedItem?.uom || "KG",
+//                 serviceLocation:
+//                   storage?.service_location3?.service_location2
+//                     ?.service_location1?.service_location_name || "",
+//                 zone: zone?.zone_name || "",
+//               }
+//             : item
+//         )
+//       );
+//     }
+//   };
+
+//   return (
+//     <>
+//       {/* --------------START PI ITEM REQUEST FORM-------------- */}
+//       <div className="container-xxl flex-grow-1 container-p-y">
+//         {/* DataTable with Buttons */}
+//         <div className="card mt-3 p-3">
+//           <div className="row">
+//             <div className="col-lg-12">
+//               {items?.map((item) => {
+//                 return (
+//                   <div className="row">
+//                     <div className="col-lg-12 d-flex justify-content-between">
+//                       <h4>Item {item.id} #</h4>
+//                       <a
+//                         data-bs-toggle="tooltip"
+//                         className="btn btn-icon delete-record waves-effect waves-light"
+//                         data-bs-placement="top"
+//                         aria-label="Delete"
+//                         data-bs-original-title="Delete"
+//                         onClick={() => DeleteItem(item.id)}
+//                       >
+//                         <i className="icon-base ti tabler-trash text-danger icon-md" />
+//                       </a>
+//                     </div>
+//                     <div className="col-sm-3 mb-4">
+//                       {/* <label htmlFor="SelectItem" className="form-label">
+//                         Requested Item
+//                       </label> */}
+//                       <div className="position-relative">
+//                         {/* <CustomSelect
+//                           id="selectItem"
+//                           label="Requested Item"
+//                           options={itemMaster.map((item) => ({
+//                             value: item.id,
+//                             label: item.item_name || item.name || "Unnamed",
+//                           }))}
+//                           value={items?.item_id}
+//                           onChange={(selected) => {
+//                             const selectedId = Number(selected);
+//                             const selectedItem = itemMaster.find(
+//                               (itm) => itm.id === selectedId
+//                             );
+//                             console.log("selectedId", selectedId);
+
+//                             const storage =
+//                               selectedItem?.storage_locations?.[0];
+//                             const zone = selectedItem?.zones?.[0]?.zone;
+
+//                             setItems((prev) =>
+//                               prev.map((it) =>
+//                                 it.id === item.id
+//                                   ? {
+//                                       ...it,
+//                                       requestedItem: selectedId,
+//                                       item_name: selectedItem?.item_name || "",
+//                                       category:
+//                                         selectedItem?.category?.category_name ||
+//                                         "",
+//                                       subcategory:
+//                                         selectedItem?.subcategory
+//                                           ?.sub_category_name || "",
+//                                       uom: selectedItem?.uom || "",
+//                                       serviceLocation:
+//                                         storage?.service_location3
+//                                           ?.service_location2?.service_location1
+//                                           ?.service_location_name || "",
+//                                       zone: zone?.zone_name || "",
+//                                     }
+//                                   : it
+//                               )
+//                             );
+//                           }}
+//                           placeholder="Select Item"
+//                           required
+//                         /> */}
+//                         <CustomSelect
+//                           id={`selectItem-${item.id}`}
+//                           label="Requested Item"
+//                           options={itemMaster.map((itm) => ({
+//                             value: itm.id,
+//                             label: itm.item_name || itm.name || "Unnamed",
+//                           }))}
+//                           value={item.requestedItem} // <-- use the specific item value, not items?.item_id
+//                           // onChange={(selected) => {
+//                           //   const selectedId = Number(selected);
+//                           //   const selectedItem = itemMaster.find(
+//                           //     (itm) => itm.id === selectedId
+//                           //   );
+
+//                           //   const storage =
+//                           //     selectedItem?.storage_locations?.[0];
+//                           //   const zone = selectedItem?.zones?.[0]?.zone;
+
+//                           //   setItems((prev) =>
+//                           //     prev.map((it) =>
+//                           //       it.id === item.id
+//                           //         ? {
+//                           //             ...it,
+//                           //             requestedItem: selectedId,
+//                           //             item_name: selectedItem?.item_name || "",
+//                           //             category:
+//                           //               selectedItem?.category?.category_name ||
+//                           //               "",
+//                           //             subcategory:
+//                           //               selectedItem?.subcategory
+//                           //                 ?.sub_category_name || "",
+//                           //             uom: selectedItem?.uom || "",
+//                           //             serviceLocation:
+//                           //               storage?.service_location3
+//                           //                 ?.service_location2?.service_location1
+//                           //                 ?.service_location_name || "",
+//                           //             zone: zone?.zone_name || "",
+//                           //           }
+//                           //         : it
+//                           //     )
+//                           //   );
+//                           // }}
+//                           onChange={(selected) =>
+//                             handleItemSelect(item.id, selected)
+//                           }
+//                           placeholder="Select Item"
+//                           required
+//                         />
+//                       </div>
+//                     </div>
+//                     <div className="col-sm-3 mb-4">
+//                       <label
+//                         htmlFor={`Category-${item.id}`}
+//                         className="form-label"
+//                       >
+//                         Category
+//                       </label>
+//                       <input
+//                         type="text"
+//                         className="form-control"
+//                         id={`Category-${item.id}`}
+//                         placeholder="Category"
+//                         defaultValue="Category 1"
+//                         disabled
+//                         readOnly
+//                         value={item.category}
+//                       />
+//                     </div>
+//                     <div className="col-sm-3 mb-4">
+//                       <label
+//                         htmlFor={`Subcategory-${item.id}`}
+//                         className="form-label"
+//                       >
+//                         Subcategory
+//                       </label>
+//                       <input
+//                         type="text"
+//                         className="form-control"
+//                         id={`Subcategory-${item.id}`}
+//                         placeholder="Subcategory"
+//                         defaultValue="Subcategory 1"
+//                         disabled
+//                         readOnly=""
+//                         value={item.subcategory}
+//                       />
+//                     </div>
+//                     <div className="col-sm-3 mb-4">
+//                       <label
+//                         htmlFor={`Quantity-${item.id}`}
+//                         className="form-label"
+//                       >
+//                         Quantity
+//                       </label>
+//                       <input
+//                         type="number"
+//                         className="form-control"
+//                         id={`Quantity-${item.id}`}
+//                         placeholder=""
+//                         min={0}
+//                         value={item.qty}
+//                         // onChange={(e) =>
+//                         //   setItems((prev) =>
+//                         //     prev.map((it) =>
+//                         //       it.id === item.id
+//                         //         ? { ...it, qty: e.target.value }
+//                         //         : it
+//                         //     )
+//                         //   )
+//                         // }
+//                         onChange={(e) =>
+//                           handleItemChange(item.id, "qty", e.target.value)
+//                         }
+//                       />
+//                     </div>
+//                     <div className="col-sm-3 mb-4">
+//                       <label
+//                         htmlFor={`UnitofMeasure-${item.id}`}
+//                         className="form-label"
+//                       >
+//                         Unit of Measure
+//                       </label>
+//                       <input
+//                         type="text"
+//                         className="form-control"
+//                         id={`UnitofMeasure-${item.id}`}
+//                         placeholder=""
+//                         // defaultValue="KG"
+//                         disabled
+//                         readOnly=""
+//                         value={item.category}
+//                       />
+//                     </div>
+//                     <div className="col-sm-3 mb-4">
+//                       <label
+//                         htmlFor={`ServiceLocation-${item.id}`}
+//                         className="form-label"
+//                       >
+//                         Service Location{" "}
+//                       </label>
+//                       <input
+//                         type="text"
+//                         className="form-control"
+//                         id={`ServiceLocation-${item.id}`}
+//                         placeholder=""
+//                         defaultValue="Location 1"
+//                         disabled
+//                         readOnly=""
+//                         value={item.serviceLocation}
+//                       />
+//                     </div>
+//                     <div className="col-sm-3 mb-4">
+//                       <label htmlFor={`Zone-${item.id}`} className="form-label">
+//                         Zone{" "}
+//                       </label>
+//                       <input
+//                         type="text"
+//                         className="form-control"
+//                         id={`Zone-${item.id}`}
+//                         placeholder=""
+//                         defaultValue="Zone 1"
+//                         disabled
+//                         readOnly=""
+//                         value={item.zone}
+//                       />
+//                     </div>
+//                     <div className="col-sm-3 mb-4">
+//                       {/* <label htmlFor="Purpose" className="form-label">
+//                         Purpose
+//                       </label> */}
+//                       <div className="position-relative">
+//                         <CustomSelect
+//                           id={`selectPurpose-${item.id}`}
+//                           label="Purpose"
+//                           options={[
+//                             {
+//                               value: "For maintenance work",
+//                               label: "For maintenance work",
+//                             },
+//                             {
+//                               value: "For Project Execution",
+//                               label: "For Project Execution",
+//                             },
+//                             {
+//                               value: "For Stock Replenishment",
+//                               label: "For Stock Replenishment",
+//                             },
+//                           ]}
+//                           value={items?.purpose || null}
+//                           // onChange={(selected) => {
+//                           //   setItems((prev) =>
+//                           //     prev.map((it) =>
+//                           //       it.id === item.id
+//                           //         ? { ...it, purpose: selected }
+//                           //         : it
+//                           //     )
+//                           //   );
+//                           // }}
+//                           onChange={(selected) =>
+//                             handleSelectChange(item.id, "purpose", selected)
+//                           }
+//                           placeholder="Select Purpose"
+//                           required
+//                         />
+//                       </div>
+//                     </div>
+//                     <div className="col-sm-3 mb-4">
+//                       {/* <label htmlFor="Priority" className="form-label">
+//                         Priority
+//                       </label> */}
+//                       <div className="position-relative">
+//                         <CustomSelect
+//                           id={`selectPriority-${item.id}`}
+//                           label="Priority"
+//                           options={[
+//                             {
+//                               value: "high",
+//                               label: "High",
+//                             },
+//                             {
+//                               value: "medium",
+//                               label: "Medium",
+//                             },
+//                             {
+//                               value: "low",
+//                               label: "Low",
+//                             },
+//                           ]}
+//                           value={items?.priority || null}
+//                           // onChange={(selected) => {
+//                           //   setItems((prev) =>
+//                           //     prev.map((it) =>
+//                           //       it.id === item.id
+//                           //         ? { ...it, priority: selected }
+//                           //         : it
+//                           //     )
+//                           //   );
+//                           // }}
+//                           onChange={(selected) =>
+//                             handleSelectChange(item.id, "priority", selected)
+//                           }
+//                           placeholder="Select priority"
+//                           required
+//                         />
+//                       </div>
+//                     </div>
+//                     <div className="col-sm-3 mb-4">
+//                       <label htmlFor="RequestDate" className="form-label">
+//                         Tentative Consumption Day{" "}
+//                       </label>
+//                       <input
+//                         type="number"
+//                         className="form-control"
+//                         id={`RequestDate-${item.id}`}
+//                         placeholder=""
+//                         value={item.tentative_consumption_day}
+//                         // onChange={(e) =>
+//                         //   setItems((prev) =>
+//                         //     prev.map((it) =>
+//                         //       it.id === item.id
+//                         //         ? {
+//                         //             ...it,
+//                         //             tentative_consumption_day: e.target.value,
+//                         //           }
+//                         //         : it
+//                         //     )
+//                         //   )
+//                         // }
+//                         onChange={(e) =>
+//                           handleItemChange(
+//                             item.id,
+//                             "tentative_consumption_day",
+//                             e.target.value
+//                           )
+//                         }
+//                       />
+//                     </div>
+//                     <div className="col-sm-6 mb-4">
+//                       <label
+//                         htmlFor={`Remarks-${item.id}`}
+//                         className="form-label"
+//                       >
+//                         Remarks
+//                       </label>
+//                       <input
+//                         type="text"
+//                         className="form-control"
+//                         id={`Remarks-${item.id}`}
+//                         placeholder=""
+//                         value={item.remarks}
+//                         // onChange={(e) =>
+//                         //   setItems((prev) =>
+//                         //     prev.map((it) =>
+//                         //       it.id === item.id
+//                         //         ? { ...it, remarks: e.target.value }
+//                         //         : it
+//                         //     )
+//                         //   )
+//                         // }
+//                         onChange={(e) =>
+//                           handleItemChange(item.id, "remarks", e.target.value)
+//                         }
+//                       />
+//                     </div>
+//                     <div className="col-sm-6 mb-4">
+//                       <label
+//                         htmlFor={`UploadFile-${item.id}`}
+//                         className="form-label"
+//                       >
+//                         Upload File (Optional){" "}
+//                       </label>
+//                       <input
+//                         type="file"
+//                         className="form-control"
+//                         id={`UploadFile-${item.id}`}
+//                         placeholder=""
+//                         // onChange={(e) =>
+//                         //   setItems((prev) =>
+//                         //     prev.map((it) =>
+//                         //       it.id === item.id
+//                         //         ? { ...it, file: e.target.files[0] }
+//                         //         : it
+//                         //     )
+//                         //   )
+//                         // }
+//                         onChange={(e) =>
+//                           handleItemChange(item.id, "file", e.target.files[0])
+//                         }
+//                       />
+//                     </div>
+//                     <hr />
+//                   </div>
+//                 );
+//               })}
+//             </div>
+//             <div className="col-lg-12 text-center d-flex justify-content-center gap-2">
+//               <button
+//                 className="btn btn-info waves-effect waves-light"
+//                 onClick={handleAddItem}
+//               >
+//                 Add
+//               </button>
+//               <button
+//                 className="btn btn-primary waves-effect waves-light"
+//                 onClick={handleSave}
+//               >
+//                 Save
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* --------------END PI ITEM REQUEST FORM-------------- */}
+//     </>
+//   );
+// }
+
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
 import { usePIRequest } from "../../../../../Context/PIAndPoManagement/PIRequestList";
 import { toast } from "react-toastify";
 
 export default function PI_Item_Request_Form() {
-  const { type } = useParams();
-  const { CreatePIRequest } = usePIRequest();
-
-  // State to hold multiple items
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      requestedItem: "",
-      category: "Category 1",
-      subcategory: "Subcategory 1",
-      qty: "",
-      uom: "KG",
-      serviceLocation: "Location 1",
-      zone: "Zone 1",
-      purpose: "",
-      priority: "",
-      requestDate: "",
-      remarks: "",
-      file: null,
-    },
-  ]);
+  const { type, id } = useParams();
+  const { CreatePIRequest, items, setItems, findById, editPiRequest } =
+    usePIRequest();
   const { itemMaster, fetchItemMaster } = useItemMaster();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchItemMaster();
   }, []);
 
-  // Add new item
+  useEffect(() => {
+    console.log("id", id);
+    if (id) {
+      findById(id);
+    }
+  }, [id]);
+
   const handleAddItem = () => {
     setItems([
       ...items,
       {
         id: items.length + 1,
         requestedItem: "",
-        category: "Category 1",
-        subcategory: "Subcategory 1",
+        category: "",
+        subcategory: "",
         qty: "",
         uom: "KG",
-        serviceLocation: "Location 1",
-        zone: "Zone 1",
+        serviceLocation: "",
+        zone: "",
         purpose: "",
         priority: "",
         requestDate: "",
         remarks: "",
         file: null,
+        tentative_consumption_day: "",
       },
     ]);
   };
 
-  // Delete One Item Form
   const DeleteItem = (id) => {
     if (items.length === 1) {
       toast.info("At least one item is required.");
@@ -64,335 +778,351 @@ export default function PI_Item_Request_Form() {
     setItems(items.filter((item) => item.id !== id));
   };
 
-  // Handle Save (API Call)
   const handleSave = async () => {
-    const payload = {
-      pi_type: type, // from route params
-      pi_date: new Date().toISOString().split("T")[0], // today’s date
-      // department_id: 3, // you may want this dynamic
-      // order_by: 1, // current user id maybe
-      items: items.map((item) => ({
-        item_id: item.requestedItem || null,
-        qty: item.qty,
-        uom: item.uom,
-        priority: item.priority,
-        purpose: item.purpose,
-        remark: item.remarks,
-      })),
-    };
+    try {
+      const formData = new FormData();
 
-    await CreatePIRequest(payload);
+      if (id) formData.append("id", id);
+      formData.append("pi_type", type);
+      formData.append("total_item", items.length);
+
+      items.forEach((item, index) => {
+        formData.append(`items[${index}][item_id]`, item.requestedItem || "");
+        formData.append(`items[${index}][item_name]`, item.item_name || "");
+        formData.append(`items[${index}][qty]`, item.qty || 0);
+        formData.append(`items[${index}][uom]`, item.uom || "KG");
+        formData.append(`items[${index}][priority]`, item.priority || "");
+        formData.append(`items[${index}][purpose]`, item.purpose || "");
+        formData.append(
+          `items[${index}][tentative_consumption_day]`,
+          item.tentative_consumption_day || 1
+        );
+        formData.append(`items[${index}][remark]`, item.remarks || "");
+        formData.append(`items[${index}][status]`, item.status || "pending");
+
+        if (item.existing && item.dbId) {
+          formData.append(`items[${index}][id]`, item.dbId);
+        }
+        if (item.file) {
+          formData.append(`items[${index}][file]`, item.file);
+        }
+      });
+
+      if (id) {
+        await editPiRequest(id, formData);
+        navigate("/po-material/pi-request-list");
+      } else {
+        await CreatePIRequest(formData);
+        navigate("/po-material/pi-request-list");
+      }
+    } catch (err) {
+      toast.error("Error saving PI Request");
+      console.error("handleSave error:", err);
+    }
+  };
+
+  // Handle individual field changes
+  const handleItemChange = (itemId, field, value) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === itemId ? { ...item, [field]: value } : item
+      )
+    );
+  };
+
+  // Handle select changes for specific items
+  const handleSelectChange = (itemId, field, selectedValue) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === itemId ? { ...item, [field]: selectedValue } : item
+      )
+    );
+  };
+
+  // Handle item selection from item master
+  const handleItemSelect = (itemId, selectedId) => {
+    const selectedItem = itemMaster.find(
+      (itm) => itm.id === Number(selectedId)
+    );
+
+    if (selectedItem) {
+      const storage = selectedItem?.storage_locations?.[0];
+      const zone = selectedItem?.zones?.[0]?.zone;
+
+      setItems((prev) =>
+        prev.map((item) =>
+          item.id === itemId
+            ? {
+                ...item,
+                requestedItem: selectedId,
+                item_name: selectedItem?.item_name || "",
+                category: selectedItem?.category?.category_name || "",
+                subcategory: selectedItem?.subcategory?.sub_category_name || "",
+                uom: selectedItem?.uom || "KG",
+                serviceLocation:
+                  storage?.service_location3?.service_location2
+                    ?.service_location1?.service_location_name || "",
+                zone: zone?.zone_name || "",
+              }
+            : item
+        )
+      );
+    }
   };
 
   return (
     <>
-      {/* --------------START PI ITEM REQUEST FORM-------------- */}
       <div className="container-xxl flex-grow-1 container-p-y">
-        {/* DataTable with Buttons */}
         <div className="card mt-3 p-3">
           <div className="row">
             <div className="col-lg-12">
-              {items?.map((item) => {
-                return (
-                  <div className="row">
-                    <div className="col-lg-12 d-flex justify-content-between">
-                      <h4>Item {item.id} #</h4>
-                      <a
-                        data-bs-toggle="tooltip"
-                        className="btn btn-icon delete-record waves-effect waves-light"
-                        data-bs-placement="top"
-                        aria-label="Delete"
-                        data-bs-original-title="Delete"
-                        onClick={() => DeleteItem(item.id)}
-                      >
-                        <i className="icon-base ti tabler-trash text-danger icon-md" />
-                      </a>
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      {/* <label htmlFor="SelectItem" className="form-label">
-                        Requested Item
-                      </label> */}
-                      <div className="position-relative">
-                        <CustomSelect
-                          id="selectItem"
-                          label="Requested Item"
-                          options={itemMaster.map((item) => ({
-                            value: item.id,
-                            label: item.item_name,
-                          }))}
-                          value={items?.item_id}
-                          onChange={(selected) => {
-                            const selectedId = Number(selected);
-                            const selectedItem = itemMaster.find(
-                              (itm) => itm.id === selectedId
-                            );
-
-                            const storage =
-                              selectedItem?.storage_locations?.[0];
-                            const zone = selectedItem?.zones?.[0]?.zone;
-
-                            setItems((prev) =>
-                              prev.map((it) =>
-                                it.id === item.id
-                                  ? {
-                                      ...it,
-                                      requestedItem: selectedId,
-                                      category:
-                                        selectedItem?.category?.category_name ||
-                                        "",
-                                      subcategory:
-                                        selectedItem?.subcategory
-                                          ?.sub_category_name || "",
-                                      uom: selectedItem?.uom || "",
-                                      serviceLocation:
-                                        storage?.service_location3
-                                          ?.service_location2?.service_location1
-                                          ?.service_location_name || "",
-                                      zone: zone?.zone_name || "",
-                                    }
-                                  : it
-                              )
-                            );
-                          }}
-                          placeholder="Select Item"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="Category" className="form-label">
-                        Category
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="Category"
-                        placeholder="Category"
-                        defaultValue="Category 1"
-                        disabled
-                        readOnly=""
-                        value={item.category}
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="Subcategory" className="form-label">
-                        Subcategory
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="Subcategory"
-                        placeholder="Subcategory"
-                        defaultValue="Subcategory 1"
-                        disabled
-                        readOnly=""
-                        value={item.subcategory}
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="Quantity" className="form-label">
-                        Quantity
-                      </label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        id="Quantity"
-                        placeholder=""
-                        min={0}
-                        value={item.qty}
-                        onChange={(e) =>
-                          setItems((prev) =>
-                            prev.map((it) =>
-                              it.id === item.id
-                                ? { ...it, qty: e.target.value }
-                                : it
-                            )
-                          )
-                        }
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="UnitofMeasure" className="form-label">
-                        Unit of Measure
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="UnitofMeasure"
-                        placeholder=""
-                        // defaultValue="KG"
-                        disabled
-                        readOnly=""
-                        value={item.category}
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="ServiceLocation" className="form-label">
-                        Service Location{" "}
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="ServiceLocation"
-                        placeholder=""
-                        defaultValue="Location 1"
-                        disabled
-                        readOnly=""
-                        value={item.serviceLocation}
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="Zone" className="form-label">
-                        Zone{" "}
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="Zone"
-                        placeholder=""
-                        defaultValue="Zone 1"
-                        disabled
-                        readOnly=""
-                        value={item.zone}
-                      />
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      {/* <label htmlFor="Purpose" className="form-label">
-                        Purpose
-                      </label> */}
-                      <div className="position-relative">
-                        <CustomSelect
-                          id="selectPurpose"
-                          label="Purpose"
-                          options={[
-                            {
-                              value: "For maintenance work",
-                              label: "For maintenance work",
-                            },
-                            {
-                              value: "For Project Execution",
-                              label: "For Project Execution",
-                            },
-                            {
-                              value: "For Stock Replenishment",
-                              label: "For Stock Replenishment",
-                            },
-                          ]}
-                          value={items?.purpose || null}
-                          onChange={(selected) => {
-                            setItems((prev) =>
-                              prev.map((it) =>
-                                it.id === item.id
-                                  ? { ...it, purpose: selected }
-                                  : it
-                              )
-                            );
-                          }}
-                          placeholder="Select Purpose"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      {/* <label htmlFor="Priority" className="form-label">
-                        Priority
-                      </label> */}
-                      <div className="position-relative">
-                        <CustomSelect
-                          id="selectPriority"
-                          label="Priority"
-                          options={[
-                            {
-                              value: "high",
-                              label: "High",
-                            },
-                            {
-                              value: "medium",
-                              label: "Medium",
-                            },
-                            {
-                              value: "low",
-                              label: "Low",
-                            },
-                          ]}
-                          value={items?.priority || null}
-                          onChange={(selected) => {
-                            setItems((prev) =>
-                              prev.map((it) =>
-                                it.id === item.id
-                                  ? { ...it, priority: selected }
-                                  : it
-                              )
-                            );
-                          }}
-                          placeholder="Select priority"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="col-sm-3 mb-4">
-                      <label htmlFor="RequestDate" className="form-label">
-                        Tentative Consumption Day{" "}
-                      </label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        id="RequestDate"
-                        placeholder=""
-                      />
-                    </div>
-                    <div className="col-sm-6 mb-4">
-                      <label htmlFor="Remarks" className="form-label">
-                        Remarks
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="Remarks"
-                        placeholder=""
-                        value={item.remarks}
-                        onChange={(e) =>
-                          setItems((prev) =>
-                            prev.map((it) =>
-                              it.id === item.id
-                                ? { ...it, remarks: e.target.value }
-                                : it
-                            )
-                          )
-                        }
-                      />
-                    </div>
-                    <div className="col-sm-6 mb-4">
-                      <label htmlFor="UploadFile" className="form-label">
-                        Upload File (Optional){" "}
-                      </label>
-                      <input
-                        type="file"
-                        className="form-control"
-                        id="UploadFile"
-                        placeholder=""
-                        onChange={(e) =>
-                          setItems((prev) =>
-                            prev.map((it) =>
-                              it.id === item.id
-                                ? { ...it, file: e.target.files[0] }
-                                : it
-                            )
-                          )
-                        }
-                      />
-                    </div>
-                    <hr />
+              {items?.map((item, index) => (
+                <div key={item.id} className="row mb-4">
+                  <div className="col-lg-12 d-flex justify-content-between align-items-center mb-3">
+                    <h4>Item {item.id} #</h4>
+                    <button
+                      type="button"
+                      className="btn btn-icon delete-record waves-effect waves-light"
+                      onClick={() => DeleteItem(item.id)}
+                    >
+                      <i className="icon-base ti tabler-trash text-danger icon-md" />
+                    </button>
                   </div>
-                );
-              })}
+
+                  <div className="col-sm-3 mb-3">
+                    <CustomSelect
+                      id={`selectItem-${item.id}`}
+                      label="Requested Item"
+                      options={itemMaster.map((itm) => ({
+                        value: itm.id,
+                        label: itm.item_name || itm.name || "Unnamed",
+                      }))}
+                      value={item.requestedItem}
+                      onChange={(selected) =>
+                        handleItemSelect(item.id, selected)
+                      }
+                      placeholder="Select Item"
+                      required
+                    />
+                  </div>
+
+                  <div className="col-sm-3 mb-3">
+                    <label
+                      htmlFor={`Category-${item.id}`}
+                      className="form-label"
+                    >
+                      Category
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id={`Category-${item.id}`}
+                      placeholder="Category"
+                      value={item.category}
+                      readOnly
+                    />
+                  </div>
+
+                  <div className="col-sm-3 mb-3">
+                    <label
+                      htmlFor={`Subcategory-${item.id}`}
+                      className="form-label"
+                    >
+                      Subcategory
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id={`Subcategory-${item.id}`}
+                      placeholder="Subcategory"
+                      value={item.subcategory}
+                      readOnly
+                    />
+                  </div>
+
+                  <div className="col-sm-3 mb-3">
+                    <label
+                      htmlFor={`Quantity-${item.id}`}
+                      className="form-label"
+                    >
+                      Quantity
+                    </label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      id={`Quantity-${item.id}`}
+                      placeholder="Quantity"
+                      min={0}
+                      value={item.qty}
+                      onChange={(e) =>
+                        handleItemChange(item.id, "qty", e.target.value)
+                      }
+                    />
+                  </div>
+
+                  <div className="col-sm-3 mb-3">
+                    <label
+                      htmlFor={`UnitofMeasure-${item.id}`}
+                      className="form-label"
+                    >
+                      Unit of Measure
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id={`UnitofMeasure-${item.id}`}
+                      placeholder="UOM"
+                      value={item.uom}
+                      readOnly
+                    />
+                  </div>
+
+                  <div className="col-sm-3 mb-3">
+                    <label
+                      htmlFor={`ServiceLocation-${item.id}`}
+                      className="form-label"
+                    >
+                      Service Location
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id={`ServiceLocation-${item.id}`}
+                      placeholder="Service Location"
+                      value={item.serviceLocation}
+                      readOnly
+                    />
+                  </div>
+
+                  <div className="col-sm-3 mb-3">
+                    <label htmlFor={`Zone-${item.id}`} className="form-label">
+                      Zone
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id={`Zone-${item.id}`}
+                      placeholder="Zone"
+                      value={item.zone}
+                      readOnly
+                    />
+                  </div>
+
+                  <div className="col-sm-3 mb-3">
+                    <CustomSelect
+                      id={`selectPurpose-${item.id}`}
+                      label="Purpose"
+                      options={[
+                        {
+                          value: "For maintenance work",
+                          label: "For maintenance work",
+                        },
+                        {
+                          value: "For Project Execution",
+                          label: "For Project Execution",
+                        },
+                        {
+                          value: "For Stock Replenishment",
+                          label: "For Stock Replenishment",
+                        },
+                      ]}
+                      value={item.purpose}
+                      onChange={(selected) =>
+                        handleSelectChange(item.id, "purpose", selected)
+                      }
+                      placeholder="Select Purpose"
+                      required
+                    />
+                  </div>
+
+                  <div className="col-sm-3 mb-3">
+                    <CustomSelect
+                      id={`selectPriority-${item.id}`}
+                      label="Priority"
+                      options={[
+                        { value: "high", label: "High" },
+                        { value: "medium", label: "Medium" },
+                        { value: "low", label: "Low" },
+                      ]}
+                      value={item.priority}
+                      onChange={(selected) =>
+                        handleSelectChange(item.id, "priority", selected)
+                      }
+                      placeholder="Select priority"
+                      required
+                    />
+                  </div>
+
+                  <div className="col-sm-3 mb-3">
+                    <label
+                      htmlFor={`RequestDate-${item.id}`}
+                      className="form-label"
+                    >
+                      Tentative Consumption Day
+                    </label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      id={`RequestDate-${item.id}`}
+                      placeholder="Days"
+                      value={item.tentative_consumption_day}
+                      onChange={(e) =>
+                        handleItemChange(
+                          item.id,
+                          "tentative_consumption_day",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+
+                  <div className="col-sm-6 mb-3">
+                    <label
+                      htmlFor={`Remarks-${item.id}`}
+                      className="form-label"
+                    >
+                      Remarks
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id={`Remarks-${item.id}`}
+                      placeholder="Remarks"
+                      value={item.remarks}
+                      onChange={(e) =>
+                        handleItemChange(item.id, "remarks", e.target.value)
+                      }
+                    />
+                  </div>
+
+                  <div className="col-sm-6 mb-3">
+                    <label
+                      htmlFor={`UploadFile-${item.id}`}
+                      className="form-label"
+                    >
+                      Upload File (Optional)
+                    </label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      id={`UploadFile-${item.id}`}
+                      onChange={(e) =>
+                        handleItemChange(item.id, "file", e.target.files[0])
+                      }
+                    />
+                  </div>
+
+                  {index < items.length - 1 && <hr className="mt-4" />}
+                </div>
+              ))}
             </div>
-            <div className="col-lg-12 text-center d-flex justify-content-center gap-2">
+
+            <div className="col-lg-12 text-center d-flex justify-content-center gap-2 mt-4">
               <button
                 className="btn btn-info waves-effect waves-light"
                 onClick={handleAddItem}
               >
-                Add
+                Add Item
               </button>
               <button
                 className="btn btn-primary waves-effect waves-light"
@@ -404,8 +1134,6 @@ export default function PI_Item_Request_Form() {
           </div>
         </div>
       </div>
-
-      {/* --------------END PI ITEM REQUEST FORM-------------- */}
     </>
   );
 }

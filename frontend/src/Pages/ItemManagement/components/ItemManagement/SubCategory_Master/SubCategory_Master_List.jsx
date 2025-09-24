@@ -23,21 +23,37 @@ export default function SubCategory_Master_List() {
   const { filterCategory, fetchCategoryFilter } = useCategoryMaster();
   const { filterGroup, fetchGroupFilter } = useGroupMasterContext();
   const { filterUser, fetchUserFilter } = useUserCreation();
-  const { fetchSubCategoryData, pagination } = useSubCategory();
+  const { fetchSubCategoryData, pagination, setPagination } = useSubCategory();
 
   useEffect(() => {
     fetchCategoryFilter();
     fetchGroupFilter();
     fetchUserFilter();
-    fetchSubCategoryData(search, pagination.currentPage, pagination.perPage);
-  }, [search]);
+    fetchSubCategoryData({
+      search,
+      type: type,
+      group_id: group,
+      category_id: category,
+      user_id: owner,
+      page: pagination.currentPage,
+      perPage: pagination.perPage,
+    });
+  }, [
+    search,
+    type,
+    group,
+    category,
+    owner,
+    pagination.currentPage,
+    pagination.perPage,
+  ]);
 
   const handlePageChange = (page) => {
-    fetchSubCategoryData(search, page, pagination.perPage);
+    setPagination((prev) => ({ ...prev, currentPage: page }));
   };
 
   const handleItemsPerPageChange = (size) => {
-    fetchSubCategoryData(search, 1, size); // reset to page 1 when changing size
+    setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
   };
 
   return (
@@ -135,6 +151,8 @@ export default function SubCategory_Master_List() {
                       value: group.id,
                       label: group.group_name,
                     }))}
+                    value={group}
+                    onChange={setGroup}
                     placeholder="Select Group"
                     required
                   />
@@ -149,6 +167,8 @@ export default function SubCategory_Master_List() {
                       value: cat.id,
                       label: cat.category_name,
                     }))}
+                    value={category}
+                    onChange={setCategory}
                     placeholder="Select Category"
                     required
                   />
@@ -163,6 +183,8 @@ export default function SubCategory_Master_List() {
                       value: user.id,
                       label: user.name,
                     }))}
+                    value={owner}
+                    onChange={setOwner}
                     placeholder="Select User"
                     required
                   />

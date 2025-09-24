@@ -258,7 +258,7 @@ export default function AppRoutes() {
           }
         />
         <Route
-          path="/user/request/request-create/:type"
+          path="/user/request/request-create/:type/:id"
           element={
             <ItemRequestProvider>
               <ItemMasterProvider>
@@ -273,6 +273,11 @@ export default function AppRoutes() {
         {/* PO & Material Management */}
         <Route
           path="/po-material/pi-request-create/:type"
+          element={<PI_Item_Request_Page />}
+        />
+        {/* PO & Material Management [for edit] */}
+        <Route
+          path="/po-material/pi-request-create/:type/:id"
           element={<PI_Item_Request_Page />}
         />
         <Route

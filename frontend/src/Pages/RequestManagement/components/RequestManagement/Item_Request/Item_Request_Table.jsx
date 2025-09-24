@@ -18,6 +18,7 @@ export default function Item_Request_Table({ search }) {
     handOverRequest,
     serviceReceived,
     startEditing,
+    pagination,
   } = useItemRequest();
 
   // Initialize Bootstrap tooltips
@@ -30,7 +31,7 @@ export default function Item_Request_Table({ search }) {
     });
   }, [itemRequest]);
 
-  console.log("itemRequest itemRequest", itemRequest);
+  // console.log("itemRequest itemRequest", itemRequest);
 
   // 🔎 Filter table data locally based on search
   const filteredData = itemRequest.filter((item) => {
@@ -84,7 +85,11 @@ export default function Item_Request_Table({ search }) {
               return (
                 <tr key={index}>
                   <td>
-                    <div className="ms-4">{index + 1}</div>
+                    <div className="ms-4">
+                      {" "}
+                      {(pagination.currentPage - 1) * pagination.perPage +
+                        (index + 1)}
+                    </div>
                   </td>
                   <td>{item.item_request_id}</td>
                   <td>
@@ -178,9 +183,18 @@ export default function Item_Request_Table({ search }) {
                                     : ""
                                 }`}
                                 onClick={() => {
-                                  fetchItemRequestById(item?.id);
+                                  // FIXED: Pass the correct ID (item_request_id instead of workflow_id)
+                                  const itemRequestId = item.id; // This should be the item_request_id
+                                  console.log(
+                                    "Editing item request ID:",
+                                    itemRequestId
+                                  );
+
+                                  // Use the correct function to start editing
+                                  startEditing(itemRequestId);
+
                                   navigate(
-                                    `/user/request/request-create/${item?.item_request?.item_type}`
+                                    `/user/request/request-create/${item?.item_request?.item_type}/${itemRequestId}`
                                   );
                                 }}
                               >

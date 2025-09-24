@@ -21,6 +21,7 @@ export const SubCategoryProvider = ({ children }) => {
     owners: [],
     type: "",
   });
+
   const [isSubEditId, setIsSubEditId] = useState(null);
   const [filterSubCategory, setFilterSubCategory] = useState(null);
   const [pagination, setPagination] = useState({
@@ -30,13 +31,28 @@ export const SubCategoryProvider = ({ children }) => {
   });
 
   //   Fetch user Creations
-  const fetchSubCategoryData = async (search = "", page = 1, perPage = 10) => {
+  //   Fetch Sub Categories
+  const fetchSubCategoryData = async ({
+    search = "",
+    page = 1,
+    perPage = 10,
+    type = "",
+    group_id = "",
+    category_id = "",
+    user_id = "",
+  } = {}) => {
     try {
-      const res = await getData(ENDPOINTS.SUBCATEGORY_MASTER.LIST, {
+      const params = {
         search,
         page,
         per_page: perPage,
-      });
+        type,
+        group_id,
+        category_id,
+        user_id,
+      };
+
+      const res = await getData(ENDPOINTS.SUBCATEGORY_MASTER.LIST, params);
       const apiData = res.data;
       setSubCategory(apiData.data);
       setPagination({
@@ -151,6 +167,7 @@ export const SubCategoryProvider = ({ children }) => {
         setSubCategoryData,
         filterSubCategory,
         pagination,
+        setPagination,
 
         EditSubCategory,
         fetchSubCategoryData,

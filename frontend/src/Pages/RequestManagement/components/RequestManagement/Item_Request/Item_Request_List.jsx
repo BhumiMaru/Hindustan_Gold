@@ -22,20 +22,24 @@ export default function Item_Request_List() {
     itemRequest,
     filterItem,
     fetchItemFilter,
+    setItemRequestData,
+    getItemNameAndId,
+    selectedType,
+    setSelectedType,
   } = useItemRequest();
   const [search, setSearch] = useState("");
   const { modal } = useUIContext();
-  const [selectedType, setSelectedType] = useState("all"); // item type filter
+  // const [selectedType, setSelectedType] = useState("all"); // item type filter
   const [statusFilter, setStatusFilter] = useState("all"); // status filter
   const [itemNameId, setItemNameId] = useState(null);
 
   // when type changes, fetch items and update itemRequestData
-  // useEffect(() => {
-  //   if (selectedType) {
-  //     getItemNameAndId(selectedType);
-  //     setItemRequestData((prev) => ({ ...prev, item_type: selectedType }));
-  //   }
-  // }, [selectedType]);
+  useEffect(() => {
+    if (selectedType) {
+      getItemNameAndId(selectedType);
+      setItemRequestData((prev) => ({ ...prev, item_type: selectedType }));
+    }
+  }, [selectedType]);
 
   // // when item name changes, update item_id in itemRequestData
   // useEffect(() => {
@@ -227,7 +231,7 @@ export default function Item_Request_List() {
                   <option value="CA">Category</option>
                   <option value="NV">Category</option>
                 </select> */}
-                <CustomSelect
+                {/* <CustomSelect
                   id="selectItemName"
                   options={filterItem?.map((item) => ({
                     value: item.item_id,
@@ -236,9 +240,23 @@ export default function Item_Request_List() {
                   // value={itemNameId}
                   // onChange={setItemNameId}
                   placeholder="Select Item"
+                /> */}
+
+                <CustomSelect
+                  id="selectItemName"
+                  options={itemList?.map((item) => ({
+                    value: item.id,
+                    label: item.item_name,
+                  }))}
+                  value={itemNameId}
+                  onChange={setItemNameId}
+                  placeholder={
+                    selectedType && selectedType !== "all"
+                      ? "Select Item"
+                      : "First select Item Type"
+                  }
+                  disabled={!selectedType || selectedType === "all"}
                 />
-                {/* {/* {console.log("item name", itemNameId)} */}
-                {console.log("filterItem", filterItem)}
               </div>
               <div className="col-lg-3">
                 <CustomSelect
