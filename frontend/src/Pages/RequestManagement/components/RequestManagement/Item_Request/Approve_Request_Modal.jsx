@@ -1,6 +1,8 @@
 import React from "react";
+import { useUIContext } from "../../../../../Context/UIContext";
 
 export default function Approve_Request_Modal() {
+  const { handleClose } = useUIContext();
   return (
     <>
       {/* -------------------START APPROVE REQUEST MODAL--------------------- */}
@@ -23,6 +25,7 @@ export default function Approve_Request_Modal() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                onClick={() => handleClose("viewApprove")}
               />
             </div>
             <div className="modal-body text-center">

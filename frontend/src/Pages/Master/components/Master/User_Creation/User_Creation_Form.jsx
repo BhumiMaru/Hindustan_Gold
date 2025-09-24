@@ -72,7 +72,7 @@ export default function User_Creation_Form() {
       } else {
         const newUser = await createUser(payload); // ✅ get response
         if (newUser?.id) {
-          navigate(`/master/user-create/${newUser.id}`); // ✅ use real id
+          navigate(`/super_admin/master/user-create/${newUser.id}`); // ✅ use real id
         }
       }
     } catch (error) {

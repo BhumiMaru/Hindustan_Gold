@@ -1,6 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
+import { useUIContext } from "../../../../../Context/UIContext";
+import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
 
 export default function Reject_Request_Modal() {
+  const { handleClose } = useUIContext();
+  const { rejectRequest, itemRequestData } = useItemRequest();
+  const [reason, setReason] = useState("");
+  // console.log("itemRequestData ", itemRequestData);
+
+  const handleSubmit = async () => {
+    try {
+      const item_request_id = itemRequestData.item_request_id;
+      const workflow_id = itemRequestData?.item_request?.workflows[0]?.id;
+      rejectRequest(item_request_id, workflow_id, reason);
+      handleClose("viewReject");
+      setReason("");
+    } catch (error) {
+      console.log("reject error", error);
+    }
+  };
+
   return (
     <>
       {/* ---------------------START REJECT REQUEST MODAL------------------- */}
@@ -24,11 +43,19 @@ export default function Reject_Request_Modal() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                onClick={() => {
+                  handleClose("viewReject");
+                  setReason("");
+                }}
               />
             </div>
             <div className="mx-4 mb-4">
               <label className="form-label">Reject Remark</label>
-              <textarea className="form-control" defaultValue={""} />
+              <textarea
+                className="form-control"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+              />
               {/*  <p class="text-muted small mt-1">This action cannot be undone.</p>*/}
             </div>
             <div className="modal-footer justify-content-center">
@@ -38,6 +65,7 @@ export default function Reject_Request_Modal() {
               <button
                 type="button"
                 className="btn btn-info waves-effect waves-light"
+                onClick={handleSubmit}
               >
                 Submit
               </button>
@@ -45,7 +73,7 @@ export default function Reject_Request_Modal() {
           </div>
         </div>
       </div>
-
+      <div className="modal-backdrop fade show"></div>
       {/* ---------------------END REJECT REQUEST MODAL------------------- */}
     </>
   );

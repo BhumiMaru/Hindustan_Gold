@@ -115,13 +115,16 @@ export default function User_Creation_Table() {
                 <td>{user.employee_id}</td>
                 <td>{user.email}</td>
                 <td>
-                  <div className="d-flex" style={{ marginRight: "10px" }}>
+                  <div
+                    className="d-flex align-items-center"
+                    style={{ marginRight: "10px" }}
+                  >
                     <div>
                       <div
                         style={{
                           borderRadius: "100%",
                           backgroundColor: user?.zone?.color_code,
-                          padding: "8px",
+                          padding: "6px",
                           width: "2px",
                         }}
                       ></div>

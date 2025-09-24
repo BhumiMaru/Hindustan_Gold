@@ -1,6 +1,7 @@
 import React from "react";
 import { useSubCategory } from "../../../../../Context/ItemManagement/SubCategoryContext";
 import { useUIContext } from "../../../../../Context/UIContext";
+import View_Sub_Cat_Owners_Name from "./View_Sub_Cat_Owners_Name";
 
 export default function SubCategory_Master_Table() {
   const {
@@ -10,7 +11,7 @@ export default function SubCategory_Master_Table() {
     pagination,
     setSubCategoryData,
   } = useSubCategory();
-  const { handleOpen } = useUIContext();
+  const { handleOpen, modal } = useUIContext();
   return (
     <>
       {/* ---------------START CATEGORY MASTER TABLE----------------- */}
@@ -49,12 +50,31 @@ export default function SubCategory_Master_Table() {
                 <td>{subCat.type}</td>
                 <td>{subCat.prefix_code}</td>
                 <td>
-                  {subCat?.owners?.map((owner, i) => (
+                  {/* {subCat?.owners?.map((owner, i) => (
                     <span key={owner.id}>
                       {owner?.user?.name}
                       {i < subCat.owners.length - 1 && ", "}
                     </span>
-                  ))}
+                  ))} */}
+                  <span>{subCat?.owners[0]?.user?.name}</span>
+
+                  {subCat?.owners?.length > 1 && (
+                    <span>
+                      <a
+                        href="#"
+                        type="button"
+                        className="btn btn-text-info rounded-pill btn-icon waves-effect"
+                        data-bs-toggle="modal"
+                        data-bs-target="#smallModal"
+                        onClick={() => {
+                          handleOpen("viewSubCatOwnersName");
+                          setSubCategoryData(subCat);
+                        }}
+                      >
+                        <i className="icon-base ti tabler-eye text-info icon-18px" />
+                      </a>
+                    </span>
+                  )}
                 </td>
 
                 {/* <td>
@@ -146,6 +166,7 @@ export default function SubCategory_Master_Table() {
           })}
         </tbody>
       </table>
+
       {/* ---------------END CATEGORY MASTER TABLE----------------- */}
     </>
   );

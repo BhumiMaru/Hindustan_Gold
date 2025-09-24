@@ -5,6 +5,7 @@ import { useSubCategory } from "../../../../../Context/ItemManagement/SubCategor
 export default function View_Sub_Category_Details() {
   const { handleClose } = useUIContext();
   const { subCategoryData } = useSubCategory();
+  // console.log("sub", subCategoryData);
   return (
     <>
       {/* ------------START VIEW SUB CATEGORY DETAILS------------- */}

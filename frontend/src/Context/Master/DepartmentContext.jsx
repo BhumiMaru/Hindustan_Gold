@@ -36,6 +36,7 @@ export const DepartmentProvider = ({ children }) => {
       // if (res.status) {
       const apiData = res.data;
       setDepartments(apiData.data);
+      console.log("res.data", apiData.data);
       setPagination({
         currentPage: apiData.current_page,
         perPage: apiData.per_page,

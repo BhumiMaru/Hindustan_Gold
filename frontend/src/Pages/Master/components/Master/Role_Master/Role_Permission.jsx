@@ -274,6 +274,9 @@ export default function Role_Permission() {
                         <th className="text-nowrap text-center w-px-50">
                           Delete
                         </th>
+                        <th className="text-nowrap text-center w-px-50">
+                          Approval
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -359,10 +362,11 @@ export default function Role_Permission() {
                             />
                           </div>
                         </td>
+                        <td></td>
                       </tr>
                       <tr>
                         <td className="text-nowrap text-heading">
-                          Item Request Approval
+                          Material Approval
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center">
@@ -375,14 +379,14 @@ export default function Role_Permission() {
                                   (p) =>
                                     String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name === "Item Request Module" &&
-                                    p.type === "Item Request Approval" &&
+                                    p.type === "Material Approval" &&
                                     p.permission === "view"
                                 )
                               }
                               onChange={(e) =>
                                 handlePermissionChange(
                                   "Item Request Module",
-                                  "Item Request Approval",
+                                  "Material Approval",
                                   "view",
                                   e
                                 )
@@ -392,6 +396,32 @@ export default function Role_Permission() {
                         </td>
                         <td></td>
                         <td></td>
+                        <td>
+                          <div className="form-check d-flex justify-content-center">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              id="defaultCheck_cust_4"
+                              checked={
+                                !!permission?.some(
+                                  (p) =>
+                                    String(p.role_id) === String(id) && // normalize ID comparison
+                                    p.module_name === "Item Request Module" &&
+                                    p.type === "Material Approval" &&
+                                    p.permission === "view"
+                                )
+                              }
+                              onChange={(e) =>
+                                handlePermissionChange(
+                                  "Item Request Module",
+                                  "Material Approval",
+                                  "view",
+                                  e
+                                )
+                              }
+                            />
+                          </div>
+                        </td>
                       </tr>
                       <tr className="border-transparent">
                         <td className="text-nowrap text-heading">
@@ -571,7 +601,7 @@ export default function Role_Permission() {
                       </tr>
                       <tr>
                         <td className="text-nowrap text-heading">
-                          Vendor Quotation
+                          Get Quotation
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center">
@@ -585,14 +615,14 @@ export default function Role_Permission() {
                                     String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
-                                    p.type === "Vendor Quotation" &&
+                                    p.type === "Get Quotation" &&
                                     p.permission === "view"
                                 )
                               }
                               onChange={(e) =>
                                 handlePermissionChange(
                                   "PO & Material Management Module",
-                                  "Vendor Quotation",
+                                  "Get Quotation",
                                   "view",
                                   e
                                 )
@@ -612,14 +642,14 @@ export default function Role_Permission() {
                                     String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
-                                    p.type === "Vendor Quotation" &&
+                                    p.type === "Get Quotation" &&
                                     p.permission === "add"
                                 )
                               }
                               onChange={(e) =>
                                 handlePermissionChange(
                                   "PO & Material Management Module",
-                                  "Vendor Quotation",
+                                  "Get Quotation",
                                   "add",
                                   e
                                 )
@@ -639,14 +669,14 @@ export default function Role_Permission() {
                                     String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
-                                    p.type === "Vendor Quotation" &&
+                                    p.type === "Get Quotation" &&
                                     p.permission === "edit"
                                 )
                               }
                               onChange={(e) =>
                                 handlePermissionChange(
                                   "PO & Material Management Module",
-                                  "Vendor Quotation",
+                                  "Get Quotation",
                                   "edit",
                                   e
                                 )
@@ -666,14 +696,14 @@ export default function Role_Permission() {
                                     String(p.role_id) === String(id) && // normalize ID comparison
                                     p.module_name ===
                                       "PO & Material Management Module" &&
-                                    p.type === "Vendor Quotation" &&
+                                    p.type === "Get Quotation" &&
                                     p.permission === "delete"
                                 )
                               }
                               onChange={(e) =>
                                 handlePermissionChange(
                                   "PO & Material Management Module",
-                                  "Vendor Quotation",
+                                  "Get Quotation",
                                   "delete",
                                   e
                                 )
