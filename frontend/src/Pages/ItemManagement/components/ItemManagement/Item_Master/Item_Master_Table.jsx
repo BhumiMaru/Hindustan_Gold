@@ -3,7 +3,8 @@ import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterC
 import { Link } from "react-router-dom";
 
 export default function Item_Master_Table({ search }) {
-  const { itemMaster, deleteItemMaster, StartEditing } = useItemMaster();
+  const { itemMaster, deleteItemMaster, StartEditing, pagination } =
+    useItemMaster();
 
   // Local filter on top of context data
   const filteredData = itemMaster.filter((item) => {
@@ -43,7 +44,10 @@ export default function Item_Master_Table({ search }) {
             return (
               <tr key={item.id}>
                 <td>
-                  <div className="ms-4">{index + 1}</div>
+                  <div className="ms-4">
+                    {(pagination.currentPage - 1) * pagination.perPage +
+                      (index + 1)}
+                  </div>
                 </td>
                 <td>{item.type}</td>
                 <td>{item.item_code}</td>

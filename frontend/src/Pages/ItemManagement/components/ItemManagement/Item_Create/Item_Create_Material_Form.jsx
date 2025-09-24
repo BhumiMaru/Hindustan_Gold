@@ -92,6 +92,7 @@ export default function Item_Create_Material_Form() {
         ResetItemMaster();
       } else {
         await createItemMaster(payload);
+        console.log("item create ", payload);
         toast.success("Item Created Successfully!");
         navigate("/item/item-master");
         fetchItemMaster();

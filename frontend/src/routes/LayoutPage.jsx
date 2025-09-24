@@ -66,6 +66,11 @@ export default function LayoutPage() {
         rel="stylesheet"
         href={`${publicUrl}assets/vendor/css/pages/page-auth.css`}
       />
+      <link
+        rel="stylesheet"
+        // href="../../assets/vendor/libs/spinkit/spinkit.css"
+        href={`${publicUrl}assets/vendor/libs/spinkit/spinkit.css`}
+      />
       {/* ---------------START LAYOUT PAGE------------------ */}
       <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">

@@ -6,19 +6,66 @@ import { useItemRequest } from "../../../../../Context/Request Management/Item_R
 import View_Item_Request_Details from "./View_Item_Request_Details";
 import { useUIContext } from "../../../../../Context/UIContext";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
+import Approve_Request_Modal from "./Approve_Request_Modal";
+import Reject_Request_Modal from "./Reject_Request_Modal";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
+import Loader from "../../../../../components/Common/Loader/Loader";
 
 export default function Item_Request_List() {
-  const { getItemRequestData, pagination, setPagination } = useItemRequest();
+  const {
+    getItemRequestData,
+    pagination,
+    setPagination,
+    itemList,
+    activeTab,
+    setActiveTab,
+    itemRequest,
+    filterItem,
+    fetchItemFilter,
+    setItemRequestData,
+    getItemNameAndId,
+    selectedType,
+    setSelectedType,
+  } = useItemRequest();
   const [search, setSearch] = useState("");
   const { modal } = useUIContext();
+  // const [selectedType, setSelectedType] = useState("all"); // item type filter
+  const [statusFilter, setStatusFilter] = useState("all"); // status filter
+  const [itemNameId, setItemNameId] = useState(null);
+
+  // when type changes, fetch items and update itemRequestData
+  useEffect(() => {
+    if (selectedType) {
+      getItemNameAndId(selectedType);
+      setItemRequestData((prev) => ({ ...prev, item_type: selectedType }));
+    }
+  }, [selectedType]);
+
+  // // when item name changes, update item_id in itemRequestData
+  // useEffect(() => {
+  //   if (itemNameId) {
+  //     setItemRequestData((prev) => ({ ...prev, id: itemNameId }));
+  //   }
+  // }, [itemNameId]);
 
   useEffect(() => {
     getItemRequestData({
       search,
+      type: activeTab,
+      item_type: selectedType === "all" ? "" : selectedType,
+      status: statusFilter === "all" ? "" : statusFilter,
       page: pagination.currentPage,
       perPage: pagination.perPage,
     });
-  }, [search, pagination.currentPage, pagination.perPage]);
+    fetchItemFilter();
+  }, [
+    search,
+    activeTab,
+    selectedType,
+    statusFilter,
+    pagination.currentPage,
+    pagination.perPage,
+  ]);
 
   const handlePageChange = (page) => {
     setPagination((prev) => ({ ...prev, currentPage: page }));
@@ -44,12 +91,15 @@ export default function Item_Request_List() {
                   <li className="nav-item mb-1 mb-sm-0" role="presentation">
                     <button
                       type="button"
-                      className="nav-link active waves-effect waves-light"
+                      className={`nav-link waves-effect waves-light ${
+                        activeTab === "my_request" ? "active" : ""
+                      }`}
                       role="tab"
                       data-bs-toggle="tab"
                       data-bs-target="#navs-pills-justified-home"
                       aria-controls="navs-pills-justified-home"
                       aria-selected="true"
+                      onClick={() => setActiveTab("my_request")}
                     >
                       <span className="d-none d-sm-inline-flex align-items-center">
                         <i className="icon-base ti tabler-home icon-sm me-1_5"></i>
@@ -61,21 +111,32 @@ export default function Item_Request_List() {
                   <li className="nav-item mb-1 mb-sm-0" role="presentation">
                     <button
                       type="button"
-                      className="nav-link waves-effect waves-light"
+                      className={`nav-link waves-effect waves-light ${
+                        activeTab === "approval_request" ? "active" : ""
+                      }`}
                       role="tab"
                       data-bs-toggle="tab"
                       data-bs-target="#navs-pills-justified-profile"
                       aria-controls="navs-pills-justified-profile"
                       aria-selected="false"
                       tabIndex="-1"
+                      onClick={() => setActiveTab("approval_request")}
                     >
                       <span className="d-none d-sm-inline-flex align-items-center">
                         <i className="icon-base ti tabler-user icon-sm me-1_5"></i>
-                        Approvel Request
+                        Approval Request
                       </span>
-                      <span className="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1_5">
-                        3
-                      </span>
+                      {activeTab === "approval_request" && (
+                        // (loading ? (
+                        //   <span className="h-px-20 w-px-20 d-flex align-items-center justify-content-center">
+                        //     <Loader />
+                        //   </span>
+                        // ) : (
+                        <span className="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1_5">
+                          {itemRequest.length}
+                        </span>
+                      )}
+
                       <i className="icon-base ti tabler-user icon-sm d-sm-none"></i>
                     </button>
                   </li>
@@ -122,27 +183,106 @@ export default function Item_Request_List() {
             </div>
             <div className="row px-3 pt-2 pb-2">
               <div className="col-lg-3">
-                <select id="select10Basic" className="select2 form-select">
-                  <option value="AK">Select&nbsp;Type</option>
-                  <option value="HI">Item</option>
-                  <option value="CA">Services</option>
-                  <option value="NV">Asset</option>
-                </select>
+                {/* <select
+                  id="select10Basic"
+                  className="select2 form-select"
+                  value={selectedType}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSelectedType(value);
+                    console.log("item type:", value);
+                  }}
+                >
+                  {console.log("selected type:", selectedType)}
+                  <option value="">Select Type</option>
+                  <option value="material">Material</option>
+                  <option value="service">Service</option>
+                  <option value="asset">Asset</option>
+                </select> */}
+                <CustomSelect
+                  id="selectItemType"
+                  options={[
+                    {
+                      value: "all",
+                      label: "Select Item Type",
+                    },
+                    {
+                      value: "material",
+                      label: "Material",
+                    },
+                    {
+                      value: "service",
+                      label: "Service",
+                    },
+                    {
+                      value: "asset",
+                      label: "Asset",
+                    },
+                  ]}
+                  value={selectedType}
+                  onChange={setSelectedType}
+                  placeholder="Select Item"
+                />
               </div>
               <div className="col-lg-3">
-                <select id="select7Basic" className="select2 form-select">
+                {/* <select id="select7Basic" className="select2 form-select">
                   <option value="AK">Select&nbsp;Item</option>
                   <option value="HI">Category</option>
                   <option value="CA">Category</option>
                   <option value="NV">Category</option>
-                </select>
+                </select> */}
+                {/* <CustomSelect
+                  id="selectItemName"
+                  options={filterItem?.map((item) => ({
+                    value: item.item_id,
+                    label: item.item_name,
+                  }))}
+                  // value={itemNameId}
+                  // onChange={setItemNameId}
+                  placeholder="Select Item"
+                /> */}
+
+                <CustomSelect
+                  id="selectItemName"
+                  options={itemList?.map((item) => ({
+                    value: item.id,
+                    label: item.item_name,
+                  }))}
+                  value={itemNameId}
+                  onChange={setItemNameId}
+                  placeholder={
+                    selectedType && selectedType !== "all"
+                      ? "Select Item"
+                      : "First select Item Type"
+                  }
+                  disabled={!selectedType || selectedType === "all"}
+                />
               </div>
               <div className="col-lg-3">
-                <select id="select9Basic" className="select2 form-select">
-                  <option value="AK">Select&nbsp;Status</option>
-                  <option value="HI">Active</option>
-                  <option value="CA">Deactive</option>
-                </select>
+                <CustomSelect
+                  id="selectItemStatus"
+                  options={[
+                    {
+                      value: "all",
+                      label: "Select Status",
+                    },
+                    {
+                      value: "pending",
+                      label: "Pending",
+                    },
+                    {
+                      value: "completed",
+                      label: "Completed",
+                    },
+                    {
+                      value: "reject",
+                      label: "Reject",
+                    },
+                  ]}
+                  value={statusFilter}
+                  onChange={setStatusFilter}
+                  placeholder="Select Item Status"
+                />
               </div>
               <div className="col-lg-3">
                 <input
@@ -168,6 +308,8 @@ export default function Item_Request_List() {
       </>
 
       {modal.viewItemRequest && <View_Item_Request_Details />}
+      {modal.viewApprove && <Approve_Request_Modal />}
+      {modal.viewReject && <Reject_Request_Modal />}
       {/* -----------------END ITEM REQUEST LIST---------------- */}
     </>
   );
