@@ -48,7 +48,6 @@ export const ItemMasterProvider = ({ children }) => {
   const [itemSubCategoryId, setItemSubCategoryId] = useState(null);
 
   // Get All Item Master Data
-  // Get All Item Master Data
   const fetchItemMaster = async ({
     search = "",
     type = "",
@@ -136,53 +135,295 @@ export const ItemMasterProvider = ({ children }) => {
     }
   };
 
+  // const fetchitemById = async (id) => {
+  //   try {
+  //     const res = await postData(ENDPOINTS.ITEM_MASTER.DETAILS, { id });
+  //     const item = res.data;
+  //     console.log("item master", item);
+
+  //     setItemMasterData({
+  //       item_code: item?.item_code || "",
+  //       item_type: item?.item_type || "",
+  //       type: item?.type || "",
+  //       item_name: item?.item_name || "",
+  //       c_id: item?.c_id || null,
+  //       c_name: item?.category?.category_name || "", // ✅ for Category display
+  //       // sub_c_id: item?.sub_c_id ? Number(item.sub_c_id) : null,
+  //       sub_c_id: item?.subcategory?.id ? Number(item?.subcategory?.id) : null,
+  //       sub_c_name: item?.subcategory?.sub_category_name || "", // ✅ for Subcategory
+  //       group_id: item?.group_id || null,
+  //       group_name: item?.group?.group_name || "", // ✅ for Group
+  //       uom: item?.uom || "",
+  //       description: item?.description || "",
+  //       is_purpose_required: Number(item?.is_purpose_required) ?? 0,
+  //       is_approval_required: Number(item?.is_approval_required) ?? 0,
+  //       is_movable: Number(item?.is_movable) ?? 0,
+  //       service_location_1_id: item?.service_location_1_id || null,
+  //       service_location_2_id: item?.service_location_2_id || null,
+  //       service_location_3_id: Array.isArray(item?.service_location_3_id)
+  //         ? item.service_location_3_id.map(Number)
+  //         : item?.service_location_3_id
+  //         ? [Number(item.service_location_3_id)]
+  //         : [],
+
+  //       zone_id: Array.isArray(item?.zone_id)
+  //         ? item.zone_id.map(Number)
+  //         : item?.zone_id
+  //         ? [Number(item.zone_id)]
+  //         : [],
+  //       stock: item?.stock ?? 0,
+  //       stock_value: item?.stock_value ?? 0,
+  //       minimum_stock: item?.minimum_stock ?? 0,
+  //       purchase_date: item?.purchase_date || "",
+  //       warranty_expiry: item?.warranty_expiry || "",
+  //       status: Number(item?.status) ?? 1,
+  //     });
+  //   } catch (error) {
+  //     console.log("fetchitemById error:", error);
+  //   }
+  // };
+
+  // Start Editing
+
+  // const fetchitemById = async (id) => {
+  //   try {
+  //     const res = await postData(ENDPOINTS.ITEM_MASTER.DETAILS, { id });
+  //     const item = res.data;
+  //     console.log("item master", item);
+
+  //     // Initialize arrays
+  //     const sl1Ids = [];
+  //     const sl2Ids = [];
+  //     const sl3Ids = [];
+  //     const sl1Names = [];
+  //     const sl2Names = [];
+  //     const sl3Names = [];
+
+  //     // Process storage_locations if they exist
+  //     if (Array.isArray(item?.storage_locations)) {
+  //       item.storage_locations.forEach((storage) => {
+  //         console.log("storage", storage);
+  //         // Service Location 1
+  //         if (
+  //           storage?.service_location1?.id &&
+  //           !sl1Ids.includes(storage.service_location1.id)
+  //         ) {
+  //           sl1Ids.push(storage.service_location1.id);
+  //           sl1Names.push(storage.service_location1.service_location_name);
+  //         }
+
+  //         // Service Location 2
+  //         if (
+  //           storage?.service_location2?.id &&
+  //           !sl2Ids.includes(storage.service_location2.id)
+  //         ) {
+  //           sl2Ids.push(storage.service_location2.id);
+  //           sl2Names.push(storage.service_location2.service_location_name);
+  //         }
+
+  //         // Service Location 3
+  //         if (
+  //           storage?.service_location3?.id &&
+  //           !sl3Ids.includes(Number(storage.service_location3.id))
+  //         ) {
+  //           sl3Ids.push(Number(storage.service_location3.id));
+  //           sl3Names.push(storage.service_location3.service_location_name);
+  //         }
+  //       });
+  //     }
+
+  //     setItemMasterData({
+  //       item_code: item?.item_code || "",
+  //       item_type: item?.item_type || "",
+  //       type: item?.type || "",
+  //       item_name: item?.item_name || "",
+  //       c_id: item?.c_id || null,
+  //       c_name: item?.category?.category_name || "", // ✅ Category
+  //       sub_c_id: item?.subcategory?.id ? Number(item?.subcategory?.id) : null,
+  //       sub_c_name: item?.subcategory?.sub_category_name || "", // ✅ Subcategory
+  //       group_id: item?.group_id || null,
+  //       group_name: item?.group?.group_name || "", // ✅ Group
+  //       uom: item?.uom || "",
+  //       description: item?.description || "",
+  //       is_purpose_required: Number(item?.is_purpose_required) ?? 0,
+  //       is_approval_required: Number(item?.is_approval_required) ?? 0,
+  //       is_movable: Number(item?.is_movable) ?? 0,
+
+  //       // ✅ Multiple Service Locations
+  //       service_location_1_id: sl1Ids,
+  //       service_location_1_name: sl1Names,
+  //       service_location_2_id: sl2Ids,
+  //       service_location_2_name: sl2Names,
+  //       service_location_3_id: sl3Ids,
+  //       service_location_3_name: sl3Names,
+
+  //       // ✅ Zones
+  //       zone_id: Array.isArray(item?.zones)
+  //         ? item.zones.map((z) => Number(z.zone?.id))
+  //         : [],
+
+  //       stock: item?.stock ?? 0,
+  //       stock_value: item?.stock_value ?? 0,
+  //       minimum_stock: item?.minimum_stock ?? 0,
+  //       purchase_date: item?.purchase_date || "",
+  //       warranty_expiry: item?.warranty_expiry || "",
+  //       status: Number(item?.status) ?? 1,
+  //     });
+  //   } catch (error) {
+  //     console.log("fetchitemById error:", error);
+  //   }
+  // };
+
   const fetchitemById = async (id) => {
     try {
       const res = await postData(ENDPOINTS.ITEM_MASTER.DETAILS, { id });
       const item = res.data;
+      // console.log("item master", item);
 
-      setItemMasterData({
+      // Based on the nested structure, adjust the mapping accordingly
+      const getServiceLocationData = () => {
+        if (!Array.isArray(item?.storage_locations)) {
+          return {
+            sl1: { ids: [], names: [] },
+            sl2: { ids: [], names: [] },
+            sl3: { ids: [], names: [] },
+          };
+        }
+
+        const sl1Ids = [],
+          sl1Names = [];
+        const sl2Ids = [],
+          sl2Names = [];
+        const sl3Ids = [],
+          sl3Names = [];
+
+        item.storage_locations.forEach((storage) => {
+          // console.log("Processing storage:", storage);
+
+          // Service Location 3 - Top level in the nested structure
+          if (storage?.service_location3?.id) {
+            const sl3 = storage.service_location3;
+            const sl3Id = Number(sl3.id);
+            const sl3Name = sl3.service_location_3_name;
+
+            if (!sl3Ids.includes(sl3Id)) {
+              sl3Ids.push(sl3Id);
+              sl3Names.push(sl3Name || "");
+            }
+
+            // Service Location 2 - Nested inside service_location3
+            if (sl3?.service_location2?.id) {
+              const sl2 = sl3.service_location2;
+              const sl2Id = sl2.id;
+              const sl2Name = sl2.service_location_2_name;
+
+              if (!sl2Ids.includes(sl2Id)) {
+                sl2Ids.push(sl2Id);
+                sl2Names.push(sl2Name || "");
+              }
+
+              // Service Location 1 - Nested inside service_location2
+              if (sl2?.service_location1?.id) {
+                const sl1 = sl2.service_location1;
+                const sl1Id = sl1.id;
+                const sl1Name = sl1.service_location_name;
+
+                if (!sl1Ids.includes(sl1Id)) {
+                  sl1Ids.push(sl1Id);
+                  sl1Names.push(sl1Name || "");
+                }
+              }
+            }
+          }
+        });
+
+        return {
+          sl1: { ids: sl1Ids, names: sl1Names },
+          sl2: { ids: sl2Ids, names: sl2Names },
+          sl3: { ids: sl3Ids, names: sl3Names },
+        };
+      };
+
+      const serviceLocations = getServiceLocationData();
+      // console.log("Extracted service locations:", serviceLocations);
+
+      const itemData = {
         item_code: item?.item_code || "",
         item_type: item?.item_type || "",
         type: item?.type || "",
         item_name: item?.item_name || "",
         c_id: item?.c_id || null,
-        c_name: item?.category?.category_name || "", // ✅ for Category display
-        sub_c_id: item?.sub_c_id ? Number(item.sub_c_id) : null,
-        sub_c_name: item?.subcategory?.sub_category_name || "", // ✅ for Subcategory
+        c_name: item?.category?.category_name || "",
+        sub_c_id: item?.subcategory?.id ? Number(item?.subcategory?.id) : null,
+        sub_c_name: item?.subcategory?.sub_category_name || "",
         group_id: item?.group_id || null,
-        group_name: item?.group?.group_name || "", // ✅ for Group
+        group_name: item?.group?.group_name || "",
         uom: item?.uom || "",
         description: item?.description || "",
         is_purpose_required: Number(item?.is_purpose_required) ?? 0,
         is_approval_required: Number(item?.is_approval_required) ?? 0,
         is_movable: Number(item?.is_movable) ?? 0,
-        service_location_1_id: item?.service_location_1_id || null,
-        service_location_2_id: item?.service_location_2_id || null,
-        service_location_3_id: Array.isArray(item?.service_location_3_id)
-          ? item.service_location_3_id.map(Number)
-          : item?.service_location_3_id
-          ? [Number(item.service_location_3_id)]
+
+        // ✅ Corrected Service Locations mapping with nested structure
+        service_location_1_id: serviceLocations.sl1.ids,
+        service_location_1_name: serviceLocations.sl1.names,
+        service_location_2_id: serviceLocations.sl2.ids,
+        service_location_2_name: serviceLocations.sl2.names,
+        service_location_3_id: serviceLocations.sl3.ids,
+        service_location_3_name: serviceLocations.sl3.names,
+
+        // ✅ Zones
+        zone_id: Array.isArray(item?.zones)
+          ? item.zones.map((z) => Number(z.zone?.id)).filter(Boolean)
           : [],
 
-        zone_id: Array.isArray(item?.zone_id)
-          ? item.zone_id.map(Number)
-          : item?.zone_id
-          ? [Number(item.zone_id)]
-          : [],
         stock: item?.stock ?? 0,
         stock_value: item?.stock_value ?? 0,
         minimum_stock: item?.minimum_stock ?? 0,
         purchase_date: item?.purchase_date || "",
         warranty_expiry: item?.warranty_expiry || "",
         status: Number(item?.status) ?? 1,
-      });
+      };
+
+      setItemMasterData(itemData);
+
+      // ✅ AUTO-POPULATE: If we have a subcategory ID and type, automatically get category, group, and item code
+      if (itemData.sub_c_id && itemData.type) {
+        // console.log(
+        //   "Auto-populating category, group, and item code for edit mode",
+        //   itemData.sub_c_id,
+        //   itemData.type
+        // );
+        await getCategoryGroupAndItemCodeBySubCategoryId(
+          itemData.type,
+          itemData.sub_c_id
+        );
+      }
     } catch (error) {
       console.log("fetchitemById error:", error);
     }
   };
 
-  // Start Editing
+  const fetchItemSubCategoryById = async (id) => {
+    try {
+      const res = await postData(ENDPOINTS.ITEM_MASTER.DETAILS, { id });
+      const item = res.data;
+
+      // Only return subcategory info
+      const subCategoryData = item?.subcategory?.id
+        ? {
+            sub_c_id: Number(item.subcategory.id),
+            sub_c_name: item.subcategory.sub_category_name || "",
+          }
+        : { sub_c_id: null, sub_c_name: "" };
+
+      return subCategoryData;
+    } catch (error) {
+      console.log("fetch subcategory error:", error);
+      return { sub_c_id: null, sub_c_name: "" };
+    }
+  };
+
   const StartEditing = (item_id) => {
     // console.log("StartEditing called with:", item_id);
     setItemEditId(item_id);
@@ -308,6 +549,7 @@ export const ItemMasterProvider = ({ children }) => {
         ResetItemMaster,
         EditItemMaster,
         StartEditing,
+        fetchItemSubCategoryById,
       }}
     >
       {children}

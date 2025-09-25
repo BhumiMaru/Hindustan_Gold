@@ -742,11 +742,17 @@ export default function PI_Item_Request_Form() {
   }, []);
 
   useEffect(() => {
-    console.log("id", id);
-    if (id) {
+    if (id && itemMaster.length > 0) {
       findById(id);
     }
-  }, [id]);
+  }, [id, itemMaster]);
+
+  // useEffect(() => {
+  //   // console.log("id", id);
+  //   if (id) {
+  //     findById(id);
+  //   }
+  // }, [id]);
 
   const handleAddItem = () => {
     setItems([
@@ -785,6 +791,7 @@ export default function PI_Item_Request_Form() {
       if (id) formData.append("id", id);
       formData.append("pi_type", type);
       formData.append("total_item", items.length);
+      console.log("pi items", items);
 
       items.forEach((item, index) => {
         formData.append(`items[${index}][item_id]`, item.requestedItem || "");
@@ -844,10 +851,13 @@ export default function PI_Item_Request_Form() {
     const selectedItem = itemMaster.find(
       (itm) => itm.id === Number(selectedId)
     );
+    console.log("selectedItem", selectedItem);
 
     if (selectedItem) {
       const storage = selectedItem?.storage_locations?.[0];
       const zone = selectedItem?.zones?.[0]?.zone;
+      console.log("storage", storage);
+      console.log("zone", zone);
 
       setItems((prev) =>
         prev.map((item) =>
@@ -860,8 +870,7 @@ export default function PI_Item_Request_Form() {
                 subcategory: selectedItem?.subcategory?.sub_category_name || "",
                 uom: selectedItem?.uom || "KG",
                 serviceLocation:
-                  storage?.service_location3?.service_location2
-                    ?.service_location1?.service_location_name || "",
+                  storage?.service_location3?.service_location_3_name || "",
                 zone: zone?.zone_name || "",
               }
             : item
@@ -918,6 +927,7 @@ export default function PI_Item_Request_Form() {
                       className="form-control"
                       id={`Category-${item.id}`}
                       placeholder="Category"
+                      disabled
                       value={item.category}
                       readOnly
                     />
@@ -934,6 +944,7 @@ export default function PI_Item_Request_Form() {
                       type="text"
                       className="form-control"
                       id={`Subcategory-${item.id}`}
+                      disabled
                       placeholder="Subcategory"
                       value={item.subcategory}
                       readOnly
@@ -971,6 +982,7 @@ export default function PI_Item_Request_Form() {
                       type="text"
                       className="form-control"
                       id={`UnitofMeasure-${item.id}`}
+                      disabled
                       placeholder="UOM"
                       value={item.uom}
                       readOnly
@@ -988,8 +1000,9 @@ export default function PI_Item_Request_Form() {
                       type="text"
                       className="form-control"
                       id={`ServiceLocation-${item.id}`}
+                      disabled
                       placeholder="Service Location"
-                      value={item.serviceLocation}
+                      value={item.serviceLocation3}
                       readOnly
                     />
                   </div>
@@ -1001,12 +1014,14 @@ export default function PI_Item_Request_Form() {
                     <input
                       type="text"
                       className="form-control"
+                      disabled
                       id={`Zone-${item.id}`}
                       placeholder="Zone"
                       value={item.zone}
                       readOnly
                     />
                   </div>
+                  {console.log("item", item)}
 
                   <div className="col-sm-3 mb-3">
                     <CustomSelect

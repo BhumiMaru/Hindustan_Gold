@@ -92,7 +92,7 @@ export default function Item_Create_Material_Form() {
         ResetItemMaster();
       } else {
         await createItemMaster(payload);
-        console.log("item create ", payload);
+        // console.log("item create ", payload);
         toast.success("Item Created Successfully!");
         navigate("/item/item-master");
         fetchItemMaster();
@@ -136,6 +136,7 @@ export default function Item_Create_Material_Form() {
                         id="Group"
                         placeholder="Group"
                         readOnly
+                        disabled
                         value={itemMasterData?.group_name || ""}
                       />
                     </div>
@@ -151,6 +152,7 @@ export default function Item_Create_Material_Form() {
                         id="Category"
                         placeholder="Category"
                         readOnly
+                        disabled
                         value={itemMasterData?.c_name || ""}
                       />
                     </div>
@@ -174,7 +176,7 @@ export default function Item_Create_Material_Form() {
                             }));
                             getCategoryGroupAndItemCodeBySubCategoryId(
                               type,
-                              val
+                              Number(val)
                             );
                           }}
                           placeholder="Select SubCategory"
@@ -240,6 +242,7 @@ export default function Item_Create_Material_Form() {
                           id="ItemCode"
                           placeholder="Item Code"
                           readOnly
+                          disabled
                           value={itemMasterData?.item_code || ""}
                         />
                       </div>

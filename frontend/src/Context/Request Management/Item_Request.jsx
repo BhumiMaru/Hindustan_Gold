@@ -525,37 +525,94 @@ export const ItemRequestProvider = ({ children }) => {
   };
 
   // FIXED: Prefill Data while edit - Use item_request_id instead of workflowId
+  // const fetchItemRequestById = async (itemRequestId) => {
+  //   try {
+  //     console.log("Fetching item request with ID:", itemRequestId);
+
+  //     const res = await postData(ENDPOINTS.ITEM_REQUEST.DETAILS, {
+  //       workflowId: itemRequestId,
+  //     });
+
+  //     console.log("API Response:", res);
+
+  //     if (res.status && res.data) {
+  //       const data = res.data;
+  //       setItemRequestData((prev) => ({
+  //         ...prev,
+  //         item_id: data.item_id,
+  //         item_type: data.item_type,
+  //         c_id: data.item_request.c_id,
+  //         sub_c_id: data.item_request.sub_c_id,
+  //         item_code: data.item_request.item_code,
+  //         service_location_1_id: data.item_request.service_location_1_id,
+  //         service_location_2_id: data.item_request.service_location_2_id,
+  //         service_location_3_id: data.item_request.service_location_3_id,
+  //         purpose: data.item_request.purpose,
+  //         quantity: data.item_request.quantity,
+  //         uom: data.item_request.uom,
+  //         remarks: data.item_request.remarks,
+  //         receiving_person: data.item_request.receiving_person,
+  //       }));
+  //       toast.success("Item request loaded successfully");
+  //     } else {
+  //       toast.error(res.message || "Item request not found");
+  //     }
+  //   } catch (error) {
+  //     console.error("fetchItemRequestById error", error);
+  //     if (error.response?.status === 404) {
+  //       toast.error("Item request not found. Please check the ID.");
+  //     } else {
+  //       toast.error("Failed to fetch item request");
+  //     }
+  //   }
+  // };
+
   const fetchItemRequestById = async (itemRequestId) => {
     try {
-      console.log("Fetching item request with ID:", itemRequestId);
-
       const res = await postData(ENDPOINTS.ITEM_REQUEST.DETAILS, {
-        workflowId: itemRequestId,
+        workflowId: itemRequestId, // ✅ use request id, not workflowId
       });
-
-      console.log("API Response:", res);
 
       if (res.status && res.data) {
         const data = res.data;
-        setItemRequestData((prev) => ({
-          ...prev,
+
+        setItemRequestData({
+          // --- workflow level ---
+          workflow_id: data.id,
           item_id: data.item_id,
+          item_name: data.item_name,
           item_type: data.item_type,
-          c_id: data.c_id,
+          item_request_id: data.item_request_id,
+          request_id: data.request_id,
+          request_user_id: data.request_user_id,
+          item_request_user_id: data.item_request_user_id,
           sub_c_id: data.sub_c_id,
-          item_code: data.item_code,
-          service_location_1_id: data.service_location_1_id,
-          service_location_2_id: data.service_location_2_id,
-          service_location_3_id: data.service_location_3_id,
-          purpose: data.purpose,
-          quantity: data.quantity,
-          uom: data.uom,
-          remarks: data.remarks,
-          receiving_person: data.receiving_person,
-        }));
-        toast.success("Item request loaded successfully");
+          status: data.status,
+          task_level: data.task_level,
+          reject_remark: data.reject_remark,
+          final_approve_status: data.final_approve_status,
+          created_at: data.created_at,
+          updated_at: data.updated_at,
+
+          // --- item_request level ---
+          c_id: data.item_request?.c_id,
+          item_code: data.item_request?.item_code,
+          service_location_1_id: data.item_request?.service_location_1_id,
+          service_location_2_id: data.item_request?.service_location_2_id,
+          service_location_3_id: data.item_request?.service_location_3_id,
+          purpose: data.item_request?.purpose,
+          quantity: data.item_request?.quantity,
+          uom: data.item_request?.uom,
+          remarks: data.item_request?.remarks,
+          receiving_person: data.item_request?.receiving_person,
+
+          // --- nested item_master inside item_request ---
+          item_master: data.item_request?.item_master || null,
+        });
+
+        // toast.success("Item request loaded successfully");
       } else {
-        toast.error(res.message || "Item request not found");
+        toast.error(res.message);
       }
     } catch (error) {
       console.error("fetchItemRequestById error", error);
@@ -575,15 +632,15 @@ export const ItemRequestProvider = ({ children }) => {
   // FIXED: Edit Item Request
   const editItemRequest = async (id, payload) => {
     try {
-      console.log("Editing item request with ID:", id);
-      console.log("Payload:", payload);
+      // console.log("Editing item request with ID:", id);
+      // console.log("Payload:", payload);
 
       const res = await postData(ENDPOINTS.ITEM_REQUEST.ADD_UPDATE, {
         id: id, // Ensure ID is included
         ...payload,
       });
 
-      console.log("Edit Response:", res);
+      // console.log("Edit Response:", res);
 
       if (res.status) {
         setItemRequestData(res.data);

@@ -4,8 +4,13 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export default function PI_Request_Table() {
   const { type, id } = useParams();
-  const { piRequest, StartEditing, DeletePiRequest, pagination } =
-    usePIRequest();
+  const {
+    piRequest,
+    StartEditing,
+    DeletePiRequest,
+    pagination,
+    singleApprove,
+  } = usePIRequest();
   const [expandedRows, setExpandedRows] = useState({});
   const navigate = useNavigate();
 
@@ -33,7 +38,7 @@ export default function PI_Request_Table() {
           </tr>
         </thead>
         <tbody>
-          {piRequest.map((pi, index) => (
+          {piRequest?.map((pi, index) => (
             <React.Fragment key={index}>
               <tr key={pi.id}>
                 <td
@@ -92,7 +97,7 @@ export default function PI_Request_Table() {
                 </td>
               </tr>
 
-              {expandedRows[pi.id] && pi?.items.length > 0 && (
+              {expandedRows[pi.id] && pi?.piitems.length > 0 && (
                 <tr key={pi.id}>
                   <style
                     dangerouslySetInnerHTML={{
@@ -128,7 +133,7 @@ export default function PI_Request_Table() {
                         </tr>
                       </thead>
                       <tbody>
-                        {pi?.items?.map((piItem) => (
+                        {pi?.piitems?.map((piItem) => (
                           <tr>
                             <td className="dt-select">
                               <div className="ms-4">
@@ -183,6 +188,7 @@ export default function PI_Request_Table() {
                                 <i className="icon-base ti tabler-info-circle text-dark  icon-20px" />
                               </a>
                             </td>
+                            {console.log("pi utem", piItem)}
                             <td>
                               <span
                                 className={`badge ${
@@ -199,7 +205,16 @@ export default function PI_Request_Table() {
                             <td>
                               <div className="d-inline-flex gap-2">
                                 <div className="badge rounded bg-label-success p-1_5">
-                                  <i className="icon-base ti tabler-circle-check icon-md" />
+                                  <i
+                                    className="icon-base ti tabler-circle-check icon-md cursor-pointer"
+                                    onClick={() => {
+                                      console.log(
+                                        "ghello",
+                                        piItem.pi_request_id
+                                      );
+                                      singleApprove(piItem.id);
+                                    }}
+                                  />
                                 </div>
                                 <div className="badge bg-label-danger rounded p-1_5">
                                   <i className="icon-base ti tabler-xbox-x icon-md" />

@@ -7,11 +7,11 @@ export default function PI_Item_Request_Page() {
   return (
     <>
       {/* -----------------START PI ITEM REQUEST [PAGE]-------------------- */}
-      <PIRequestProvider>
-        <ItemMasterProvider>
+      <ItemMasterProvider>
+        <PIRequestProvider>
           <PI_Item_Request_Form />
-        </ItemMasterProvider>
-      </PIRequestProvider>
+        </PIRequestProvider>
+      </ItemMasterProvider>
       {/* -----------------END PI ITEM REQUEST [PAGE]-------------------- */}
     </>
   );

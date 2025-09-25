@@ -522,7 +522,7 @@ export default function Item_Request_Form() {
 
   // FIXED: Enhanced useEffect for data loading
   useEffect(() => {
-    console.log("Component mounted with type:", type, "id:", id);
+    // console.log("Component mounted with type:", type, "id:", id);
 
     getItemRequestData();
     fetchServiceLocations3();
@@ -535,7 +535,7 @@ export default function Item_Request_Form() {
 
     // If editing, fetch details
     if (id) {
-      console.log("Editing mode - ID:", id);
+      // console.log("Editing mode - ID:", id);
       setEditId(id);
       // Use setTimeout to ensure other data is loaded first
       setTimeout(() => {
@@ -543,11 +543,6 @@ export default function Item_Request_Form() {
       }, 100);
     }
   }, [id, type]);
-
-  // Debug effect to log state changes
-  useEffect(() => {
-    console.log("Item Request Data updated:", itemRequestData);
-  }, [itemRequestData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -561,10 +556,10 @@ export default function Item_Request_Form() {
     const payload = {
       ...itemRequestData,
       // Ensure we're sending the correct ID for edit
-      ...(id && { id: id }),
+      ...(id && { id: itemRequestData.request_id }),
     };
 
-    console.log("Submitting payload:", payload);
+    // console.log("Submitting payload:", payload);
 
     try {
       if (id) {
