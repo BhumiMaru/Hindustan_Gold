@@ -108,5 +108,7 @@ export const ENDPOINTS = {
     DELETE: "/pi/request/delete",
     SINGLEAPPROVE: "/pi/request/singleapprove",
     BULKAPPROVE: "/pi/request/bulkapprove",
+    SINGLEREJECT: "/pi/request/singlereject",
+    BULKREJECT: "/pi/request/bulkreject",
   },
 };

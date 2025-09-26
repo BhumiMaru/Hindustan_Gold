@@ -791,7 +791,7 @@ export default function PI_Item_Request_Form() {
       if (id) formData.append("id", id);
       formData.append("pi_type", type);
       formData.append("total_item", items.length);
-      console.log("pi items", items);
+      // console.log("pi items", items);
 
       items.forEach((item, index) => {
         formData.append(`items[${index}][item_id]`, item.requestedItem || "");
@@ -851,13 +851,13 @@ export default function PI_Item_Request_Form() {
     const selectedItem = itemMaster.find(
       (itm) => itm.id === Number(selectedId)
     );
-    console.log("selectedItem", selectedItem);
+    // console.log("selectedItem", selectedItem);
 
     if (selectedItem) {
       const storage = selectedItem?.storage_locations?.[0];
       const zone = selectedItem?.zones?.[0]?.zone;
-      console.log("storage", storage);
-      console.log("zone", zone);
+      // console.log("storage", storage);
+      // console.log("zone", zone);
 
       setItems((prev) =>
         prev.map((item) =>
@@ -1021,7 +1021,7 @@ export default function PI_Item_Request_Form() {
                       readOnly
                     />
                   </div>
-                  {console.log("item", item)}
+                  {/* {console.log("item", item)} */}
 
                   <div className="col-sm-3 mb-3">
                     <CustomSelect

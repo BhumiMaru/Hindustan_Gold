@@ -4,17 +4,45 @@ import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import PI_Request_Table from "./PI_Request_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import { usePIRequest } from "../../../../../Context/PIAndPoManagement/PIRequestList";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
+import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
+import { useDepartment } from "../../../../../Context/Master/DepartmentContext";
+import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 
 export default function PI_Request_List() {
-  const [search, setSearch] = useState("");
   const {
+    search,
+    setSearch,
     getPIRequest,
     activeTab,
     pagination,
     setPagination,
     setActiveTab,
     piRequest,
+    selectedType,
+    setSelectedType,
+    itemName,
+    setItemName,
+    department,
+    setDepartment,
+    orderBy,
+    setOrderBy,
+    status,
+    setStatus,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
   } = usePIRequest();
+  const { setFilterItem, fetchItemFilter, filterItem } = useItemRequest();
+  const { deptFilter, setDeptFilter, fetchDeptFilter } = useDepartment();
+  const { filterUser, fetchUserFilter, setFilterUser } = useUserCreation();
+
+  useEffect(() => {
+    fetchItemFilter();
+    fetchDeptFilter();
+    fetchUserFilter();
+  }, []);
 
   useEffect(() => {
     getPIRequest({
@@ -22,7 +50,19 @@ export default function PI_Request_List() {
       page: pagination.currentPage,
       perPage: pagination.perPage,
     });
-  }, [activeTab, pagination.currentPage, pagination.perPage]);
+  }, [
+    activeTab,
+    selectedType,
+    itemName,
+    department,
+    orderBy,
+    search,
+    status,
+    startDate,
+    endDate,
+    pagination.currentPage,
+    pagination.perPage,
+  ]);
 
   const handlePageChange = (page) => {
     setPagination((prev) => ({ ...prev, currentPage: page }));
@@ -139,91 +179,113 @@ export default function PI_Request_List() {
           <div className="row px-3 pb-2 ">
             <div className="col-lg-3">
               <div className="position-relative">
-                <select
-                  id="select10Basic"
-                  className="select2 form-select select2-hidden-accessible"
-                  data-select2-id="select10Basic"
-                  tabIndex={-1}
-                  aria-hidden="true"
-                >
-                  <option value="AK" data-select2-id={2}>
-                    Select&nbsp;Type
-                  </option>
-                  <option value="HI">Material</option>
-                  <option value="CA">Services</option>
-                  <option value="NV">Asset</option>
-                </select>
+                <CustomSelect
+                  id="selectItemType"
+                  options={[
+                    {
+                      value: "all",
+                      label: "Select Item Type",
+                    },
+                    {
+                      value: "material",
+                      label: "Material",
+                    },
+                    {
+                      value: "service",
+                      label: "Service",
+                    },
+                    {
+                      value: "asset",
+                      label: "Asset",
+                    },
+                  ]}
+                  value={selectedType}
+                  onChange={setSelectedType}
+                  placeholder="Select Item"
+                />
               </div>
             </div>
             <div className="col-lg-3">
               <div className="position-relative">
-                <select
-                  id="select7Basic"
-                  className="select2 form-select select2-hidden-accessible"
-                  data-select2-id="select7Basic"
-                  tabIndex={-1}
-                  aria-hidden="true"
-                >
-                  <option value="AK" data-select2-id={4}>
-                    Select&nbsp;Item
-                  </option>
-                  <option value="HI">Item 1</option>
-                  <option value="CA">Item 2</option>
-                  <option value="NV">Item 3</option>
-                </select>
+                <CustomSelect
+                  id="selectItemName"
+                  options={[
+                    { value: "all", label: "All Items" }, // ✅ All option first
+                    ...(filterItem?.map((item) => ({
+                      value: item.item_id,
+                      label: item.item_name,
+                    })) || []),
+                  ]}
+                  value={itemName}
+                  onChange={setItemName}
+                  placeholder="Select Item"
+                />
               </div>
             </div>
             <div className="col-lg-3">
               <div className="position-relative">
-                <select
-                  id="select12Basic"
-                  className="select2 form-select select2-hidden-accessible"
-                  data-select2-id="select12Basic"
-                  tabIndex={-1}
-                  aria-hidden="true"
-                >
-                  <option value="AK" data-select2-id={6}>
-                    Select&nbsp;Department
-                  </option>
-                  <option value="HI">Department</option>
-                  <option value="CA">Department</option>
-                  <option value="NV">Department</option>
-                </select>
+                <CustomSelect
+                  id="selectDept"
+                  options={[
+                    { value: "all", label: "All Departments" }, // ✅ All option first
+                    ...(deptFilter?.map((dept) => ({
+                      value: dept.id,
+                      label: dept.department_name,
+                    })) || []),
+                  ]}
+                  value={department}
+                  onChange={setDepartment}
+                  placeholder="Select Department"
+                />
               </div>
             </div>
             <div className="col-lg-3 ">
               <div className="position-relative">
-                <select
-                  id="select11Basic"
-                  className="select2 form-select select2-hidden-accessible"
-                  data-select2-id="select11Basic"
-                  tabIndex={-1}
-                  aria-hidden="true"
-                >
-                  <option value="AK" data-select2-id={8}>
-                    Select&nbsp;Created By
-                  </option>
-                  <option value="HI">Created</option>
-                  <option value="CA">Created</option>
-                  <option value="NV">Created</option>
-                </select>
+                <CustomSelect
+                  id="selectUser"
+                  options={[
+                    { value: "all", label: "All Users" }, // ✅ All option first
+                    ...(filterUser?.map((user) => ({
+                      value: user.id,
+                      label: user.name,
+                    })) || []),
+                  ]}
+                  value={orderBy}
+                  onChange={setOrderBy}
+                  placeholder="Select Created By"
+                />
               </div>
             </div>
             <div className="col-lg-3 mt-2">
               <div className="position-relative">
-                <select
-                  id="select9Basic"
-                  className="select2 form-select select2-hidden-accessible"
-                  data-select2-id="select9Basic"
-                  tabIndex={-1}
-                  aria-hidden="true"
-                >
-                  <option value="AK" data-select2-id={10}>
-                    Select&nbsp;Status
-                  </option>
-                  <option value="HI">Active</option>
-                  <option value="CA">Deactive</option>
-                </select>
+                <CustomSelect
+                  id="selectItemStatus"
+                  options={[
+                    {
+                      value: "all",
+                      label: "Select Status",
+                    },
+                    {
+                      value: "pending",
+                      label: "Pending",
+                    },
+                    {
+                      value: "approved",
+                      label: "Approved",
+                    },
+                    {
+                      value: "completed",
+                      label: "Completed",
+                    },
+                    {
+                      value: "reject",
+                      label: "Reject",
+                    },
+                  ]}
+                  value={status}
+                  onChange={setStatus}
+                  placeholder="Select Item Status"
+                />
               </div>
             </div>
             <div className="col-lg-3 mt-2">
@@ -232,6 +294,17 @@ export default function PI_Request_List() {
                 id="bs-rangepicker-range"
                 className="form-control"
               />
+              {/* <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              /> */}
             </div>
           </div>
           <div className="card-datatable">

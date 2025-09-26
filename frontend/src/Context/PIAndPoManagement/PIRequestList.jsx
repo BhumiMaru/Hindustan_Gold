@@ -40,14 +40,91 @@ export const PIRequestProvider = ({ children }) => {
     total: 0,
   });
 
+  // Select Checkbox
+  const [selectedItems, setSelectedItems] = useState([]);
+  // Filteration state
+  const [search, setSearch] = useState("");
+  const [selectedType, setSelectedType] = useState("all");
+  const [itemName, setItemName] = useState("all");
+  const [department, setDepartment] = useState("all");
+  const [orderBy, setOrderBy] = useState("all");
+  const [status, setStatus] = useState("all");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  // Toggle single item
+  const handleSelectItem = (itemId) => {
+    setSelectedItems(
+      (prev) =>
+        prev.includes(itemId)
+          ? prev.filter((id) => id !== itemId) // uncheck
+          : [...prev, itemId] // check
+    );
+  };
+
+  // Toggle all items of a PI
+  const handleSelectAll = (piItems) => {
+    const itemIds = piItems.map((item) => item.id);
+    const isAllSelected = itemIds.every((id) => selectedItems.includes(id));
+
+    if (isAllSelected) {
+      // Uncheck all
+      setSelectedItems((prev) => prev.filter((id) => !itemIds.includes(id)));
+    } else {
+      // Check all
+      setSelectedItems((prev) => [...new Set([...prev, ...itemIds])]); //The Set is used to avoid duplicate IDs when you add items.
+      // [...new Set([1, 2, 2, 3])] → [1, 2, 3]   // ✅ duplicates removed
+    }
+  };
+
   // Get All PI Requests
   const getPIRequest = async ({
+    // type = activeTab,
+    // pi_type,
+    // item_id,
+    // departmant_id,
+    // order_by,
+    // status,
+    // search,
+    // page = 1,
+    // perPage = 10,
     type = activeTab,
+    pi_type = selectedType,
+    item_id = itemName,
+    departmant_id = department,
+    order_by = orderBy,
+    status: statusFilter = status,
+    search: searchText = search,
+    start_date = startDate,
+    end_date = endDate,
     page = 1,
     perPage = 10,
   } = {}) => {
     try {
-      const payload = { type, page, per_page: perPage };
+      // const payload = {
+      //   type,
+      //   pi_type,
+      //   item_id,
+      //   departmant_id,
+      //   order_by,
+      //   status,
+      //   search,
+      //   page,
+      //   per_page: perPage,
+      // };
+      const payload = {
+        type,
+        pi_type: pi_type !== "all" ? pi_type : undefined,
+        item_id: item_id !== "all" ? item_id : undefined,
+        departmant_id: departmant_id !== "all" ? departmant_id : undefined,
+        order_by: order_by !== "all" ? orderBy : undefined,
+        status: statusFilter !== "all" ? statusFilter : undefined,
+        search: searchText || undefined,
+        start_date: start_date || undefined,
+        end_date: end_date || undefined,
+        page,
+        per_page: perPage,
+      };
       const res = await postData(ENDPOINTS.PI_REQUEST.LIST, payload);
       const apiData = res.data;
       setPiRequest(apiData.data || []);
@@ -94,7 +171,7 @@ export const PIRequestProvider = ({ children }) => {
   const setItemDetailsFromMaster = (itemId, itemData, itemMaster) => {
     const selectedItem = itemMaster.find((itm) => itm.id === Number(itemId));
     if (!selectedItem) return itemData;
-    console.log("selectedItem selectedItem", selectedItem);
+    // console.log("selectedItem selectedItem", selectedItem);
 
     const storage = selectedItem?.storage_locations?.[0];
     let serviceLocation1 = "";
@@ -118,17 +195,17 @@ export const PIRequestProvider = ({ children }) => {
         ? selectedItem.zones[0]?.zone?.zone_name
         : "";
 
-    console.log({
-      ...itemData,
-      item_name: selectedItem?.item_name || "",
-      category: selectedItem?.category?.category_name || "",
-      subcategory: selectedItem?.subcategory?.sub_category_name || "",
-      uom: selectedItem?.uom || "KG",
-      zone: zoneName || "",
-      serviceLocation1,
-      serviceLocation2,
-      serviceLocation3,
-    });
+    // console.log({
+    //   ...itemData,
+    //   item_name: selectedItem?.item_name || "",
+    //   category: selectedItem?.category?.category_name || "",
+    //   subcategory: selectedItem?.subcategory?.sub_category_name || "",
+    //   uom: selectedItem?.uom || "KG",
+    //   zone: zoneName || "",
+    //   serviceLocation1,
+    //   serviceLocation2,
+    //   serviceLocation3,
+    // });
 
     return {
       ...itemData,
@@ -149,7 +226,7 @@ export const PIRequestProvider = ({ children }) => {
       const res = await postData(ENDPOINTS.PI_REQUEST.DETAILS, { id });
       if (res?.status) {
         const piRequestData = res.data.piitems;
-        console.log("pi request", piRequestData);
+        // console.log("pi request", piRequestData);
         setItems(
           piRequestData?.map((it, index) =>
             setItemDetailsFromMaster(
@@ -201,7 +278,6 @@ export const PIRequestProvider = ({ children }) => {
   // --------------------Request ----------------------- //
 
   // Single Approve
-  // Single Approve
   const singleApprove = async (pi_request_item_id) => {
     try {
       const payload = { pi_request_item_id }; // ✅ send pi_request_id
@@ -221,9 +297,12 @@ export const PIRequestProvider = ({ children }) => {
   };
 
   // Bulk Approve
-  const bulkApprove = async (pi_request_item_ids) => {
+  const bulkApprove = async (payload) => {
     try {
-      const payload = { pi_request_item_id: pi_request_item_ids }; // ✅ usually backend expects array of ids
+      // const payload = {
+      //   pi_request_item_ids,
+      //   pi_request_id,
+      // }; // ✅ usually backend expects array of ids
       const res = await postData(ENDPOINTS.PI_REQUEST.BULKAPPROVE, payload);
 
       if (res?.status) {
@@ -239,15 +318,69 @@ export const PIRequestProvider = ({ children }) => {
     }
   };
 
+  //  Single Reject
+  const singleReject = async (payload) => {
+    try {
+      // const payload = { pi_request_item_id, pi_request_id };
+      const res = await postData(ENDPOINTS.PI_REQUEST.SINGLEREJECT, payload);
+      if (res?.status) {
+        toast.success(res.message || "Single Reject successful!");
+        getPIRequest();
+      } else {
+        toast.error(res.message || "Single Reject failed");
+      }
+      return res;
+    } catch (error) {
+      toast.error("Error during Single Reject");
+      console.error("Single Reject PIRequest error:", error);
+    }
+  };
+
+  // Bulk Reject
+  const bulkReject = async (payload) => {
+    try {
+      const res = await postData(ENDPOINTS.PI_REQUEST.BULKREJECT, payload);
+
+      if (res?.status) {
+        toast.success(res.message || "Bulk Reject successful!");
+        getPIRequest();
+      } else {
+        toast.error(res.message || "Bulk Reject failed");
+      }
+      return res;
+    } catch (error) {
+      toast.error("Error during bulk Reject");
+      console.error("Bulk Reject PIRequest error:", error);
+    }
+  };
+
   return (
     <PIRequestContext.Provider
       value={{
         activeTab,
         piRequest,
         pagination,
+        selectedItems,
+        selectedType,
+        setSelectedType,
+        setSelectedItems,
         setPagination,
         setItems,
         items,
+        itemName,
+        setItemName,
+        department,
+        setDepartment,
+        orderBy,
+        setOrderBy,
+        status,
+        setStatus,
+        startDate,
+        setStartDate,
+        endDate,
+        setEndDate,
+        search,
+        setSearch,
         setPiRequest,
         getPIRequest,
         CreatePIRequest,
@@ -258,6 +391,10 @@ export const PIRequestProvider = ({ children }) => {
         setActiveTab,
         singleApprove,
         bulkApprove,
+        handleSelectItem,
+        handleSelectAll,
+        singleReject,
+        bulkReject,
       }}
     >
       {children}

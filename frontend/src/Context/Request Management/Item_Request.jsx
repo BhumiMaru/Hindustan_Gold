@@ -432,11 +432,16 @@ export const ItemRequestProvider = ({ children }) => {
     type: "",
     item_type: "",
     c_id: null,
+    category_name: "",
     sub_c_id: null,
+    sub_category_name: "",
     item_code: null,
     service_location_1_id: null,
+    service_location_1_name: "",
     service_location_2_id: null,
+    service_location_2_name: "",
     service_location_3_id: null,
+    service_location_3_name: "",
     purpose: "",
     quantity: null,
     uom: null,
@@ -569,58 +574,73 @@ export const ItemRequestProvider = ({ children }) => {
 
   const fetchItemRequestById = async (itemRequestId) => {
     try {
+      // console.log("Fetching item request with ID:", itemRequestId);
+
       const res = await postData(ENDPOINTS.ITEM_REQUEST.DETAILS, {
-        workflowId: itemRequestId, // ✅ use request id, not workflowId
+        workflowId: itemRequestId,
       });
+
+      // console.log("API Response:", res);
 
       if (res.status && res.data) {
         const data = res.data;
+        const itemRequest = data.item_request;
+        const item = itemRequest?.item;
+        const storageLocation = item?.storage_locations?.[0];
 
+        // Set the form data with proper mapping
         setItemRequestData({
-          // --- workflow level ---
-          workflow_id: data.id,
-          item_id: data.item_id,
-          item_name: data.item_name,
-          item_type: data.item_type,
-          item_request_id: data.item_request_id,
+          // IDs for storage
+          id: data.id,
           request_id: data.request_id,
-          request_user_id: data.request_user_id,
-          item_request_user_id: data.item_request_user_id,
-          sub_c_id: data.sub_c_id,
-          status: data.status,
-          task_level: data.task_level,
-          reject_remark: data.reject_remark,
-          final_approve_status: data.final_approve_status,
-          created_at: data.created_at,
-          updated_at: data.updated_at,
+          item_id: data.item_id,
+          item_type: data.item_type,
 
-          // --- item_request level ---
-          c_id: data.item_request?.c_id,
-          item_code: data.item_request?.item_code,
-          service_location_1_id: data.item_request?.service_location_1_id,
-          service_location_2_id: data.item_request?.service_location_2_id,
-          service_location_3_id: data.item_request?.service_location_3_id,
-          purpose: data.item_request?.purpose,
-          quantity: data.item_request?.quantity,
-          uom: data.item_request?.uom,
-          remarks: data.item_request?.remarks,
-          receiving_person: data.item_request?.receiving_person,
+          // Category and Subcategory
+          c_id: itemRequest?.c_id,
+          sub_c_id: itemRequest?.sub_c_id,
 
-          // --- nested item_master inside item_request ---
-          item_master: data.item_request?.item_master || null,
+          // Item details
+          item_code: itemRequest?.item_code,
+          uom: itemRequest?.uom,
+
+          // Service Locations - IDs
+          service_location_1_id: itemRequest?.service_location_1_id,
+          service_location_2_id: itemRequest?.service_location_2_id,
+          service_location_3_id: itemRequest?.service_location_3_id,
+
+          // Request details
+          purpose: itemRequest?.purpose,
+          quantity: itemRequest?.quantity,
+          remarks: itemRequest?.remarks,
+          receiving_person: itemRequest?.receiving_person,
+
+          // Display names for showing in form
+          category_name:
+            itemRequest?.item?.subcategory?.category?.category_name || "",
+          sub_category_name:
+            itemRequest?.item?.subcategory?.sub_category_name || "",
+          service_location_1_name:
+            storageLocation?.service_location3?.service_location2
+              ?.service_location1?.service_location_name || "",
+          service_location_2_name:
+            storageLocation?.service_location3?.service_location2
+              ?.service_location_2_name || "",
+          service_location_3_name:
+            storageLocation?.service_location3?.service_location_3_name || "",
+          item_name: data.item_name || "",
         });
 
         // toast.success("Item request loaded successfully");
+        return true;
       } else {
-        toast.error(res.message);
+        toast.error(res.message || "Item request not found");
+        return false;
       }
     } catch (error) {
       console.error("fetchItemRequestById error", error);
-      if (error.response?.status === 404) {
-        toast.error("Item request not found. Please check the ID.");
-      } else {
-        toast.error("Failed to fetch item request");
-      }
+      toast.error("Failed to fetch item request");
+      return false;
     }
   };
 
