@@ -5,6 +5,7 @@ import { ItemMasterProvider } from "../../Context/ItemManagement/ItemMasterConte
 import { ItemRequestProvider } from "../../Context/Request Management/Item_Request";
 import { DepartmentProvider } from "../../Context/Master/DepartmentContext";
 import { UserCreationProvider } from "../../Context/Master/UserCreationContext";
+import { GetQuoteProvider } from "../../Context/PIAndPoManagement/GetQuote";
 
 export default function PI_Request_List_Page() {
   return (
@@ -15,7 +16,9 @@ export default function PI_Request_List_Page() {
           <UserCreationProvider>
             <ItemMasterProvider>
               <PIRequestProvider>
-                <PI_Request_List />
+                <GetQuoteProvider>
+                  <PI_Request_List />
+                </GetQuoteProvider>
               </PIRequestProvider>
             </ItemMasterProvider>
           </UserCreationProvider>

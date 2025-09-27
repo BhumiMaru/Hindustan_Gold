@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { usePIRequest } from "../../../../../Context/PIAndPoManagement/PIRequestList";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Reject_Pi_request from "./Reject_Pi_request";
 import { useUIContext } from "../../../../../Context/UIContext";
 import { toast } from "react-toastify";
+import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
 
 export default function PI_Request_Table() {
   const { type, id } = useParams();
@@ -21,6 +22,7 @@ export default function PI_Request_Table() {
     singleReject,
     bulkReject,
   } = usePIRequest();
+  const { getQuoteCreate } = useGetQuote();
   const { modal, handleOpen } = useUIContext();
   const [expandedRows, setExpandedRows] = useState({});
   const navigate = useNavigate();
@@ -263,128 +265,125 @@ export default function PI_Request_Table() {
                         ))}
                       </tbody>
                     </table>
-                    {selectedItems.length > 0 && selectedItems && (
-                      <div className="text-center w-100">
-                        {activeTab === "approval_request" &&
-                          selectedItems.length > 0 && (
-                            <>
-                              <a
-                                href="pi-request-get-quote.html"
-                                className="btn btn-primary btn-sm mt-2 mb-2 waves-effect waves-light"
-                              >
-                                Get Quotation
-                              </a>
-                            </>
-                          )}
-                        <div className="d-inline-flex gap-2 ms-1">
-                          {activeTab === "approval_request" &&
-                            selectedItems.length > 0 && (
-                              <>
-                                <button
-                                  className="btn btn-success btn-sm waves-effect waves-light"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#servicesModal"
-                                  onClick={() => {
-                                    // Make sure selectedItems is not empty and get pi_request_id from first selected item
-                                    if (selectedItems.length > 0) {
-                                      const firstItem = pi?.piitems?.find(
-                                        (item) => {
-                                          return selectedItems.includes(
-                                            item.id
-                                          );
-                                        }
-                                      );
+                    {/* {selectedItems.length > 0 && selectedItems && ( */}
+                    <div className="text-center w-100">
+                      {/* {activeTab === "approval_request" &&
+                          selectedItems.length > 0 && ( */}
+                      <>
+                        <Link
+                          to="/po-material/pi-request-get-quote"
+                          className="btn btn-primary btn-sm mt-2 mb-2 waves-effect waves-light"
+                          onClick={() => {
+                            // navigate("/po-material/pi-request-get-quote");
+                            getQuoteCreate({
+                              pi_request_id: pi.id,
+                              pi_request_item_id: selectedItems,
+                            });
+                          }}
+                        >
+                          Get Quotation
+                        </Link>
+                      </>
+                      {/* )} */}
+                      <div className="d-inline-flex gap-2 ms-1">
+                        {/* {activeTab === "approval_request" &&
+                            selectedItems.length > 0 && ( */}
+                        <>
+                          <button
+                            className="btn btn-success btn-sm waves-effect waves-light"
+                            data-bs-toggle="modal"
+                            data-bs-target="#servicesModal"
+                            onClick={() => {
+                              // Make sure selectedItems is not empty and get pi_request_id from first selected item
+                              if (selectedItems.length > 0) {
+                                const firstItem = pi?.piitems?.find((item) => {
+                                  return selectedItems.includes(item.id);
+                                });
 
-                                      if (firstItem) {
-                                        bulkApprove({
-                                          pi_request_item_id: selectedItems,
-                                          pi_request_id:
-                                            firstItem.pi_request_id, // use the correct field
-                                        });
-                                      } else {
-                                        toast.error(
-                                          "Cannot find PI Request ID for selected items"
-                                        );
-                                      }
-                                    } else {
-                                      toast.error(
-                                        "No items selected for bulk approve"
-                                      );
-                                    }
-                                  }}
-                                >
-                                  Bulk Item Approve
-                                </button>
-                                <button
-                                  className="btn btn-danger btn-sm waves-effect waves-light"
-                                  onClick={() => {
-                                    // Make sure selectedItems is not empty and get pi_request_id from first selected item
-                                    if (selectedItems.length > 0) {
-                                      const firstItem = pi?.piitems?.find(
-                                        (item) => {
-                                          return selectedItems.includes(
-                                            item.id
-                                          );
-                                        }
-                                      );
+                                if (firstItem) {
+                                  bulkApprove({
+                                    pi_request_item_id: selectedItems,
+                                    pi_request_id: firstItem.pi_request_id, // use the correct field
+                                  });
+                                } else {
+                                  toast.error(
+                                    "Cannot find PI Request ID for selected items"
+                                  );
+                                }
+                              } else {
+                                toast.error(
+                                  "No items selected for bulk approve"
+                                );
+                              }
+                            }}
+                          >
+                            Bulk Item Approve
+                          </button>
+                          <button
+                            className="btn btn-danger btn-sm waves-effect waves-light"
+                            onClick={() => {
+                              // Make sure selectedItems is not empty and get pi_request_id from first selected item
+                              if (selectedItems.length > 0) {
+                                const firstItem = pi?.piitems?.find((item) => {
+                                  return selectedItems.includes(item.id);
+                                });
 
-                                      if (firstItem) {
-                                        bulkReject({
-                                          pi_request_item_id: selectedItems,
-                                          pi_request_id:
-                                            firstItem.pi_request_id, // use the correct field
-                                        });
-                                      } else {
-                                        toast.error(
-                                          "Cannot find PI Request ID for selected items"
-                                        );
-                                      }
-                                    } else {
-                                      toast.error(
-                                        "No items selected for bulk reject"
-                                      );
-                                    }
-                                  }}
-                                >
-                                  Bulk Item Reject
-                                </button>
-                                <button
-                                  className="btn btn-primary btn-sm waves-effect waves-light"
-                                  tabIndex={0}
-                                  aria-controls="DataTables_Table_0"
-                                  type="button"
-                                >
-                                  <span>
-                                    <i className="icon-base icon-16px ti tabler-plus me-md-2" />
-                                    <span className="d-md-inline-block d-none">
-                                      Upload Invoice
-                                    </span>
-                                  </span>
-                                </button>
-                              </>
-                            )}
+                                if (firstItem) {
+                                  bulkReject({
+                                    pi_request_item_id: selectedItems,
+                                    pi_request_id: firstItem.pi_request_id, // use the correct field
+                                  });
+                                } else {
+                                  toast.error(
+                                    "Cannot find PI Request ID for selected items"
+                                  );
+                                }
+                              } else {
+                                toast.error(
+                                  "No items selected for bulk reject"
+                                );
+                              }
+                            }}
+                          >
+                            Bulk Item Reject
+                          </button>
+                          <button
+                            className="btn btn-primary btn-sm waves-effect waves-light"
+                            tabIndex={0}
+                            aria-controls="DataTables_Table_0"
+                            type="button"
+                          >
+                            <span>
+                              <i className="icon-base icon-16px ti tabler-plus me-md-2" />
+                              <span className="d-md-inline-block d-none">
+                                Upload Invoice
+                              </span>
+                            </span>
+                          </button>
+                        </>
+                        {/* )} */}
 
-                          {activeTab === "my_request" &&
-                            selectedItems.length > 0 && (
-                              <div className="pt-1 pb-1">
-                                <button
-                                  className="btn btn-info btn-sm waves-effect waves-light"
-                                  tabIndex={0}
-                                  aria-controls="DataTables_Table_0"
-                                  type="button"
-                                >
-                                  <span>
-                                    <i className="icon-base icon-18px ti tabler-circle-check me-md-2" />
-                                    <span className="d-md-inline-block d-none">
-                                      Service Received
-                                    </span>
-                                  </span>
-                                </button>
-                              </div>
-                            )}
+                        {/* {activeTab === "my_request" &&
+                            selectedItems.length > 0 && ( */}
+                        <div className="pt-1 pb-1">
+                          <button
+                            className="btn btn-info btn-sm waves-effect waves-light"
+                            tabIndex={0}
+                            aria-controls="DataTables_Table_0"
+                            type="button"
+                          >
+                            <span>
+                              <i className="icon-base icon-18px ti tabler-circle-check me-md-2" />
+                              <span className="d-md-inline-block d-none">
+                                Service Received
+                              </span>
+                            </span>
+                          </button>
                         </div>
+                        {/* )} */}
                       </div>
-                    )}
+                    </div>
+                    {/* )} */}
                   </td>
                 </tr>
               )}

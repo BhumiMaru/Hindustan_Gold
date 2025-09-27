@@ -349,6 +349,17 @@ export default function SideBar() {
               </ul>
             </li>
           )}
+
+          {/* UOM */}
+          <li
+            className={`menu-item ${activeMenu === "Uom" ? "active" : ""}`}
+            onClick={() => toggleMenu("Uom")}
+          >
+            <Link to="/uom" className="menu-link cursor-pointer">
+              <i className="menu-icon ti tabler-ruler"></i>
+              <div data-i="Uom">Uom</div>
+            </Link>
+          </li>
         </ul>
       </aside>
     </>

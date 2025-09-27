@@ -41,6 +41,7 @@ import Item_Create_Material_Form from "../Pages/ItemManagement/components/ItemMa
 import Vendor_List_page from "../Pages/PaymentManagement/Vendor_List_page";
 import { useUIContext } from "../Context/UIContext";
 import { ItemRequestProvider } from "../Context/Request Management/Item_Request";
+import UOMPage from "../Pages/UOM/UOMPage";
 
 export default function AppRoutes() {
   const { isOpenSmallSidebar, closeSmallSidebar } = useUIContext();
@@ -306,6 +307,9 @@ export default function AppRoutes() {
           path="/payment-management/vendor-list"
           element={<Vendor_List_page />}
         />
+
+        {/* UOM (unit of measure) */}
+        <Route path="/uom" element={<UOMPage />} />
 
         {/* Catch all (404) */}
         <Route
