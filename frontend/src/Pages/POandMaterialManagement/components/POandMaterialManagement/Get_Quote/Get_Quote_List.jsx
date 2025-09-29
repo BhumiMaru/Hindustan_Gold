@@ -1,9 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import Get_Quote_Table from "./Get_Quote_Table";
+import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
 
 export default function Get_Quote_List() {
+  const { search, getQuoteList, setPagination, pagination, setSearch } =
+    useGetQuote();
+
+  useEffect(() => {
+    getQuoteList({
+      search,
+      page: pagination.currentPage,
+      perPage: pagination.perPage,
+    });
+  }, [search, pagination.currentPage, pagination.perPage]);
+
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
+  };
+
   return (
     <>
       {/* ---------------START GET QUOTE LIST------------------ */}
@@ -13,7 +33,12 @@ export default function Get_Quote_List() {
           <div className="d-flex justify-content-between p-3">
             <div className="d-flex align-items-center ">
               {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
-              <SearchBar />
+              <SearchBar
+                placeholder="Search Request..."
+                value={search}
+                onChange={setSearch}
+                onSubmit={(val) => setSearch(val)}
+              />
             </div>
             <div>
               {/*<a href="request-list.html" className="btn btn-primary waves-effect waves-light"
@@ -70,7 +95,13 @@ export default function Get_Quote_List() {
           />
           <div className="card-datatable">
             <Get_Quote_Table />
-            <Pagination />
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalItems={pagination.total}
+              itemsPerPage={pagination.perPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
           </div>
         </div>
       </div>

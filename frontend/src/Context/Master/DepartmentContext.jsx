@@ -102,6 +102,7 @@ export const DepartmentProvider = ({ children }) => {
         setDeptName,
         deptFilter,
         pagination,
+        setDeptFilter,
 
         fetchDeptFilter,
         fetchDepartments,

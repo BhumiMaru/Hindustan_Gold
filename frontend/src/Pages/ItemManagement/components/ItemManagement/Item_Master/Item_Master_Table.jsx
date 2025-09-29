@@ -1,10 +1,16 @@
 import React from "react";
 import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Item_Master_Table({ search }) {
-  const { itemMaster, deleteItemMaster, StartEditing, pagination } =
-    useItemMaster();
+  const {
+    itemMaster,
+    deleteItemMaster,
+    StartEditing,
+    pagination,
+    setItemMasterData,
+  } = useItemMaster();
+  const navigate = useNavigate();
 
   // Local filter on top of context data
   const filteredData = itemMaster.filter((item) => {
@@ -17,6 +23,27 @@ export default function Item_Master_Table({ search }) {
       item?.subcategory?.sub_category_name?.toLowerCase().includes(term)
     );
   });
+
+  const handleEditClick = async (item) => {
+    // Fetch only subcategory
+    navigate(`/item/item-create/${item.type}/${item.id}`);
+    const subCategoryData = await fetchItemSubCategoryById(item.id);
+
+    // Update only the sub_c_id in your state
+    setItemMasterData((prev) => ({
+      ...prev,
+      sub_c_id: subCategoryData.sub_c_id,
+      sub_c_name: subCategoryData.sub_c_name,
+    }));
+
+    // If needed, also update category/group/item code
+    if (subCategoryData.sub_c_id && item.type) {
+      await getCategoryGroupAndItemCodeBySubCategoryId(
+        item.type,
+        subCategoryData.sub_c_id
+      );
+    }
+  };
 
   return (
     <>
@@ -64,7 +91,7 @@ export default function Item_Master_Table({ search }) {
                     {item.status === 1 ? "Active" : "Deactive"}
                   </span>
                 </td>
-                <td>
+                {/* <td>
                   <div className="d-inline-flex gap-2">
                     <Link
                       to={`/item/item-create/${item.type}/${item.id}`}
@@ -84,6 +111,46 @@ export default function Item_Master_Table({ search }) {
                     >
                       <i className="icon-base ti tabler-trash text-danger icon-22px" />
                     </a>
+                  </div>
+                </td> */}
+                <td>
+                  <div className="d-inline-flex gap-2">
+                    <a
+                      className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
+                    </a>
+                    <div className="d-inline-block">
+                      <div className="dropdown-menu dropdown-menu-end m-0">
+                        <button
+                          className="dropdown-item waves-effect"
+                          onClick={() => handleEditClick(item)}
+                        >
+                          Edit
+                        </button>
+                        {/* <a
+                          href="#"
+                          className="dropdown-item waves-effect"
+                          data-bs-toggle="modal"
+                          data-bs-target="#grnCreateModel"
+                          onClick={() => {
+                            handleOpen("viewSubCategory");
+                            setSubCategoryData(subCat);
+                          }}
+                        >
+                          View
+                        </a> */}
+                        {/* <div className="dropdown-divider"></div> */}
+                        <a
+                          className="dropdown-item text-danger delete-record waves-effect"
+                          onClick={() => deleteItemMaster(item.id)}
+                        >
+                          Delete
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </td>
               </tr>

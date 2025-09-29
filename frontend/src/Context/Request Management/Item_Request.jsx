@@ -432,11 +432,16 @@ export const ItemRequestProvider = ({ children }) => {
     type: "",
     item_type: "",
     c_id: null,
+    category_name: "",
     sub_c_id: null,
+    sub_category_name: "",
     item_code: null,
     service_location_1_id: null,
+    service_location_1_name: "",
     service_location_2_id: null,
+    service_location_2_name: "",
     service_location_3_id: null,
+    service_location_3_name: "",
     purpose: "",
     quantity: null,
     uom: null,
@@ -525,45 +530,117 @@ export const ItemRequestProvider = ({ children }) => {
   };
 
   // FIXED: Prefill Data while edit - Use item_request_id instead of workflowId
+  // const fetchItemRequestById = async (itemRequestId) => {
+  //   try {
+  //     console.log("Fetching item request with ID:", itemRequestId);
+
+  //     const res = await postData(ENDPOINTS.ITEM_REQUEST.DETAILS, {
+  //       workflowId: itemRequestId,
+  //     });
+
+  //     console.log("API Response:", res);
+
+  //     if (res.status && res.data) {
+  //       const data = res.data;
+  //       setItemRequestData((prev) => ({
+  //         ...prev,
+  //         item_id: data.item_id,
+  //         item_type: data.item_type,
+  //         c_id: data.item_request.c_id,
+  //         sub_c_id: data.item_request.sub_c_id,
+  //         item_code: data.item_request.item_code,
+  //         service_location_1_id: data.item_request.service_location_1_id,
+  //         service_location_2_id: data.item_request.service_location_2_id,
+  //         service_location_3_id: data.item_request.service_location_3_id,
+  //         purpose: data.item_request.purpose,
+  //         quantity: data.item_request.quantity,
+  //         uom: data.item_request.uom,
+  //         remarks: data.item_request.remarks,
+  //         receiving_person: data.item_request.receiving_person,
+  //       }));
+  //       toast.success("Item request loaded successfully");
+  //     } else {
+  //       toast.error(res.message || "Item request not found");
+  //     }
+  //   } catch (error) {
+  //     console.error("fetchItemRequestById error", error);
+  //     if (error.response?.status === 404) {
+  //       toast.error("Item request not found. Please check the ID.");
+  //     } else {
+  //       toast.error("Failed to fetch item request");
+  //     }
+  //   }
+  // };
+
   const fetchItemRequestById = async (itemRequestId) => {
     try {
-      console.log("Fetching item request with ID:", itemRequestId);
+      // console.log("Fetching item request with ID:", itemRequestId);
 
       const res = await postData(ENDPOINTS.ITEM_REQUEST.DETAILS, {
         workflowId: itemRequestId,
       });
 
-      console.log("API Response:", res);
+      // console.log("API Response:", res);
 
       if (res.status && res.data) {
         const data = res.data;
-        setItemRequestData((prev) => ({
-          ...prev,
+        const itemRequest = data.item_request;
+        const item = itemRequest?.item;
+        const storageLocation = item?.storage_locations?.[0];
+
+        // Set the form data with proper mapping
+        setItemRequestData({
+          // IDs for storage
+          id: data.id,
+          request_id: data.request_id,
           item_id: data.item_id,
           item_type: data.item_type,
-          c_id: data.c_id,
-          sub_c_id: data.sub_c_id,
-          item_code: data.item_code,
-          service_location_1_id: data.service_location_1_id,
-          service_location_2_id: data.service_location_2_id,
-          service_location_3_id: data.service_location_3_id,
-          purpose: data.purpose,
-          quantity: data.quantity,
-          uom: data.uom,
-          remarks: data.remarks,
-          receiving_person: data.receiving_person,
-        }));
-        toast.success("Item request loaded successfully");
+
+          // Category and Subcategory
+          c_id: itemRequest?.c_id,
+          sub_c_id: itemRequest?.sub_c_id,
+
+          // Item details
+          item_code: itemRequest?.item_code,
+          uom: itemRequest?.uom,
+
+          // Service Locations - IDs
+          service_location_1_id: itemRequest?.service_location_1_id,
+          service_location_2_id: itemRequest?.service_location_2_id,
+          service_location_3_id: itemRequest?.service_location_3_id,
+
+          // Request details
+          purpose: itemRequest?.purpose,
+          quantity: itemRequest?.quantity,
+          remarks: itemRequest?.remarks,
+          receiving_person: itemRequest?.receiving_person,
+
+          // Display names for showing in form
+          category_name:
+            itemRequest?.item?.subcategory?.category?.category_name || "",
+          sub_category_name:
+            itemRequest?.item?.subcategory?.sub_category_name || "",
+          service_location_1_name:
+            storageLocation?.service_location3?.service_location2
+              ?.service_location1?.service_location_name || "",
+          service_location_2_name:
+            storageLocation?.service_location3?.service_location2
+              ?.service_location_2_name || "",
+          service_location_3_name:
+            storageLocation?.service_location3?.service_location_3_name || "",
+          item_name: data.item_name || "",
+        });
+
+        // toast.success("Item request loaded successfully");
+        return true;
       } else {
         toast.error(res.message || "Item request not found");
+        return false;
       }
     } catch (error) {
       console.error("fetchItemRequestById error", error);
-      if (error.response?.status === 404) {
-        toast.error("Item request not found. Please check the ID.");
-      } else {
-        toast.error("Failed to fetch item request");
-      }
+      toast.error("Failed to fetch item request");
+      return false;
     }
   };
 
@@ -575,15 +652,15 @@ export const ItemRequestProvider = ({ children }) => {
   // FIXED: Edit Item Request
   const editItemRequest = async (id, payload) => {
     try {
-      console.log("Editing item request with ID:", id);
-      console.log("Payload:", payload);
+      // console.log("Editing item request with ID:", id);
+      // console.log("Payload:", payload);
 
       const res = await postData(ENDPOINTS.ITEM_REQUEST.ADD_UPDATE, {
         id: id, // Ensure ID is included
         ...payload,
       });
 
-      console.log("Edit Response:", res);
+      // console.log("Edit Response:", res);
 
       if (res.status) {
         setItemRequestData(res.data);

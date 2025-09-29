@@ -108,5 +108,21 @@ export const ENDPOINTS = {
     DELETE: "/pi/request/delete",
     SINGLEAPPROVE: "/pi/request/singleapprove",
     BULKAPPROVE: "/pi/request/bulkapprove",
+    SINGLEREJECT: "/pi/request/singlereject",
+    BULKREJECT: "/pi/request/bulkreject",
+  },
+
+  // UOM (unit of measure)
+  UOM: {
+    LIST: "/uom/list",
+    ADD_UPDATE: "/uom/add/update",
+    FILTER: "/uom/filter",
+    DESTROY: "/uom/destroy",
+  },
+
+  // GET QUOTE
+  GETQUOTE: {
+    CREATE: "/pi/get/quote/create",
+    LIST: "/pi/get/quote/list",
   },
 };

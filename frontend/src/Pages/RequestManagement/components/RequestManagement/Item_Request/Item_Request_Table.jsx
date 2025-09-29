@@ -165,7 +165,7 @@ export default function Item_Request_Table({ search }) {
                     <div className="d-flex align-items-center">
                       {activeTab === "my_request" && (
                         <div className="d-inline-flex gap-2">
-                          <a
+                          <a    
                             className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
@@ -184,11 +184,8 @@ export default function Item_Request_Table({ search }) {
                                 }`}
                                 onClick={() => {
                                   // FIXED: Pass the correct ID (item_request_id instead of workflow_id)
-                                  const itemRequestId = item.id; // This should be the item_request_id
-                                  console.log(
-                                    "Editing item request ID:",
-                                    itemRequestId
-                                  );
+                                  const itemRequestId = item?.id; // This should be the item_request_id
+                                  // console.log("Editing item request ID:", item);
 
                                   // Use the correct function to start editing
                                   startEditing(itemRequestId);

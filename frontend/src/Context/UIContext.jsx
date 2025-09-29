@@ -218,6 +218,10 @@ export const UIProvider = ({ children }) => {
     viewItemRequest: false,
     viewApprove: false,
     viewReject: false,
+    // PO & MATERIAL MANAGEMENT
+    viewRejectPi: false,
+    // UOM
+    addNewUOM: false,
   });
 
   return (
