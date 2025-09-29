@@ -180,6 +180,9 @@ export default function AppRoutes() {
           }
         />
 
+        {/* UOM (unit of measure) */}
+        <Route path="/suprer_admin/uom" element={<UOMPage />} />
+
         {/* Item Management  */}
         <Route path="/item/group" element={<Group_Master_Page />} />
         <Route path="/item/category" element={<Category_Master_Page />} />
@@ -309,7 +312,7 @@ export default function AppRoutes() {
         />
 
         {/* UOM (unit of measure) */}
-        <Route path="/uom" element={<UOMPage />} />
+        {/* <Route path="/uom" element={<UOMPage />} /> */}
 
         {/* Catch all (404) */}
         <Route

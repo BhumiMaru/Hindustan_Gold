@@ -150,42 +150,57 @@ export default function SideBar() {
 
           {/* ✅ Master menu only for Admin */}
           {isAdmin && (
-            <li
-              className={`menu-item ${
-                activeMenu === "Master" ? "open active" : ""
-              }`}
-              onClick={() => toggleMenu("Master")}
-            >
-              <a className="menu-link menu-toggle">
-                <i className="menu-icon icon-base ti tabler-book"></i>
-                <div data-i="Master">Master</div>
-              </a>
-              <ul
-                className={`menu-sub dropdown ${
-                  activeMenu === "Master" ? "open" : ""
+            <>
+              <li
+                className={`menu-item ${
+                  activeMenu === "Master" ? "open active" : ""
                 }`}
+                onClick={() => toggleMenu("Master")}
               >
-                {Object.keys(masterRoutes).map((item) => (
-                  <li
-                    key={item}
-                    className={`menu-item ${
-                      activeSubMenu === item ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSubMenuClick("Master", item);
-                    }}
-                  >
-                    <Link
-                      to={masterRoutes[item]}
-                      className="menu-link cursor-pointer"
+                <a className="menu-link menu-toggle">
+                  <i className="menu-icon icon-base ti tabler-book"></i>
+                  <div data-i="Master">Master</div>
+                </a>
+                <ul
+                  className={`menu-sub dropdown ${
+                    activeMenu === "Master" ? "open" : ""
+                  }`}
+                >
+                  {Object.keys(masterRoutes).map((item) => (
+                    <li
+                      key={item}
+                      className={`menu-item ${
+                        activeSubMenu === item ? "active" : ""
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSubMenuClick("Master", item);
+                      }}
                     >
-                      <div>{item}</div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
+                      <Link
+                        to={masterRoutes[item]}
+                        className="menu-link cursor-pointer"
+                      >
+                        <div>{item}</div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+              {/* UOM */}
+              <li
+                className={`menu-item ${activeMenu === "Uom" ? "active" : ""}`}
+                onClick={() => toggleMenu("Uom")}
+              >
+                <Link
+                  to="/suprer_admin/uom"
+                  className="menu-link cursor-pointer"
+                >
+                  <i className="menu-icon ti tabler-ruler"></i>
+                  <div data-i="Uom">Uom</div>
+                </Link>
+              </li>
+            </>
           )}
 
           {/* Item Management */}
@@ -350,16 +365,16 @@ export default function SideBar() {
             </li>
           )}
 
-          {/* UOM */}
+          {/* UOM
           <li
             className={`menu-item ${activeMenu === "Uom" ? "active" : ""}`}
             onClick={() => toggleMenu("Uom")}
           >
-            <Link to="/uom" className="menu-link cursor-pointer">
+            <Link to="/suprer_admin/uom" className="menu-link cursor-pointer">
               <i className="menu-icon ti tabler-ruler"></i>
               <div data-i="Uom">Uom</div>
             </Link>
-          </li>
+          </li> */}
         </ul>
       </aside>
     </>

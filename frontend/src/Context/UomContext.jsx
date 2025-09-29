@@ -65,10 +65,12 @@ export const UOMProvider = ({ children }) => {
     try {
       const res = await postData(ENDPOINTS.UOM.ADD_UPDATE, { name });
       if (res.status) {
+        toast.success(res.message);
         setUomData(res.data.data);
         getUOMList();
       }
       setUomData({ name: "" });
+
       return res.data.data;
     } catch (error) {
       toast.error(error.message);
@@ -81,6 +83,7 @@ export const UOMProvider = ({ children }) => {
     try {
       const res = await postData(ENDPOINTS.UOM.ADD_UPDATE, payload);
       if (res.status) {
+        toast.success(res.message);
         setUomData(res.data.data);
         getUOMList();
       }
@@ -103,6 +106,9 @@ export const UOMProvider = ({ children }) => {
   const DestroyUom = async (id) => {
     try {
       const res = await deleteData(`${ENDPOINTS.UOM.DESTROY}/${id}`);
+      if (res.status) {
+        toast.success(res.message);
+      }
       getUOMList();
     } catch (error) {
       toast.error(error.message);
