@@ -222,6 +222,8 @@ export const UIProvider = ({ children }) => {
     viewRejectPi: false,
     // UOM
     addNewUOM: false,
+    // PAYMENT MANAGEMENT
+    addNewVendor: false,
   });
 
   return (

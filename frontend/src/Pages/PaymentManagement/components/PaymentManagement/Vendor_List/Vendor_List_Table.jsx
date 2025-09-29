@@ -1,6 +1,10 @@
 import React from "react";
+import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
+import { useUIContext } from "../../../../../Context/UIContext";
 
 export default function Vendor_List_Table() {
+  const { handleOpen } = useUIContext();
+  const { vendorList, pagination, startEditing } = useVendor();
   return (
     <>
       {/* ------------------START VENDOR LIST TABLE----------------------- */}
@@ -24,90 +28,64 @@ export default function Vendor_List_Table() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <div className="ms-4">1</div>
-            </td>
-            <td>VA_000001</td>
-            <td>08-08-2025</td>
-            <td>Vendor</td>
-            <td>Vishal Patel</td>
-            <td>dummyemail@gmail.com</td>
-            <td>9875641230</td>
-            <td>50</td>
-            <td>
-              <span className="badge bg-label-success">Active</span>
-            </td>
-            <td>
-              <div className="d-inline-flex gap-2">
-                <a
-                  href="#"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                  data-bs-toggle="modal"
-                  data-bs-target="#vendorViewModel"
-                >
-                  <i className="icon-base ti tabler-eye icon-22px" />
-                </a>
-                <a
-                  href="#"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                  data-bs-toggle="modal"
-                  data-bs-target="#vendorAddModel"
-                >
-                  <i className="icon-base ti tabler-edit icon-22px" />
-                </a>
-                <a
-                  href="#"
-                  type="button"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                >
-                  <i className="icon-base ti tabler-trash text-danger icon-22px" />
-                </a>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div className="ms-4">2</div>
-            </td>
-            <td>VA_000001</td>
-            <td>08-08-2025</td>
-            <td>Vendor</td>
-            <td>Vishal Patel</td>
-            <td>dummyemail@gmail.com</td>
-            <td>9875641230</td>
-            <td>50</td>
-            <td>
-              <span className="badge bg-label-danger">Deactive</span>
-            </td>
-            <td>
-              <div className="d-inline-flex gap-2">
-                <a
-                  href="#"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                  data-bs-toggle="modal"
-                  data-bs-target="#vendorViewModel"
-                >
-                  <i className="icon-base ti tabler-eye icon-22px" />
-                </a>
-                <a
-                  href="#"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                  data-bs-toggle="modal"
-                  data-bs-target="#vendorAddModel"
-                >
-                  <i className="icon-base ti tabler-edit icon-22px" />
-                </a>
-                <a
-                  href="#"
-                  type="button"
-                  className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                >
-                  <i className="icon-base ti tabler-trash text-danger icon-22px" />
-                </a>
-              </div>
-            </td>
-          </tr>
+          {vendorList.map((vendor, index) => {
+            console.log("vendor", vendor);
+            return (
+              <tr key={vendor.id}>
+                <td>
+                  <div className="ms-4">
+                    {(pagination.currentPage - 1) * pagination.perPage +
+                      (index + 1)}
+                  </div>
+                </td>
+                {/* <td>VA_000001 </td> */}
+                <td>{vendor.vendor_id}</td>
+                <td>{vendor.created_at.split("T").shift()}</td>
+                <td>{vendor.vendor_name}</td>
+                <td>{vendor.contact_person_name}</td>
+                <td>{vendor.email}</td>
+                <td>{vendor.mobile}</td>
+                <td>{vendor.invoice_total}</td>
+                <td>
+                  <span className="badge bg-label-success">
+                    {vendor.status}
+                  </span>
+                </td>
+                <td>
+                  <div className="d-inline-flex gap-2">
+                    <a
+                      href="#"
+                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
+                      data-bs-toggle="modal"
+                      data-bs-target="#vendorViewModel"
+                    >
+                      <i className="icon-base ti tabler-eye icon-22px" />
+                    </a>
+                    <a
+                      href="#"
+                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
+                      data-bs-toggle="modal"
+                      data-bs-target="#vendorAddModel"
+                      onClick={() => {
+                        console.log("id", vendor.id);
+                        startEditing(Number(vendor.id));
+                        handleOpen("addNewVendor");
+                      }}
+                    >
+                      <i className="icon-base ti tabler-edit icon-22px" />
+                    </a>
+                    <a
+                      href="#"
+                      type="button"
+                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
+                    >
+                      <i className="icon-base ti tabler-trash text-danger icon-22px" />
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
       {/* ------------------END VENDOR LIST TABLE----------------------- */}

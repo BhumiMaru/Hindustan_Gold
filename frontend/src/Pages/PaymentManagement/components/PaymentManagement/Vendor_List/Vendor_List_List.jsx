@@ -1,9 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import Vendor_List_Table from "./Vendor_List_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
+import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
+import Vendor_List_Form from "./Vendor_List_Form";
+import { useUIContext } from "../../../../../Context/UIContext";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 
 export default function Vendor_List_List() {
+  const [status, setStatus] = useState(null);
+  const { modal, handleOpen } = useUIContext();
+  const { getVendorList, pagination, search, setSearch, setPagination } =
+    useVendor();
+
+  useEffect(() => {
+    getVendorList({
+      search,
+      status,
+      page: pagination.currentPage,
+      perPage: pagination.perPage,
+    });
+  }, [search, status, pagination.currentPage, pagination.perPage]);
+
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
+  };
+
   return (
     <>
       {/* ------------------START VENDOR LIST----------------------- */}
@@ -13,59 +39,32 @@ export default function Vendor_List_List() {
           <div className="d-flex justify-content-between p-3">
             <div className="d-flex align-items-center ">
               {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
-              <SearchBar />
+              <SearchBar
+                placeholder="Search Vendor..."
+                value={search}
+                onChange={setSearch} // update typing value
+                onSubmit={(val) => setQuery(val)} // trigger API only on submit
+              />
             </div>
             <div className="d-flex">
               <div className="row">
                 <div className="position-relative">
-                  <select
-                    id="select9Basic"
-                    className="select2 form-select select2-hidden-accessible"
-                    data-select2-id="select9Basic"
-                    tabIndex={-1}
-                    aria-hidden="true"
-                  >
-                    <option value="AK" data-select2-id={2}>
-                      Select&nbsp;Status
-                    </option>
-                    <option value="HI">Active</option>
-                    <option value="CA">Deactive</option>
-                  </select>
-                  <span
-                    className="select2 select2-container select2-container--default"
-                    dir="ltr"
-                    data-select2-id={1}
-                    style={{ width: 152 }}
-                  >
-                    <span className="selection">
-                      <span
-                        className="select2-selection select2-selection--single"
-                        role="combobox"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                        tabIndex={0}
-                        aria-disabled="false"
-                        aria-labelledby="select2-select9Basic-container"
-                      >
-                        <span
-                          className="select2-selection__rendered"
-                          id="select2-select9Basic-container"
-                          role="textbox"
-                          aria-readonly="true"
-                          title="Select Status"
-                        >
-                          {/* Select&nbsp;Status */}
-                        </span>
-                        <span
-                          className="select2-selection__arrow"
-                          role="presentation"
-                        >
-                          <b role="presentation" />
-                        </span>
-                      </span>
-                    </span>
-                    <span className="dropdown-wrapper" aria-hidden="true" />
-                  </span>
+                  <CustomSelect
+                    id="selectStatus"
+                    options={[
+                      { value: 1, label: "Active" },
+                      { value: 0, label: "Deactive" },
+                    ]}
+                    value={status}
+                    onChange={setStatus}
+                    placeholder="Select Status"
+                    styles={{
+                      container: (base) => ({
+                        ...base,
+                        width: "250px",
+                      }),
+                    }}
+                  />
                 </div>
               </div>
               <a
@@ -73,6 +72,7 @@ export default function Vendor_List_List() {
                 className="btn btn-primary waves-effect waves-light ms-2"
                 data-bs-toggle="modal"
                 data-bs-target="#vendorAddModel"
+                onClick={() => handleOpen("addNewVendor")}
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2" />
                 Create Vendor
@@ -81,11 +81,17 @@ export default function Vendor_List_List() {
           </div>
           <div className="card-datatable table-responsive pt-0">
             <Vendor_List_Table />
-            <Pagination />
+            <Pagination
+              currentPage={pagination?.currentPage}
+              totalItems={pagination?.total}
+              itemsPerPage={pagination?.perPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
           </div>
         </div>
       </div>
-
+      {modal.addNewVendor && <Vendor_List_Form />}
       {/* ------------------END VENDOR LIST----------------------- */}
     </>
   );

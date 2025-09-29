@@ -15,18 +15,46 @@ export const GetQuoteProvider = ({ children }) => {
   const [search, setSearch] = useState("");
   const [quote, setQuote] = useState([]);
   const [quoteData, setQuoteData] = useState(null); // create get quote
+  const [quoteItems, setQuoteItems] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     perPage: 10,
     total: 0,
   });
+  const [itemType, setItemType] = useState("all");
+  const [department, setDepartment] = useState("all");
+  const [createdBy, setCreatedBy] = useState("all");
+  const [status, setStatus] = useState("all");
+  const [dateRange, setDateRange] = useState({ start: "", end: "" });
 
   //   Get Quote List
-  const getQuoteList = async ({ page = 1, perPage = 10 } = {}) => {
+  const getQuoteList = async ({
+    search = "",
+    pi_type = itemType,
+    department_id = department,
+    order_by = createdBy,
+    status: statusParam = status,
+    pi_date_start_date = dateRange.start,
+    pi_date_end_date = dateRange.end,
+    page = pagination.currentPage,
+    perPage = pagination.perPage || 10, // ✅ single default
+  } = {}) => {
     try {
-      const params = { search, page, per_page: perPage };
-      const res = await getData(ENDPOINTS.GETQUOTE.LIST, params);
+      const params = {
+        search,
+        pi_type: pi_type !== "all" ? pi_type : undefined,
+        department_id: department_id !== "all" ? department_id : undefined,
+        order_by: order_by !== "all" ? order_by : undefined,
+        status: statusParam !== "all" ? statusParam : undefined,
+        pi_date_start_date: pi_date_start_date || undefined,
+        pi_date_end_date: pi_date_end_date || undefined,
+        page,
+        per_page: perPage,
+      };
+
+      const res = await postData(ENDPOINTS.GETQUOTE.LIST, params);
       const apiData = res.data;
+
       setQuote(apiData.data || []);
       setPagination({
         currentPage: apiData.current_page || 1,
@@ -40,19 +68,53 @@ export const GetQuoteProvider = ({ children }) => {
   };
 
   // GET QUOTE CREATE
+  // const getQuoteCreate = async (payload) => {
+  //   try {
+  //     const res = await postData(ENDPOINTS.GETQUOTE.CREATE, payload);
+  //     if (res?.status) {
+  //       console.log("res", res.data);
+  //       setQuoteData(res.data);
+  //       toast.success(res.message || "Get Quote Create successful!");
+  //       // getPIRequest();
+  //     }
+  //     return res.data;
+  //   } catch (error) {
+  //     toast.error("Error during Get Quote Create");
+  //     console.error("Get Quote Create PIRequest error:", error);
+  //   }
+  // };
+
+  // ---------------- GET QUOTE CREATE ----------------
   const getQuoteCreate = async (payload) => {
     try {
       const res = await postData(ENDPOINTS.GETQUOTE.CREATE, payload);
       if (res?.status) {
-        console.log("res", res.data);
-        setQuoteData(res.data);
+        const newId = res.data.id;
         toast.success(res.message || "Get Quote Create successful!");
-        // getPIRequest();
+
+        // Immediately fetch details of the new quote
+        await getQuoteDetails(newId);
       }
-      return res.data;
+      return res;
     } catch (error) {
       toast.error("Error during Get Quote Create");
-      console.error("Get Quote Create PIRequest error:", error);
+      console.error("Get Quote Create error:", error);
+    }
+  };
+
+  // ---------------- GET QUOTE DETAILS ----------------
+  const getQuoteDetails = async (id) => {
+    try {
+      const res = await getData(`${ENDPOINTS.GETQUOTE.DETAILS}?id=${id}`);
+      if (res?.status) {
+        setQuoteData(res.data);
+        setQuoteItems(res.data);
+        console.log("ddddd", res.data);
+      }
+      return res;
+    } catch (error) {
+      toast.error("Error fetching Get Quote Details");
+      console.error("Get Quote Details error:", error);
     }
   };
 
@@ -61,14 +123,27 @@ export const GetQuoteProvider = ({ children }) => {
       value={{
         search,
         setSearch,
+        itemType,
+        setItemType,
+        department,
+        setDepartment,
+        createdBy,
+        setCreatedBy,
+        status,
+        setStatus,
         quote,
         setQuote,
         quoteData,
         setQuoteData,
+        quoteItems,
+        setQuoteItems,
         pagination,
+        dateRange,
+        setDateRange,
         setPagination,
         getQuoteCreate,
         getQuoteList,
+        getQuoteDetails,
       }}
     >
       {children}

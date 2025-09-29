@@ -124,5 +124,15 @@ export const ENDPOINTS = {
   GETQUOTE: {
     CREATE: "/pi/get/quote/create",
     LIST: "/pi/get/quote/list",
+    DETAILS: "/pi/get/quote/detail",
+  },
+
+  // PAYMENT MANAGEMENT
+  // VENDOR
+  VENDOR: {
+    ADD_UPDATE: "/vendors/add/update",
+    LIST: "/vendors/list",
+    DETAILS: "/vendors/detail",
+    FILTER: "/vendors/filter",
   },
 };

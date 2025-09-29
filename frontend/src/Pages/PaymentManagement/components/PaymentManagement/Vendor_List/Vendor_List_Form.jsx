@@ -1,6 +1,39 @@
 import React from "react";
+import { useUIContext } from "../../../../../Context/UIContext";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
+import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
 
 export default function Vendor_List_Form() {
+  const { handleClose } = useUIContext();
+  const { createVendor, EditVendor, setVendorData, vendorData, vendorEditId } =
+    useVendor();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setVendorData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSave = async () => {
+    try {
+      const payload = {
+        ...vendorData,
+      };
+
+      if (vendorEditId) {
+        EditVendor(vendorEditId, payload);
+      } else {
+        createVendor(payload);
+      }
+      // createVendor(payload);
+      handleClose("addNewVendor");
+    } catch (error) {
+      console.log("Vendor Save Error : ", error);
+    }
+  };
+
   return (
     <>
       <>
@@ -27,6 +60,7 @@ export default function Vendor_List_Form() {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
+                  onClick={() => handleClose("addNewVendor")}
                 />
               </div>
               <div className="modal-body">
@@ -40,6 +74,9 @@ export default function Vendor_List_Form() {
                       id="nameSmall"
                       className="form-control"
                       placeholder="Enter Vendor Name"
+                      name="vendor_name"
+                      value={vendorData?.vendor_name}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="col-lg-4 mb-2">
@@ -51,6 +88,9 @@ export default function Vendor_List_Form() {
                       id="contactPersonname"
                       className="form-control"
                       placeholder="Enter Contact Person Name"
+                      name="contact_person_name"
+                      value={vendorData?.contact_person_name}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="col-lg-4 mb-2">
@@ -62,6 +102,9 @@ export default function Vendor_List_Form() {
                       id="emailid"
                       className="form-control"
                       placeholder="Enter Email Id"
+                      name="email"
+                      value={vendorData?.email}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="col-lg-4 mb-2">
@@ -73,6 +116,9 @@ export default function Vendor_List_Form() {
                       id="mobileno"
                       className="form-control"
                       placeholder="Enter Mobile Number"
+                      name="mobile"
+                      value={vendorData?.mobile}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="col-lg-4 mb-2">
@@ -84,6 +130,9 @@ export default function Vendor_List_Form() {
                       id="address"
                       className="form-control"
                       placeholder="Enter Address"
+                      name="address"
+                      value={vendorData?.address}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="col-lg-4 mb-2">
@@ -95,6 +144,9 @@ export default function Vendor_List_Form() {
                       id="gstnumber"
                       className="form-control"
                       placeholder="Enter GST Number"
+                      name="gst_number"
+                      value={vendorData?.gst_number}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="col-lg-4 mb-2">
@@ -106,17 +158,28 @@ export default function Vendor_List_Form() {
                       id="pannumber"
                       className="form-control"
                       placeholder="Enter PAN Number"
+                      name="pan_number"
+                      value={vendorData?.pan_number}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="col-lg-4 mb-2">
-                    <label htmlFor="vendortype" className="form-label">
-                      MSME Cirtificate Available
-                    </label>
-                    <select id="vendortype" className="form-select">
-                      <option value="">Select</option>
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
-                    </select>
+                    <CustomSelect
+                      id="selectVendorType"
+                      label="MSME Cirtificate Available"
+                      options={[
+                        { value: "Yes", label: "Yes" },
+                        { value: "No", label: "No" },
+                      ]}
+                      value={vendorData?.msme_certificate}
+                      onChange={(val) =>
+                        setVendorData((prev) => ({
+                          ...prev,
+                          msme_certificate: val,
+                        }))
+                      }
+                      placeholder="Select"
+                    />
                   </div>
                 </div>
                 <hr />
@@ -131,6 +194,9 @@ export default function Vendor_List_Form() {
                       id="bankname"
                       className="form-control"
                       placeholder="Enter Bank Name"
+                      name="bank_name"
+                      value={vendorData?.bank_name}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="col-lg-4 mb-2">
@@ -142,6 +208,9 @@ export default function Vendor_List_Form() {
                       id="accountno"
                       className="form-control"
                       placeholder="Enter Account No"
+                      name="account_no"
+                      value={vendorData?.account_no}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="col-lg-4 mb-2">
@@ -153,6 +222,9 @@ export default function Vendor_List_Form() {
                       id="ifsccode"
                       className="form-control"
                       placeholder="Enter IFSC Code"
+                      name="ifsc_code"
+                      value={vendorData?.ifsc_code}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="col-lg-4 mb-2">
@@ -164,18 +236,31 @@ export default function Vendor_List_Form() {
                       id="BranchName"
                       className="form-control"
                       placeholder="Enter Branch Name"
+                      name="branch_name"
+                      value={vendorData?.branch_name}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="col-lg-4 mb-2">
-                    <label htmlFor="BranchName" className="form-label">
+                    {/* <label htmlFor="BranchName" className="form-label">
                       Status
-                    </label>
-                    <select id="" className="form-select">
-                      <option value="Active" selected="">
-                        Active
-                      </option>
-                      <option value="Deactive">Deactive</option>
-                    </select>
+                    </label> */}
+                    <CustomSelect
+                      id="selectStatus"
+                      label="Status"
+                      options={[
+                        { value: 1, label: "Active" },
+                        { value: 0, label: "Deactive" },
+                      ]}
+                      value={vendorData?.status ?? ""} // show empty if undefined
+                      onChange={(val) =>
+                        setVendorData((prev) => ({
+                          ...prev,
+                          status: Number(val), // ensure it's a number
+                        }))
+                      }
+                      placeholder="Select Status"
+                    />
                   </div>
                 </div>
               </div>
@@ -184,12 +269,14 @@ export default function Vendor_List_Form() {
                   type="button"
                   className="btn btn-label-secondary waves-effect"
                   data-bs-dismiss="modal"
+                  onClick={() => handleClose("addNewVendor")}
                 >
                   Close
                 </button>
                 <button
                   type="button"
                   className="btn btn-primary waves-effect waves-light"
+                  onClick={handleSave}
                 >
                   Save
                 </button>
@@ -197,7 +284,7 @@ export default function Vendor_List_Form() {
             </div>
           </div>
         </div>
-
+        <div className="modal-backdrop fade show"></div>
         {/* ------------------END VENDOR FORM----------------------- */}
       </>
     </>

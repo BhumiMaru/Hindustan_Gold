@@ -42,6 +42,9 @@ import Vendor_List_page from "../Pages/PaymentManagement/Vendor_List_page";
 import { useUIContext } from "../Context/UIContext";
 import { ItemRequestProvider } from "../Context/Request Management/Item_Request";
 import UOMPage from "../Pages/UOM/UOMPage";
+import { VendorProvider } from "../Context/PaymentManagement/Vendor";
+import Vendor_fill_quote from "../Pages/POandMaterialManagement/components/POandMaterialManagement/Get_Quote/vendor_fill_quote";
+import { GetQuoteProvider } from "../Context/PIAndPoManagement/GetQuote";
 
 export default function AppRoutes() {
   const { isOpenSmallSidebar, closeSmallSidebar } = useUIContext();
@@ -289,9 +292,16 @@ export default function AppRoutes() {
           path="/po-material/get-quote-list"
           element={<Get_Quote_Page />}
         />
+
         <Route
-          path="/po-material/pi-request-get-quote"
-          element={<PI_Request_Get_Quote />}
+          path="/po-material/pi-request-get-quote/:id"
+          element={
+            <VendorProvider>
+              <GetQuoteProvider>
+                <PI_Request_Get_Quote />
+              </GetQuoteProvider>
+            </VendorProvider>
+          }
         />
 
         <Route path="/po-material/po-create" element={<PO_Create_Page />} />
