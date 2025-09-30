@@ -40,7 +40,6 @@ export const GetQuoteProvider = ({ children }) => {
     perPage = pagination.perPage || 10, // ✅ single default
   } = {}) => {
     try {
-<<<<<<< Updated upstream
       const params = {
         search,
         pi_type: pi_type !== "all" ? pi_type : undefined,
@@ -53,9 +52,6 @@ export const GetQuoteProvider = ({ children }) => {
         per_page: perPage,
       };
 
-=======
-      const params = { search, page, per_page: perPage };
->>>>>>> Stashed changes
       const res = await postData(ENDPOINTS.GETQUOTE.LIST, params);
       const apiData = res.data;
 
