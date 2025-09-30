@@ -279,7 +279,7 @@ export default function PI_Request_Table() {
                           selectedItems.length > 0 && ( */}
                       <>
                         <Link
-                          to="/po-material/pi-request-get-quote/:id"
+                          // to="/po-material/pi-request-get-quote/:id"
                           className="btn btn-primary btn-sm mt-2 mb-2 waves-effect waves-light"
                           onClick={async () => {
                             const res = await getQuoteCreate({

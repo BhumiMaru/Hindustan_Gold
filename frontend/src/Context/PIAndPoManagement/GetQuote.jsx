@@ -90,7 +90,7 @@ export const GetQuoteProvider = ({ children }) => {
       const res = await postData(ENDPOINTS.GETQUOTE.CREATE, payload);
       if (res?.status) {
         const newId = res.data.id;
-        toast.success(res.message || "Get Quote Create successful!");
+        // toast.success(res.message || "Get Quote Create successful!");
 
         // Immediately fetch details of the new quote
         await getQuoteDetails(newId);
@@ -105,11 +105,21 @@ export const GetQuoteProvider = ({ children }) => {
   // ---------------- GET QUOTE DETAILS ----------------
   const getQuoteDetails = async (id) => {
     try {
-      const res = await getData(`${ENDPOINTS.GETQUOTE.DETAILS}?id=${id}`);
+      console.log("before id typeof:", typeof id);
+      console.log("before id:", id);
+
+      // Convert to number
+      const QuoteId = Number(id);
+
+      console.log("after id typeof:", typeof QuoteId);
+      console.log("after id:", QuoteId);
+
+      const res = await getData(`${ENDPOINTS.GETQUOTE.DETAILS}?id=${QuoteId}`);
+
       if (res?.status) {
         setQuoteData(res.data);
         setQuoteItems(res.data);
-        console.log("ddddd", res.data);
+        // console.log("ddddd", res.data);
       }
       return res;
     } catch (error) {
