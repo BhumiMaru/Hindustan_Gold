@@ -145,11 +145,12 @@ export default function Get_Quote_Table() {
                         ))}
                       </tbody>
                     </table>
+                    {console.log("items", item)}
                     <div className="text-center w-100">
                       {/* <a href="pi-request-get-quote.html"
                                          className="btn btn-primary mt-2 mb-2 btn-sm">Create PO</a>*/}
                       <Link
-                        to="/po-material/pi-request-get-quote/:id"
+                        to={`/po-material/pi-request-get-quote/${item.id}`}
                         className="btn btn-info mt-2 mb-2 btn-sm waves-effect waves-light"
                       >
                         View Detail

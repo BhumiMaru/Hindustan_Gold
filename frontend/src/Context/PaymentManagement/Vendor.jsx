@@ -58,7 +58,7 @@ export const VendorProvider = ({ children }) => {
         perPage: apiData.per_page,
         total: apiData.total,
       });
-      console.log("res", res);
+      return res.data.data;
     } catch (error) {
       toast.error("Error during Vendor List");
       console.error("Vendor List error:", error);
@@ -70,7 +70,7 @@ export const VendorProvider = ({ children }) => {
     try {
       const res = await getData(ENDPOINTS.VENDOR.FILTER);
       if (res.success) {
-        console.log("rrr", res);
+        // console.log("rrr", res);
         setVendorFilter(res.data);
       }
     } catch (error) {
@@ -90,7 +90,7 @@ export const VendorProvider = ({ children }) => {
         getVendorList();
       }
 
-      return res.data;
+      return res.data.data;
     } catch (error) {
       toast.error("Error during Vendor Create");
       console.error("Vendor Create error:", error);
@@ -195,6 +195,8 @@ export const VendorProvider = ({ children }) => {
         vendorList,
         setVendorList,
         vendorEditId,
+        vendorFilter,
+        setVendorFilter,
         setVendorEditId,
         getVendorList,
         createVendor,

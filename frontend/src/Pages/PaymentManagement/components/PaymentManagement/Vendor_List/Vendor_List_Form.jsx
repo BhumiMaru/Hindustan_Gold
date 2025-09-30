@@ -5,8 +5,15 @@ import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
 
 export default function Vendor_List_Form() {
   const { handleClose } = useUIContext();
-  const { createVendor, EditVendor, setVendorData, vendorData, vendorEditId } =
-    useVendor();
+  const {
+    createVendor,
+    EditVendor,
+    setVendorData,
+    vendorData,
+    vendorEditId,
+    getVendorFilter,
+    getVendorList,
+  } = useVendor();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,14 +28,17 @@ export default function Vendor_List_Form() {
       const payload = {
         ...vendorData,
       };
-
+      let result;
       if (vendorEditId) {
-        EditVendor(vendorEditId, payload);
+        result = await EditVendor(vendorEditId, payload);
       } else {
-        createVendor(payload);
+        result = await createVendor(payload);
       }
+
       // createVendor(payload);
       handleClose("addNewVendor");
+      await getVendorList();
+      await getVendorFilter();
     } catch (error) {
       console.log("Vendor Save Error : ", error);
     }

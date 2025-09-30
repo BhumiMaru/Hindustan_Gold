@@ -1,6 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
+import { usePOCreate } from "../../../../../Context/PIAndPoManagement/POCreate";
 
 export default function PO_Create() {
+  const [showButton, setShowButton] = useState(false);
+  const [charges, setCharges] = useState([{ name: "", amount: "" }]);
+  const [milestones, setMilestones] = useState([
+    { percentage: "", description: "" },
+  ]);
+  const { PoCreate, PoData } = usePOCreate();
+
+  const handleAddMilestone = () => {
+    setMilestones([...milestones, { percentage: "", description: "" }]);
+  };
+
+  const handleChange = (index, field, value) => {
+    const updatedMilestones = [...milestones];
+    updatedMilestones[index][field] = value;
+    setMilestones(updatedMilestones);
+  };
+
+  const handleCheckboxChange = (e) => {
+    setShowButton(e.target.checked);
+  };
+
+  const handleAddCharge = () => {
+    setCharges([...charges, { name: "", amount: "" }]);
+  };
+
+  const handleChargeChange = (index, field, value) => {
+    const updatedCharges = [...charges];
+    updatedCharges[index][field] = value;
+    setCharges(updatedCharges);
+  };
+
+  // Handle Save
+  const handleSave = () => {
+    try {
+      PoCreate(PoData);
+    } catch (error) {
+      console.log("Po Create Error:", error);
+    }
+  };
+
   return (
     <>
       {/* --------------------START PO CREATE ----------------------- */}
@@ -337,7 +378,7 @@ export default function PO_Create() {
                         </td>
                         <td>26975</td>
                       </tr>
-                      <tr>
+                      {/* <tr>
                         <td colSpan={12}>
                           <button
                             type="button"
@@ -348,7 +389,7 @@ export default function PO_Create() {
                             Add Item
                           </button>
                         </td>
-                      </tr>
+                      </tr> */}
                       <tr>
                         <td colSpan={9} className="border-transparent" />
                         <td colSpan={2} className="text-end">
@@ -446,12 +487,13 @@ export default function PO_Create() {
                         <td colSpan={9} className="border-transparent" />
                         <td colSpan={2}>
                           <div className="d-flex">
-                            <div>
+                            {/* <div>
                               <input
                                 type="checkbox"
                                 className="form-check form-check"
+                                onChange={handleCheckboxChange}
                               />
-                            </div>
+                            </div> */}
                             &nbsp;
                             <span className="mt-1">
                               Additional&nbsp;Charge&nbsp;:
@@ -460,18 +502,76 @@ export default function PO_Create() {
                         </td>
                         <td>
                           <div>
+                            {/* {showButton && ( */}
+                            {/* <> */}
                             <button
                               type="button"
                               className="btn btn-sm btn-primary waves-effect waves-light"
                               data-repeater-create=""
+                              onClick={handleAddCharge}
                             >
                               <i className="icon-base ti tabler-plus icon-xs me-1_5" />
                               Add&nbsp;Charge
                             </button>
+                            {/* </>
+                            )} */}
                           </div>
                         </td>
                       </tr>
-                      <tr>
+
+                      {charges.map((charge, index) => (
+                        <tr key={index}>
+                          <td colSpan={9} className="border-transparent"></td>
+                          <td colSpan={2}>
+                            <div className="d-flex align-items-center">
+                              {/* Cancel Button before Name Input */}
+                              {index !== 0 && (
+                                <button
+                                  type="button"
+                                  className="btn btn-sm me-2 text-danger fs-5"
+                                  onClick={() => {
+                                    const updatedCharges = [...charges];
+                                    updatedCharges.splice(index, 1);
+                                    setCharges(updatedCharges);
+                                  }}
+                                >
+                                  &times;
+                                </button>
+                              )}
+                              <input
+                                type="text"
+                                className="form-control form-control-sm"
+                                placeholder="Enter Charge Name"
+                                value={charge.name}
+                                onChange={(e) =>
+                                  handleChargeChange(
+                                    index,
+                                    "name",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              className="form-control form-control-sm"
+                              style={{ width: 120 }}
+                              value={charge.amount}
+                              onChange={(e) =>
+                                handleChargeChange(
+                                  index,
+                                  "amount",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                        </tr>
+                      ))}
+
+                      {/* <tr>
                         <td colSpan={9} className="border-transparent" />
                         <td colSpan={2}>
                           <input
@@ -487,7 +587,7 @@ export default function PO_Create() {
                             style={{ width: 120 }}
                           />
                         </td>
-                      </tr>
+                      </tr> */}
                       <tr>
                         <td colSpan={9} className="border-transparent" />
                         <td colSpan={2}>
@@ -536,7 +636,7 @@ export default function PO_Create() {
             <div className="card-body px-0 pb-0">
               <h5 className="my-0">Terms &amp; Conditions</h5>
               <label className="form-label">Payment</label>
-              <div className="row mb-2">
+              {/* <div className="row mb-2">
                 <div className="col-4">
                   <div>
                     <div className="d-flex">
@@ -561,6 +661,64 @@ export default function PO_Create() {
                     type="button"
                     className="btn btn-sm btn-primary waves-effect waves-light"
                     data-repeater-create=""
+                  >
+                    <i className="icon-base ti tabler-plus icon-xs me-1_5" />
+                    Payment&nbsp;Milestone
+                  </button>
+                </div>
+              </div> */}
+              <div className="row mb-2">
+                {milestones.map((milestone, index) => (
+                  <div className="col-4 mt-3" key={index}>
+                    <div className="d-flex">
+                      <select
+                        className="form-select form-control form-select-sm"
+                        style={{ width: 100 }}
+                        value={milestone.percentage}
+                        onChange={(e) =>
+                          handleChange(index, "percentage", e.target.value)
+                        }
+                      >
+                        <option value="">0%</option>
+                        <option value="10">10%</option>
+                        <option value="20">20%</option>
+                      </select>
+                      <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        aria-label="Text input with segmented dropdown button"
+                        placeholder="Description"
+                        value={milestone.description}
+                        onChange={(e) =>
+                          handleChange(index, "description", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div>
+                      {index !== 0 && (
+                        <button
+                          type="button"
+                          className="btn btn-sm me-2 text-danger fs-5"
+                          onClick={() => {
+                            const updatedCharges = [...milestones];
+                            updatedCharges.splice(index, 1);
+                            setMilestones(updatedCharges);
+                          }}
+                        >
+                          &times;
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="row mb-2">
+                <div className="col-4">
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-primary waves-effect waves-light"
+                    onClick={handleAddMilestone}
                   >
                     <i className="icon-base ti tabler-plus icon-xs me-1_5" />
                     Payment&nbsp;Milestone

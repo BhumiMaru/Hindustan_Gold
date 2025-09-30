@@ -1,16 +1,231 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useUIContext } from "../../../../../Context/UIContext";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
+import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
+import { toast } from "react-toastify"; // ADD THIS IMPORT
+import Vendor_Quote_Detail from "./Vendor_Quote_Detail";
+import Add_Quote_Modal from "./Add_Quote_Modal";
 
 export default function PI_Request_Get_Quote() {
-  const { handleOpen } = useUIContext();
+  const { handleOpen, modal } = useUIContext();
   const { id } = useParams();
-  console.log("id", id);
-  const { quoteData, quoteItems, getQuoteDetails } = useGetQuote();
+  const { vendorFilter, getVendorFilter } = useVendor();
+
+  // Add state for selected vendor
+  const [selectedVendor, setSelectedVendor] = useState(null);
+  // Add state for past vendor list
+  // const [pastVendorList, setPastVendorList] = useState([]);
+
+  const {
+    quoteData,
+    quoteItems,
+    getQuoteDetails,
+    quoteVendorList,
+    createQuoteVendor,
+    quotationVendorList,
+    setQuotationVendorList,
+    sendRequest,
+    newVendorList,
+    setNewVendorList,
+    oldVendorList,
+    setOldVendorList,
+  } = useGetQuote();
+  const navigate = useNavigate();
+
+  // console.log("quoteData", quoteData);
+  const vendor_type = "new";
+
   useEffect(() => {
+    getVendorFilter();
     getQuoteDetails(id);
   }, [id]);
+
+  // Add this separate useEffect to call quoteVendorList when quoteData is available
+  useEffect(() => {
+    if (quoteData?.id) {
+      quoteVendorList({
+        pi_get_quote_id: quoteData.id,
+        vendor_type: "new",
+      });
+      quoteVendorList({
+        pi_get_quote_id: quoteData.id,
+        vendor_type: "old",
+      });
+    }
+  }, [quoteData?.id]);
+
+  console.log("get new", newVendorList);
+  console.log("get old", oldVendorList);
+
+  // console.log("pastVendorList", pastVendorList);
+
+  // / Inside your component
+  const [selectedVendors, setSelectedVendors] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+  // State for past and new vendor selections
+  const [selectedOldVendors, setSelectedOldVendors] = useState([]);
+  const [selectedNewVendors, setSelectedNewVendors] = useState([]);
+  const [selectAllOld, setSelectAllOld] = useState(false);
+  const [selectAllNew, setSelectAllNew] = useState(false);
+
+  // Handle select all checkbox
+  // const handleSelectAll = (e) => {
+  //   const isChecked = e.target.checked;
+  //   setSelectAll(isChecked);
+
+  //   if (isChecked) {
+  //     // Select all vendor IDs from quotationVendorList
+  //     const allVendorIds = quotationVendorList.map(
+  //       (vendor) => vendor.vendor_id || vendor.id
+  //     );
+  //     setSelectedVendors(allVendorIds);
+  //   } else {
+  //     // Clear all selections
+  //     setSelectedVendors([]);
+  //   }
+  // };
+
+  // Handle individual checkbox selection
+  // const handleSingleCheckbox = (e, vendorId) => {
+  //   const isChecked = e.target.checked;
+
+  //   if (isChecked) {
+  //     // Add vendor to selection
+  //     setSelectedVendors((prev) => [...prev, vendorId]);
+  //   } else {
+  //     // Remove vendor from selection
+  //     setSelectedVendors((prev) => prev.filter((id) => id !== vendorId));
+  //     setSelectAll(false);
+  //   }
+  // };
+
+  // Handle select all (OLD vendors)
+  const handleSelectAllOld = (e) => {
+    const isChecked = e.target.checked;
+    setSelectAllOld(isChecked);
+    if (isChecked) {
+      const allVendorIds = oldVendorList.map(
+        (vendor) => vendor.vendor_id || vendor.id
+      );
+      setSelectedOldVendors(allVendorIds);
+    } else {
+      setSelectedOldVendors([]);
+    }
+  };
+
+  // Handle select all (NEW vendors)
+  const handleSelectAllNew = (e) => {
+    const isChecked = e.target.checked;
+    setSelectAllNew(isChecked);
+    if (isChecked) {
+      const allVendorIds = newVendorList.map(
+        (vendor) => vendor.vendor_id || vendor.id
+      );
+      setSelectedNewVendors(allVendorIds);
+    } else {
+      setSelectedNewVendors([]);
+    }
+  };
+
+  // Handle single checkbox OLD
+  const handleSingleCheckboxOld = (e, vendorId) => {
+    const isChecked = e.target.checked;
+    if (isChecked) {
+      setSelectedOldVendors((prev) => [...prev, vendorId]);
+    } else {
+      setSelectedOldVendors((prev) => prev.filter((id) => id !== vendorId));
+      setSelectAllOld(false);
+    }
+  };
+
+  // Handle single checkbox NEW
+
+  const handleSingleCheckboxNew = (e, vendorId) => {
+    const isChecked = e.target.checked;
+    if (isChecked) {
+      setSelectedNewVendors((prev) => [...prev, vendorId]);
+    } else {
+      setSelectedNewVendors((prev) => prev.filter((id) => id !== vendorId));
+      setSelectAllNew(false);
+    }
+  };
+
+  // Handle send request for selected vendors
+  // const handleSendRequest = async () => {
+  //   if (selectedVendors.length === 0) {
+  //     toast.error("Please select at least one vendor");
+  //     return;
+  //   }
+
+  //   try {
+  //     await sendRequest({
+  //       pi_get_quote_id: parseInt(id),
+  //       pi_get_quote_vendor_ids: selectedVendors, // These are the quote vendor IDs
+  //     });
+
+  //     // Clear selection after successful send
+  //     setSelectedVendors([]);
+  //     setSelectAll(false);
+
+  //     // Refresh the vendor list
+  //     if (quoteData?.id) {
+  //       await quoteVendorList({
+  //         pi_get_quote_id: quoteData.id,
+  //         vendor_type: "new",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error sending request:", error);
+  //   }
+  // };
+
+  // Send Request for OLD vendors
+  const handleSendOldVendorRequest = async () => {
+    if (selectedOldVendors.length === 0) {
+      toast.error("Please select at least one past vendor");
+      return;
+    }
+    try {
+      await sendRequest({
+        pi_get_quote_id: parseInt(id),
+        pi_get_quote_vendor_ids: selectedOldVendors,
+      });
+      // toast.success("Request sent to past vendors!");
+      setSelectedOldVendors([]);
+      setSelectAllOld(false);
+      await quoteVendorList({
+        pi_get_quote_id: quoteData.id,
+        vendor_type: "old",
+      });
+    } catch (error) {
+      console.error("Error sending request to past vendors:", error);
+    }
+  };
+
+  // Send Request for NEW vendors
+  const handleSendNewVendorRequest = async () => {
+    if (selectedNewVendors.length === 0) {
+      toast.error("Please select at least one new vendor");
+      return;
+    }
+    try {
+      await sendRequest({
+        pi_get_quote_id: parseInt(id),
+        pi_get_quote_vendor_ids: selectedNewVendors,
+      });
+      // toast.success("Request sent to new vendors!");
+      setSelectedNewVendors([]);
+      setSelectAllNew(false);
+      await quoteVendorList({
+        pi_get_quote_id: quoteData.id,
+        vendor_type: "new",
+      });
+    } catch (error) {
+      console.error("Error sending request to new vendors:", error);
+    }
+  };
 
   useEffect(() => {
     // Initialize all tooltips after render
@@ -23,7 +238,60 @@ export default function PI_Request_Get_Quote() {
     );
   }, [quoteItems]);
 
-  console.log("quoteItems", quoteItems);
+  // Handle add vendor - CORRECTED VERSION
+  const handleAddVendor = async () => {
+    if (!selectedVendor) {
+      toast.error("Please select a vendor first");
+      return;
+    }
+
+    if (!id) {
+      toast.error("PI Request ID is missing");
+      return;
+    }
+
+    try {
+      // Get the PI request ID from quoteItems
+      const piRequestId = quoteItems?.pi_request?.id;
+
+      if (!piRequestId) {
+        toast.error("PI Request data not loaded yet");
+        return;
+      }
+
+      // Call the API with correct parameters - PASS AS OBJECT
+      const result = await createQuoteVendor({
+        pi_get_quote_id: parseInt(id),
+        pi_id: quoteData.pi_request.id,
+        vendor_id: selectedVendor,
+      });
+      // console.log("result", result);
+      await quoteVendorList({
+        pi_get_quote_id: result.pi_get_quote_id,
+        vendor_type: result.vendor_type,
+      });
+
+      if (result?.status) {
+        // Refresh the vendor list
+        // setTimeout(() => {
+        // window.location.reload();
+        // navigate(0); // This reloads the current route
+        // }, 1000);
+        setSelectedVendor(null); // Reset selection
+        toast.success("Vendor added successfully!");
+      }
+    } catch (error) {
+      console.error("Error adding vendor:", error);
+    }
+  };
+
+  // Handle vendor selection
+  const handleVendorSelect = (option) => {
+    setSelectedVendor(option);
+  };
+
+  // console.log("quoteItems", quoteItems);
+
   return (
     <>
       {/* ---------------START PI REQUEST GET QUOTE-------------------- */}
@@ -84,7 +352,7 @@ export default function PI_Request_Get_Quote() {
                       </thead>
                       <tbody>
                         {quoteItems?.piget_quate_items?.map((pi, index) => {
-                          console.log("ppp", pi);
+                          // console.log("ppp", pi);
                           return (
                             <tr key={pi.id}>
                               <td>
@@ -148,7 +416,10 @@ export default function PI_Request_Get_Quote() {
           <div className="d-flex justify-content-between mt-4">
             <h5 className="ms-2">Past Vendor List</h5>
             <div className="me-4">
-              <button className="btn btn-success btn-sm waves-effect waves-light">
+              <button
+                className="btn btn-success btn-sm waves-effect waves-light"
+                onClick={handleSendOldVendorRequest}
+              >
                 Bulk Mail Request
               </button>
             </div>
@@ -166,6 +437,8 @@ export default function PI_Request_Get_Quote() {
                           width: "1rem !important",
                           height: "1rem !important",
                         }}
+                        checked={selectAllOld}
+                        onChange={handleSelectAllOld}
                       />
                     </div>
                   </th>
@@ -181,155 +454,83 @@ export default function PI_Request_Get_Quote() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <div className="ms-4">
-                      <input
-                        aria-label="Select row"
-                        className="form-check-input"
-                        type="checkbox"
-                      />
-                    </div>
-                  </td>
-                  <td>
-                    <div className="ms-4">123</div>
-                  </td>
-                  <td>TATA</td>
-                  <td>PATEL VISHAL</td>
-                  <td>Vicichaudhary@gmail.com</td>
-                  <td>9904941822</td>
-                  <td>
-                    <span className="badge bg-label-info">Pending</span>
-                  </td>
-                  <td>
-                    <a
-                      href="#"
-                      className="btn btn-icon  waves-effect waves-light"
-                      data-bs-placement="top"
-                      aria-label="View Detail"
-                      data-bs-original-title="View Detail"
-                      data-bs-toggle="modal"
-                      data-bs-target="#GetQuoteModel"
-                    >
-                      <i className="icon-base ti tabler-eye icon-md" />
-                    </a>
-                    <a
-                      href="#"
-                      className="btn btn-icon  waves-effect waves-light"
-                      data-bs-placement="top"
-                      aria-label="Add Quote"
-                      data-bs-original-title="Add Quote"
-                      data-bs-toggle="modal"
-                      data-bs-target="#AddQuoteModel"
-                    >
-                      <i className="icon-base ti tabler-receipt-rupee icon-md" />
-                    </a>
-                    <Link
-                      to="/send-request"
-                      className="btn btn-info btn-sm waves-effect waves-light"
-                      target="_blank"
-                    >
-                      {" "}
-                      Send Request
-                    </Link>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="ms-4">
-                      <input
-                        aria-label="Select row"
-                        className="form-check-input"
-                        type="checkbox"
-                      />
-                    </div>
-                  </td>
-                  <td>
-                    <div className="ms-4">123</div>
-                  </td>
-                  <td>TATA</td>
-                  <td>PATEL VISHAL</td>
-                  <td>Vicichaudhary@gmail.com</td>
-                  <td>9904941822</td>
-                  <td>
-                    <span className="badge bg-label-info">Pending</span>
-                  </td>
-                  <td>
-                    <a
-                      href="#"
-                      className="btn btn-icon  waves-effect waves-light"
-                      data-bs-placement="top"
-                      aria-label="View Detail"
-                      data-bs-original-title="View Detail"
-                      data-bs-toggle="modal"
-                      data-bs-target="#GetQuoteModel"
-                    >
-                      <i className="icon-base ti tabler-eye icon-md" />
-                    </a>
-                    <a
-                      href="#"
-                      className="btn btn-icon  waves-effect waves-light"
-                      data-bs-placement="top"
-                      aria-label="Add Quote"
-                      data-bs-original-title="Add Quote"
-                      data-bs-toggle="modal"
-                      data-bs-target="#AddQuoteModel"
-                    >
-                      <i className="icon-base ti tabler-receipt-rupee icon-md" />
-                    </a>
-                    <button className="btn bg-label-info btn-sm waves-effect waves-light">
-                      Quotation Pending
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="ms-4">
-                      <input
-                        aria-label="Select row"
-                        className="form-check-input"
-                        type="checkbox"
-                      />
-                    </div>
-                  </td>
-                  <td>
-                    <div className="ms-4">123</div>
-                  </td>
-                  <td>TATA</td>
-                  <td>PATEL VISHAL</td>
-                  <td>Vicichaudhary@gmail.com</td>
-                  <td>9904941822</td>
-                  <td>
-                    <span className="badge bg-label-info">Pending</span>
-                  </td>
-                  <td>
-                    <a
-                      href="#"
-                      className="btn btn-icon  waves-effect waves-light"
-                      data-bs-placement="top"
-                      aria-label="View Detail"
-                      data-bs-original-title="View Detail"
-                      data-bs-toggle="modal"
-                      data-bs-target="#GetQuoteModel"
-                    >
-                      <i className="icon-base ti tabler-eye icon-md" />
-                    </a>
-                    <a
-                      href="#"
-                      className="btn btn-icon  waves-effect waves-light"
-                      data-bs-placement="top"
-                      aria-label="Add Quote"
-                      data-bs-original-title="Add Quote"
-                      data-bs-toggle="modal"
-                      data-bs-target="#AddQuoteModel"
-                    >
-                      <i className="icon-base ti tabler-receipt-rupee icon-md" />
-                    </a>
-                    <button className="btn btn-success btn-sm waves-effect waves-light">
-                      Vendor Approve
-                    </button>
-                  </td>
-                </tr>
+                {oldVendorList.map((pastVendor, index) => {
+                  const vendorId = pastVendor.vendor_id || pastVendor.id;
+                  const isSelected = selectedVendors.includes(vendorId);
+                  console.log("pastVendor", pastVendor);
+                  return (
+                    <tr key={index}>
+                      <td>
+                        <div className="ms-4">
+                          <input
+                            aria-label="Select row"
+                            className="form-check-input"
+                            type="checkbox"
+                            checked={selectedOldVendors.includes(vendorId)}
+                            onChange={(e) =>
+                              handleSingleCheckboxOld(e, vendorId)
+                            }
+                          />
+                        </div>
+                      </td>
+                      <td>
+                        <div className="ms-4">{pastVendor.vendor_id}</div>
+                      </td>
+                      <td>{pastVendor.vendor.vendor_name}</td>
+                      <td>{pastVendor.vendor.contact_person_name}</td>
+                      <td>{pastVendor.vendor.email}</td>
+                      <td>{pastVendor.vendor.mobile}</td>
+                      <td>
+                        <span className="badge bg-label-info">
+                          {pastVendor.quote_status}
+                        </span>
+                      </td>
+                      <td>
+                        <a
+                          href="#"
+                          className="btn btn-icon  waves-effect waves-light"
+                          data-bs-placement="top"
+                          aria-label="View Detail"
+                          data-bs-original-title="View Detail"
+                          data-bs-toggle="modal"
+                          data-bs-target="#GetQuoteModel"
+                          onClick={() => handleOpen("viewVendorQuoteDetails")}
+                        >
+                          <i className="icon-base ti tabler-eye icon-md" />
+                        </a>
+                        <a
+                          href="#"
+                          className="btn btn-icon  waves-effect waves-light"
+                          data-bs-placement="top"
+                          aria-label="Add Quote"
+                          data-bs-original-title="Add Quote"
+                          data-bs-toggle="modal"
+                          data-bs-target="#AddQuoteModel"
+                          onClick={() => handleOpen("addQuote")}
+                        >
+                          <i className="icon-base ti tabler-receipt-rupee icon-md" />
+                        </a>
+                        {pastVendor.quote_status === "Pending" ? (
+                          <button
+                            className="btn btn-info btn-sm waves-effect waves-light"
+                            onClick={handleSendOldVendorRequest}
+                          >
+                            Send Request
+                          </button>
+                        ) : pastVendor.quote_status ===
+                          "Request Quotation Pending" ? (
+                          <button className="btn bg-label-info btn-sm waves-effect waves-light">
+                            Quotation Pending
+                          </button>
+                        ) : pastVendor.quote_status === "completed" ? (
+                          <button className="btn btn-success btn-sm waves-effect waves-light">
+                            Vendor Approve
+                          </button>
+                        ) : null}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -338,23 +539,22 @@ export default function PI_Request_Get_Quote() {
               <h5 className="ms-2">Vendor</h5>
               <div className="d-flex ms-6 ">
                 <div className="position-relative">
-                  <select
-                    id="Purpose"
-                    className="select2 form-select select2-hidden-accessible"
-                    data-select2-id="Purpose"
-                    tabIndex={-1}
-                    aria-hidden="true"
-                  >
-                    <option value="AK" selected="" data-select2-id={2}>
-                      Select Vendor
-                    </option>
-                    <option value="HI">Vendor 2</option>
-                    <option value="HI">Vendor 3</option>
-                    <option value="HI">Vendor 4</option>
-                  </select>
+                  <CustomSelect
+                    placeholder="Select Vendor"
+                    options={vendorFilter.map((vendor) => ({
+                      value: vendor.id,
+                      label: vendor.vendor_name,
+                    }))}
+                    value={selectedVendor}
+                    onChange={handleVendorSelect}
+                  />
                 </div>
                 <div className="ms-4">
-                  <button className="btn btn-success btn-sm waves-effect waves-light">
+                  <button
+                    className="btn btn-success btn-sm waves-effect waves-light"
+                    onClick={handleAddVendor}
+                    disabled={!selectedVendor}
+                  >
                     Add
                   </button>
                 </div>
@@ -384,6 +584,8 @@ export default function PI_Request_Get_Quote() {
                           width: "1rem !important",
                           height: "1rem !important",
                         }}
+                        checked={selectAllNew}
+                        onChange={handleSelectAllNew}
                       />
                     </div>
                   </th>
@@ -399,157 +601,92 @@ export default function PI_Request_Get_Quote() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <div className="ms-4">
-                      <input
-                        aria-label="Select row"
-                        className="form-check-input"
-                        type="checkbox"
-                      />
-                    </div>
-                  </td>
-                  <td>
-                    <div className="ms-4">123</div>
-                  </td>
-                  <td>TATA</td>
-                  <td>PATEL VISHAL</td>
-                  <td>Vicichaudhary@gmail.com</td>
-                  <td>9904941822</td>
-                  <td>
-                    <span className="badge bg-label-info">Pending</span>
-                  </td>
-                  <td>
-                    <a
-                      href="#"
-                      className="btn btn-icon  waves-effect waves-light"
-                      data-bs-placement="top"
-                      aria-label="View Detail"
-                      data-bs-original-title="View Detail"
-                      data-bs-toggle="modal"
-                      data-bs-target="#GetQuoteModel"
-                    >
-                      <i className="icon-base ti tabler-eye icon-md" />
-                    </a>
-                    <a
-                      href="#"
-                      className="btn btn-icon  waves-effect waves-light"
-                      data-bs-placement="top"
-                      aria-label="Add Quote"
-                      data-bs-original-title="Add Quote"
-                      data-bs-toggle="modal"
-                      data-bs-target="#AddQuoteModel"
-                    >
-                      <i className="icon-base ti tabler-receipt-rupee icon-md" />
-                    </a>
-                    <button className="btn btn-info btn-sm waves-effect waves-light">
-                      {" "}
-                      Send Request
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="ms-4">
-                      <input
-                        aria-label="Select row"
-                        className="form-check-input"
-                        type="checkbox"
-                      />
-                    </div>
-                  </td>
-                  <td>
-                    <div className="ms-4">123</div>
-                  </td>
-                  <td>TATA</td>
-                  <td>PATEL VISHAL</td>
-                  <td>Vicichaudhary@gmail.com</td>
-                  <td>9904941822</td>
-                  <td>
-                    <span className="badge bg-label-info">Pending</span>
-                  </td>
-                  <td>
-                    <a
-                      href="#"
-                      className="btn btn-icon  waves-effect waves-light"
-                      data-bs-placement="top"
-                      aria-label="View Detail"
-                      data-bs-original-title="View Detail"
-                      data-bs-toggle="modal"
-                      data-bs-target="#GetQuoteModel"
-                    >
-                      <i className="icon-base ti tabler-eye icon-md" />
-                    </a>
-                    <a
-                      href="#"
-                      className="btn btn-icon  waves-effect waves-light"
-                      data-bs-placement="top"
-                      aria-label="Add Quote"
-                      data-bs-original-title="Add Quote"
-                      data-bs-toggle="modal"
-                      data-bs-target="#AddQuoteModel"
-                    >
-                      <i className="icon-base ti tabler-receipt-rupee icon-md" />
-                    </a>
-                    <button className="btn bg-label-info btn-sm waves-effect waves-light">
-                      Quotation Pending
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="ms-4">
-                      <input
-                        aria-label="Select row"
-                        className="form-check-input"
-                        type="checkbox"
-                      />
-                    </div>
-                  </td>
-                  <td>
-                    <div className="ms-4">123</div>
-                  </td>
-                  <td>TATA</td>
-                  <td>PATEL VISHAL</td>
-                  <td>Vicichaudhary@gmail.com</td>
-                  <td>9904941822</td>
-                  <td>
-                    <span className="badge bg-label-info">Pending</span>
-                  </td>
-                  <td>
-                    <a
-                      href="#"
-                      className="btn btn-icon  waves-effect waves-light"
-                      data-bs-placement="top"
-                      aria-label="View Detail"
-                      data-bs-original-title="View Detail"
-                      data-bs-toggle="modal"
-                      data-bs-target="#GetQuoteModel"
-                    >
-                      <i className="icon-base ti tabler-eye icon-md" />
-                    </a>
-                    <a
-                      href="#"
-                      className="btn btn-icon  waves-effect waves-light"
-                      data-bs-placement="top"
-                      aria-label="Add Quote"
-                      data-bs-original-title="Add Quote"
-                      data-bs-toggle="modal"
-                      data-bs-target="#AddQuoteModel"
-                    >
-                      <i className="icon-base ti tabler-receipt-rupee icon-md" />
-                    </a>
-                    <button className="btn btn-success btn-sm waves-effect waves-light">
-                      Vendor Approve
-                    </button>
-                  </td>
-                </tr>
+                {newVendorList.map((quotation, index) => {
+                  // console.log("quotation", quotation);
+                  const vendorId = quotation.vendor_id || quotation.id;
+                  const isSelected = selectedVendors.includes(vendorId);
+                  // console.log("vendorId", vendorId);
+                  // console.log("isSelected", isSelected);
+                  return (
+                    <tr key={index}>
+                      <td>
+                        <div className="ms-4">
+                          <input
+                            aria-label="Select row"
+                            className="form-check-input"
+                            type="checkbox"
+                            checked={selectedNewVendors.includes(vendorId)}
+                            onChange={(e) =>
+                              handleSingleCheckboxNew(e, vendorId)
+                            }
+                          />
+                        </div>
+                      </td>
+                      <td>
+                        <div className="ms-4">{quotation.vendor_id}</div>
+                      </td>
+                      <td>{quotation.vendor.vendor_name}</td>
+                      <td>{quotation.vendor.contact_person_name}</td>
+                      <td>{quotation.vendor.email}</td>
+                      <td>{quotation.vendor.mobile}</td>
+                      <td>
+                        <span className="badge bg-label-info">
+                          {quotation.quote_status}
+                        </span>
+                      </td>
+                      <td>
+                        <a
+                          href="#"
+                          className="btn btn-icon  waves-effect waves-light"
+                          data-bs-placement="top"
+                          aria-label="View Detail"
+                          data-bs-original-title="View Detail"
+                          data-bs-toggle="modal"
+                          data-bs-target="#GetQuoteModel"
+                          onClick={() => handleOpen("viewVendorQuoteDetails")}
+                        >
+                          <i className="icon-base ti tabler-eye icon-md" />
+                        </a>
+                        <a
+                          href="#"
+                          className="btn btn-icon  waves-effect waves-light"
+                          data-bs-placement="top"
+                          aria-label="Add Quote"
+                          data-bs-original-title="Add Quote"
+                          data-bs-toggle="modal"
+                          data-bs-target="#AddQuoteModel"
+                          onClick={() => handleOpen("addQuote")}
+                        >
+                          <i className="icon-base ti tabler-receipt-rupee icon-md" />
+                        </a>
+                        {quotation.quote_status === "Pending" ? (
+                          <button
+                            className="btn btn-info btn-sm waves-effect waves-light"
+                            onClick={handleSendNewVendorRequest}
+                          >
+                            Send Request
+                          </button>
+                        ) : quotation.quote_status ===
+                          "Request Quotation Pending" ? (
+                          <button className="btn bg-label-info btn-sm waves-effect waves-light">
+                            Quotation Pending
+                          </button>
+                        ) : quotation.quote_status === "completed" ? (
+                          <button className="btn btn-success btn-sm waves-effect waves-light">
+                            Vendor Approve
+                          </button>
+                        ) : null}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
         </div>
       </div>
-
+      {modal.viewVendorQuoteDetails && <Vendor_Quote_Detail />}
+      {modal.addQuote && <Add_Quote_Modal />}
       {/* ---------------END PI REQUEST GET QUOTE-------------------- */}
     </>
   );

@@ -135,4 +135,17 @@ export const ENDPOINTS = {
     DETAILS: "/vendors/detail",
     FILTER: "/vendors/filter",
   },
+
+  // Get Quotation Details
+  QUOTATIONDETAILS: {
+    ADD_UPDATE: "/pi/get/quote/vendors/add",
+    LIST: "/pi/get/quote/vendors/list",
+    SENDREQUEST: "/pi/get/quote/vendors/request/send",
+    RATEUPDATE: "/pi/get/quote/vendors/rate/update",
+  },
+
+  // PO CREATE
+  POCREATE: {
+    ADD_UPDATE: "/po/create",
+  },
 };

@@ -45,9 +45,10 @@ import UOMPage from "../Pages/UOM/UOMPage";
 import { VendorProvider } from "../Context/PaymentManagement/Vendor";
 import Vendor_fill_quote from "../Pages/POandMaterialManagement/components/POandMaterialManagement/Get_Quote/vendor_fill_quote";
 import { GetQuoteProvider } from "../Context/PIAndPoManagement/GetQuote";
+import Vendor_List_Form from "../Pages/PaymentManagement/components/PaymentManagement/Vendor_List/Vendor_List_Form";
 
 export default function AppRoutes() {
-  const { isOpenSmallSidebar, closeSmallSidebar } = useUIContext();
+  const { isOpenSmallSidebar, closeSmallSidebar, modal } = useUIContext();
   return (
     <>
       {/* ------------------Start App Routes------------------- */}
@@ -332,6 +333,13 @@ export default function AppRoutes() {
           }
         />
       </Routes>
+      {modal.addNewVendor && (
+        <>
+          <VendorProvider>
+            <Vendor_List_Form />
+          </VendorProvider>
+        </>
+      )}
 
       {/* ------------------End App Routes------------------- */}
     </>

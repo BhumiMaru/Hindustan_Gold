@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { DateRangePicker } from "rsuite";
+import "rsuite/dist/rsuite.min.css";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import Get_Quote_Table from "./Get_Quote_Table";
@@ -168,12 +170,12 @@ export default function Get_Quote_List() {
               />
             </div>
             <div className="col-lg-2">
-              {/* <input
+              <input
                 type="date"
                 id="bs-rangepicker-range"
                 className="form-control"
-              /> */}
-              <input
+              />
+              {/* <input
                 type="date"
                 className="form-control mb-1"
                 value={dateRange.start}
@@ -188,6 +190,29 @@ export default function Get_Quote_List() {
                 onChange={(e) =>
                   setDateRange((prev) => ({ ...prev, end: e.target.value }))
                 }
+                /> */}
+            </div>
+
+            <div className="col-lg-2">
+              {/* <DateRangePicker /> */}
+              <DateRangePicker
+                value={
+                  dateRange.start && dateRange.end
+                    ? [new Date(dateRange.start), new Date(dateRange.end)]
+                    : null
+                }
+                onChange={(range) => {
+                  if (range) {
+                    setDateRange({
+                      start: range[0].toISOString().split("T")[0],
+                      end: range[1].toISOString().split("T")[0],
+                    });
+                  } else {
+                    setDateRange({ start: "", end: "" });
+                  }
+                }}
+                placeholder="Select Date Range"
+                style={{ width: "100%" }}
               />
             </div>
           </div>

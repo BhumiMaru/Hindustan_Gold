@@ -224,6 +224,9 @@ export const UIProvider = ({ children }) => {
     addNewUOM: false,
     // PAYMENT MANAGEMENT
     addNewVendor: false,
+    // Get Quote
+    viewVendorQuoteDetails: false,
+    addQuote: false,
   });
 
   return (
