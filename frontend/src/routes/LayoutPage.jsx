@@ -9,6 +9,7 @@ import ForgotPassword from "../Pages/Authentication/ForgotPassword/ForgotPasswor
 import { decryptData } from "../utils/decryptData";
 import { useUIContext } from "../Context/UIContext";
 import Small_Screen_Sidebar from "../components/Common/SideBar/Small_Screen_Sidebar";
+import Vendor_fill_quote from "../Pages/POandMaterialManagement/components/POandMaterialManagement/Get_Quote/vendor_fill_quote";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function LayoutPage() {
@@ -34,6 +35,7 @@ export default function LayoutPage() {
   // ✅ Check if current path is login
   const isLoginPage = location.pathname === "/";
   const isForgotPassword = location.pathname === "/auth-forgot-password";
+  const isSendRequest = location.pathname === "/send-request";
 
   if (isLoginPage) {
     return (
@@ -50,6 +52,16 @@ export default function LayoutPage() {
       <>
         <Routes>
           <Route path="/auth-forgot-password" element={<ForgotPassword />} />
+        </Routes>
+      </>
+    );
+  }
+
+  if (isSendRequest) {
+    return (
+      <>
+        <Routes>
+          <Route path="/send-request" element={<Vendor_fill_quote />} />
         </Routes>
       </>
     );

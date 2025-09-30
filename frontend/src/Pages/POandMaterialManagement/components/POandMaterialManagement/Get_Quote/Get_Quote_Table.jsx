@@ -149,7 +149,7 @@ export default function Get_Quote_Table() {
                       {/* <a href="pi-request-get-quote.html"
                                          className="btn btn-primary mt-2 mb-2 btn-sm">Create PO</a>*/}
                       <Link
-                        to="/po-material/pi-request-get-quote"
+                        to="/po-material/pi-request-get-quote/:id"
                         className="btn btn-info mt-2 mb-2 btn-sm waves-effect waves-light"
                       >
                         View Detail

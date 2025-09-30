@@ -3,10 +3,35 @@ import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import Get_Quote_Table from "./Get_Quote_Table";
 import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
+import { useDepartment } from "../../../../../Context/Master/DepartmentContext";
+import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 
 export default function Get_Quote_List() {
-  const { search, getQuoteList, setPagination, pagination, setSearch } =
-    useGetQuote();
+  const {
+    search,
+    getQuoteList,
+    setPagination,
+    pagination,
+    setSearch,
+    itemType,
+    setItemType,
+    department,
+    setDepartment,
+    createdBy,
+    setCreatedBy,
+    status,
+    setStatus,
+    dateRange,
+    setDateRange,
+  } = useGetQuote();
+  const { deptFilter, setDeptFilter, fetchDeptFilter } = useDepartment();
+  const { filterUser, fetchUserFilter, setFilterUser } = useUserCreation();
+
+  useEffect(() => {
+    fetchDeptFilter();
+    fetchUserFilter();
+  }, []);
 
   useEffect(() => {
     getQuoteList({
@@ -14,7 +39,15 @@ export default function Get_Quote_List() {
       page: pagination.currentPage,
       perPage: pagination.perPage,
     });
-  }, [search, pagination.currentPage, pagination.perPage]);
+  }, [
+    search,
+    itemType,
+    department,
+    createdBy,
+    status,
+    pagination.currentPage,
+    pagination.perPage,
+  ]);
 
   const handlePageChange = (page) => {
     setPagination((prev) => ({ ...prev, currentPage: page }));
@@ -49,41 +82,112 @@ export default function Get_Quote_List() {
           </div>
           <div className="row px-3 pb-2">
             <div className="col-lg-3">
-              <select id="select10Basic" className="select2 form-select">
-                <option value="AK">Select&nbsp;Type</option>
-                <option value="HI">Item</option>
-                <option value="CA">Services</option>
-                <option value="NV">Asset</option>
-              </select>
+              <CustomSelect
+                id="selectItemType"
+                options={[
+                  {
+                    value: "all",
+                    label: "Select Item Type",
+                  },
+                  {
+                    value: "material",
+                    label: "Material",
+                  },
+                  {
+                    value: "service",
+                    label: "Service",
+                  },
+                  {
+                    value: "asset",
+                    label: "Asset",
+                  },
+                ]}
+                value={itemType}
+                onChange={setItemType}
+                placeholder="Select Item"
+              />
             </div>
             <div className="col-lg-3">
-              <select id="select7Basic" className="select2 form-select">
-                <option value="AK">Select&nbsp;Department</option>
-                <option value="HI">Category</option>
-                <option value="CA">Category</option>
-                <option value="NV">Category</option>
-              </select>
+              <CustomSelect
+                id="selectDept"
+                options={[
+                  { value: "all", label: "All Departments" }, // ✅ All option first
+                  ...(deptFilter?.map((dept) => ({
+                    value: dept.id,
+                    label: dept.department_name,
+                  })) || []),
+                ]}
+                value={department}
+                onChange={setDepartment}
+                placeholder="Select Department"
+              />
             </div>
             <div className="col-lg-2">
-              <select id="select11Basic" className="select2 form-select">
-                <option value="AK">Select&nbsp;Created By</option>
-                <option value="HI">Created</option>
-                <option value="CA">Created</option>
-                <option value="NV">Created</option>
-              </select>
+              <CustomSelect
+                id="selectUser"
+                options={[
+                  { value: "all", label: "All Users" }, // ✅ All option first
+                  ...(filterUser?.map((user) => ({
+                    value: user.id,
+                    label: user.name,
+                  })) || []),
+                ]}
+                value={createdBy}
+                onChange={setCreatedBy}
+                placeholder="Select Created By"
+              />
             </div>
             <div className="col-lg-2">
-              <select id="select9Basic" className="select2 form-select">
-                <option value="AK">Select&nbsp;Status</option>
-                <option value="HI">Active</option>
-                <option value="CA">Deactive</option>
-              </select>
+              <CustomSelect
+                id="selectItemStatus"
+                options={[
+                  {
+                    value: "all",
+                    label: "Select Status",
+                  },
+                  {
+                    value: "Pending",
+                    label: "Pending",
+                  },
+                  {
+                    value: "Approved",
+                    label: "Approved",
+                  },
+                  {
+                    value: "Completed",
+                    label: "Completed",
+                  },
+                  {
+                    value: "Reject",
+                    label: "Reject",
+                  },
+                ]}
+                value={status}
+                onChange={setStatus}
+                placeholder="Select Item Status"
+              />
             </div>
             <div className="col-lg-2">
-              <input
+              {/* <input
                 type="date"
                 id="bs-rangepicker-range"
                 className="form-control"
+              /> */}
+              <input
+                type="date"
+                className="form-control mb-1"
+                value={dateRange.start}
+                onChange={(e) =>
+                  setDateRange((prev) => ({ ...prev, start: e.target.value }))
+                }
+              />{" "}
+              <input
+                type="date"
+                className="form-control"
+                value={dateRange.end}
+                onChange={(e) =>
+                  setDateRange((prev) => ({ ...prev, end: e.target.value }))
+                }
               />
             </div>
           </div>

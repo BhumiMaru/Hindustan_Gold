@@ -1,6 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useUIContext } from "../../../../../Context/UIContext";
+import { Link, useParams } from "react-router-dom";
+import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
 
 export default function PI_Request_Get_Quote() {
+  const { handleOpen } = useUIContext();
+  const { id } = useParams();
+  console.log("id", id);
+  const { quoteData, quoteItems, getQuoteDetails } = useGetQuote();
+  useEffect(() => {
+    getQuoteDetails(id);
+  }, [id]);
+
+  useEffect(() => {
+    // Initialize all tooltips after render
+    const tooltipTriggerList = document.querySelectorAll(
+      '[data-bs-toggle="tooltip"]'
+    );
+
+    tooltipTriggerList.forEach(
+      (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+    );
+  }, [quoteItems]);
+
+  console.log("quoteItems", quoteItems);
   return (
     <>
       {/* ---------------START PI REQUEST GET QUOTE-------------------- */}
@@ -19,7 +42,6 @@ export default function PI_Request_Get_Quote() {
                   <th>Approval Date</th>
                   <th>Order By</th>
                   <th>Department</th>
-                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -27,14 +49,17 @@ export default function PI_Request_Get_Quote() {
                   <td>
                     <div className="ms-4">123</div>
                   </td>
-                  <td>05-08-2025</td>
-                  <td>05-08-2025</td>
-                  <td>Ronak Patel</td>
-                  <td>Electrical</td>
+                  <td>{quoteItems?.pi_request?.pi_date}</td>
+                  <td>{quoteItems?.pi_request?.order_by?.name}</td>
+                  <td>{quoteItems?.pi_request?.order_by?.name}</td>
                   <td>
-                    <span className="badge bg-label-success">Complet</span>
+                    {
+                      quoteItems?.pi_request?.order_by?.department
+                        ?.department_name
+                    }
                   </td>
                 </tr>
+
                 <tr>
                   <style
                     dangerouslySetInnerHTML={{
@@ -58,68 +83,61 @@ export default function PI_Request_Get_Quote() {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td>
-                            <div className="ms-4">ABCG- STCKER-CHARHER</div>
-                          </td>
-                          <td>10</td>
-                          <td>Nos</td>
-                          <td>
-                            <span className="badge badge-outline-danger">
-                              High
-                            </span>
-                          </td>
-                          <td>
-                            <a
-                              href="#"
-                              type="button"
-                              className=""
-                              data-bs-toggle="tooltip"
-                              data-bs-placement="top"
-                              aria-label="Purpose"
-                              data-bs-original-title="Purpose"
-                            >
-                              <i className="icon-base ti tabler-progress-help text-dark  icon-20px" />
-                            </a>
-                          </td>
-                          <td>STCKER-CHARHER</td>
-                          <td>
-                            <span className="badge bg-label-warning">
-                              Pending
-                            </span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div className="ms-4">ABCG- STCKER-CHARHER</div>
-                          </td>
-                          <td>10</td>
-                          <td>Nos</td>
-                          <td>
-                            <span className="badge badge-outline-info">
-                              Low
-                            </span>
-                          </td>
-                          <td>
-                            <a
-                              href="#"
-                              type="button"
-                              className=""
-                              data-bs-toggle="tooltip"
-                              data-bs-placement="top"
-                              aria-label="Purpose"
-                              data-bs-original-title="Purpose"
-                            >
-                              <i className="icon-base ti tabler-progress-help text-dark  icon-20px" />
-                            </a>
-                          </td>
-                          <td>STCKER-CHARHER</td>
-                          <td>
-                            <span className="badge bg-label-warning">
-                              Pending
-                            </span>
-                          </td>
-                        </tr>
+                        {quoteItems?.piget_quate_items?.map((pi, index) => {
+                          console.log("ppp", pi);
+                          return (
+                            <tr key={pi.id}>
+                              <td>
+                                <div className="ms-4">
+                                  {pi?.pi_request_item?.item?.item_name}
+                                </div>
+                              </td>
+                              <td> {pi?.pi_request_item?.qty}</td>
+                              <td>{pi?.pi_request_item?.uom}</td>
+                              <td>
+                                <span
+                                  className={`badge ${
+                                    pi?.pi_request_item?.priority === "high"
+                                      ? "badge-outline-success"
+                                      : pi?.pi_request_item?.priority ===
+                                        "medium"
+                                      ? "badge-outline-info"
+                                      : "badge-outline-danger"
+                                  }`}
+                                >
+                                  {pi?.pi_request_item?.priority}
+                                </span>
+                              </td>
+                              <td>
+                                <a
+                                  href="#"
+                                  type="button"
+                                  className=""
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="top"
+                                  aria-label="Purpose"
+                                  data-bs-original-title={
+                                    pi?.pi_request_item?.purpose
+                                  }
+                                >
+                                  <i className="icon-base ti tabler-progress-help text-dark  icon-20px" />
+                                </a>
+                              </td>
+                              <td>{pi?.pi_request_item?.remark}</td>
+                              <td>
+                                <span
+                                  className={`badge ${
+                                    pi?.pi_request_item?.status === "approved"
+                                      ? "bg-label-success"
+                                      : "bg-label-danger"
+                                  } `}
+                                >
+                                  {pi?.pi_request_item?.status}
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </td>
@@ -206,13 +224,14 @@ export default function PI_Request_Get_Quote() {
                     >
                       <i className="icon-base ti tabler-receipt-rupee icon-md" />
                     </a>
-                    <a
-                      href="vendor-fill-quote.html"
+                    <Link
+                      to="/send-request"
                       className="btn btn-info btn-sm waves-effect waves-light"
+                      target="_blank"
                     >
                       {" "}
                       Send Request
-                    </a>
+                    </Link>
                   </td>
                 </tr>
                 <tr>
@@ -333,41 +352,6 @@ export default function PI_Request_Get_Quote() {
                     <option value="HI">Vendor 3</option>
                     <option value="HI">Vendor 4</option>
                   </select>
-                  <span
-                    className="select2 select2-container select2-container--default"
-                    dir="ltr"
-                    data-select2-id={1}
-                    style={{ width: 156 }}
-                  >
-                    <span className="selection">
-                      <span
-                        className="select2-selection select2-selection--single"
-                        role="combobox"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                        tabIndex={0}
-                        aria-disabled="false"
-                        aria-labelledby="select2-Purpose-container"
-                      >
-                        <span
-                          className="select2-selection__rendered"
-                          id="select2-Purpose-container"
-                          role="textbox"
-                          aria-readonly="true"
-                          title="Select Vendor"
-                        >
-                          Select Vendor
-                        </span>
-                        <span
-                          className="select2-selection__arrow"
-                          role="presentation"
-                        >
-                          <b role="presentation" />
-                        </span>
-                      </span>
-                    </span>
-                    <span className="dropdown-wrapper" aria-hidden="true" />
-                  </span>
                 </div>
                 <div className="ms-4">
                   <button className="btn btn-success btn-sm waves-effect waves-light">
@@ -379,6 +363,7 @@ export default function PI_Request_Get_Quote() {
                     className="btn btn-info btn-sm waves-effect waves-light"
                     data-bs-toggle="modal"
                     data-bs-target="#vendorAddModel"
+                    onClick={() => handleOpen("addNewVendor")}
                   >
                     Add New Vendor
                   </button>

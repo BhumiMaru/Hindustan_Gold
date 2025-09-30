@@ -77,7 +77,15 @@ export default function PI_Request_Table() {
                 <td>10</td>
                 <td>{pi.po_total}</td>
                 <td>
-                  <span className="badge bg-label-success">
+                  <span
+                    className={`badge ${
+                      pi.final_approve_status === "Approved"
+                        ? "bg-label-success"
+                        : pi.final_approve_status === "InProgress"
+                        ? "bg-label-warning"
+                        : "bg-label-danger"
+                    }`}
+                  >
                     {pi.final_approve_status}
                   </span>
                 </td>
@@ -271,14 +279,20 @@ export default function PI_Request_Table() {
                           selectedItems.length > 0 && ( */}
                       <>
                         <Link
-                          to="/po-material/pi-request-get-quote"
+                          to="/po-material/pi-request-get-quote/:id"
                           className="btn btn-primary btn-sm mt-2 mb-2 waves-effect waves-light"
-                          onClick={() => {
-                            // navigate("/po-material/pi-request-get-quote");
-                            getQuoteCreate({
+                          onClick={async () => {
+                            const res = await getQuoteCreate({
                               pi_request_id: pi.id,
                               pi_request_item_id: selectedItems,
                             });
+
+                            // Optional: navigate directly to details page with ID
+                            if (res?.data?.id) {
+                              navigate(
+                                `/po-material/pi-request-get-quote/${res.data.id}`
+                              );
+                            }
                           }}
                         >
                           Get Quotation
