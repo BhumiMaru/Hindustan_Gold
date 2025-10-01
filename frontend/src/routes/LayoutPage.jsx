@@ -10,6 +10,7 @@ import { decryptData } from "../utils/decryptData";
 import { useUIContext } from "../Context/UIContext";
 import Small_Screen_Sidebar from "../components/Common/SideBar/Small_Screen_Sidebar";
 import Vendor_fill_quote from "../Pages/POandMaterialManagement/components/POandMaterialManagement/Get_Quote/vendor_fill_quote";
+import { UserCreationProvider } from "../Context/Master/UserCreationContext";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function LayoutPage() {
@@ -86,7 +87,9 @@ export default function LayoutPage() {
       {/* ---------------START LAYOUT PAGE------------------ */}
       <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">
-          <SideBar />
+          <UserCreationProvider>
+            <SideBar />
+          </UserCreationProvider>
 
           <div className="layout-page">
             <Navbar />

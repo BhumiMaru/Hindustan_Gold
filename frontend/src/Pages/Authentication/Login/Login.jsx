@@ -115,7 +115,10 @@ export default function Login() {
                   </div>
 
                   <div className="d-flex justify-content-between my-3">
-                    <Link to="/auth-forgot-password">
+                    <Link
+                      to="/auth-forgot-password"
+                      className="text-decoration-none"
+                    >
                       <p className="mb-0">Forgot Password?</p>
                     </Link>
                   </div>

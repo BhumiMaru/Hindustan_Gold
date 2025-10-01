@@ -151,14 +151,14 @@ export default function PI_Request_List() {
             <div className="d-flex gap-2">
               <Link
                 to="/po-material/pi-request-create/material"
-                className="btn btn-primary waves-effect waves-light"
+                className="btn btn-primary waves-effect waves-light text-decoration-none"
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2" />
                 Material PI
               </Link>
               <Link
                 to="/po-material/pi-request-create/service"
-                className="btn btn-info waves-effect waves-light"
+                className="btn btn-info waves-effect waves-light text-decoration-none"
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2" />
                 Services PI

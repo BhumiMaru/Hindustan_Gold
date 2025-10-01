@@ -302,7 +302,9 @@ export default function AppRoutes() {
           element={
             <VendorProvider>
               <GetQuoteProvider>
-                <PI_Request_Get_Quote />
+                <UserCreationProvider>
+                  <PI_Request_Get_Quote />
+                </UserCreationProvider>
               </GetQuoteProvider>
             </VendorProvider>
           }

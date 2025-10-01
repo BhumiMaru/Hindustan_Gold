@@ -39,7 +39,7 @@ export default function Role_Master_Table() {
                     <Link
                       to={`/super_admin/role-permission/${role.id}`}
                       type="button"
-                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
+                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect text-decoration-none"
                     >
                       <i className="icon-base ti tabler-article text-info icon-22px"></i>
                     </Link>

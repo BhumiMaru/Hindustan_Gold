@@ -143,7 +143,10 @@ export default function Small_Screen_Sidebar({ onClose }) {
             }`}
             onClick={() => toggleMenu("Dashboard")}
           >
-            <Link to="/dashboard" className="menu-link cursor-pointer">
+            <Link
+              to="/dashboard"
+              className="menu-link cursor-pointer text-decoration-none"
+            >
               <i className="menu-icon icon-base ti tabler-smart-home"></i>
               <div data-i="Dashboard">Dashboard</div>
             </Link>
@@ -179,7 +182,7 @@ export default function Small_Screen_Sidebar({ onClose }) {
                   >
                     <Link
                       to={masterRoutes[item]}
-                      className="menu-link cursor-pointer"
+                      className="menu-link cursor-pointer text-decoration-none"
                     >
                       <div>{item}</div>
                     </Link>
@@ -219,7 +222,7 @@ export default function Small_Screen_Sidebar({ onClose }) {
                   >
                     <Link
                       to={itemRoutes[item]}
-                      className="menu-link cursor-pointer"
+                      className="menu-link cursor-pointer text-decoration-none"
                     >
                       <div data-i={item}>{item}</div>
                     </Link>
@@ -259,7 +262,7 @@ export default function Small_Screen_Sidebar({ onClose }) {
                   >
                     <Link
                       to={requestManagementRoutes[item]}
-                      className="menu-link cursor-pointer"
+                      className="menu-link cursor-pointer text-decoration-none"
                     >
                       <div data-i={item}>{item}</div>
                     </Link>
@@ -301,7 +304,7 @@ export default function Small_Screen_Sidebar({ onClose }) {
                   >
                     <Link
                       to={piAndMaterialManagementRoutes[item]}
-                      className="menu-link cursor-pointer"
+                      className="menu-link cursor-pointer text-decoration-none"
                     >
                       <div data-i={item}>{item}</div>
                     </Link>
@@ -341,7 +344,7 @@ export default function Small_Screen_Sidebar({ onClose }) {
                   >
                     <Link
                       to={paymentManagementRoutes[item]}
-                      className="menu-link cursor-pointer"
+                      className="menu-link cursor-pointer text-decoration-none"
                     >
                       <div data-i={item}>{item}</div>
                     </Link>

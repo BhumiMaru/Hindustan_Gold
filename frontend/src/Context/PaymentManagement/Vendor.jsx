@@ -84,7 +84,7 @@ export const VendorProvider = ({ children }) => {
     try {
       const res = await postData(ENDPOINTS.VENDOR.ADD_UPDATE, payload);
       if (res.success) {
-        console.log("res", res);
+        // console.log("res", res);
         setVendorData(res.data.data);
         toast.success(res.message);
         getVendorList();
@@ -121,12 +121,12 @@ export const VendorProvider = ({ children }) => {
   //   Vendor Details
   const vendorDetails = async (id) => {
     try {
-      console.log("mm", id);
+      // console.log("mm", id);
       const res = await postData(ENDPOINTS.VENDOR.DETAILS, {
         id: id,
       });
       if (res.success) {
-        console.log("res res", res);
+        // console.log("res res", res);
         const vendorData = res.data;
 
         setVendorData({
@@ -155,8 +155,8 @@ export const VendorProvider = ({ children }) => {
 
   //   Start Editing
   const startEditing = (vendorId) => {
-    console.log("vendorId", vendorId);
-    console.log("typeof vendorId", typeof vendorId);
+    // console.log("vendorId", vendorId);
+    // console.log("typeof vendorId", typeof vendorId);
     setVendorEditId(vendorId);
     vendorDetails(vendorId);
   };

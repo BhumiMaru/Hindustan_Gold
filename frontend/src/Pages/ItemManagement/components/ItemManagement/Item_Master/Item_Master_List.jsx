@@ -133,21 +133,21 @@ export default function Item_Master_List() {
             <div className="d-flex flex-wrap gap-1">
               <Link
                 to="/item/item-create/material"
-                className="btn btn-primary waves-effect waves-light"
+                className="btn btn-primary waves-effect waves-light text-decoration-none"
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2" />
                 Add Material
               </Link>
               <Link
                 to="/item/item-create/service"
-                className="btn btn-info waves-effect waves-light"
+                className="btn btn-info waves-effect waves-light text-decoration-none"
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2" />
                 Add Service
               </Link>
               <Link
                 to="/item/item-create/asset"
-                className="btn btn-success waves-effect waves-light"
+                className="btn btn-success waves-effect waves-light text-decoration-none"
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2" />
                 Add Asset

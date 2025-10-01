@@ -113,7 +113,7 @@ export default function User_Creation_List() {
             <div className="d-flex gap-1">
               <Link
                 to="/super_admin/master/user-create"
-                className="btn btn-primary waves-effect waves-light"
+                className="btn btn-primary waves-effect waves-light text-decoration-none"
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2"></span>
                 Add New User

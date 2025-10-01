@@ -6,6 +6,7 @@ import "../../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstra
 import { Link, useLocation } from "react-router-dom";
 import { useUIContext } from "../../../Context/UIContext";
 import { decryptData } from "../../../utils/decryptData";
+import { useUserCreation } from "../../../Context/Master/UserCreationContext";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function SideBar() {
@@ -18,6 +19,8 @@ export default function SideBar() {
     toggleSidebar,
     isOpenSmallSidebar,
   } = useUIContext();
+  const { userPermission, fetchUserPermission } = useUserCreation();
+  console.log("userPermission", userPermission);
 
   // Add/remove HTML classes based on sidebar state
   useEffect(() => {
@@ -45,10 +48,15 @@ export default function SideBar() {
     try {
       const decrypted = decryptData(savedAuth);
       user = decrypted?.user || null;
+      console.log("user", user);
     } catch (error) {
       console.error("Error decrypting auth data", error);
     }
   }
+
+  useEffect(() => {
+    fetchUserPermission(user.id);
+  }, [user.id]);
 
   // ✅ Check if current user is Admin (id === 54)
   const isAdmin = user?.id === 56;
@@ -77,13 +85,20 @@ export default function SideBar() {
   };
 
   const piAndMaterialManagementRoutes = {
-    // "PI Item Request": "/po-material/pi-request-create",
     "PI Request List": "/po-material/pi-request-list",
     "Get Quote": "/po-material/get-quote-list",
     "PO Create": "/po-material/po-create",
-    "PO List": "/po-material/po-list",
     "GRN List": "/po-material/grn-list",
   };
+
+  // Conditionally add "PO List" based on userPermission
+  if (
+    userPermission?.some(
+      (perm) => perm.type === "PO Generation" && perm.permission === "view"
+    )
+  ) {
+    piAndMaterialManagementRoutes["PO List"] = "/po-material/po-list";
+  }
 
   const paymentManagementRoutes = {
     "Invoice List": "/payment-management/invoice-list",
@@ -142,7 +157,10 @@ export default function SideBar() {
             }`}
             onClick={() => toggleMenu("Dashboard")}
           >
-            <Link to="/dashboard" className="menu-link cursor-pointer">
+            <Link
+              to="/dashboard"
+              className="menu-link cursor-pointer text-decoration-none"
+            >
               <i className="menu-icon icon-base ti tabler-smart-home"></i>
               <div data-i="Dashboard">Dashboard</div>
             </Link>
@@ -179,7 +197,7 @@ export default function SideBar() {
                     >
                       <Link
                         to={masterRoutes[item]}
-                        className="menu-link cursor-pointer"
+                        className="menu-link cursor-pointer text-decoration-none"
                       >
                         <div>{item}</div>
                       </Link>
@@ -194,7 +212,7 @@ export default function SideBar() {
               >
                 <Link
                   to="/suprer_admin/uom"
-                  className="menu-link cursor-pointer"
+                  className="menu-link cursor-pointer text-decoration-none"
                 >
                   <i className="menu-icon ti tabler-ruler"></i>
                   <div data-i="Uom">Uom</div>
@@ -233,7 +251,7 @@ export default function SideBar() {
                   >
                     <Link
                       to={itemRoutes[item]}
-                      className="menu-link cursor-pointer"
+                      className="menu-link cursor-pointer text-decoration-none"
                     >
                       <div data-i={item}>{item}</div>
                     </Link>
@@ -273,7 +291,7 @@ export default function SideBar() {
                   >
                     <Link
                       to={requestManagementRoutes[item]}
-                      className="menu-link cursor-pointer"
+                      className="menu-link cursor-pointer text-decoration-none"
                     >
                       <div data-i={item}>{item}</div>
                     </Link>
@@ -315,7 +333,7 @@ export default function SideBar() {
                   >
                     <Link
                       to={piAndMaterialManagementRoutes[item]}
-                      className="menu-link cursor-pointer"
+                      className="menu-link cursor-pointer text-decoration-none"
                     >
                       <div data-i={item}>{item}</div>
                     </Link>
@@ -355,7 +373,7 @@ export default function SideBar() {
                   >
                     <Link
                       to={paymentManagementRoutes[item]}
-                      className="menu-link cursor-pointer"
+                      className="menu-link cursor-pointer text-decoration-none"
                     >
                       <div data-i={item}>{item}</div>
                     </Link>

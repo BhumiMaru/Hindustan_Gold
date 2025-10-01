@@ -156,14 +156,14 @@ export default function Item_Request_List() {
               <div className=" d-sm-block d-lg-flex gap-2">
                 <Link
                   to="/user/request/request-create/material"
-                  className="btn btn-primary text-white waves-effect waves-light"
+                  className="btn btn-primary text-white waves-effect waves-light text-decoration-none"
                 >
                   <span className="icon-xs icon-base ti tabler-plus me-2"></span>
                   Material Request
                 </Link>
                 <Link
                   to="/user/request/request-create/service"
-                  className="btn btn-info waves-effect waves-light"
+                  className="btn btn-info waves-effect waves-light text-decoration-none"
                 >
                   <span className="icon-xs icon-base ti tabler-plus me-2"></span>
                   Service Request

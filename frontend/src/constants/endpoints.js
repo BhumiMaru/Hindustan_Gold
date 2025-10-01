@@ -142,6 +142,7 @@ export const ENDPOINTS = {
     LIST: "/pi/get/quote/vendors/list",
     SENDREQUEST: "/pi/get/quote/vendors/request/send",
     RATEUPDATE: "/pi/get/quote/vendors/rate/update",
+    VENDORAPPROVE: "/pi/get/quote/vendors/approve",
   },
 
   // PO CREATE

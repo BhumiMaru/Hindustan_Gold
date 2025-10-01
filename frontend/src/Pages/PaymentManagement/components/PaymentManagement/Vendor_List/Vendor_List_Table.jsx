@@ -29,7 +29,7 @@ export default function Vendor_List_Table() {
         </thead>
         <tbody>
           {vendorList.map((vendor, index) => {
-            console.log("vendor", vendor);
+            // console.log("vendor", vendor);
             return (
               <tr key={vendor.id}>
                 <td>
@@ -67,7 +67,7 @@ export default function Vendor_List_Table() {
                       data-bs-toggle="modal"
                       data-bs-target="#vendorAddModel"
                       onClick={() => {
-                        console.log("id", vendor.id);
+                        // console.log("id", vendor.id);
                         startEditing(Number(vendor.id));
                         handleOpen("addNewVendor");
                       }}

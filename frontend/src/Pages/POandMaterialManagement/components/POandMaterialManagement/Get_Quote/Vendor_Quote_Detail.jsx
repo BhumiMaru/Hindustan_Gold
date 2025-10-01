@@ -1,8 +1,16 @@
 import React from "react";
 import { useUIContext } from "../../../../../Context/UIContext";
+import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
 
 export default function Vendor_Quote_Detail() {
   const { handleClose } = useUIContext();
+  const {
+    newVendorId,
+    newVendorData,
+    setNewVendorData,
+    vendorRateUpdate,
+    newVendorList,
+  } = useGetQuote();
   return (
     <>
       {/* ------------------------STRAT VENDOR QUOTE DETAILS------------------------- */}
@@ -50,18 +58,17 @@ export default function Vendor_Quote_Detail() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>ABCG - STCKER-CHARHER</td>
-                    <td>10</td>
-                    <td>Nos</td>
-                    <td>₹ 500/-</td>
-                  </tr>
-                  <tr>
-                    <td>ABCG- STCKER-CHARHER</td>
-                    <td>10</td>
-                    <td>Nos</td>
-                    <td>₹ 500/-</td>
-                  </tr>
+                  {newVendorData?.map((vendor, index) => {
+                    return (
+                      <tr key={index}>
+                        {console.log("vv", vendor)}
+                        <td>{vendor?.pirequestitem?.item_name}</td>
+                        <td>{vendor?.pirequestitem?.qty}</td>
+                        <td>{vendor?.pirequestitem?.uom}</td>
+                        <td>₹ {vendor?.rate}/-</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
               <div className="row">

@@ -1,8 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import { useUIContext } from "../../../../../Context/UIContext";
+import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
 
 export default function Add_Quote_Modal() {
   const { handleClose } = useUIContext();
+  const {
+    newVendorId,
+    newVendorData,
+    setNewVendorData,
+    vendorRateUpdate,
+    newVendorList,
+  } = useGetQuote();
+  console.log("newVendorList", newVendorList);
+
+  const [file, setFile] = useState(null);
+
+  // Handle rate input change
+  const handleRateChange = (index, value) => {
+    const updatedData = [...newVendorData];
+    updatedData[index].rate = value;
+    setNewVendorData(updatedData);
+  };
+
+  // Handle save
+  const handleSave = async () => {
+    try {
+      await vendorRateUpdate({
+        pi_get_quote_id: newVendorData[0]?.pi_get_quote_id,
+        pi_get_quote_vendor_id: newVendorId,
+        items: newVendorData.map((item) => ({
+          id: item.id,
+          rate: item.rate,
+        })),
+        vendor_quote_file: file,
+      });
+
+      console.log("vendor data", newVendorData);
+      handleClose("addQuote");
+    } catch (error) {
+      console.error("Error saving vendor rates:", error);
+    }
+  };
+
   return (
     <>
       {/* -----------------------START ADD QUOTE DETAILS----------------------- */}
@@ -31,43 +70,68 @@ export default function Add_Quote_Modal() {
                 onClick={() => handleClose("addQuote")}
               />
             </div>
+
             <div className="modal-body">
               <table className="table table1 datatables-basic align-middle w-100">
                 <thead>
                   <tr className="bg-label-secondary">
-                    <th>Item </th>
+                    <th>Item</th>
                     <th>Qty.</th>
                     <th>UOM</th>
                     <th>Rate</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>ABCG - STCKER-CHARHER</td>
-                    <td>10</td>
-                    <td>Nos</td>
-                    <td>₹ 500/-</td>
-                  </tr>
-                  <tr>
-                    <td>ABCG- STCKER-CHARHER</td>
-                    <td>10</td>
-                    <td>Nos</td>
-                    <td>
-                      <input
-                        type="number"
-                        className="form-control form-control-sm"
-                        style={{ width: "100%", minWidth: 80 }}
-                      />
-                    </td>
-                  </tr>
+                  {newVendorData?.map((vendor, index) => (
+                    <tr key={index}>
+                      {console.log("vendor", vendor)}
+                      <td>{vendor?.pirequestitem?.item_name}</td>
+                      <td>{vendor?.pirequestitem?.qty}</td>
+                      <td>{vendor?.pirequestitem?.uom}</td>
+                      <td>
+                        <input
+                          type="number"
+                          className="form-control form-control-sm"
+                          style={{ width: "100%", minWidth: 80 }}
+                          value={vendor?.rate ?? ""}
+                          onChange={(e) =>
+                            handleRateChange(index, e.target.value)
+                          }
+                        />
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
-              <div className="row">
+
+              <div className="row mt-2">
                 <div className="col-lg-12">
                   <label>Attachment File</label>
-                  <input type="file" className="form-control" />
+                  <input
+                    type="file"
+                    className="form-control"
+                    onChange={(e) => setFile(e.target.files[0])}
+                  />
                 </div>
               </div>
+            </div>
+
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+                onClick={() => handleClose("addQuote")}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSave}
+              >
+                Save
+              </button>
             </div>
           </div>
         </div>

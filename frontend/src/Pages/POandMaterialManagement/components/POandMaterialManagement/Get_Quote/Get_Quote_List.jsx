@@ -6,8 +6,12 @@ import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import Get_Quote_Table from "./Get_Quote_Table";
 import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
 import { useDepartment } from "../../../../../Context/Master/DepartmentContext";
-import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
+import {
+  UserCreationProvider,
+  useUserCreation,
+} from "../../../../../Context/Master/UserCreationContext";
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
+import DateRangePickerReact from "../../../../../components/Date Range/DateRangePickerReact";
 
 export default function Get_Quote_List() {
   const {
@@ -35,11 +39,33 @@ export default function Get_Quote_List() {
     fetchUserFilter();
   }, []);
 
+  // useEffect(() => {
+  //   getQuoteList({
+  //     search,
+  //     page: pagination.currentPage,
+  //     perPage: pagination.perPage,
+  //   });
+  // }, [
+  //   search,
+  //   itemType,
+  //   department,
+  //   createdBy,
+  //   status,
+  //   pagination.currentPage,
+  //   pagination.perPage,
+  //   dateRange,
+  // ]);
+
   useEffect(() => {
     getQuoteList({
       search,
       page: pagination.currentPage,
       perPage: pagination.perPage,
+      itemType,
+      department,
+      createdBy,
+      status,
+      dateRange,
     });
   }, [
     search,
@@ -49,6 +75,7 @@ export default function Get_Quote_List() {
     status,
     pagination.currentPage,
     pagination.perPage,
+    dateRange, // ✅ refresh list when date range changes
   ]);
 
   const handlePageChange = (page) => {
@@ -195,25 +222,9 @@ export default function Get_Quote_List() {
 
             <div className="col-lg-2">
               {/* <DateRangePicker /> */}
-              <DateRangePicker
-                value={
-                  dateRange.start && dateRange.end
-                    ? [new Date(dateRange.start), new Date(dateRange.end)]
-                    : null
-                }
-                onChange={(range) => {
-                  if (range) {
-                    setDateRange({
-                      start: range[0].toISOString().split("T")[0],
-                      end: range[1].toISOString().split("T")[0],
-                    });
-                  } else {
-                    setDateRange({ start: "", end: "" });
-                  }
-                }}
-                placeholder="Select Date Range"
-                style={{ width: "100%" }}
-              />
+              {/* <DateRangePickerReact
+                onDateSelect={(range) => setDateRange(range)}
+              /> */}
             </div>
           </div>
           <style
@@ -223,7 +234,9 @@ export default function Get_Quote_List() {
             }}
           />
           <div className="card-datatable">
-            <Get_Quote_Table />
+            <UserCreationProvider>
+              <Get_Quote_Table />
+            </UserCreationProvider>
             <Pagination
               currentPage={pagination.currentPage}
               totalItems={pagination.total}

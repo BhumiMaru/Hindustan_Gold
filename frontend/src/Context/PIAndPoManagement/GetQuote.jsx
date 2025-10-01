@@ -30,6 +30,8 @@ export const GetQuoteProvider = ({ children }) => {
   // ---------------------------- Get Quotation Details ------------------ //
   // const [quotationVendorList, setQuotationVendorList] = useState([]);
   const [newVendorList, setNewVendorList] = useState([]);
+  const [newVendorId, setNewVendorId] = useState(null);
+  const [newVendorData, setNewVendorData] = useState(null);
   const [oldVendorList, setOldVendorList] = useState([]);
 
   const [quotationVendorData, setQuotationVendorData] = useState({
@@ -149,7 +151,7 @@ export const GetQuoteProvider = ({ children }) => {
       });
 
       if (res.status) {
-        console.log("res", res);
+        // console.log("res", res);
 
         // Filter based on vendor_type since res.data is an array
         if (vendor_type === "new") {
@@ -220,14 +222,14 @@ export const GetQuoteProvider = ({ children }) => {
         // vendor_type: vendor_type, // Include vendor_type in payload if needed by API
       };
 
-      console.log("Sending request with payload:", payload);
+      // console.log("Sending request with payload:", payload);
 
       const res = await postData(
         ENDPOINTS.QUOTATIONDETAILS.SENDREQUEST,
         payload
       );
 
-      console.log("Sending request with response:", res);
+      // console.log("Sending request with response:", res);
 
       if (res.status) {
         toast.success(res.message || "Request sent successfully!");
@@ -258,7 +260,7 @@ export const GetQuoteProvider = ({ children }) => {
     pi_get_quote_id,
     pi_get_quote_vendor_id,
     items = [], // Expect an array of objects [{ id, rate }]
-    file = null, // Optional file
+    file = null,
   }) => {
     try {
       if (!pi_get_quote_id || !pi_get_quote_vendor_id || items.length === 0) {
@@ -266,17 +268,21 @@ export const GetQuoteProvider = ({ children }) => {
         return;
       }
 
-      // Create FormData for rates and file
       const formData = new FormData();
       formData.append("pi_get_quote_id", pi_get_quote_id);
       formData.append("pi_get_quote_vendor_id", pi_get_quote_vendor_id);
-      formData.append(
-        "pi_get_quote_vendor_item_ids",
-        JSON.stringify(items.map((item) => ({ id: item.id, rate: item.rate })))
-      );
+
+      // ✅ Append items as array, not string
+      items.forEach((item, index) => {
+        formData.append(`pi_get_quote_vendor_item_ids[${index}][id]`, item.id);
+        formData.append(
+          `pi_get_quote_vendor_item_ids[${index}][rate]`,
+          Number(item.rate)
+        );
+      });
 
       if (file) {
-        formData.append("file", file);
+        formData.append("vendor_quote_file", file);
       }
 
       const res = await postData(
@@ -335,6 +341,8 @@ export const GetQuoteProvider = ({ children }) => {
         // setQuotationVendorList,
         newVendorList,
         setNewVendorList,
+        newVendorId,
+        setNewVendorId,
         oldVendorList,
         setOldVendorList,
         quotationVendorData,
@@ -342,6 +350,9 @@ export const GetQuoteProvider = ({ children }) => {
         quoteVendorList,
         createQuoteVendor,
         sendRequest,
+        vendorRateUpdate,
+        newVendorData,
+        setNewVendorData,
       }}
     >
       {children}

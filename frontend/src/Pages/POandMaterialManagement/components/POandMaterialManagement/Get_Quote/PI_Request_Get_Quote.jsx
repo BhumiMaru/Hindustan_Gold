@@ -7,6 +7,8 @@ import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
 import { toast } from "react-toastify"; // ADD THIS IMPORT
 import Vendor_Quote_Detail from "./Vendor_Quote_Detail";
 import Add_Quote_Modal from "./Add_Quote_Modal";
+import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
+import { decryptData } from "../../../../../utils/decryptData";
 
 export default function PI_Request_Get_Quote() {
   const { handleOpen, modal } = useUIContext();
@@ -17,6 +19,25 @@ export default function PI_Request_Get_Quote() {
   const [selectedVendor, setSelectedVendor] = useState(null);
   // Add state for past vendor list
   // const [pastVendorList, setPastVendorList] = useState([]);
+  const { userPermission, fetchUserPermission } = useUserCreation();
+
+  // ✅ Get saved auth data
+  const savedAuth = sessionStorage.getItem("authData");
+  let user = null;
+
+  if (savedAuth) {
+    try {
+      const decrypted = decryptData(savedAuth);
+      user = decrypted?.user || null;
+      console.log("user", user);
+    } catch (error) {
+      console.error("Error decrypting auth data", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchUserPermission(user.id);
+  }, [user.id]);
 
   const {
     quoteData,
@@ -31,6 +52,10 @@ export default function PI_Request_Get_Quote() {
     setNewVendorList,
     oldVendorList,
     setOldVendorList,
+    newVendorId,
+    setNewVendorId,
+    newVendorData,
+    setNewVendorData,
   } = useGetQuote();
   const navigate = useNavigate();
 
@@ -56,8 +81,8 @@ export default function PI_Request_Get_Quote() {
     }
   }, [quoteData?.id]);
 
-  console.log("get new", newVendorList);
-  console.log("get old", oldVendorList);
+  // console.log("get new", newVendorList);
+  // console.log("get old", oldVendorList);
 
   // console.log("pastVendorList", pastVendorList);
 
@@ -265,7 +290,7 @@ export default function PI_Request_Get_Quote() {
         pi_id: quoteData.pi_request.id,
         vendor_id: selectedVendor,
       });
-      // console.log("result", result);
+      console.log("result", result);
       await quoteVendorList({
         pi_get_quote_id: result.pi_get_quote_id,
         vendor_type: result.vendor_type,
@@ -457,7 +482,7 @@ export default function PI_Request_Get_Quote() {
                 {oldVendorList.map((pastVendor, index) => {
                   const vendorId = pastVendor.vendor_id || pastVendor.id;
                   const isSelected = selectedVendors.includes(vendorId);
-                  console.log("pastVendor", pastVendor);
+                  // console.log("pastVendor", pastVendor);
                   return (
                     <tr key={index}>
                       <td>
@@ -498,6 +523,7 @@ export default function PI_Request_Get_Quote() {
                         >
                           <i className="icon-base ti tabler-eye icon-md" />
                         </a>
+
                         <a
                           href="#"
                           className="btn btn-icon  waves-effect waves-light"
@@ -630,7 +656,15 @@ export default function PI_Request_Get_Quote() {
                       <td>{quotation.vendor.email}</td>
                       <td>{quotation.vendor.mobile}</td>
                       <td>
-                        <span className="badge bg-label-info">
+                        <span
+                          className={`badge ${
+                            quotation.quote_status === "Pending"
+                              ? "bg-label-warning"
+                              : quotation.quote_status === "Complete"
+                              ? "bg-label-success"
+                              : "bg-label-info"
+                          } `}
+                        >
                           {quotation.quote_status}
                         </span>
                       </td>
@@ -643,19 +677,30 @@ export default function PI_Request_Get_Quote() {
                           data-bs-original-title="View Detail"
                           data-bs-toggle="modal"
                           data-bs-target="#GetQuoteModel"
-                          onClick={() => handleOpen("viewVendorQuoteDetails")}
+                          onClick={() => {
+                            setNewVendorId(quotation?.id);
+                            setNewVendorData(quotation?.vendor_item);
+                            handleOpen("viewVendorQuoteDetails");
+                          }}
                         >
                           <i className="icon-base ti tabler-eye icon-md" />
                         </a>
+
                         <a
                           href="#"
-                          className="btn btn-icon  waves-effect waves-light"
+                          className={`btn btn-icon  waves-effect waves-light ${
+                            quotation.po_status === 1 && "d-none"
+                          }`}
                           data-bs-placement="top"
                           aria-label="Add Quote"
                           data-bs-original-title="Add Quote"
                           data-bs-toggle="modal"
                           data-bs-target="#AddQuoteModel"
-                          onClick={() => handleOpen("addQuote")}
+                          onClick={() => {
+                            setNewVendorId(quotation?.id);
+                            setNewVendorData(quotation?.vendor_item);
+                            handleOpen("addQuote");
+                          }}
                         >
                           <i className="icon-base ti tabler-receipt-rupee icon-md" />
                         </a>
@@ -671,11 +716,18 @@ export default function PI_Request_Get_Quote() {
                           <button className="btn bg-label-info btn-sm waves-effect waves-light">
                             Quotation Pending
                           </button>
-                        ) : quotation.quote_status === "completed" ? (
-                          <button className="btn btn-success btn-sm waves-effect waves-light">
-                            Vendor Approve
-                          </button>
-                        ) : null}
+                        ) : (
+                          quotation.quote_status === "Complete" &&
+                          userPermission?.some(
+                            (perm) =>
+                              perm.type === "PO Generation" &&
+                              perm.permission === "approve"
+                          ) && (
+                            <button className="btn btn-success btn-sm waves-effect waves-light">
+                              Vendor Approve
+                            </button>
+                          )
+                        )}
                       </td>
                     </tr>
                   );
