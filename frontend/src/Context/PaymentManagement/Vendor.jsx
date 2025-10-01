@@ -182,6 +182,29 @@ export const VendorProvider = ({ children }) => {
     });
   };
 
+  // Vendor Approve
+  // Vendor Approve
+  const vendorApprove = async ({ vendor_id, pi_get_quate }) => {
+    try {
+      const res = await postData(ENDPOINTS.QUOTATIONDETAILS.VENDORAPPROVE, {
+        vendor_id,
+        pi_get_quate,
+      });
+
+      if (res.success) {
+        toast.success(res.message || "Vendor approved successfully");
+        getVendorList(); // Refresh vendor list after approval
+      } else {
+        toast.error(res.message || "Failed to approve vendor");
+      }
+
+      return res.data;
+    } catch (error) {
+      toast.error("Error during Vendor Approve");
+      console.error("Vendor Approve error:", error);
+    }
+  };
+
   return (
     <VendorContext.Provider
       value={{
@@ -205,6 +228,7 @@ export const VendorProvider = ({ children }) => {
         vendorDetails,
         startEditing,
         resetVendorData,
+        vendorApprove,
       }}
     >
       {children}

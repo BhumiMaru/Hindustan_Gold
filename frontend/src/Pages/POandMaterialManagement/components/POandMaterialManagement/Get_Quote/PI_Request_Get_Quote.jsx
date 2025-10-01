@@ -13,7 +13,7 @@ import { decryptData } from "../../../../../utils/decryptData";
 export default function PI_Request_Get_Quote() {
   const { handleOpen, modal } = useUIContext();
   const { id } = useParams();
-  const { vendorFilter, getVendorFilter } = useVendor();
+  const { vendorFilter, getVendorFilter, vendorApprove } = useVendor();
 
   // Add state for selected vendor
   const [selectedVendor, setSelectedVendor] = useState(null);
@@ -711,8 +711,7 @@ export default function PI_Request_Get_Quote() {
                           >
                             Send Request
                           </button>
-                        ) : quotation.quote_status ===
-                          "Request Quotation Pending" ? (
+                        ) : quotation.quote_status === "Quote Pending" ? (
                           <button className="btn bg-label-info btn-sm waves-effect waves-light">
                             Quotation Pending
                           </button>
@@ -723,11 +722,20 @@ export default function PI_Request_Get_Quote() {
                               perm.type === "PO Generation" &&
                               perm.permission === "approve"
                           ) && (
-                            <button className="btn btn-success btn-sm waves-effect waves-light">
+                            <button
+                              className="btn btn-success btn-sm waves-effect waves-light"
+                              onClick={() =>
+                                vendorApprove({
+                                  vendor_id: quotation.vendor_id,
+                                  pi_get_quate: quotation.pi_get_quote_id,
+                                })
+                              }
+                            >
                               Vendor Approve
                             </button>
                           )
                         )}
+                        {console.log("qu", quotation)}
                       </td>
                     </tr>
                   );
