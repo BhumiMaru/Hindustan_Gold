@@ -148,5 +148,9 @@ export const ENDPOINTS = {
   // PO CREATE
   POCREATE: {
     ADD_UPDATE: "/po/create",
+    LIST: "/po/list",
+    DETAILS: "/po/detail",
+    APPROVE: "/po/approve",
+    REJECT: "/po/reject",
   },
 };

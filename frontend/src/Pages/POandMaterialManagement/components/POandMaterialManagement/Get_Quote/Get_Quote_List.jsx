@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { DateRangePicker } from "rsuite";
-import "rsuite/dist/rsuite.min.css";
+// import { DateRangePicker } from "rsuite";
+// import "rsuite/dist/rsuite.min.css";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import Get_Quote_Table from "./Get_Quote_Table";
@@ -179,8 +179,8 @@ export default function Get_Quote_List() {
                     label: "Pending",
                   },
                   {
-                    value: "Approved",
-                    label: "Approved",
+                    value: "InProgress",
+                    label: "InProgress",
                   },
                   {
                     value: "Completed",

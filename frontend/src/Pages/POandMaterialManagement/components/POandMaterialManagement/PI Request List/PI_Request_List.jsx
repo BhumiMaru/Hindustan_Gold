@@ -8,6 +8,7 @@ import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSe
 import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
 import { useDepartment } from "../../../../../Context/Master/DepartmentContext";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
+import { decryptData } from "../../../../../utils/decryptData";
 
 export default function PI_Request_List() {
   const {
@@ -36,7 +37,13 @@ export default function PI_Request_List() {
   } = usePIRequest();
   const { setFilterItem, fetchItemFilter, filterItem } = useItemRequest();
   const { deptFilter, setDeptFilter, fetchDeptFilter } = useDepartment();
-  const { filterUser, fetchUserFilter, setFilterUser } = useUserCreation();
+  const {
+    filterUser,
+    fetchUserFilter,
+    setFilterUser,
+    fetchUserPermission,
+    userPermission,
+  } = useUserCreation();
 
   useEffect(() => {
     fetchItemFilter();
@@ -72,6 +79,26 @@ export default function PI_Request_List() {
     setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
   };
 
+  // ✅ Get saved auth data
+  const savedAuth = sessionStorage.getItem("authData");
+  let user = null;
+
+  if (savedAuth) {
+    try {
+      const decrypted = decryptData(savedAuth);
+      user = decrypted?.user || null;
+      console.log("user", user);
+    } catch (error) {
+      console.error("Error decrypting auth data", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchUserPermission(user.id);
+  }, [user.id]);
+
+  console.log(userPermission);
+
   return (
     <>
       {/* ------------------START PI REUEST LIST-------------------- */}
@@ -79,11 +106,38 @@ export default function PI_Request_List() {
         {/* DataTable with Buttons */}
         <div className="card">
           <div className="row px-3 pt-2 pb-2">
-            <div className="col-lg-5 mb-1 ">
+            <div className="col-lg-6 mb-1 ">
               <ul
                 className="nav nav-pills nav-fill border rounded bg-label-primary"
                 role="tablist"
               >
+                {userPermission.some(
+                  (prem) =>
+                    prem.type === "Get Quotation" &&
+                    (prem.permission === "add" || prem.permission === "view")
+                ) && (
+                  <li className="nav-item mb-1 mb-sm-0" role="presentation">
+                    <button
+                      type="button"
+                      className={`nav-link waves-effect waves-light ${
+                        activeTab === "all_request" ? "active" : ""
+                      }`}
+                      role="tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#navs-pills-justified-home"
+                      aria-controls="navs-pills-justified-home"
+                      aria-selected="true"
+                      onClick={() => setActiveTab("all_request")}
+                    >
+                      <span className="d-none d-sm-inline-flex align-items-center">
+                        <i className="icon-base ti tabler-home icon-sm me-1_5" />
+                        All Request
+                      </span>
+                      <i className="icon-base ti tabler-home icon-sm d-sm-none" />
+                    </button>
+                  </li>
+                )}
+
                 <li className="nav-item mb-1 mb-sm-0" role="presentation">
                   <button
                     type="button"
@@ -308,7 +362,7 @@ export default function PI_Request_List() {
             </div>
           </div>
           <div className="card-datatable">
-            <PI_Request_Table />
+            <PI_Request_Table userPermission={userPermission} />
             <Pagination
               currentPage={pagination.currentPage}
               totalItems={pagination.total}

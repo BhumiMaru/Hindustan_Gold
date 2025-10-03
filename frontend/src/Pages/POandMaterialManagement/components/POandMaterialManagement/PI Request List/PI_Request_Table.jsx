@@ -6,7 +6,7 @@ import { useUIContext } from "../../../../../Context/UIContext";
 import { toast } from "react-toastify";
 import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
 
-export default function PI_Request_Table() {
+export default function PI_Request_Table({ userPermission }) {
   const { type, id } = useParams();
   const {
     piRequest,
@@ -41,6 +41,8 @@ export default function PI_Request_Table() {
       (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
     );
   }, [piRequest, expandedRows]);
+
+  console.log("userrrrrrrrrrrrrrrrrrr", userPermission);
 
   return (
     <>
@@ -177,17 +179,29 @@ export default function PI_Request_Table() {
                       <tbody>
                         {pi?.piitems?.map((piItem) => (
                           <tr key={`piItem-${pi.id}-${piItem.id}`}>
+                            {/* {activeTab === "approval_request" ||
+                              (activeTab === "all_request" && ( */}
                             <td className="dt-select">
                               <div className="ms-4">
                                 <input
                                   aria-label="Select row"
-                                  className="form-check-input"
+                                  className={`form-check-input ${
+                                    activeTab === "approval_request" &&
+                                    piItem.status === "Approve" &&
+                                    "d-none"
+                                  } ${
+                                    activeTab === "all_request" &&
+                                    piItem.status === "Approve" &&
+                                    "d-none"
+                                  }`}
                                   type="checkbox"
                                   checked={selectedItems.includes(piItem.id)}
                                   onChange={() => handleSelectItem(piItem.id)}
                                 />
                               </div>
                             </td>
+                            {/* ))} */}
+
                             <td>{piItem.item_name}</td>
                             <td>{piItem.qty}</td>
                             <td>{piItem.uom}</td>
@@ -246,25 +260,29 @@ export default function PI_Request_Table() {
                                 // }`}
 
                                 className={`badge ${
-                                  pi.status === "Approve" ||
-                                  pi.status === "Completed"
+                                  piItem.status === "Approve"
                                     ? "bg-label-success"
-                                    : pi.status === "InProgress"
+                                    : piItem.status === "InProgress"
                                     ? "bg-label-info"
-                                    : pi.status === "Pending"
+                                    : piItem.status === "Pending"
                                     ? "bg-label-warning"
-                                    : "bg-label-danger"
+                                    : piItem.status === "Reject"
+                                    ? "bg-label-danger"
+                                    : null
                                 }`}
                               >
                                 {piItem.status}
                               </span>
+
+                              {console.log("pi", pi)}
                             </td>
                             {activeTab === "approval_request" && (
                               <td>
                                 <div className="d-inline-flex gap-2">
                                   <div
                                     className={`badge rounded bg-label-success p-1_5 ${
-                                      piItem.status === "approved"
+                                      piItem.status === "Approve" ||
+                                      piItem.status === "Reject"
                                         ? "d-none"
                                         : ""
                                     }`}
@@ -276,7 +294,8 @@ export default function PI_Request_Table() {
                                   </div>
                                   <div
                                     className={`badge rounded bg-label-danger p-1_5 ${
-                                      piItem.status === "approved"
+                                      piItem.status === "Approve" ||
+                                      piItem.status === "Reject"
                                         ? "d-none"
                                         : ""
                                     }`}
@@ -303,11 +322,16 @@ export default function PI_Request_Table() {
                     </table>
                     {selectedItems.length > 0 && selectedItems && (
                       <div className="text-center w-100">
-                        {activeTab === "approval_request" &&
-                          selectedItems.length > 0 && (
+                        {activeTab === "all_request" &&
+                          selectedItems.length > 0 &&
+                          userPermission.some(
+                            (prem) =>
+                              prem.type === "Get Quotation" &&
+                              (prem.permission === "add" ||
+                                prem.permission === "view")
+                          ) && (
                             <>
                               <Link
-                                // to="/po-material/pi-request-get-quote/:id"
                                 className="btn btn-primary btn-sm mt-2 mb-2 waves-effect waves-light text-decoration-none"
                                 onClick={async () => {
                                   const res = await getQuoteCreate({
@@ -315,7 +339,6 @@ export default function PI_Request_Table() {
                                     pi_request_item_id: selectedItems,
                                   });
 
-                                  // Optional: navigate directly to details page with ID
                                   if (res?.data?.id) {
                                     navigate(
                                       `/po-material/pi-request-get-quote/${res.data.id}`
@@ -327,6 +350,7 @@ export default function PI_Request_Table() {
                               </Link>
                             </>
                           )}
+
                         <div className="d-inline-flex gap-2 ms-1">
                           {activeTab === "approval_request" &&
                             selectedItems.length > 0 && (

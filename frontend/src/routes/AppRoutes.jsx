@@ -46,6 +46,8 @@ import { VendorProvider } from "../Context/PaymentManagement/Vendor";
 import Vendor_fill_quote from "../Pages/POandMaterialManagement/components/POandMaterialManagement/Get_Quote/vendor_fill_quote";
 import { GetQuoteProvider } from "../Context/PIAndPoManagement/GetQuote";
 import Vendor_List_Form from "../Pages/PaymentManagement/components/PaymentManagement/Vendor_List/Vendor_List_Form";
+import PO_Details from "../Pages/POandMaterialManagement/components/POandMaterialManagement/PO_List/PO_Details";
+import { POProvider } from "../Context/PIAndPoManagement/POCreate";
 
 export default function AppRoutes() {
   const { isOpenSmallSidebar, closeSmallSidebar, modal } = useUIContext();
@@ -310,8 +312,16 @@ export default function AppRoutes() {
           }
         />
 
-        <Route path="/po-material/po-create" element={<PO_Create_Page />} />
+        <Route path="/po-material/po-create/:id" element={<PO_Create_Page />} />
         <Route path="/po-material/po-list" element={<PO_List_Page />} />
+        <Route
+          path="/po-material/po-detail/:id"
+          element={
+            <POProvider>
+              <PO_Details />
+            </POProvider>
+          }
+        />
         <Route path="/po-material/grn-list" element={<GRN_List_Page />} />
 
         {/* ---------PAYMENT MANAGMENT-------- */}

@@ -372,7 +372,7 @@ export default function PI_Request_Get_Quote() {
                           <th>Priority</th>
                           <th>Purpose</th>
                           <th>Remarks</th>
-                          <th>Status</th>
+                          {/* <th>Status</th> */}
                         </tr>
                       </thead>
                       <tbody>
@@ -417,17 +417,17 @@ export default function PI_Request_Get_Quote() {
                                 </a>
                               </td>
                               <td>{pi?.pi_request_item?.remark}</td>
-                              <td>
+                              {/* <td>
                                 <span
                                   className={`badge ${
-                                    pi?.pi_request_item?.status === "approved"
+                                    pi?.pi_request_item?.status === "Approve"
                                       ? "bg-label-success"
                                       : "bg-label-danger"
                                   } `}
                                 >
                                   {pi?.pi_request_item?.status}
                                 </span>
-                              </td>
+                              </td> */}
                             </tr>
                           );
                         })}
@@ -639,7 +639,12 @@ export default function PI_Request_Get_Quote() {
                         <div className="ms-4">
                           <input
                             aria-label="Select row"
-                            className="form-check-input"
+                            className={`form-check-input ${
+                              quotation.quote_status === "Complete" && "d-none"
+                            } ${
+                              quotation.quote_status === "Quote Pending" &&
+                              "d-none"
+                            }`}
                             type="checkbox"
                             checked={selectedNewVendors.includes(vendorId)}
                             onChange={(e) =>
@@ -689,7 +694,7 @@ export default function PI_Request_Get_Quote() {
                         <a
                           href="#"
                           className={`btn btn-icon  waves-effect waves-light ${
-                            quotation.po_status === 1 && "d-none"
+                            quotation.quote_status === "Complete" && "d-none"
                           }`}
                           data-bs-placement="top"
                           aria-label="Add Quote"
@@ -719,11 +724,14 @@ export default function PI_Request_Get_Quote() {
                           quotation.quote_status === "Complete" &&
                           userPermission?.some(
                             (perm) =>
-                              perm.type === "PO Generation" &&
-                              perm.permission === "approve"
+                              perm.type === "Get Quotation" &&
+                              perm.permission === "add"
                           ) && (
                             <button
-                              className="btn btn-success btn-sm waves-effect waves-light"
+                              // className="btn btn-success btn-sm waves-effect waves-light"
+                              className={`btn btn-success btn-sm waves-effect waves-light ${
+                                quotation.po_status === 1 && "d-none"
+                              }`}
                               onClick={() =>
                                 vendorApprove({
                                   vendor_id: quotation.vendor_id,

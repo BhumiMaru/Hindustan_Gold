@@ -87,7 +87,7 @@ export default function SideBar() {
   const piAndMaterialManagementRoutes = {
     "PI Request List": "/po-material/pi-request-list",
     "Get Quote": "/po-material/get-quote-list",
-    "PO Create": "/po-material/po-create",
+    // "PO Create": "/po-material/po-create",
     "GRN List": "/po-material/grn-list",
   };
 

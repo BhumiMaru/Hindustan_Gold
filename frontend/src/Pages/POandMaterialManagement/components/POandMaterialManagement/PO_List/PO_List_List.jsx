@@ -1,16 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import PO_List_Table from "./PO_List_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
+import { usePOCreate } from "../../../../../Context/PIAndPoManagement/POCreate";
+import { decryptData } from "../../../../../utils/decryptData";
+import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 
 export default function PO_List_List() {
+  const { PoList, getPoList, pagination, setPagination, search, setSearch } =
+    usePOCreate();
+
+  useEffect(() => {
+    getPoList({
+      search,
+      page: pagination.currentPage,
+      perPage: pagination.perPage,
+    });
+  }, [search, pagination.currentPage, pagination.perPage]);
+
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
+  };
+
   return (
     <>
       {/* -----------------START PO LIST ------------------- */}
       <div className="container-xxl flex-grow-1 container-p-y">
         {/* DataTable with Buttons */}
         <div className="card">
-          <div className="row px-3 pt-2">
+          {/* <div className="row px-3 pt-2">
             <div className="col-lg-5 mb-1 ">
               <ul
                 className="nav nav-pills nav-fill border rounded bg-label-primary"
@@ -56,11 +78,16 @@ export default function PO_List_List() {
                 </li>
               </ul>
             </div>
-          </div>
+          </div> */}
           <div className="d-flex justify-content-between px-3 pt-1">
             <div className="d-flex align-items-center ">
               {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
-              <SearchBar />
+              <SearchBar
+                placeholder="Search PO..."
+                value={search}
+                onChange={setSearch}
+                onSubmit={(val) => setSearch(val)}
+              />
             </div>
             <div>
               <button
@@ -122,7 +149,13 @@ export default function PO_List_List() {
           </div>
           <div className="card-datatable table-responsive pt-0">
             <PO_List_Table />
-            <Pagination />
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalItems={pagination.total}
+              itemsPerPage={pagination.perPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
           </div>
         </div>
       </div>
