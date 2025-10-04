@@ -20,7 +20,7 @@ export default function SideBar() {
     isOpenSmallSidebar,
   } = useUIContext();
   const { userPermission, fetchUserPermission } = useUserCreation();
-  console.log("userPermission", userPermission);
+  // console.log("userPermission", userPermission);
 
   // Add/remove HTML classes based on sidebar state
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function SideBar() {
     try {
       const decrypted = decryptData(savedAuth);
       user = decrypted?.user || null;
-      console.log("user", user);
+      // console.log("user", user);
     } catch (error) {
       console.error("Error decrypting auth data", error);
     }
@@ -84,14 +84,31 @@ export default function SideBar() {
     "Item Request": "/user/request/request-list",
   };
 
-  const piAndMaterialManagementRoutes = {
+  // const piAndMaterialManagementRoutes = {
+  //   "PI Request List": "/po-material/pi-request-list",
+  //   "Get Quote": "/po-material/get-quote-list",
+  //   // "PO Create": "/po-material/po-create",
+  //   "GRN List": "/po-material/grn-list",
+  // };
+
+  // Conditionally add "PO List" based on userPermission
+  const piAndMaterialManagementRoutesBase = {
     "PI Request List": "/po-material/pi-request-list",
     "Get Quote": "/po-material/get-quote-list",
-    // "PO Create": "/po-material/po-create",
     "GRN List": "/po-material/grn-list",
   };
 
-  // Conditionally add "PO List" based on userPermission
+  let piAndMaterialManagementRoutes = {};
+
+  // 1. PI Request List
+  piAndMaterialManagementRoutes["PI Request List"] =
+    piAndMaterialManagementRoutesBase["PI Request List"];
+
+  // 2. Get Quote
+  piAndMaterialManagementRoutes["Get Quote"] =
+    piAndMaterialManagementRoutesBase["Get Quote"];
+
+  // 3. Conditionally add PO List
   if (
     userPermission?.some(
       (perm) => perm.type === "PO Generation" && perm.permission === "view"
@@ -99,6 +116,10 @@ export default function SideBar() {
   ) {
     piAndMaterialManagementRoutes["PO List"] = "/po-material/po-list";
   }
+
+  // 4. GRN List
+  piAndMaterialManagementRoutes["GRN List"] =
+    piAndMaterialManagementRoutesBase["GRN List"];
 
   const paymentManagementRoutes = {
     "Invoice List": "/payment-management/invoice-list",

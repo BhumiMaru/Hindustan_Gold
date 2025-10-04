@@ -10,6 +10,7 @@ import Approve_Request_Modal from "./Approve_Request_Modal";
 import Reject_Request_Modal from "./Reject_Request_Modal";
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 import Loader from "../../../../../components/Common/Loader/Loader";
+import Date_Range_Model from "../../../../../components/Date Range/Date_Range_Model";
 
 export default function Item_Request_List() {
   const {
@@ -26,12 +27,18 @@ export default function Item_Request_List() {
     getItemNameAndId,
     selectedType,
     setSelectedType,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
   } = useItemRequest();
   const [search, setSearch] = useState("");
   const { modal } = useUIContext();
   // const [selectedType, setSelectedType] = useState("all"); // item type filter
   const [statusFilter, setStatusFilter] = useState("all"); // status filter
   const [itemNameId, setItemNameId] = useState(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDateRange, setSelectedDateRange] = useState("");
 
   // when type changes, fetch items and update itemRequestData
   useEffect(() => {
@@ -56,8 +63,10 @@ export default function Item_Request_List() {
       status: statusFilter === "all" ? "" : statusFilter,
       page: pagination.currentPage,
       perPage: pagination.perPage,
+      from_date: startDate || undefined,
+      to_date: endDate || undefined,
     });
-    fetchItemFilter();
+    // fetchItemFilter();
   }, [
     search,
     activeTab,
@@ -65,6 +74,8 @@ export default function Item_Request_List() {
     statusFilter,
     pagination.currentPage,
     pagination.perPage,
+    startDate,
+    endDate,
   ]);
 
   const handlePageChange = (page) => {
@@ -73,6 +84,19 @@ export default function Item_Request_List() {
 
   const handleItemsPerPageChange = (size) => {
     setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
+  };
+
+  const handleDateSelect = (range) => {
+    setSelectedDateRange(range);
+
+    // Split "DD/MM/YYYY - DD/MM/YYYY"
+    const [start, end] = range.split(" - ");
+
+    // Convert to YYYY-MM-DD for API
+    setStartDate(start ? moment(start, "DD/MM/YYYY").format("YYYY-MM-DD") : "");
+    setEndDate(end ? moment(end, "DD/MM/YYYY").format("YYYY-MM-DD") : "");
+
+    setShowDatePicker(false);
   };
 
   return (
@@ -285,11 +309,40 @@ export default function Item_Request_List() {
                 />
               </div>
               <div className="col-lg-3">
-                <input
-                  type="date"
-                  id="bs-rangepicker-range"
-                  className="form-control"
-                />
+                <div className="d-flex items-center">
+                  <input
+                    type="text"
+                    id="filterFilesByDate"
+                    placeholder="Filter by Date"
+                    className="form-control cursor-pointer"
+                    autoComplete="off"
+                    readOnly
+                    value={selectedDateRange}
+                    onClick={() => setShowDatePicker(!showDatePicker)}
+                  />
+                  {showDatePicker && (
+                    <Date_Range_Model
+                      style={{
+                        top: "142px",
+                      }}
+                      onDateSelect={handleDateSelect}
+                      onClose={() => setShowDatePicker(false)}
+                    />
+                  )}
+                  {selectedDateRange && (
+                    <button
+                      onClick={() => {
+                        setSelectedDateRange("");
+                        setStartDate("");
+                        setEndDate("");
+                        setShowDatePicker(false);
+                      }}
+                      className="btn btn-sm text-danger ms-2"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 

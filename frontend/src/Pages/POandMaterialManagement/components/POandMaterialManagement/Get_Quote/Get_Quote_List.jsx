@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 // import { DateRangePicker } from "rsuite";
 // import "rsuite/dist/rsuite.min.css";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
@@ -12,6 +12,8 @@ import {
 } from "../../../../../Context/Master/UserCreationContext";
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 import DateRangePickerReact from "../../../../../components/Date Range/DateRangePickerReact";
+import Date_Range_Model from "../../../../../components/Date Range/Date_Range_Model";
+import moment from "moment";
 
 export default function Get_Quote_List() {
   const {
@@ -33,6 +35,8 @@ export default function Get_Quote_List() {
   } = useGetQuote();
   const { deptFilter, setDeptFilter, fetchDeptFilter } = useDepartment();
   const { filterUser, fetchUserFilter, setFilterUser } = useUserCreation();
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDateRange, setSelectedDateRange] = useState("");
 
   useEffect(() => {
     fetchDeptFilter();
@@ -84,6 +88,18 @@ export default function Get_Quote_List() {
 
   const handleItemsPerPageChange = (size) => {
     setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
+  };
+
+  const handleDateSelect = (range) => {
+    setSelectedDateRange(range);
+
+    const [start, end] = range.split(" - ");
+    setDateRange({
+      start: start ? moment(start, "DD/MM/YYYY").format("YYYY-MM-DD") : "",
+      end: end ? moment(end, "DD/MM/YYYY").format("YYYY-MM-DD") : "",
+    });
+
+    setShowDatePicker(false);
   };
 
   return (
@@ -220,11 +236,40 @@ export default function Get_Quote_List() {
                 /> */}
             </div>
 
-            <div className="col-lg-2">
-              {/* <DateRangePicker /> */}
-              {/* <DateRangePickerReact
-                onDateSelect={(range) => setDateRange(range)}
-              /> */}
+            <div className="col-lg-4 mt-2">
+              <div className="d-flex items-center">
+                <input
+                  type="text"
+                  id="filterFilesByDate"
+                  placeholder="Filter by Date"
+                  className="form-control cursor-pointer"
+                  autoComplete="off"
+                  readOnly
+                  value={selectedDateRange}
+                  onClick={() => setShowDatePicker(!showDatePicker)}
+                />
+                {showDatePicker && (
+                  <Date_Range_Model
+                    style={{
+                      top: "150px",
+                    }}
+                    onDateSelect={handleDateSelect}
+                    onClose={() => setShowDatePicker(false)}
+                  />
+                )}
+                {selectedDateRange && (
+                  <button
+                    onClick={() => {
+                      setSelectedDateRange("");
+                      setDateRange({ start: "", end: "" });
+                      setShowDatePicker(false);
+                    }}
+                    className="btn btn-sm text-danger ms-2"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             </div>
           </div>
           <style

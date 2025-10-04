@@ -29,7 +29,7 @@ export default function Get_Quote_Table() {
     try {
       const decrypted = decryptData(savedAuth);
       user = decrypted?.user || null;
-      console.log("user", user);
+      // console.log("user", user);
     } catch (error) {
       console.error("Error decrypting auth data", error);
     }

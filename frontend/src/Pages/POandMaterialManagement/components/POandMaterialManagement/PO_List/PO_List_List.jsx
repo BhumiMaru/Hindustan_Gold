@@ -1,22 +1,69 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import PO_List_Table from "./PO_List_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import { usePOCreate } from "../../../../../Context/PIAndPoManagement/POCreate";
 import { decryptData } from "../../../../../utils/decryptData";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
+import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
+import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
+import Date_Range_Model from "../../../../../components/Date Range/Date_Range_Model";
 
 export default function PO_List_List() {
-  const { PoList, getPoList, pagination, setPagination, search, setSearch } =
-    usePOCreate();
+  const {
+    PoList,
+    getPoList,
+    pagination,
+    setPagination,
+    search,
+    setSearch,
+    status,
+    setStatus,
+    itemName,
+    setItemName,
+    selectedType,
+    setSelectedType,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    vendor,
+    setVendor,
+  } = usePOCreate();
+  const { vendorFilter, setVendorFilter, getVendorFilter } = useVendor();
+  const { fetchItemFilter, filterItem } = useItemRequest();
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDateRange, setSelectedDateRange] = useState("");
+
+  useEffect(() => {
+    getVendorFilter();
+    fetchItemFilter();
+  }, []);
 
   useEffect(() => {
     getPoList({
       search,
+      status,
+      poType: selectedType,
+      item: itemName,
+      vendor,
+      start_date: startDate,
+      end_date: endDate,
       page: pagination.currentPage,
       perPage: pagination.perPage,
     });
-  }, [search, pagination.currentPage, pagination.perPage]);
+  }, [
+    search,
+    status,
+    selectedType,
+    itemName,
+    vendor,
+    startDate,
+    endDate,
+    pagination.currentPage,
+    pagination.perPage,
+  ]);
 
   const handlePageChange = (page) => {
     setPagination((prev) => ({ ...prev, currentPage: page }));
@@ -24,6 +71,16 @@ export default function PO_List_List() {
 
   const handleItemsPerPageChange = (size) => {
     setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
+  };
+
+  const handleDateSelect = (range) => {
+    setSelectedDateRange(range);
+
+    // Split "DD/MM/YYYY - DD/MM/YYYY"
+    const [start, end] = range.split(" - ");
+    setStartDate(start);
+    setEndDate(end);
+    setShowDatePicker(false);
   };
 
   return (
@@ -109,42 +166,126 @@ export default function PO_List_List() {
           </div>
           <div className="row px-3 pb-2 pt-2">
             <div className="col-lg-3">
-              <select id="select10Basic" className="select2 form-select">
-                <option value="AK">Select&nbsp;Type</option>
-                <option value="HI">Item</option>
-                <option value="CA">Services</option>
-                <option value="NV">Asset</option>
-              </select>
-            </div>
-            <div className="col-lg-3">
-              <select id="select11Basic" className="select2 form-select">
-                <option value="AK">Select&nbsp;Item</option>
-                <option value="HI">Item 1</option>
-                <option value="CA">Item 2</option>
-                <option value="NV">Item 3</option>
-              </select>
-            </div>
-            <div className="col-lg-3">
-              <select id="select7Basic" className="select2 form-select">
-                <option value="AK">Select&nbsp;Vendor</option>
-                <option value="HI">Category</option>
-                <option value="CA">Category</option>
-                <option value="NV">Category</option>
-              </select>
-            </div>
-            <div className="col-lg-3">
-              <select id="select9Basic" className="select2 form-select">
-                <option value="AK">Select&nbsp;Status</option>
-                <option value="HI">Pending</option>
-                <option value="CA">Completed</option>
-              </select>
-            </div>
-            <div className="col-lg-3 mt-2">
-              <input
-                type="date"
-                id="bs-rangepicker-range"
-                className="form-control"
+              <CustomSelect
+                id="selectItemType"
+                options={[
+                  {
+                    value: "all",
+                    label: "Select Item Type",
+                  },
+                  {
+                    value: "material",
+                    label: "Material",
+                  },
+                  {
+                    value: "service",
+                    label: "Service",
+                  },
+                  {
+                    value: "asset",
+                    label: "Asset",
+                  },
+                ]}
+                value={selectedType}
+                onChange={setSelectedType}
+                placeholder="Select Item"
               />
+            </div>
+            <div className="col-lg-3">
+              <CustomSelect
+                id="selectItemName"
+                options={[
+                  { value: "all", label: "All Items" }, // ✅ All option first
+                  ...(filterItem?.map((item) => ({
+                    value: item.item_id,
+                    label: item.item_name,
+                  })) || []),
+                ]}
+                value={itemName}
+                onChange={setItemName}
+                placeholder="Select Item"
+              />
+            </div>
+            <div className="col-lg-3">
+              <CustomSelect
+                id="selectVendorName"
+                options={[
+                  { value: "all", label: "All Vendors" }, // ✅ All option first
+                  ...(vendorFilter?.map((item) => ({
+                    value: item.id,
+                    label: item.vendor_name,
+                  })) || []),
+                ]}
+                value={vendor}
+                onChange={setVendor}
+                placeholder="Select Vendor"
+              />
+            </div>
+            <div className="col-lg-3">
+              <CustomSelect
+                id="selectItemStatus"
+                options={[
+                  {
+                    value: "all",
+                    label: "Select Status",
+                  },
+                  {
+                    value: "Pending",
+                    label: "Pending",
+                  },
+                  {
+                    value: "InProgress",
+                    label: "InProgress",
+                  },
+                  {
+                    value: "Completed",
+                    label: "Completed",
+                  },
+                  {
+                    value: "Reject",
+                    label: "Reject",
+                  },
+                ]}
+                value={status}
+                onChange={setStatus}
+                placeholder="Select Item Status"
+              />
+            </div>
+            <div className="col-lg-4 mt-2">
+              <div className="d-flex items-center">
+                <input
+                  type="text"
+                  id="filterFilesByDate"
+                  placeholder="Filter by Date"
+                  className="form-control cursor-pointer"
+                  autoComplete="off"
+                  readOnly
+                  value={selectedDateRange}
+                  onClick={() => setShowDatePicker(!showDatePicker)}
+                />
+                {showDatePicker && (
+                  <Date_Range_Model
+                    style={{
+                      top: "137px",
+                    }}
+                    onDateSelect={handleDateSelect}
+                    onClose={() => setShowDatePicker(false)}
+                  />
+                )}
+                {selectedDateRange && (
+                  <button
+                    onClick={() => {
+                      setSelectedDateRange("");
+                      setStartDate("");
+                      setEndDate("");
+                      setShowDatePicker(false);
+                    }}
+                    className="btn btn-sm text-danger ms-2"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             </div>
           </div>
           <div className="card-datatable table-responsive pt-0">

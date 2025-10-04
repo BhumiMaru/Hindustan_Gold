@@ -455,6 +455,9 @@ export const ItemRequestProvider = ({ children }) => {
     total: 0,
   });
 
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
   // Get All Item Request Data
   const getItemRequestData = async ({
     search = "",
@@ -463,6 +466,8 @@ export const ItemRequestProvider = ({ children }) => {
     page = 1,
     perPage = 10,
     type = activeTab,
+    from_date = "",
+    to_date = "",
   } = {}) => {
     try {
       setItemRequest([]);
@@ -475,6 +480,8 @@ export const ItemRequestProvider = ({ children }) => {
         status,
         page,
         per_page: perPage,
+        from_date: from_date || undefined, // only send if exists
+        to_date: to_date || undefined,
       };
 
       const res = await postData(ENDPOINTS.ITEM_REQUEST.LIST, payload);
@@ -790,6 +797,10 @@ export const ItemRequestProvider = ({ children }) => {
         filterItem,
         selectedType,
         setSelectedType,
+        startDate,
+        setStartDate,
+        endDate,
+        setEndDate,
         setFilterItem,
         setLoading,
         setActiveTab,

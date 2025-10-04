@@ -37,7 +37,7 @@ export default function PO_List_Table() {
     try {
       const decrypted = decryptData(savedAuth);
       user = decrypted?.user || null;
-      console.log("user", user);
+      // console.log("user", user);
     } catch (error) {
       console.error("Error decrypting auth data", error);
     }
@@ -126,32 +126,37 @@ export default function PO_List_Table() {
                     ) && (
                       <div className="d-inline-flex gap-2">
                         <button
-                          className="btn btn-success btn-sm waves-effect waves-light"
-                          onClick={() =>
-                            PoApprove({
-                              po_id: poDetails.id,
-                            })
-                          }
+                          className={`btn btn-success btn-sm waves-effect waves-light ${
+                            (po.status === "Approve" ||
+                              po.status === "Reject") &&
+                            "d-none"
+                          }`}
+                          onClick={() => {
+                            PoApprove(po?.id);
+                            console.log(" poDetails.id", po.id);
+                          }}
                         >
                           Approve
                         </button>
                         <button
-                          className="btn btn-danger btn-sm waves-effect waves-light"
+                          className={`btn btn-danger btn-sm waves-effect waves-light ${
+                            (po.status === "Approve" ||
+                              po.status === "Reject") &&
+                            "d-none"
+                          }`}
                           onClick={() => {
                             handleOpen("viewRejectPo");
-                            setPoId({
-                              po_id: poDetails.id,
-                            });
+                            setPoId(po?.id);
                           }}
                         >
                           Reject
                         </button>
                       </div>
                     )}
-
+                    {console.log("po", po)}
                     <div className="d-inline-flex gap-2">
-                      <a
-                        href="#"
+                      <Link
+                        to={`/po-material/po-detail-download/${po.id}`}
                         type="button"
                         className="btn btn-text-success rounded-pill btn-icon waves-effect"
                         data-bs-toggle="tooltip"
@@ -160,10 +165,9 @@ export default function PO_List_Table() {
                         data-bs-original-title="Download PO"
                       >
                         <i className="icon-base ti tabler-file-invoice text-success  icon-20px" />
-                      </a>
+                      </Link>
                       <div className="d-inline-block">
                         <a
-                          href="javascript:;"
                           className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
                           data-bs-toggle="dropdown"
                           aria-expanded="true"

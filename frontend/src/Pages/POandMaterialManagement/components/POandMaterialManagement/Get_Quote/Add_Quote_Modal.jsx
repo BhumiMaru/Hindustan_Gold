@@ -10,6 +10,8 @@ export default function Add_Quote_Modal() {
     setNewVendorData,
     vendorRateUpdate,
     newVendorList,
+    quoteVendorList,
+    quoteData,
   } = useGetQuote();
   console.log("newVendorList", newVendorList);
 
@@ -37,6 +39,18 @@ export default function Add_Quote_Modal() {
 
       console.log("vendor data", newVendorData);
       handleClose("addQuote");
+
+      // Add this separate useEffect to call quoteVendorList when quoteData is available
+      if (quoteData?.id) {
+        quoteVendorList({
+          pi_get_quote_id: quoteData.id,
+          vendor_type: "new",
+        });
+        quoteVendorList({
+          pi_get_quote_id: quoteData.id,
+          vendor_type: "old",
+        });
+      }
     } catch (error) {
       console.error("Error saving vendor rates:", error);
     }

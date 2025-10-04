@@ -889,7 +889,22 @@ export default function PO_Create() {
     }
   }, [poDetails]);
 
-  // Calculate item totals - CORRECTED VERSION
+  useEffect(() => {
+    if (formData.items.length > 0) {
+      const totals = calculateGrandTotals(formData.items);
+      setFormData((prev) => ({ ...prev, ...totals }));
+    }
+  }, [
+    charges,
+    packingChargeChecked,
+    frightChargeChecked,
+    formData.packing_charge,
+    formData.packing_gst,
+    formData.fright_charge,
+    formData.fright_gst,
+  ]);
+
+  // Calculate item totals (no GST included in subtotal here)
   const calculateItemTotals = (items) => {
     return items.map((item) => {
       const unitPrice = parseFloat(item.unit_price) || 0;
@@ -897,37 +912,30 @@ export default function PO_Create() {
       const discountPercent = parseFloat(item.disc_pr) || 0;
       const gstPercent = parseFloat(item.gst_pr) || 0;
 
-      // Calculate base amount
       const baseAmount = unitPrice * quantity;
-
-      // Calculate discount amount
       const discountAmount = (baseAmount * discountPercent) / 100;
-
-      // Calculate amount after discount
       const amountAfterDiscount = baseAmount - discountAmount;
-
-      // Calculate GST amount
       const gstAmount = (amountAfterDiscount * gstPercent) / 100;
-
-      // Calculate taxable value
       const taxableValue = amountAfterDiscount + gstAmount;
 
       return {
-        ...item, // Fixed: was ...items (should be item)
-        base_amount: baseAmount,
+        ...item,
+        base_amount: baseAmount.toFixed(2),
         disc_number: discountAmount.toFixed(2),
-        taxable_value: taxableValue.toFixed(2),
         gst_amount: gstAmount.toFixed(2),
+        taxable_value: taxableValue.toFixed(2),
       };
     });
   };
 
-  // Calculate grand totals - CORRECTED VERSION
   const calculateGrandTotals = (items) => {
     const itemTotals = calculateItemTotals(items);
 
+    // Item-wise totals
     const subTotal = itemTotals.reduce(
-      (sum, item) => sum + (parseFloat(item.taxable_value) || 0),
+      (sum, item) =>
+        sum +
+        (parseFloat(item.base_amount) - parseFloat(item.disc_number) || 0),
       0
     );
     const totalDiscount = itemTotals.reduce(
@@ -939,11 +947,46 @@ export default function PO_Create() {
       0
     );
 
+    // Packing/Freight charges
+    const packingCharge =
+      packingChargeChecked && formData.packing_charge
+        ? parseFloat(formData.packing_charge) || 0
+        : 0;
+    const packingGST =
+      packingChargeChecked && formData.packing_gst
+        ? (packingCharge * (parseFloat(formData.packing_gst) || 0)) / 100
+        : 0;
+
+    const freightCharge =
+      frightChargeChecked && formData.fright_charge
+        ? parseFloat(formData.fright_charge) || 0
+        : 0;
+    const freightGST =
+      frightChargeChecked && formData.fright_gst
+        ? (freightCharge * (parseFloat(formData.fright_gst) || 0)) / 100
+        : 0;
+
+    // Additional charges
+    const additionalChargesTotal = charges.reduce(
+      (sum, c) => sum + (parseFloat(c.amount) || 0),
+      0
+    );
+
+    // Final
+    const finalTotal =
+      subTotal +
+      totalGST +
+      packingCharge +
+      packingGST +
+      freightCharge +
+      freightGST +
+      additionalChargesTotal;
+
     return {
       sub_total: subTotal.toFixed(2),
       total_discount: totalDiscount.toFixed(2),
       gst_value: totalGST.toFixed(2),
-      final_total: subTotal.toFixed(2),
+      final_total: finalTotal.toFixed(2),
     };
   };
 
@@ -1003,32 +1046,31 @@ export default function PO_Create() {
   // Handle Save
   const handleSave = () => {
     try {
-      // Prepare the payload
       const payload = {
         pi_get_quote_id: poDetails?.pi_get_quote_id || "",
         pi_get_quote_vendor_id: poDetails?.pi_get_quote_vendor_id || "",
         pi_request_id: poDetails?.pi_request_id || "",
         po_number: poDetails?.po_number || "",
         ...formData,
-        // Transform charges for API
+        // Charges
         additional_charges: charges
           .filter((charge) => charge.name && charge.amount)
           .map((charge) => ({
             charge_name: charge.name,
             amount: parseFloat(charge.amount) || 0,
           })),
-        // Transform milestones for API
+        // Milestones
         payment_milestones: milestones
-          .filter(
-            (milestone) => milestone.percentage && milestone.payment_number
-          )
-          .map((milestone) => ({
-            payment_pr: parseFloat(milestone.percentage) || 0,
-            payment_number: parseFloat(milestone.payment_number) || 0, // Ensure it's a number
+          .filter((m) => m.percentage && m.payment_number)
+          .map((m, idx) => ({
+            payment_pr: parseFloat(m.percentage) || 0,
+            payment_number: m.payment_number, // keep as string/sequence if needed
           })),
-        // Set checkbox statuses
+        // Respect checkboxes
         packing_charge: packingChargeChecked ? formData.packing_charge : "0",
+        packing_gst: packingChargeChecked ? formData.packing_gst : "0",
         fright_charge: frightChargeChecked ? formData.fright_charge : "0",
+        fright_gst: frightChargeChecked ? formData.fright_gst : "0",
       };
 
       console.log("PO Create Payload:", payload);

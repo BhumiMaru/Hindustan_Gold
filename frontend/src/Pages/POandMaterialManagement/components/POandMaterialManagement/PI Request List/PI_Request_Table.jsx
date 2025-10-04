@@ -21,6 +21,9 @@ export default function PI_Request_Table({ userPermission }) {
     activeTab,
     singleReject,
     bulkReject,
+    setSelectedItems,
+    selectedItemsMap,
+    setSelectedItemsMap,
   } = usePIRequest();
   const { getQuoteCreate } = useGetQuote();
   const { modal, handleOpen } = useUIContext();
@@ -30,6 +33,13 @@ export default function PI_Request_Table({ userPermission }) {
   const toggleRow = (id) => {
     setExpandedRows((prev) => ({ ...prev, [id]: !prev[id] }));
   };
+
+  // Clear selection when tab changes or component unmounts
+  useEffect(() => {
+    return () => {
+      setSelectedItems([]);
+    };
+  }, [activeTab]);
 
   useEffect(() => {
     // Initialize all tooltips after render
@@ -42,7 +52,7 @@ export default function PI_Request_Table({ userPermission }) {
     );
   }, [piRequest, expandedRows]);
 
-  console.log("userrrrrrrrrrrrrrrrrrr", userPermission);
+  // console.log("userrrrrrrrrrrrrrrrrrr", userPermission);
 
   return (
     <>
@@ -154,10 +164,14 @@ export default function PI_Request_Table({ userPermission }) {
                                 checked={
                                   pi.piitems.length > 0 &&
                                   pi.piitems.every((item) =>
-                                    selectedItems.includes(item.id)
+                                    (selectedItemsMap[pi.id] || []).includes(
+                                      item.id
+                                    )
                                   )
                                 }
-                                onChange={() => handleSelectAll(pi.piitems)}
+                                onChange={() =>
+                                  handleSelectAll(pi.id, pi.piitems)
+                                }
                                 style={{
                                   width: "1rem",
                                   height: "1rem",
@@ -195,8 +209,12 @@ export default function PI_Request_Table({ userPermission }) {
                                     "d-none"
                                   }`}
                                   type="checkbox"
-                                  checked={selectedItems.includes(piItem.id)}
-                                  onChange={() => handleSelectItem(piItem.id)}
+                                  checked={(
+                                    selectedItemsMap[pi.id] || []
+                                  ).includes(piItem.id)}
+                                  onChange={() =>
+                                    handleSelectItem(pi.id, piItem.id)
+                                  }
                                 />
                               </div>
                             </td>
@@ -274,7 +292,7 @@ export default function PI_Request_Table({ userPermission }) {
                                 {piItem.status}
                               </span>
 
-                              {console.log("pi", pi)}
+                              {/* {console.log("pi", pi)} */}
                             </td>
                             {activeTab === "approval_request" && (
                               <td>

@@ -183,7 +183,6 @@ export const VendorProvider = ({ children }) => {
   };
 
   // Vendor Approve
-  // Vendor Approve
   const vendorApprove = async ({ vendor_id, pi_get_quate }) => {
     try {
       const res = await postData(ENDPOINTS.QUOTATIONDETAILS.VENDORAPPROVE, {
@@ -192,15 +191,17 @@ export const VendorProvider = ({ children }) => {
       });
 
       if (res.success) {
-        toast.success(res.message || "Vendor approved successfully");
-        getVendorList(); // Refresh vendor list after approval
-      } else {
-        toast.error(res.message || "Failed to approve vendor");
+        toast.success(res.message);
       }
+      getVendorList(); // Refresh vendor list after approval
 
       return res.data;
     } catch (error) {
-      toast.error("Error during Vendor Approve");
+      const backendMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Error during Vendor Approve";
+      toast.error(backendMessage);
       console.error("Vendor Approve error:", error);
     }
   };

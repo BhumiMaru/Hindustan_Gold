@@ -9,6 +9,8 @@ import { useItemRequest } from "../../../../../Context/Request Management/Item_R
 import { useDepartment } from "../../../../../Context/Master/DepartmentContext";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 import { decryptData } from "../../../../../utils/decryptData";
+import Date_Range_Model from "../../../../../components/Date Range/Date_Range_Model";
+import moment from "moment";
 
 export default function PI_Request_List() {
   const {
@@ -37,6 +39,8 @@ export default function PI_Request_List() {
   } = usePIRequest();
   const { setFilterItem, fetchItemFilter, filterItem } = useItemRequest();
   const { deptFilter, setDeptFilter, fetchDeptFilter } = useDepartment();
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDateRange, setSelectedDateRange] = useState("");
   const {
     filterUser,
     fetchUserFilter,
@@ -87,7 +91,7 @@ export default function PI_Request_List() {
     try {
       const decrypted = decryptData(savedAuth);
       user = decrypted?.user || null;
-      console.log("user", user);
+      // console.log("user", user);
     } catch (error) {
       console.error("Error decrypting auth data", error);
     }
@@ -97,7 +101,33 @@ export default function PI_Request_List() {
     fetchUserPermission(user.id);
   }, [user.id]);
 
-  console.log(userPermission);
+  // console.log(userPermission);
+
+  const handleDateSelect = (range) => {
+    setSelectedDateRange(range);
+
+    if (!range) {
+      setStartDate("");
+      setEndDate("");
+      return;
+    }
+
+    // Split "DD/MM/YYYY - DD/MM/YYYY"
+    const [start, end] = range.split(" - ");
+
+    // ✅ Convert to YYYY-MM-DD for API
+    const formattedStart = start
+      ? moment(start, "DD/MM/YYYY").format("YYYY-MM-DD")
+      : "";
+    const formattedEnd = end
+      ? moment(end, "DD/MM/YYYY").format("YYYY-MM-DD")
+      : "";
+
+    setStartDate(formattedStart);
+    setEndDate(formattedEnd);
+
+    setShowDatePicker(false);
+  };
 
   return (
     <>
@@ -342,13 +372,13 @@ export default function PI_Request_List() {
                 />
               </div>
             </div>
-            <div className="col-lg-3 mt-2">
+            {/* <div className="col-lg-3 mt-2">
               <input
                 type="date"
                 id="bs-rangepicker-range"
                 className="form-control"
               />
-              {/* <input
+              <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
@@ -358,7 +388,44 @@ export default function PI_Request_List() {
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-              /> */}
+              />
+            </div> */}
+
+            <div className="col-lg-4 mt-2">
+              <div className="d-flex items-center">
+                <input
+                  type="text"
+                  id="filterFilesByDate"
+                  placeholder="Filter by Date"
+                  className="form-control cursor-pointer"
+                  autoComplete="off"
+                  readOnly
+                  value={selectedDateRange}
+                  onClick={() => setShowDatePicker(!showDatePicker)}
+                />
+                {showDatePicker && (
+                  <Date_Range_Model
+                    style={{
+                      top: "193px",
+                    }}
+                    onDateSelect={handleDateSelect}
+                    onClose={() => setShowDatePicker(false)}
+                  />
+                )}
+                {selectedDateRange && (
+                  <button
+                    onClick={() => {
+                      setSelectedDateRange("");
+                      setStartDate("");
+                      setEndDate("");
+                      setShowDatePicker(false);
+                    }}
+                    className="btn btn-sm text-danger ms-2"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             </div>
           </div>
           <div className="card-datatable">

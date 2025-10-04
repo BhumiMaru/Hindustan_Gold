@@ -4,7 +4,7 @@ import { usePOCreate } from "../../../../../Context/PIAndPoManagement/POCreate";
 
 export default function PO_Reject_Modal() {
   const { handleClose } = useUIContext();
-  const { PoReject, PoId } = usePOCreate();
+  const { PoReject, PoId, getPoDetails } = usePOCreate();
   const [reason, setReason] = useState("");
 
   const handleSubmit = async () => {
@@ -14,8 +14,10 @@ export default function PO_Reject_Modal() {
     }
     await PoReject(PoId, reason);
     setReason(""); // reset field
+    await getPoDetails(PoId);
     handleClose("viewRejectPo"); // close modal
   };
+
   return (
     <>
       {/* ------------------------START PO REJECT MODAL----------------------- */}

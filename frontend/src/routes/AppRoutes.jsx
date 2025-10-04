@@ -48,6 +48,7 @@ import { GetQuoteProvider } from "../Context/PIAndPoManagement/GetQuote";
 import Vendor_List_Form from "../Pages/PaymentManagement/components/PaymentManagement/Vendor_List/Vendor_List_Form";
 import PO_Details from "../Pages/POandMaterialManagement/components/POandMaterialManagement/PO_List/PO_Details";
 import { POProvider } from "../Context/PIAndPoManagement/POCreate";
+import PO_Details_Download from "../Pages/POandMaterialManagement/components/POandMaterialManagement/PO_List/PO_Details_Download";
 
 export default function AppRoutes() {
   const { isOpenSmallSidebar, closeSmallSidebar, modal } = useUIContext();
@@ -319,6 +320,15 @@ export default function AppRoutes() {
           element={
             <POProvider>
               <PO_Details />
+            </POProvider>
+          }
+        />
+
+        <Route
+          path="/po-material/po-detail-download/:id"
+          element={
+            <POProvider>
+              <PO_Details_Download />
             </POProvider>
           }
         />

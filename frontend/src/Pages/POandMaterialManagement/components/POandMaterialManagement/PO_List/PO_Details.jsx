@@ -24,7 +24,7 @@ export default function PO_Details() {
     );
   }, [poDetails]);
 
-  console.log("poDetails", poDetails);
+  console.log("poDetails", poDetails.id);
   return (
     <>
       {/* ------------------------START PO DETAILS--------------------------- */}
@@ -39,7 +39,10 @@ export default function PO_Details() {
                   ? "d-none"
                   : ""
               }`}
-              onClick={() => PoApprove(poDetails.id)}
+              onClick={async () => {
+                PoApprove(poDetails.id);
+                await getPoDetails(poDetails.id);
+              }}
             >
               Approve
             </button>

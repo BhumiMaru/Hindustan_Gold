@@ -1,4 +1,3 @@
-// ================= PIRequestContext.js =================
 import { createContext, useContext, useState } from "react";
 import api, { deleteData, postData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
@@ -51,30 +50,37 @@ export const PIRequestProvider = ({ children }) => {
   const [status, setStatus] = useState("all");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  // Store selected items per PI row
+  const [selectedItemsMap, setSelectedItemsMap] = useState({});
 
   // Toggle single item
-  const handleSelectItem = (itemId) => {
-    setSelectedItems(
-      (prev) =>
-        prev.includes(itemId)
-          ? prev.filter((id) => id !== itemId) // uncheck
-          : [...prev, itemId] // check
-    );
+  const handleSelectItem = (piId, itemId) => {
+    setSelectedItemsMap((prev) => {
+      const rowSelections = prev[piId] || [];
+      return {
+        ...prev,
+        [piId]: rowSelections.includes(itemId)
+          ? rowSelections.filter((id) => id !== itemId) // uncheck
+          : [...rowSelections, itemId], // check
+      };
+    });
   };
 
   // Toggle all items of a PI
-  const handleSelectAll = (piItems) => {
+  const handleSelectAll = (piId, piItems) => {
     const itemIds = piItems.map((item) => item.id);
-    const isAllSelected = itemIds.every((id) => selectedItems.includes(id));
 
-    if (isAllSelected) {
-      // Uncheck all
-      setSelectedItems((prev) => prev.filter((id) => !itemIds.includes(id)));
-    } else {
-      // Check all
-      setSelectedItems((prev) => [...new Set([...prev, ...itemIds])]); //The Set is used to avoid duplicate IDs when you add items.
-      // [...new Set([1, 2, 2, 3])] → [1, 2, 3]   // ✅ duplicates removed
-    }
+    setSelectedItemsMap((prev) => {
+      const rowSelections = prev[piId] || [];
+      const isAllSelected = itemIds.every((id) => rowSelections.includes(id));
+
+      return {
+        ...prev,
+        [piId]: isAllSelected
+          ? rowSelections.filter((id) => !itemIds.includes(id)) // Uncheck all
+          : [...new Set([...rowSelections, ...itemIds])], // Check all
+      };
+    });
   };
 
   // Get All PI Requests
@@ -127,7 +133,7 @@ export const PIRequestProvider = ({ children }) => {
       };
       const res = await postData(ENDPOINTS.PI_REQUEST.LIST, payload);
       const apiData = res.data;
-      console.log("apiData", apiData.data);
+      // console.log("apiData", apiData.data);
       setPiRequest(apiData.data || []);
       setPagination({
         currentPage: apiData.current_page || 1,
@@ -268,8 +274,8 @@ export const PIRequestProvider = ({ children }) => {
       const res = await deleteData(`${ENDPOINTS.PI_REQUEST.DELETE}/${id}`);
       if (res.status) {
         toast.success(res.message);
-        getPIRequest();
       }
+      getPIRequest();
     } catch (error) {
       toast.error("Error deleting PI Request");
       console.error("Delete PIRequest error:", error);
@@ -286,10 +292,10 @@ export const PIRequestProvider = ({ children }) => {
 
       if (res?.status) {
         toast.success(res.message || "PI Request approved successfully!");
-        getPIRequest(); // ✅ refresh after approve
       } else {
         toast.error(res.message || "Failed to approve PI Request");
       }
+      getPIRequest(); // ✅ refresh after approve
       return res;
     } catch (error) {
       toast.error("Error approving PI Request");
@@ -308,10 +314,10 @@ export const PIRequestProvider = ({ children }) => {
 
       if (res?.status) {
         toast.success(res.message || "Bulk approval successful!");
-        getPIRequest();
       } else {
         toast.error(res.message || "Bulk approval failed");
       }
+      getPIRequest();
       return res;
     } catch (error) {
       toast.error("Error during bulk approval");
@@ -326,10 +332,10 @@ export const PIRequestProvider = ({ children }) => {
       const res = await postData(ENDPOINTS.PI_REQUEST.SINGLEREJECT, payload);
       if (res?.status) {
         toast.success(res.message || "Single Reject successful!");
-        getPIRequest();
       } else {
         toast.error(res.message || "Single Reject failed");
       }
+      getPIRequest();
       return res;
     } catch (error) {
       toast.error("Error during Single Reject");
@@ -344,10 +350,10 @@ export const PIRequestProvider = ({ children }) => {
 
       if (res?.status) {
         toast.success(res.message || "Bulk Reject successful!");
-        getPIRequest();
       } else {
         toast.error(res.message || "Bulk Reject failed");
       }
+      getPIRequest();
       return res;
     } catch (error) {
       toast.error("Error during bulk Reject");
@@ -396,6 +402,8 @@ export const PIRequestProvider = ({ children }) => {
         handleSelectAll,
         singleReject,
         bulkReject,
+        selectedItemsMap,
+        setSelectedItemsMap,
       }}
     >
       {children}

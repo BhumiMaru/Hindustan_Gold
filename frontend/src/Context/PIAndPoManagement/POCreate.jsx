@@ -49,21 +49,68 @@ export const POProvider = ({ children }) => {
     perPage: 10,
     total: 0,
   });
+  const [status, setStatus] = useState("");
+  const [itemName, setItemName] = useState(null);
+  const [selectedType, setSelectedType] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [vendor, setVendor] = useState(null);
+
+  // Po List
+  // const getPoList = async ({
+  //   search: searchText = search,
+  //   status,
+  //   page = 1,
+  //   perPage = 10,
+  // }) => {
+  //   try {
+  //     const params = {
+  //       search: searchText || undefined,
+  //       status,
+  //       page,
+  //       per_page: perPage,
+  //     };
+  //     const res = await getData(ENDPOINTS.POCREATE.LIST, params);
+  //     const apiData = res.data;
+  //     setPoList(apiData.data || []);
+  //     setPagination({
+  //       currentPage: apiData.current_page || 1,
+  //       perPage: apiData.per_page || perPage,
+  //       total: apiData.total || 0,
+  //     });
+  //   } catch (error) {
+  //     console.error("PO List failed:", error);
+  //   }
+  // };
 
   // Po List
   const getPoList = async ({
     search: searchText = search,
+    status: filterStatus = status,
+    poType = selectedType,
+    item = itemName,
+    vendor = null,
+    start_date = startDate,
+    end_date = endDate,
     page = 1,
     perPage = 10,
   }) => {
     try {
       const params = {
         search: searchText || undefined,
+        status: filterStatus || undefined,
+        po_type: poType || undefined,
+        item: item || undefined,
+        vendor: vendor || undefined,
+        start_date: start_date || undefined,
+        end_date: end_date || undefined,
         page,
         per_page: perPage,
       };
+
       const res = await getData(ENDPOINTS.POCREATE.LIST, params);
       const apiData = res.data;
+
       setPoList(apiData.data || []);
       setPagination({
         currentPage: apiData.current_page || 1,
@@ -103,8 +150,8 @@ export const POProvider = ({ children }) => {
       });
       if (res.status) {
         toast.success(res.message);
-        getPoList();
       }
+      getPoList();
     } catch (error) {
       toast.error("PO Approve error");
       console.error("PO Approve error:", error);
@@ -120,8 +167,8 @@ export const POProvider = ({ children }) => {
       });
       if (res.status) {
         toast.success(res.message);
-        getPoList();
       }
+      getPoList();
     } catch (error) {
       toast.error("PO Reject error");
       console.error("PO Reject error:", error);
@@ -143,6 +190,18 @@ export const POProvider = ({ children }) => {
         setPagination,
         search,
         setSearch,
+        status,
+        setStatus,
+        itemName,
+        setItemName,
+        selectedType,
+        setSelectedType,
+        startDate,
+        setStartDate,
+        endDate,
+        setEndDate,
+        vendor,
+        setVendor,
         PoCreate,
         getPoList,
         getPoDetails,
