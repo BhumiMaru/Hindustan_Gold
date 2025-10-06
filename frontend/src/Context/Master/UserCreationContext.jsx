@@ -278,29 +278,30 @@ export const UserCreationProvider = ({ children }) => {
   // -----------------------User Permission List--------------------------- //
 
   // Fetch User Permission List
-  const fetchUserPermission = async (user_id) => {
-    try {
-      const res = await getData(
-        `${ENDPOINTS.USER_CREATION.PERMISSION_LIST}?user_id=${user_id}`
-      );
+  // const fetchUserPermission = async (user_id) => {
+  //   try {
+  //     const res = await getData(
+  //       `${ENDPOINTS.USER_CREATION.PERMISSION_LIST}?user_id=${user_id}`
+  //     );
 
-      // If the API returns a valid response
-      if (res?.data?.data) {
-        setUserPermission(res.data.data);
-      } else {
-        setUserPermission([]); // no data, but not an error
-      }
-    } catch (error) {
-      console.log(error);
+  //     // If the API returns a valid response
+  //     if (res?.data?.data) {
+  //       console.log("rrr", res.data.data);
+  //       setUserPermission(res.data.data);
+  //     } else {
+  //       setUserPermission([]); // no data, but not an error
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
 
-      // ✅ Only show error if it’s not “no data”
-      if (error?.response?.status !== 204 && error?.response?.status !== 404) {
-        toast.error("Failed to fetch User Permission List");
-      } else {
-        setUserPermission([]); // no data → treat as empty
-      }
-    }
-  };
+  //     // ✅ Only show error if it’s not “no data”
+  //     if (error?.response?.status !== 204 && error?.response?.status !== 404) {
+  //       toast.error("Failed to fetch User Permission List");
+  //     } else {
+  //       setUserPermission([]); // no data → treat as empty
+  //     }
+  //   }
+  // };
 
   // Add User Permission
   // const createUserPermission = async (payload) => {
@@ -321,12 +322,91 @@ export const UserCreationProvider = ({ children }) => {
   // };
 
   // Create / Update User Permission
+  // const createUserPermission = async (payload) => {
+  //   try {
+  //     const res = await postData(
+  //       ENDPOINTS.USER_CREATION.PERMISSION_ADD_UPDATE,
+  //       payload
+  //     );
+  //     console.log("payload", payload);
+  //     console.log("res", res);
+  //     toast.success("Permission updated successfully");
+  //     if (payload.user_id) {
+  //       await fetchUserPermission(payload.user_id);
+  //     }
+
+  //     if (res.message === "User permission already exists.") {
+  //       toast.info(res.message);
+  //     }
+  //   } catch (error) {
+  //     if (error.response?.data?.errors) {
+  //       Object.values(error.response.data.errors).forEach((errArray) =>
+  //         errArray.forEach((msg) => toast.error(msg))
+  //       );
+  //     } else {
+  //       toast.error("Failed to update permission");
+  //       console.log("Failed to update permission", error);
+  //     }
+  //   }
+  // };
+
+  // Fetch User Permission List
+  const fetchUserPermission = async (user_id) => {
+    try {
+      const res = await getData(
+        `${ENDPOINTS.USER_CREATION.PERMISSION_LIST}?user_id=${user_id}`
+      );
+
+      if (res?.data?.data) {
+        setUserPermission(res.data.data);
+      } else {
+        setUserPermission([]);
+      }
+    } catch (error) {
+      console.log(error);
+
+      // Handle no data cases silently
+      if (error?.response?.status !== 204 && error?.response?.status !== 404) {
+        toast.error("Failed to fetch User Permission List");
+      } else {
+        setUserPermission([]);
+      }
+    }
+  };
+
+  // Create / Update User Permission
+  // Create / Update User Permission
   const createUserPermission = async (payload) => {
     try {
-      await postData(ENDPOINTS.USER_CREATION.PERMISSION_ADD_UPDATE, payload);
-      toast.success("Permission updated successfully");
+      const res = await postData(
+        ENDPOINTS.USER_CREATION.PERMISSION_ADD_UPDATE,
+        payload
+      );
+
+      console.log("payload", payload);
+      console.log("res", res);
+
+      // Handle "User permission already exists" message
+      if (res.message === "User permission already exists.") {
+        // toast.info(res.message);
+
+        // If permission already exists and user is trying to check it again,
+        // we need to update with status: 0 to uncheck it
+        if (payload.status === 1) {
+          const updatedPayload = { ...payload, status: 0 };
+          await postData(
+            ENDPOINTS.USER_CREATION.PERMISSION_ADD_UPDATE,
+            updatedPayload
+          );
+          // toast.info("Permission unchecked as it already exists");
+        }
+      } else {
+        toast.success("Permission updated successfully");
+      }
+
+      // Refresh permissions after update
       if (payload.user_id) {
-        fetchUserPermission(payload.user_id);
+        await fetchUserPermission(payload.user_id);
       }
     } catch (error) {
       if (error.response?.data?.errors) {

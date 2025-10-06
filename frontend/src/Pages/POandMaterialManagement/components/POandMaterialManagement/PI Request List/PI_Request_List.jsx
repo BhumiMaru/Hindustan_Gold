@@ -144,7 +144,7 @@ export default function PI_Request_List() {
                 {userPermission.some(
                   (prem) =>
                     prem.type === "Get Quotation" &&
-                    (prem.permission === "add" || prem.permission === "view")
+                    (prem.permission === "Add" || prem.permission === "View")
                 ) && (
                   <li className="nav-item mb-1 mb-sm-0" role="presentation">
                     <button

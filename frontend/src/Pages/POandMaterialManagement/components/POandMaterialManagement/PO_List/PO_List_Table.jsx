@@ -122,7 +122,7 @@ export default function PO_List_Table() {
                     {userPermission.some(
                       (prem) =>
                         prem.type === "PO Generation" &&
-                        prem.permission === "approve"
+                        prem.permission === "Approve"
                     ) && (
                       <div className="d-inline-flex gap-2">
                         <button

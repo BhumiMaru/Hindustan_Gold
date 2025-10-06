@@ -1,4 +1,138 @@
-import React, { useEffect } from "react";
+// import React, { useEffect, useState } from "react";
+// import { useParams } from "react-router-dom";
+// import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
+
+// export default function User_Creation_Permission() {
+//   const { id } = useParams();
+//   const {
+//     fetchUserPermission,
+//     userPermission,
+//     createUserPermission,
+//     useCreationData,
+//     fetchUserById,
+//   } = useUserCreation();
+
+//   const [loadingStates, setLoadingStates] = useState({});
+//   const [localPermissions, setLocalPermissions] = useState({});
+
+//   useEffect(() => {
+//     if (id) {
+//       fetchUserById(id);
+//       fetchUserPermission(id);
+//     }
+//   }, [id]);
+
+//   // Convert userPermission array to a local state object for faster lookups
+//   useEffect(() => {
+//     if (userPermission && Array.isArray(userPermission)) {
+//       const permissionMap = {};
+//       userPermission.forEach((p) => {
+//         if (String(p.user_id) === String(id)) {
+//           const key = `${p.module_name}_${p.type}_${p.permission}`;
+//           permissionMap[key] = p.status === 1;
+//         }
+//       });
+//       setLocalPermissions(permissionMap);
+//     }
+//   }, [userPermission, id]);
+
+//   // Improved permission checking function
+//   const hasPermission = (module_name, type, permission) => {
+//     const key = `${module_name}_${type}_${permission}`;
+//     return localPermissions[key] || false;
+//   };
+
+//   // Handle checkbox change with immediate UI feedback
+//   const handlePermissionChange = async (module_name, type, permission, e) => {
+//     const isChecked = e.target.checked;
+//     const checkboxKey = `${module_name}_${type}_${permission}`;
+
+//     // Immediate UI update
+//     setLocalPermissions((prev) => ({
+//       ...prev,
+//       [checkboxKey]: isChecked,
+//     }));
+
+//     setLoadingStates((prev) => ({
+//       ...prev,
+//       [checkboxKey]: true,
+//     }));
+
+//     const payload = {
+//       user_id: Number(id),
+//       role_id: useCreationData?.role_id ?? 0,
+//       module_name,
+//       type,
+//       permission,
+//       status: isChecked ? 1 : 0,
+//     };
+
+//     console.log("Updating permission:", payload);
+
+//     try {
+//       await createUserPermission(payload);
+//       // Refresh permissions to sync with server
+//       setTimeout(() => {
+//         fetchUserPermission(id);
+//       }, 100);
+//     } catch (error) {
+//       console.error("Error updating permission:", error);
+//       // Revert on error
+//       setLocalPermissions((prev) => ({
+//         ...prev,
+//         [checkboxKey]: !isChecked,
+//       }));
+//     } finally {
+//       setLoadingStates((prev) => ({
+//         ...prev,
+//         [checkboxKey]: false,
+//       }));
+//     }
+//   };
+
+//   // Improved Checkbox Component
+//   const PermissionCheckbox = ({
+//     module,
+//     type,
+//     permission,
+//     id: checkboxId,
+//     invisible = false,
+//   }) => {
+//     const checkboxKey = `${module}_${type}_${permission}`;
+//     const isLoading = loadingStates[checkboxKey];
+//     const isChecked = hasPermission(module, type, permission);
+
+//     if (invisible) {
+//       return (
+//         <div className="form-check d-flex justify-content-center invisible">
+//           <input className="form-check-input" type="checkbox" disabled />
+//         </div>
+//       );
+//     }
+
+//     return (
+//       <div className="form-check d-flex justify-content-center">
+//         <input
+//           className="form-check-input"
+//           type="checkbox"
+//           id={checkboxId}
+//           checked={isChecked}
+//           onChange={(e) => handlePermissionChange(module, type, permission, e)}
+//           disabled={isLoading}
+//           style={{
+//             cursor: isLoading ? "not-allowed" : "pointer",
+//           }}
+//         />
+//         {isLoading && (
+//           <div className="spinner-border spinner-border-sm ms-2" role="status">
+//             <span className="visually-hidden">Loading...</span>
+//           </div>
+//         )}
+//       </div>
+//     );
+//   };
+
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 
@@ -12,6 +146,10 @@ export default function User_Creation_Permission() {
     fetchUserById,
   } = useUserCreation();
 
+  const [loadingStates, setLoadingStates] = useState({});
+  const [localPermissions, setLocalPermissions] = useState({});
+  const [optimisticUpdates, setOptimisticUpdates] = useState({});
+
   useEffect(() => {
     if (id) {
       fetchUserById(id);
@@ -19,44 +157,265 @@ export default function User_Creation_Permission() {
     }
   }, [id]);
 
-  // Handle checkbox change
+  // Convert userPermission array to a local state object
+  // useEffect(() => {
+  //   if (userPermission && Array.isArray(userPermission)) {
+  //     const permissionMap = {};
+  //     userPermission.forEach((p) => {
+  //       if (String(p.user_id) === String(id)) {
+  //         const key = `${p.module_name}_${p.type}_${p.permission}`;
+  //         // Only update if there's no pending optimistic update
+  //         if (!optimisticUpdates[key]) {
+  //           permissionMap[key] = p.status === 1;
+  //         }
+  //       }
+  //     });
+  //     setLocalPermissions(permissionMap);
+  //   }
+  // }, [userPermission, id]);
+
+  // Convert userPermission array to a local state object
+  useEffect(() => {
+    if (userPermission && Array.isArray(userPermission)) {
+      const permissionMap = {};
+      userPermission.forEach((p) => {
+        if (String(p.user_id) === String(id)) {
+          const key = `${p.module_name}_${p.type}_${p.permission}`;
+          // Only update if there's no optimistic update for this key
+          if (!(key in optimisticUpdates)) {
+            permissionMap[key] = p.status === 1;
+          }
+        }
+      });
+      setLocalPermissions(permissionMap);
+    }
+  }, [userPermission, id, optimisticUpdates]); // Added optimisticUpdates dependency
+
+  // Improved permission checking function that prioritizes optimistic updates
+  // const hasPermission = (module_name, type, permission) => {
+  //   const key = `${module_name}_${type}_${permission}`;
+
+  //   // First check if there's an optimistic update
+  //   if (optimisticUpdates[key] !== undefined) {
+  //     return optimisticUpdates[key];
+  //   }
+
+  //   // Fall back to local permissions
+  //   return localPermissions[key] || false;
+  // };
+
+  // Improved permission checking function that prioritizes optimistic updates
+  const hasPermission = (module_name, type, permission) => {
+    const key = `${module_name}_${type}_${permission}`;
+
+    // First check if there's an optimistic update (this persists now)
+    if (key in optimisticUpdates) {
+      return optimisticUpdates[key];
+    }
+
+    // Fall back to local permissions
+    return localPermissions[key] || false;
+  };
+
+  // Handle checkbox change with persistent optimistic updates
+  // const handlePermissionChange = async (module_name, type, permission, e) => {
+  //   const isChecked = e.target.checked;
+  //   const checkboxKey = `${module_name}_${type}_${permission}`;
+
+  //   // Set optimistic update immediately
+  //   setOptimisticUpdates((prev) => ({
+  //     ...prev,
+  //     [checkboxKey]: isChecked,
+  //   }));
+
+  //   setLoadingStates((prev) => ({
+  //     ...prev,
+  //     [checkboxKey]: true,
+  //   }));
+
+  //   const payload = {
+  //     user_id: Number(id),
+  //     role_id: useCreationData?.role_id ?? 0,
+  //     module_name,
+  //     type,
+  //     permission,
+  //     status: isChecked ? 1 : 0,
+  //   };
+
+  //   console.log("Updating permission:", payload);
+
+  //   try {
+  //     await createUserPermission(payload);
+
+  //     // Success - update local permissions to match optimistic update
+  //     setLocalPermissions((prev) => ({
+  //       ...prev,
+  //       [checkboxKey]: isChecked,
+  //     }));
+  //   } catch (error) {
+  //     console.error("Error updating permission:", error);
+  //     // Error - revert the optimistic update
+  //     setOptimisticUpdates((prev) => {
+  //       const newState = { ...prev };
+  //       delete newState[checkboxKey];
+  //       return newState;
+  //     });
+
+  //     // Refresh from server to get correct state
+  //     setTimeout(() => {
+  //       fetchUserPermission(id);
+  //     }, 100);
+  //   } finally {
+  //     setLoadingStates((prev) => ({
+  //       ...prev,
+  //       [checkboxKey]: false,
+  //     }));
+
+  //     // Clear optimistic update after a delay (only if successful)
+  //     setTimeout(() => {
+  //       setOptimisticUpdates((prev) => {
+  //         const newState = { ...prev };
+  //         delete newState[checkboxKey];
+  //         return newState;
+  //       });
+  //     }, 1000);
+  //   }
+  // };
+
   const handlePermissionChange = async (module_name, type, permission, e) => {
     const isChecked = e.target.checked;
+    const checkboxKey = `${module_name}_${type}_${permission}`;
 
-    await createUserPermission({
+    // Set optimistic update immediately - this will persist
+    setOptimisticUpdates((prev) => ({
+      ...prev,
+      [checkboxKey]: isChecked,
+    }));
+
+    setLoadingStates((prev) => ({
+      ...prev,
+      [checkboxKey]: true,
+    }));
+
+    const payload = {
       user_id: Number(id),
       role_id: useCreationData?.role_id ?? 0,
       module_name,
       type,
       permission,
       status: isChecked ? 1 : 0,
-    });
+    };
 
-    // ✅ ensure UI updates with latest backend data
-    await fetchUserPermission(id);
+    console.log("Updating permission:", payload);
+
+    try {
+      await createUserPermission(payload);
+
+      // Success - update local permissions to match optimistic update
+      setLocalPermissions((prev) => ({
+        ...prev,
+        [checkboxKey]: isChecked,
+      }));
+      // setTimeout(() => {
+      //   fetchUserPermission(id);
+      // }, 100);
+      // No need to clear optimistic update - it will persist
+    } catch (error) {
+      console.error("Error updating permission:", error);
+      // Error - revert the optimistic update
+      setOptimisticUpdates((prev) => {
+        const newState = { ...prev };
+        delete newState[checkboxKey];
+        return newState;
+      });
+
+      // Refresh from server to get correct state
+      setTimeout(() => {
+        fetchUserPermission(id);
+      }, 100);
+    } finally {
+      setLoadingStates((prev) => ({
+        ...prev,
+        [checkboxKey]: false,
+      }));
+
+      // REMOVED: The setTimeout that clears optimistic updates
+    }
+  };
+
+  // Checkbox Component with persistent state
+  const PermissionCheckbox = ({
+    module,
+    type,
+    permission,
+    id: checkboxId,
+    invisible = false,
+  }) => {
+    const checkboxKey = `${module}_${type}_${permission}`;
+    const isLoading = loadingStates[checkboxKey];
+    const isChecked = hasPermission(module, type, permission);
+
+    if (invisible) {
+      return (
+        <div className="form-check d-flex justify-content-center invisible">
+          <input className="form-check-input" type="checkbox" disabled />
+        </div>
+      );
+    }
+
+    return (
+      <div className="form-check d-flex justify-content-center align-items-center">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          id={checkboxId}
+          checked={isChecked}
+          onChange={(e) => handlePermissionChange(module, type, permission, e)}
+          disabled={isLoading}
+          style={{
+            cursor: isLoading ? "not-allowed" : "pointer",
+          }}
+        />
+        {isLoading && (
+          <div className="spinner-border spinner-border-sm ms-2" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
     <>
-      {/* ----------------START USER CREATION PERMISSION------------------- */}
       <style>
         {`
-   .form-check-input:checked[type=checkbox] {
-  --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='17' viewBox='0 0 15 14' fill='none'%3E%3Cpath d='M3.41667 7L6.33333 9.91667L12.1667 4.08333' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-
-.form-check-input:checked {
-  border-color: #ffab1d;      /* ✅ no quotes */
-  background-color: #ffab1d;  /* ✅ no quotes */
-  box-shadow: 0 0 0 0.25rem rgba(255, 171, 29, 0.25);
-}
-
-.form-check-input[type=checkbox] {
-  border-radius: 0.267em;
-}
-
-}
-    `}
+          .form-check-input:checked[type=checkbox] {
+            --bs-form-check-bg-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='17' viewBox='0 0 15 14' fill='none'%3E%3Cpath d='M3.41667 7L6.33333 9.91667L12.1667 4.08333' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-color: #ffab1d;
+            border-color: #ffab1d;
+          }
+          .form-check-input:checked {
+            border-color: #ffab1d;
+            background-color: #ffab1d;
+            box-shadow: 0 0 0 0.25rem rgba(255, 171, 29, 0.25);
+          }
+          .form-check-input[type=checkbox] {
+            border-radius: 0.267em;
+            width: 1.2em;
+            height: 1.2em;
+          }
+          .form-check-input:focus {
+            border-color: #ffab1d;
+            box-shadow: 0 0 0 0.25rem rgba(255, 171, 29, 0.25);
+          }
+          .form-check-input:disabled {
+            opacity: 0.6;
+          }
+          .form-check {
+            min-height: auto;
+            margin-bottom: 0;
+          }
+        `}
       </style>
       {/* DataTable with Buttons */}
       <div className="row">
@@ -87,39 +446,25 @@ export default function User_Creation_Permission() {
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center invisible">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_1"
-                            />
+                            <PermissionCheckbox invisible />
                           </div>
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center invisible">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_2"
-                              defaultChecked=""
-                            />
+                            <PermissionCheckbox invisible />
                           </div>
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center invisible">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_2"
-                              defaultChecked=""
-                            />
+                            <PermissionCheckbox invisible />
                           </div>
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center">
-                            <input
+                            {/* <input
                               className="form-check-input"
                               type="checkbox"
-                              id="defaultCheck_cust_2"
+                              id="defaultCheck_cust_34"
                               checked={
                                 !!userPermission?.some(
                                   (p) =>
@@ -138,6 +483,12 @@ export default function User_Creation_Permission() {
                                   e
                                 )
                               }
+                            /> */}
+                            <PermissionCheckbox
+                              module="Item Management Module"
+                              type="Material Code"
+                              permission="allrights"
+                              id="material_code_allrights"
                             />
                           </div>
                         </td>
@@ -148,40 +499,25 @@ export default function User_Creation_Permission() {
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center invisible">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_4"
-                              defaultChecked=""
-                            />
+                            <PermissionCheckbox invisible />
                           </div>
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center invisible">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_5"
-                              defaultChecked=""
-                            />
+                            <PermissionCheckbox invisible />
                           </div>
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center invisible">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_5"
-                              defaultChecked=""
-                            />
+                            <PermissionCheckbox invisible />
                           </div>
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center">
-                            <input
+                            {/* <input
                               className="form-check-input"
                               type="checkbox"
-                              id="defaultCheck_cust_5"
+                              id="defaultCheck_cust_38"
                               checked={
                                 !!userPermission?.some(
                                   (p) =>
@@ -200,6 +536,12 @@ export default function User_Creation_Permission() {
                                   e
                                 )
                               }
+                            /> */}
+                            <PermissionCheckbox
+                              module="Item Management Module"
+                              type="Service Code"
+                              permission="allrights"
+                              id="service_code_allrights"
                             />
                           </div>
                         </td>
@@ -208,37 +550,25 @@ export default function User_Creation_Permission() {
                         <td className="text-nowrap text-heading">Asset Code</td>
                         <td>
                           <div className="form-check d-flex justify-content-center invisible">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_7"
-                            />
+                            <PermissionCheckbox invisible />
                           </div>
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center invisible">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_8"
-                            />
+                            <PermissionCheckbox invisible />
                           </div>
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center invisible">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_8"
-                            />
+                            <PermissionCheckbox invisible />
                           </div>
                         </td>
                         <td>
                           <div className="form-check d-flex justify-content-center">
-                            <input
+                            {/* <input
                               className="form-check-input"
                               type="checkbox"
-                              id="defaultCheck_cust_8"
+                              id="defaultCheck_cust_42"
                               checked={
                                 !!userPermission?.some(
                                   (p) =>
@@ -257,6 +587,12 @@ export default function User_Creation_Permission() {
                                   e
                                 )
                               }
+                            /> */}
+                            <PermissionCheckbox
+                              module="Item Management Module"
+                              type="Asset Code"
+                              permission="allrights"
+                              id="asset_code_allrights"
                             />
                           </div>
                         </td>
@@ -293,82 +629,28 @@ export default function User_Creation_Permission() {
                           Item Request
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              id="defaultCheck_cust_1"
-                              type="checkbox"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name === "Item Request Module" &&
-                                    p.type === "Item Request" &&
-                                    p.permission === "view"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "Item Request Module",
-                                  "Item Request",
-                                  "view",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="Item Request Module"
+                            type="Item Request"
+                            permission="view"
+                            id="defaultCheck_cust_43"
+                          />
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_2"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name === "Item Request Module" &&
-                                    p.type === "Item Request" &&
-                                    p.permission === "add_edit"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "Item Request Module",
-                                  "Item Request",
-                                  "add_edit",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="Item Request Module"
+                            type="Item Request"
+                            permission="add_edit"
+                            id="defaultCheck_cust_44"
+                          />
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_2"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name === "Item Request Module" &&
-                                    p.type === "Item Request" &&
-                                    p.permission === "delete"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "Item Request Module",
-                                  "Item Request",
-                                  "delete",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="Item Request Module"
+                            type="Item Request"
+                            permission="delete"
+                            id="defaultCheck_cust_45"
+                          />
                         </td>
                         <td></td>
                       </tr>
@@ -377,58 +659,22 @@ export default function User_Creation_Permission() {
                           Material Approval
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_4"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name === "Item Request Module" &&
-                                    p.type === "Material Approval" &&
-                                    p.permission === "view"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "Item Request Module",
-                                  "Material Approval",
-                                  "view",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="Item Request Module"
+                            type="Material Approval"
+                            permission="view"
+                            id="defaultCheck_cust_46"
+                          />
                         </td>
                         <td></td>
                         <td></td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_4"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name === "Item Request Module" &&
-                                    p.type === "Material Approval" &&
-                                    p.permission === "approve"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "Item Request Module",
-                                  "Material Approval",
-                                  "approve",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="Item Request Module"
+                            type="Material Approval"
+                            permission="approve"
+                            id="defaultCheck_cust_47"
+                          />
                         </td>
                       </tr>
                       <tr className="border-transparent">
@@ -436,31 +682,14 @@ export default function User_Creation_Permission() {
                           Request History Report
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_7"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name === "Item Request Module" &&
-                                    p.type === "Request History Report" &&
-                                    p.permission === "view"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "Item Request Module",
-                                  "Request History Report",
-                                  "view",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="Item Request Module"
+                            type="Request History Report"
+                            permission="view"
+                            id="defaultCheck_cust_48"
+                          />
                         </td>
+                        <td></td>
                         <td></td>
                         <td></td>
                       </tr>
@@ -469,7 +698,8 @@ export default function User_Creation_Permission() {
                 </div>
               </div>
 
-              {/* PO & Material Management Module */}
+              {/* PO and Material Management Module */}
+              {/* PO and Material Management Module */}
               <h5 className="card-title mb-4">
                 PO &amp; Material Management Module
               </h5>
@@ -500,113 +730,37 @@ export default function User_Creation_Permission() {
                       <tr>
                         <td className="text-nowrap text-heading">PI Request</td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_1"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "PI Request" &&
-                                    p.permission === "view"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "PI Request",
-                                  "view",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="PI Request"
+                            permission="view"
+                            id="defaultCheck_cust_49"
+                          />
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_2"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "PI Request" &&
-                                    p.permission === "add"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "PI Request",
-                                  "add",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="PI Request"
+                            permission="add_generate"
+                            id="defaultCheck_cust_50"
+                          />
                         </td>
                         <td></td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_2"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "PI Request" &&
-                                    p.permission === "delete"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "PI Request",
-                                  "delete",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="PI Request"
+                            permission="delete"
+                            id="defaultCheck_cust_9"
+                          />
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_2"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "PI Request" &&
-                                    p.permission === "approve"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "PI Request",
-                                  "approve",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="PI Request"
+                            permission="approve"
+                            id="defaultCheck_cust_10"
+                          />
                         </td>
                       </tr>
                       <tr>
@@ -614,112 +768,36 @@ export default function User_Creation_Permission() {
                           Get Quotation
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_4"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "Get Quotation" &&
-                                    p.permission === "view"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "Get Quotation",
-                                  "view",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="Get Quotation"
+                            permission="view"
+                            id="defaultCheck_cust_11"
+                          />
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_5"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "Get Quotation" &&
-                                    p.permission === "add"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "Get Quotation",
-                                  "add",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="Get Quotation"
+                            permission="add"
+                            id="defaultCheck_cust_12"
+                          />
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_5"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "Get Quotation" &&
-                                    p.permission === "edit"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "Get Quotation",
-                                  "edit",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="Get Quotation"
+                            permission="edit"
+                            id="defaultCheck_cust_13"
+                          />
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_5"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "Get Quotation" &&
-                                    p.permission === "delete"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "Get Quotation",
-                                  "delete",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="Get Quotation"
+                            permission="delete"
+                            id="defaultCheck_cust_14"
+                          />
                         </td>
                         <td></td>
                       </tr>
@@ -728,174 +806,67 @@ export default function User_Creation_Permission() {
                           PO Generation
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_7"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "PO Generation" &&
-                                    p.permission === "view"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "PO Generation",
-                                  "view",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="PO Generation"
+                            permission="view"
+                            id="defaultCheck_cust_15"
+                          />
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_8"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "PO Generation" &&
-                                    p.permission === "add"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "PO Generation",
-                                  "add",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="PO Generation"
+                            permission="add"
+                            id="defaultCheck_cust_16"
+                          />
                         </td>
                         <td></td>
                         <td></td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_8"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "PO Generation" &&
-                                    p.permission === "approve"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "PO Generation",
-                                  "approve",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="PO Generation"
+                            permission="approve"
+                            id="defaultCheck_cust_17"
+                          />
                         </td>
                       </tr>
                       <tr>
                         <td className="text-nowrap text-heading">GRN</td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_7"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "GRN" &&
-                                    p.permission === "view"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "GRN",
-                                  "view",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="GRN"
+                            permission="view"
+                            id="defaultCheck_cust_18"
+                          />
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_8"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "GRN" &&
-                                    p.permission === "add"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "GRN",
-                                  "add",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="GRN"
+                            permission="add"
+                            id="defaultCheck_cust_19"
+                          />
                         </td>
                         <td></td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_8"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "GRN" &&
-                                    p.permission === "delete"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "GRN",
-                                  "delete",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="GRN"
+                            permission="delete"
+                            id="defaultCheck_cust_20"
+                          />
                         </td>
-                        <td></td>
+                        <td>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="GRN"
+                            permission="Approve"
+                            id="defaultCheck_cust_21"
+                          />
+                        </td>
                       </tr>
                       <tr className="border-transparent">
                         <td className="text-nowrap text-heading">
@@ -903,85 +874,28 @@ export default function User_Creation_Permission() {
                         </td>
                         <td></td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_8"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "Invoice Entry" &&
-                                    p.permission === "add"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "Invoice Entry",
-                                  "add",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="Invoice Entry"
+                            permission="add"
+                            id="defaultCheck_cust_22"
+                          />
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_8"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "Invoice Entry" &&
-                                    p.permission === "edit"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "Invoice Entry",
-                                  "edit",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="Invoice Entry"
+                            permission="edit"
+                            id="defaultCheck_cust_23"
+                          />
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_8"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "PO & Material Management Module" &&
-                                    p.type === "Invoice Entry" &&
-                                    p.permission === "delete"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "PO & Material Management Module",
-                                  "Invoice Entry",
-                                  "delete",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="Invoice Entry"
+                            permission="delete"
+                            id="defaultCheck_cust_24"
+                          />
                         </td>
                         <td></td>
                       </tr>
@@ -989,6 +903,7 @@ export default function User_Creation_Permission() {
                   </table>
                 </div>
               </div>
+
               {/* Payment Management Module */}
               <h5 className="card-title mb-4">Payment Management Module</h5>
               <div className="card shadow-none mb-6 border-0">
@@ -1015,31 +930,12 @@ export default function User_Creation_Permission() {
                           Pending Payment Vendor List
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_1"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "Payment Management Module" &&
-                                    p.type === "Pending Payment Vendor List" &&
-                                    p.permission === "view"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "Payment Management Module",
-                                  "Pending Payment Vendor List",
-                                  "view",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="Payment Management Module"
+                            type="Pending Payment Vendor List"
+                            permission="view"
+                            id="defaultCheck_cust_25"
+                          />
                         </td>
                         <td></td>
                         <td></td>
@@ -1050,58 +946,20 @@ export default function User_Creation_Permission() {
                           Payment Request
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_4"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "Payment Management Module" &&
-                                    p.type === "Payment Request" &&
-                                    p.permission === "view"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "Payment Management Module",
-                                  "Payment Request",
-                                  "view",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="Payment Management Module"
+                            type="Payment Request"
+                            permission="view"
+                            id="defaultCheck_cust_26"
+                          />
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_5"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "Payment Management Module" &&
-                                    p.type === "Payment Request" &&
-                                    p.permission === "add"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "Payment Management Module",
-                                  "Payment Request",
-                                  "add",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="Payment Management Module"
+                            type="Payment Request"
+                            permission="add"
+                            id="defaultCheck_cust_27"
+                          />
                         </td>
                         <td></td>
                         <td></td>
@@ -1113,31 +971,12 @@ export default function User_Creation_Permission() {
                         <td></td>
                         <td></td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_8"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "Payment Management Module" &&
-                                    p.type === "Payment Approval" &&
-                                    p.permission === "approve"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "Payment Management Module",
-                                  "Payment Approval",
-                                  "approve",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="Payment Management Module"
+                            type="Payment Approval"
+                            permission="approve"
+                            id="defaultCheck_cust_28"
+                          />
                         </td>
                         <td></td>
                       </tr>
@@ -1146,60 +985,22 @@ export default function User_Creation_Permission() {
                           Vendor Payment History
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_7"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "Payment Management Module" &&
-                                    p.type === "Vendor Payment History" &&
-                                    p.permission === "view"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "Payment Management Module",
-                                  "Vendor Payment History",
-                                  "view",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="Payment Management Module"
+                            type="Vendor Payment History"
+                            permission="view"
+                            id="defaultCheck_cust_29"
+                          />
                         </td>
                         <td></td>
                         <td></td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id="defaultCheck_cust_8"
-                              checked={
-                                !!userPermission?.some(
-                                  (p) =>
-                                    String(p.user_id) === String(id) && // normalize ID comparison
-                                    p.module_name ===
-                                      "Payment Management Module" &&
-                                    p.type === "Vendor Payment History" &&
-                                    p.permission === "download"
-                                )
-                              }
-                              onChange={(e) =>
-                                handlePermissionChange(
-                                  "Payment Management Module",
-                                  "Vendor Payment History",
-                                  "download",
-                                  e
-                                )
-                              }
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="Payment Management Module"
+                            type="Vendor Payment History"
+                            permission="download"
+                            id="defaultCheck_cust_30"
+                          />
                         </td>
                       </tr>
                     </tbody>

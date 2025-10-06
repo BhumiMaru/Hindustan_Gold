@@ -67,23 +67,25 @@ export default function PO_Details_Download() {
                       </span>
                     </dt>
                     <dd className="col-sm-7">
-                      <input
+                      {/* <input
                         type="text"
                         className="form-control"
                         disabled
                         value={poDetails?.po_number || ""}
                         id="invoiceId"
-                      />
+                      /> */}
+                      {poDetails?.po_number || ""}
                     </dd>
                     <dt className="col-sm-5 mb-1 d-md-flex align-items-center justify-content-end">
                       <span className="fw-normal">PO Date:</span>
                     </dt>
                     <dd className="col-sm-7">
-                      <input
+                      {/* <input
                         type="date"
                         className="form-control invoice-date"
                         value={poDetails.po_date}
-                      />
+                      /> */}
+                      {poDetails.po_date}
                     </dd>
                   </dl>
                 </div>
@@ -93,11 +95,12 @@ export default function PO_Details_Download() {
             <div className="card-body px-0">
               <div className="row">
                 <div className="col-md-6 col-sm-5 col-12 mb-sm-0 mb-6">
-                  <select className="form-select mb-4 w-50" disabled>
+                  {/* <select className="form-select mb-4 w-50" disabled>
                     <option value={poDetails?.venderdetail?.vendor_name}>
                       {poDetails?.venderdetail?.vendor_name}
                     </option>
-                  </select>
+                  </select> */}
+                  {poDetails?.venderdetail?.vendor_name}
                   <p className="mb-1">{poDetails?.venderdetail?.address}</p>
                 </div>
                 <div className="col-md-6 col-sm-7">
@@ -132,14 +135,15 @@ export default function PO_Details_Download() {
                       </span>
                     </div>
                     &nbsp;
-                    <select
+                    {poDetails.is_payment_advance_or_partial}
+                    {/* <select
                       className="form-select mt-2 w-25 form-select-sm"
                       value={poDetails.is_payment_advance_or_partial}
                     >
                       <option value="">Select</option>
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
-                    </select>
+                    </select> */}
                   </div>
                 </div>
               </div>
@@ -159,14 +163,15 @@ export default function PO_Details_Download() {
                         <th>UOM</th>
                         <th>
                           <span>Unit&nbsp;Price</span>
-                          <select
+                          <b>({poDetails.default_rupees})</b>
+                          {/* <select
                             className="form-select"
                             value={poDetails.default_rupees}
                           >
                             <option value="">Select Currency</option>
                             <option value="INR">INR (₹)</option>
                             <option value="USD">USD ($)</option>
-                          </select>
+                          </select> */}
                         </th>
                         <th>Disc(%)</th>
                         <th>Disc(₹)</th>
@@ -186,38 +191,42 @@ export default function PO_Details_Download() {
                           <td>{item.uom}</td>
                           <td>{item.unit_price}</td>
                           <td>
-                            <input
+                            {/* <input
                               type="number"
                               className="form-control form-control-sm"
                               style={{ width: 61 }}
                               value={item.disc_pr}
-                            />
+                            /> */}
+                            {item.disc_pr}
                           </td>
                           <td>
-                            <input
+                            {/* <input
                               type="number"
                               className="form-control form-control-sm"
                               style={{ width: 120 }}
                               value={item.disc_number}
                               readOnly
-                            />
+                            /> */}
+                            {item.disc_number}
                           </td>
                           <td>
-                            <input
+                            {/* <input
                               type="number"
                               className="form-control form-control-sm"
                               style={{ width: 61 }}
                               value={item.gst_pr}
-                            />
+                            /> */}
+                            {item.gst_pr}
                           </td>
                           <td>
-                            <input
+                            {/* <input
                               type="number"
                               className="form-control form-control-sm"
                               style={{ width: 120 }}
                               value={item.gst_amount}
                               readOnly
-                            />
+                            /> */}
+                            {item.gst_amount}
                           </td>
                           <td>{item.Taxable_value}</td>
                           {/* <td>
@@ -242,12 +251,13 @@ export default function PO_Details_Download() {
                           </span>
                         </td>
                         <td>
-                          <input
+                          {/* <input
                             type="number"
                             className="form-control form-control-sm"
                             style={{ width: 120 }}
                             value={poDetails.total_discount}
-                          />
+                          /> */}
+                          {poDetails.total_discount}
                         </td>
                       </tr>
 
@@ -263,12 +273,13 @@ export default function PO_Details_Download() {
                           </div>
                         </td>
                         <td>
-                          <input
+                          {/* <input
                             type="number"
                             className="form-control form-control-sm"
                             style={{ width: 120 }}
                             value={poDetails.packing_charge}
-                          />
+                          /> */}
+                          {poDetails.packing_charge}
                         </td>
                       </tr>
 
@@ -283,12 +294,13 @@ export default function PO_Details_Download() {
                           </div>
                         </td>
                         <td>
-                          <input
+                          {/* <input
                             type="number"
                             className="form-control form-control-sm"
                             style={{ width: 120 }}
                             value={poDetails.packing_gst}
-                          />
+                          /> */}
+                          {poDetails.packing_gst}
                         </td>
                       </tr>
 
@@ -304,12 +316,13 @@ export default function PO_Details_Download() {
                           </div>
                         </td>
                         <td>
-                          <input
+                          {/* <input
                             type="number"
                             className="form-control form-control-sm"
                             style={{ width: 120 }}
                             value={poDetails.freight_charge}
-                          />
+                          /> */}
+                          {poDetails.freight_charge}
                         </td>
                       </tr>
 
@@ -322,12 +335,13 @@ export default function PO_Details_Download() {
                           </div>
                         </td>
                         <td>
-                          <input
+                          {/* <input
                             type="number"
                             className="form-control form-control-sm"
                             style={{ width: 120 }}
                             value={poDetails.freight_gst}
-                          />
+                          /> */}
+                          {poDetails.freight_gst}
                         </td>
                       </tr>
 
@@ -365,21 +379,23 @@ export default function PO_Details_Download() {
                                   &times;
                                 </button>
                               )}
-                              <input
+                              {/* <input
                                 type="text"
                                 className="form-control form-control-sm"
                                 placeholder="Enter Charge Name"
                                 value={charge.charge_name}
-                              />
+                              /> */}
+                              {charge.charge_name}
                             </div>
                           </td>
                           <td>
-                            <input
+                            {/* <input
                               type="number"
                               className="form-control form-control-sm"
                               style={{ width: 120 }}
                               value={charge.amount}
-                            />
+                            /> */}
+                            {charge.amount}
                           </td>
                         </tr>
                       ))}
@@ -448,7 +464,8 @@ export default function PO_Details_Download() {
                 {poDetails?.payment_milestones?.map((milestone, index) => (
                   <div className="col-4 mt-3" key={index}>
                     <div className="d-flex">
-                      <select
+                      {milestone.payment_pr}
+                      {/* <select
                         className="form-select form-control form-select-sm"
                         style={{ width: 100 }}
                         value={milestone.payment_pr}
@@ -464,14 +481,15 @@ export default function PO_Details_Download() {
                         <option value="80">80%</option>
                         <option value="90">90%</option>
                         <option value="100">100%</option>
-                      </select>
-                      <input
+                      </select> */}
+                      {/* <input
                         type="text"
                         className="form-control form-control-sm"
                         aria-label="Text input with segmented dropdown button"
                         placeholder="Description"
                         value={milestone.payment_number}
-                      />
+                      /> */}
+                      {milestone.payment_number}
                     </div>
                     <div>
                       {index !== 0 && (
@@ -504,7 +522,7 @@ export default function PO_Details_Download() {
               <div className="row mb-2">
                 <div className="col-6">
                   <div className="d-flex">
-                    <select
+                    {/* <select
                       className="form-select form-control form-select-sm"
                       style={{ width: 100 }}
                       value={poDetails.taxes_pr}
@@ -514,14 +532,16 @@ export default function PO_Details_Download() {
                       <option value="12">12%</option>
                       <option value="18">18%</option>
                       <option value="28">28%</option>
-                    </select>
-                    <input
+                    </select> */}
+                    {poDetails.taxes_pr}
+                    {/* <input
                       type="text"
                       className="form-control form-control-sm"
                       aria-label="Text input with segmented dropdown button"
                       placeholder="Tax Number"
                       value={poDetails.taxes_number}
-                    />
+                    /> */}
+                    {poDetails.taxes_number}
                   </div>
                 </div>
               </div>
@@ -530,13 +550,14 @@ export default function PO_Details_Download() {
               <label className="form-label">Guarantee and Warranty:</label>
               <div className="row mb-2">
                 <div className="col-6">
-                  <input
+                  {/* <input
                     type="text"
                     className="form-control form-control-sm"
                     aria-label="Text input with segmented dropdown button"
                     placeholder="Enter Guarantee and Warranty"
                     value={poDetails.guarantee_and_warranty}
-                  />
+                  /> */}
+                  {poDetails.guarantee_and_warranty}
                 </div>
               </div>
 
@@ -546,35 +567,38 @@ export default function PO_Details_Download() {
                   <label className="form-label">
                     Loading and freight charges:
                   </label>
-                  <select
+                  {poDetails.loading_and_freight_charges}
+                  {/* <select
                     className="form-select mb-4 form-select-sm"
                     value={poDetails.loading_and_freight_charges}
                   >
                     <option value="">Select</option>
                     <option value="Applicable">Applicable</option>
                     <option value="Not Applicable">Not Applicable</option>
-                  </select>
+                  </select> */}
                 </div>
                 <div className="col-4">
                   <label className="form-label">Installation at Site:</label>
-                  <select
+                  {poDetails.installation_at_site}
+                  {/* <select
                     className="form-select mb-4 form-select-sm"
                     value={poDetails.installation_at_site}
                   >
                     <option value="">Select</option>
                     <option value="Applicable">Applicable</option>
                     <option value="Not Applicable">Not Applicable</option>
-                  </select>
+                  </select> */}
                 </div>
                 <div className="col-4">
                   <label className="form-label">Delivery:</label>
-                  <input
+                  {poDetails.delivery}
+                  {/* <input
                     type="text"
                     className="form-control form-control-sm"
                     aria-label="Text input with segmented dropdown button"
                     placeholder="Delivery terms"
                     value={poDetails.delivery}
-                  />
+                  /> */}
                 </div>
               </div>
             </div>
@@ -585,13 +609,14 @@ export default function PO_Details_Download() {
             <div className="row mb-2">
               <div className="col-12">
                 <label className="form-label">Introduction:</label>
-                <input
+                {/* <input
                   type="text"
                   className="form-control form-control-sm"
                   aria-label="Text input with segmented dropdown button"
                   placeholder="Enter introduction"
                   value={poDetails.Introduction}
-                />
+                /> */}
+                {poDetails.Introduction}
               </div>
               <div className="col-12 mt-2 text-end">
                 <button

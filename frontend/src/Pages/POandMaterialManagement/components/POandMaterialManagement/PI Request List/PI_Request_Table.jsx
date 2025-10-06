@@ -345,8 +345,8 @@ export default function PI_Request_Table({ userPermission }) {
                           userPermission.some(
                             (prem) =>
                               prem.type === "Get Quotation" &&
-                              (prem.permission === "add" ||
-                                prem.permission === "view")
+                              (prem.permission === "Add" ||
+                                prem.permission === "View")
                           ) && (
                             <>
                               <Link

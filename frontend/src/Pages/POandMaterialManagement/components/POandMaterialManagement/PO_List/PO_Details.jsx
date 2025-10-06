@@ -1,8 +1,13 @@
 import React, { useEffect } from "react";
-import { usePOCreate } from "../../../../../Context/PIAndPoManagement/POCreate";
+import {
+  POProvider,
+  usePOCreate,
+} from "../../../../../Context/PIAndPoManagement/POCreate";
 import { Link, useParams } from "react-router-dom";
 import { useUIContext } from "../../../../../Context/UIContext";
 import PO_Reject_Modal from "./PO_Reject_Modal";
+import UpdateGRN from "../GRN_List/UpdateGRN";
+import { GRNProvider } from "../../../../../Context/PIAndPoManagement/GRN";
 
 export default function PO_Details() {
   const { id } = useParams();
@@ -85,6 +90,10 @@ export default function PO_Details() {
                     poDetails.status === "Approve" ||
                     (poDetails.status === "Pending" && "d-none")
                   }`}
+                  onClick={() => {
+                    setPoId(poDetails?.id);
+                    handleOpen("editGRN");
+                  }}
                 >
                   Generate GRN
                 </button>
@@ -688,6 +697,15 @@ export default function PO_Details() {
         </div>
       </div>
       {modal.viewRejectPo && <PO_Reject_Modal />}
+      {modal.editGRN && (
+        <>
+          <POProvider>
+            <GRNProvider>
+              <UpdateGRN id={id} />
+            </GRNProvider>
+          </POProvider>
+        </>
+      )}
       {/* ------------------------END PO DETAILS--------------------------- */}
     </>
   );

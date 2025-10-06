@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import GRN_List_Table from "./GRN_List_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
+import { useGRN } from "../../../../../Context/PIAndPoManagement/GRN";
+import UpdateGRN from "./UpdateGRN";
+import { useUIContext } from "../../../../../Context/UIContext";
 
 export default function GRN_List_List() {
+  const { GRNList } = useGRN();
+  const { modal } = useUIContext();
+
+  useEffect(() => {
+    GRNList();
+  }, []);
   return (
     <>
       {/* -------------START GRN LIST --------------- */}
@@ -67,7 +76,7 @@ export default function GRN_List_List() {
           </div>
         </div>
       </div>
-
+     
       {/* -------------END GRN LIST --------------- */}
     </>
   );

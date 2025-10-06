@@ -153,4 +153,9 @@ export const ENDPOINTS = {
     APPROVE: "/po/approve",
     REJECT: "/po/reject",
   },
+
+  GRN: {
+    ADD_UPDATE: "/po/grn/createGrn",
+    LIST: "/po/grn/list",
+  },
 };

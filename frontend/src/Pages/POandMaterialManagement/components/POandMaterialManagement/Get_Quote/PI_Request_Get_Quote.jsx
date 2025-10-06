@@ -725,7 +725,7 @@ export default function PI_Request_Get_Quote() {
                           userPermission?.some(
                             (perm) =>
                               perm.type === "Get Quotation" &&
-                              perm.permission === "add"
+                              perm.permission === "Add"
                           ) && (
                             <button
                               // className="btn btn-success btn-sm waves-effect waves-light"

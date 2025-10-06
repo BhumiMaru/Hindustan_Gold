@@ -228,6 +228,7 @@ export const UIProvider = ({ children }) => {
     // Get Quote
     viewVendorQuoteDetails: false,
     addQuote: false,
+    editGRN: false,
   });
 
   return (
