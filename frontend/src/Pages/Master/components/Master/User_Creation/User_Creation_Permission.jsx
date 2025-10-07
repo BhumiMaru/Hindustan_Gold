@@ -175,21 +175,21 @@ export default function User_Creation_Permission() {
   // }, [userPermission, id]);
 
   // Convert userPermission array to a local state object
-  useEffect(() => {
-    if (userPermission && Array.isArray(userPermission)) {
-      const permissionMap = {};
-      userPermission.forEach((p) => {
-        if (String(p.user_id) === String(id)) {
-          const key = `${p.module_name}_${p.type}_${p.permission}`;
-          // Only update if there's no optimistic update for this key
-          if (!(key in optimisticUpdates)) {
-            permissionMap[key] = p.status === 1;
-          }
-        }
-      });
-      setLocalPermissions(permissionMap);
-    }
-  }, [userPermission, id, optimisticUpdates]); // Added optimisticUpdates dependency
+  // useEffect(() => {
+  //   if (userPermission && Array.isArray(userPermission)) {
+  //     const permissionMap = {};
+  //     userPermission.forEach((p) => {
+  //       if (String(p.user_id) === String(id)) {
+  //         const key = `${p.module_name}_${p.type}_${p.permission}`;
+  //         // Only update if there's no optimistic update for this key
+  //         if (!(key in optimisticUpdates)) {
+  //           permissionMap[key] = p.status === 1;
+  //         }
+  //       }
+  //     });
+  //     setLocalPermissions(permissionMap);
+  //   }
+  // }, [userPermission, id, optimisticUpdates]); // Added optimisticUpdates dependency
 
   // Improved permission checking function that prioritizes optimistic updates
   // const hasPermission = (module_name, type, permission) => {
@@ -204,18 +204,26 @@ export default function User_Creation_Permission() {
   //   return localPermissions[key] || false;
   // };
 
+  // const makePermissionKey = (module_name, type, permission) =>
+  //   `${module_name?.trim()?.toLowerCase()}_${type
+  //     ?.trim()
+  //     ?.toLowerCase()}_${permission?.trim()?.toLowerCase()}`;
+
   // Improved permission checking function that prioritizes optimistic updates
-  const hasPermission = (module_name, type, permission) => {
-    const key = `${module_name}_${type}_${permission}`;
+  // const hasPermission = (module_name, type, permission) => {
+  //   const key = makePermissionKey(module_name, type, permission);
+  //   console.log("🔑 Checking permission key:", key);
 
-    // First check if there's an optimistic update (this persists now)
-    if (key in optimisticUpdates) {
-      return optimisticUpdates[key];
-    }
+  //   // Check optimistic updates first
+  //   if (key in optimisticUpdates) {
+  //     console.log("🟢 optimisticUpdates[key]:", optimisticUpdates[key]);
+  //     return optimisticUpdates[key];
+  //   }
 
-    // Fall back to local permissions
-    return localPermissions[key] || false;
-  };
+  //   // Fallback to localPermissions
+  //   console.log("🔵 localPermissions[key]:", localPermissions[key]);
+  //   return localPermissions[key] || false;
+  // };
 
   // Handle checkbox change with persistent optimistic updates
   // const handlePermissionChange = async (module_name, type, permission, e) => {
@@ -282,20 +290,73 @@ export default function User_Creation_Permission() {
   //   }
   // };
 
-  const handlePermissionChange = async (module_name, type, permission, e) => {
-    const isChecked = e.target.checked;
-    const checkboxKey = `${module_name}_${type}_${permission}`;
+  // Utility to normalize keys
+  // Normalize key
+  const makePermissionKey = (module_name, type_name, permission) =>
+    `${module_name?.trim()?.toLowerCase()}_${type_name
+      ?.trim()
+      ?.toLowerCase()}_${permission?.trim()?.toLowerCase()}`;
 
-    // Set optimistic update immediately - this will persist
-    setOptimisticUpdates((prev) => ({
-      ...prev,
-      [checkboxKey]: isChecked,
-    }));
+  // Determine if checkbox is checked
+  const hasPermission = (module_name, type, permission) => {
+    const key = makePermissionKey(module_name, type, permission);
+    return key in optimisticUpdates
+      ? optimisticUpdates[key]
+      : localPermissions[key] || false;
+  };
 
-    setLoadingStates((prev) => ({
-      ...prev,
-      [checkboxKey]: true,
-    }));
+  // useEffect(() => {
+  //   if (userPermission && userPermission.length > 0) {
+  //     console.log("⚙️ Mapping permissions:", userPermission);
+
+  //     const mappedPermissions = {};
+  //     userPermission.forEach((perm) => {
+  //       const key = makePermissionKey(
+  //         perm.module_name,
+  //         perm.type,
+  //         perm.permission
+  //       );
+  //       mappedPermissions[key] = true; // status 1 or existing permission
+  //       console.log("✅ localPermissions after map:", mappedPermissions[key]);
+  //     });
+
+  //     setLocalPermissions(mappedPermissions);
+  //   }
+  // }, [userPermission]);
+
+  useEffect(() => {
+    if (userPermission && userPermission.length > 0) {
+      const mappedPermissions = {};
+
+      userPermission.forEach((perm) => {
+        if (!perm.module_name || !perm.type || !perm.permission) return;
+
+        const key = makePermissionKey(
+          perm.module_name,
+          perm.type,
+          perm.permission
+        );
+
+        // Checkbox is checked if record exists, ignore status
+        mappedPermissions[key] = true;
+      });
+
+      setLocalPermissions(mappedPermissions);
+    }
+  }, [userPermission]);
+
+  // Handle checkbox change
+  const handlePermissionChange = async (
+    module_name,
+    type,
+    permission,
+    isChecked
+  ) => {
+    const key = makePermissionKey(module_name, type, permission);
+
+    // Optimistic update
+    setOptimisticUpdates((prev) => ({ ...prev, [key]: isChecked }));
+    setLoadingStates((prev) => ({ ...prev, [key]: true }));
 
     const payload = {
       user_id: Number(id),
@@ -306,80 +367,50 @@ export default function User_Creation_Permission() {
       status: isChecked ? 1 : 0,
     };
 
-    console.log("Updating permission:", payload);
+    console.log("payload", payload);
 
     try {
       await createUserPermission(payload);
-
-      // Success - update local permissions to match optimistic update
-      setLocalPermissions((prev) => ({
-        ...prev,
-        [checkboxKey]: isChecked,
-      }));
-      // setTimeout(() => {
-      //   fetchUserPermission(id);
-      // }, 100);
-      // No need to clear optimistic update - it will persist
+      setLocalPermissions((prev) => ({ ...prev, [key]: isChecked }));
+      fetchUserPermission(id);
     } catch (error) {
       console.error("Error updating permission:", error);
-      // Error - revert the optimistic update
       setOptimisticUpdates((prev) => {
         const newState = { ...prev };
-        delete newState[checkboxKey];
+        delete newState[key];
         return newState;
       });
-
-      // Refresh from server to get correct state
-      setTimeout(() => {
-        fetchUserPermission(id);
-      }, 100);
+      fetchUserPermission(id); // refresh
     } finally {
-      setLoadingStates((prev) => ({
-        ...prev,
-        [checkboxKey]: false,
-      }));
-
-      // REMOVED: The setTimeout that clears optimistic updates
+      setLoadingStates((prev) => ({ ...prev, [key]: false }));
     }
   };
-
   // Checkbox Component with persistent state
-  const PermissionCheckbox = ({
-    module,
-    type,
-    permission,
-    id: checkboxId,
-    invisible = false,
-  }) => {
-    const checkboxKey = `${module}_${type}_${permission}`;
-    const isLoading = loadingStates[checkboxKey];
-    const isChecked = hasPermission(module, type, permission);
+  // Checkbox component
+  const PermissionCheckbox = ({ module, type, permission, id }) => {
+    const key = makePermissionKey(module, type, permission);
+    const isLoading = loadingStates[key];
+    const isChecked =
+      key in optimisticUpdates
+        ? optimisticUpdates[key]
+        : localPermissions[key] || false;
 
-    if (invisible) {
-      return (
-        <div className="form-check d-flex justify-content-center invisible">
-          <input className="form-check-input" type="checkbox" disabled />
-        </div>
-      );
-    }
+    // console.log("key", key, "ischecked", isChecked);
 
     return (
       <div className="form-check d-flex justify-content-center align-items-center">
         <input
           className="form-check-input"
           type="checkbox"
-          id={checkboxId}
+          id={id}
           checked={isChecked}
-          onChange={(e) => handlePermissionChange(module, type, permission, e)}
-          disabled={isLoading}
-          style={{
-            cursor: isLoading ? "not-allowed" : "pointer",
+          onChange={(e) => {
+            handlePermissionChange(module, type, permission, e.target.checked);
           }}
+          disabled={isLoading}
         />
         {isLoading && (
-          <div className="spinner-border spinner-border-sm ms-2" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
+          <span className="spinner-border spinner-border-sm ms-2"></span>
         )}
       </div>
     );
@@ -863,7 +894,7 @@ export default function User_Creation_Permission() {
                           <PermissionCheckbox
                             module="PO and Material Management Module"
                             type="GRN"
-                            permission="Approve"
+                            permission="approve"
                             id="defaultCheck_cust_21"
                           />
                         </td>

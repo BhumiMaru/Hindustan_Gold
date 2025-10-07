@@ -6,7 +6,7 @@ import UpdateGRN from "./UpdateGRN";
 import { POProvider } from "../../../../../Context/PIAndPoManagement/POCreate";
 
 export default function GRN_List_Table() {
-  const { grnList, startEditing } = useGRN();
+  const { grnList, startEditing, pagination, setGrnId } = useGRN();
   const { handleOpen, modal } = useUIContext();
   console.log("grnList", grnList);
   return (
@@ -33,9 +33,13 @@ export default function GRN_List_Table() {
         <tbody>
           {grnList.map((grn, index) => {
             return (
-              <tr>
+              <tr key={grn.id}>
                 <td>
-                  <div className="ms-4">{index + 1}</div>
+                  <div className="ms-4">
+                    {" "}
+                    {(pagination.currentPage - 1) * pagination.perPage +
+                      (index + 1)}
+                  </div>
                 </td>
                 <td>{grn.grn_no}</td>
                 <td>{grn.grn_date}</td>
@@ -51,7 +55,7 @@ export default function GRN_List_Table() {
                 <td>
                   <div className="d-inline-flex gap-2">
                     <Link
-                      to="/po-material/grn-details"
+                      to={`/po-material/grn-details/${grn.id}`}
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                     >
                       <i className="icon-base ti tabler-eye icon-20px" />
@@ -80,8 +84,9 @@ export default function GRN_List_Table() {
                           // data-bs-target="#grnCreateModel"
                           onClick={async () => {
                             await startEditing(grn.id);
+                            setGrnId(grn.id);
                             handleOpen("editGRN");
-                            console.log("hhh");
+                            console.log("grn id", grn.id);
                           }}
                         >
                           Edit

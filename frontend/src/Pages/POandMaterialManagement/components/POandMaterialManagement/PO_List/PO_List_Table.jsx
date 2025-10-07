@@ -7,7 +7,8 @@ import { useUIContext } from "../../../../../Context/UIContext";
 import PO_Reject_Modal from "./PO_Reject_Modal";
 
 export default function PO_List_Table() {
-  const { PoList, poDetails, setPoId, getPoDetails, PoApprove } = usePOCreate();
+  const { PoList, poDetails, setPoId, getPoDetails, PoApprove, pagination } =
+    usePOCreate();
   const { handleOpen, modal } = useUIContext();
   const [expandedRow, setExpandedRow] = useState(false);
   console.log("PoList", PoList);
@@ -85,7 +86,11 @@ export default function PO_List_Table() {
                     onClick={() => toggleRow(index)}
                   />
                 </td>
-                <td>{index + 1}</td>
+                <td>
+                  {" "}
+                  {(pagination.currentPage - 1) * pagination.perPage +
+                    (index + 1)}
+                </td>
                 <td>{po.po_number}</td>
                 <td>{po.po_date}</td>
                 <td>PI_000001</td>

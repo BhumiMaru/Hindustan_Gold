@@ -1,6 +1,15 @@
 import React from "react";
+import { useUIContext } from "../../../../../Context/UIContext";
+import { useInvoice } from "../../../../../Context/PIAndPoManagement/Invoice";
 
 export default function Invoice_List_Form() {
+  const { handleClose } = useUIContext();
+  const { createInvoice, invoiceData, setInvoiceData } = useInvoice();
+
+  const handleSave = () => {
+    createInvoice(payload);
+  };
+
   return (
     <>
       {/* -------------------START INVOICE LIST FORM------------------- */}
@@ -34,6 +43,7 @@ export default function Invoice_List_Form() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                onClick={() => handleClose("addInvoice")}
               />
             </div>
             <div className="modal-body">
@@ -179,6 +189,7 @@ export default function Invoice_List_Form() {
                     type="button"
                     className="btn btn-label-secondary waves-effect"
                     data-bs-dismiss="modal"
+                    onClick={() => handleClose("addInvoice")}
                   >
                     Cancel
                   </button>
@@ -191,7 +202,7 @@ export default function Invoice_List_Form() {
           </div>
         </div>
       </div>
-
+      <div className="modal-backdrop fade show"></div>
       {/* -------------------END INVOICE LIST FORM------------------- */}
     </>
   );

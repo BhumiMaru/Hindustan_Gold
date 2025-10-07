@@ -1,6 +1,44 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useUIContext } from "../../../../../Context/UIContext";
+import { useGRN } from "../../../../../Context/PIAndPoManagement/GRN";
+import RejectGRN from "./RejectGRN";
+import { useParams } from "react-router-dom";
+import { decryptData } from "../../../../../utils/decryptData";
+import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
+import Invoice_List_Form from "../../../../PaymentManagement/components/PaymentManagement/Invoice_List/Invoice_List_Form";
+import { InvoiceProvider } from "../../../../../Context/PIAndPoManagement/Invoice";
 
 export default function GRN_Details() {
+  const { id } = useParams();
+  console.log("id", id);
+  const { handleOpen, modal } = useUIContext();
+  const { fetchUserPermission, userPermission } = useUserCreation();
+  const { grnId, setGrnId, GRNDetails, grnDetails, GRNApprove } = useGRN();
+  console.log("grnDetails", grnDetails);
+
+  useEffect(() => {
+    GRNDetails(id);
+  }, [id]);
+
+  // ✅ Get saved auth data
+  const savedAuth = sessionStorage.getItem("authData");
+  let user = null;
+
+  if (savedAuth) {
+    try {
+      const decrypted = decryptData(savedAuth);
+      user = decrypted?.user || null;
+      console.log("user", user);
+    } catch (error) {
+      console.error("Error decrypting auth data", error);
+    }
+  }
+
+  console.log("userPermission", userPermission);
+
+  useEffect(() => {
+    fetchUserPermission(user.id);
+  }, [user.id]);
   return (
     <>
       {/* -----------------------START GRN DETAILS----------------------- */}
@@ -9,7 +47,17 @@ export default function GRN_Details() {
           <div className="d-flex">
             <h6 className="mt-2">Payment Status:&nbsp;</h6>
             <div className="mt-2">
-              <span className="badge bg-label-info">Pending</span>
+              <span
+                className={`badge ${
+                  grnDetails.status === "Pending"
+                    ? "bg-label-warning"
+                    : grnDetails.status === "Approve"
+                    ? "bg-label-success"
+                    : "bg-label-danger"
+                } `}
+              >
+                {grnDetails.status}
+              </span>
             </div>
             <div className="ms-2">
               <a
@@ -29,27 +77,61 @@ export default function GRN_Details() {
             </div>
           </div>
           <div className="d-flex align-content-center flex-wrap gap-4">
-            <button
-              type="submit"
-              className="btn btn-success waves-effect waves-light btn-sm"
-            >
-              Approve
-            </button>
-            <button
-              type="submit"
-              className="btn btn-danger waves-effect waves-light btn-sm"
-            >
-              Reject
-            </button>
+            {userPermission.some(
+              (prem) => prem.type == "GRN" && prem.permission == "approve"
+            ) && (
+              <>
+                <button
+                  onClick={async () => {
+                    try {
+                      await GRNApprove({ grn_id: grnDetails.id });
+                      await GRNDetails(grnDetails.id);
+                    } catch (error) {
+                      console.error("Error approving GRN:", error);
+                    }
+                  }}
+                  className={`btn btn-success waves-effect waves-light btn-sm ${
+                    grnDetails.status === "Approve" ||
+                    grnDetails.status === "Reject"
+                      ? "d-none"
+                      : ""
+                  }`}
+                >
+                  Approve
+                </button>
+
+                <button
+                  // type="submit"
+                  className={`btn btn-danger waves-effect waves-light btn-sm ${
+                    grnDetails.status === "Approve" ||
+                    grnDetails.status === "Reject"
+                      ? "d-none"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    setGrnId(id);
+                    handleOpen("viewRejectGRN");
+                  }}
+                >
+                  Reject
+                </button>
+              </>
+            )}
+
             {/*  <div class="d-flex gap-4"><button class="btn btn-label-secondary waves-effect">Discard</button>*/}
-            <a
-              href="po-create.html"
-              className="btn btn-info waves-effect btn-sm"
-              data-bs-toggle="modal"
-              data-bs-target="#InvoiceModel"
-            >
-              Add Invoice
-            </a>
+
+            {(grnDetails.status === "Approve" ||
+              grnDetails.status === "Reject") && (
+              <a
+                href="po-create.html"
+                className="btn btn-info waves-effect btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#InvoiceModel"
+                onClick={() => handleOpen("addInvoice")}
+              >
+                Add Invoice
+              </a>
+            )}
           </div>
         </div>
         <div className="row">
@@ -70,20 +152,20 @@ export default function GRN_Details() {
                 />
                 <div className="row ms-2">
                   <div className="col-lg-3">
-                    <label className="form-label">GRN ID</label>
-                    <p>GRN-0000001</p>
+                    <label className="form-label">GRN NO</label>
+                    <p>{grnDetails.grn_no}</p>
                   </div>
                   <div className="col-lg-3">
                     <label className="form-label">GRN Date</label>
-                    <p>25-08-2025</p>
+                    <p>{grnDetails.grn_date}</p>
                   </div>
                   <div className="col-lg-3">
                     <label className="form-label">PO ID</label>
-                    <p>PO-0000001</p>
+                    <p>{grnDetails?.po?.po_number}</p>
                   </div>
                   <div className="col-lg-3">
                     <label className="form-label">PI ID</label>
-                    <p>PI-0000001</p>
+                    <p>{grnDetails.pi_request_id}</p>
                   </div>
                 </div>
                 <table className="table table2 datatables-basic align-middle w-100">
@@ -93,40 +175,38 @@ export default function GRN_Details() {
                         <div className="ms-4">Item</div>
                       </th>
                       <th>Qty.</th>
-                      <th>UMO</th>
+                      <th>UOM</th>
                       <th>Received Qty.</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>
-                        <div className="ms-4">ABCG- STCKER-CHARHER</div>
-                      </td>
-                      <td>10</td>
-                      <td>Nos</td>
-                      <td>200</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div className="ms-4">ABCG- STCKER-CHARHER</div>
-                      </td>
-                      <td>10</td>
-                      <td>Nos</td>
-                      <td>200</td>
-                    </tr>
+                    {grnDetails?.items?.map((item, index) => {
+                      return (
+                        <tr>
+                          <td>
+                            <div className="ms-4">{item?.item?.item_name}</div>
+                          </td>
+                          <td>{item?.grn_qty}</td>
+                          <td>{item?.item?.uom}</td>
+                          <td>{item?.item?.item_name}</td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
-                <div className="row ms-2 mt-2">
-                  <div className="col-lg-12">
-                    <div className="d-flex">
-                      <div className="badge bg-label-danger rounded p-1_5">
-                        <i className="icon-base ti tabler-ban icon-md" />
+                {grnDetails.status === "Reject" && (
+                  <div className="row ms-2 mt-2">
+                    <div className="col-lg-12">
+                      <div className="d-flex">
+                        <div className="badge bg-label-danger rounded p-1_5">
+                          <i className="icon-base ti tabler-ban icon-md" />
+                        </div>
+                        <h6 className="mb-0 ms-4 mt-1">Reject Reason</h6>
                       </div>
-                      <h6 className="mb-0 ms-4 mt-1">Reject Reason</h6>
+                      <p className="ms-6 ps-6">{grnDetails?.reject_reason} </p>
                     </div>
-                    <p className="ms-6 ps-6">Qty Not Avaliable </p>
                   </div>
-                </div>
+                )}
               </div>
             </div>
             {/* DataTable with Buttons */}
@@ -183,56 +263,56 @@ export default function GRN_Details() {
                 <div className="row px-4">
                   <div className="col-lg-6">
                     <label className="form-label">Vendor</label>
-                    <p> ABC PVT LTD</p>
+                    <p>{grnDetails?.vendor?.vendor_name}</p>
                   </div>
                   <div className="col-lg-6">
                     <label className="form-label">Contact Person</label>
-                    <p>Vishal Patel</p>
+                    <p>{grnDetails?.vendor?.contact_person_name}</p>
                   </div>
                   <div className="col-lg-6">
                     <label className="form-label">Email Id :</label>
-                    <p>abc@gmail.com</p>
+                    <p>{grnDetails?.vendor?.email}</p>
                   </div>
                   <div className="col-lg-6">
                     <label className="form-label">Mobile Number : </label>
-                    <p>9876564334</p>
+                    <p>{grnDetails?.vendor?.mobile}</p>
                   </div>
                   <div className="col-lg-12">
                     <label className="form-label">Address :</label>
-                    <p>791 Crist Parks, Sashabury, IL 86039-9874</p>
+                    <p>{grnDetails?.vendor?.address}</p>
                   </div>
                   <div className="col-lg-6">
                     <label className="form-label">GST Number</label>
-                    <p>24FSFDDFDSS</p>
+                    <p>{grnDetails?.vendor?.gst_number}</p>
                   </div>
                   <div className="col-lg-6">
                     <label className="form-label">PAN Number</label>
-                    <p>DSSFEFDSF</p>
+                    <p>{grnDetails?.vendor?.pan_number}</p>
                   </div>
                   <div className="col-lg-6">
                     <label className="form-label">
                       MSME Cirtificate Available
                     </label>
-                    <p>Yes</p>
+                    <p>{grnDetails?.vendor?.msme_certificate}</p>
                   </div>
                 </div>
                 <hr />
                 <div className=" row px-4">
                   <div className="col-lg-6">
                     <label className="form-label"> Bank Name</label>
-                    <p>State Bank Of India</p>
+                    <p>{grnDetails?.vendor?.bank_name}</p>
                   </div>
                   <div className="col-lg-6">
                     <label className="form-label">Account No</label>
-                    <p>36000012342</p>
+                    <p>{grnDetails?.vendor?.account_no}</p>
                   </div>
                   <div className="col-lg-6">
                     <label className="form-label">IFSC Code</label>
-                    <p>SBI0HK08</p>
+                    <p>{grnDetails?.vendor?.ifsc_code}</p>
                   </div>
                   <div className="col-lg-6">
                     <label className="form-label">Branch Name</label>
-                    <p>NARODA</p>
+                    <p>{grnDetails?.vendor?.branch_name}</p>
                   </div>
                 </div>
               </div>
@@ -390,7 +470,12 @@ export default function GRN_Details() {
           </div>
         </div>
       </div>
-
+      {modal.viewRejectGRN && <RejectGRN id={id} />}
+      {modal.addInvoice && (
+        <InvoiceProvider>
+          <Invoice_List_Form />
+        </InvoiceProvider>
+      )}
       {/* -----------------------END GRN DETAILS----------------------- */}
     </>
   );

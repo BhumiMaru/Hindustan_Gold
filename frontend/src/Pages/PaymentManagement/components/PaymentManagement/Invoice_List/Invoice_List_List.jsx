@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import Invoice_List_Table from "./Invoice_List_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
+import { useInvoice } from "../../../../../Context/PIAndPoManagement/Invoice";
 
 export default function Invoice_List_List() {
+  const { invoiceList } = useInvoice();
+
+  useEffect(() => {
+    invoiceList();
+  }, []);
   return (
     <>
       {/* ------------START INVOICE LIST----------- */}

@@ -1,18 +1,85 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import GRN_List_Table from "./GRN_List_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import { useGRN } from "../../../../../Context/PIAndPoManagement/GRN";
 import UpdateGRN from "./UpdateGRN";
 import { useUIContext } from "../../../../../Context/UIContext";
+import Date_Range_Model from "../../../../../components/Date Range/Date_Range_Model";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
+import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
+import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
 
 export default function GRN_List_List() {
-  const { GRNList } = useGRN();
+  const {
+    GRNList,
+    search,
+    setSearch,
+    status,
+    setStatus,
+    itemName,
+    setItemName,
+    vendorName,
+    setVendorName,
+    dateRange,
+    setDateRange,
+    pagination,
+    setPagination,
+  } = useGRN();
   const { modal } = useUIContext();
+  const { vendorFilter, setVendorFilter, getVendorFilter } = useVendor();
+  const { fetchItemFilter, filterItem } = useItemRequest();
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDateRange, setSelectedDateRange] = useState("");
 
   useEffect(() => {
-    GRNList();
+    getVendorFilter();
+    fetchItemFilter();
   }, []);
+
+  useEffect(() => {
+    GRNList({
+      status,
+      search,
+      item_name: itemName,
+      vendor_name: vendorName,
+      pi_date_start_date: dateRange.start,
+      pi_date_end_date: dateRange.end,
+      page: pagination.currentPage,
+      perPage: pagination.perPage,
+    });
+  }, [
+    search,
+    status,
+    itemName,
+    vendorName,
+    dateRange,
+    pagination.currentPage,
+    pagination.perPage,
+  ]);
+
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+    // GRNList({ page, perPage: pagination.perPage });
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
+    // GRNList({ page: 1, perPage: size });
+  };
+
+  const handleDateSelect = (range) => {
+    setSelectedDateRange(range);
+
+    const [start, end] = range.split(" - ");
+    setDateRange({
+      start: start ? moment(start, "DD/MM/YYYY").format("YYYY-MM-DD") : "",
+      end: end ? moment(end, "DD/MM/YYYY").format("YYYY-MM-DD") : "",
+    });
+
+    setShowDatePicker(false);
+  };
+
   return (
     <>
       {/* -------------START GRN LIST --------------- */}
@@ -22,7 +89,12 @@ export default function GRN_List_List() {
           <div className="d-flex justify-content-between p-3">
             <div className="d-flex align-items-center ">
               {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
-              <SearchBar />
+              <SearchBar
+                placeholder="Search Request..."
+                value={search}
+                onChange={setSearch}
+                onSubmit={(val) => setSearch(val)}
+              />
             </div>
             <div>
               <button
@@ -40,43 +112,99 @@ export default function GRN_List_List() {
           </div>
           <div className="row px-3 pb-2">
             <div className="col-lg-3">
-              <select id="select17Basic" className="select2 form-select">
-                <option value="AK">Select&nbsp;Item</option>
-                <option value="HI">Item</option>
-                <option value="CA">Item</option>
-                <option value="NV">Item</option>
-              </select>
-            </div>
-            <div className="col-lg-3">
-              <select id="select7Basic" className="select2 form-select">
-                <option value="AK">Select&nbsp;Vendor</option>
-                <option value="HI">Category</option>
-                <option value="CA">Category</option>
-                <option value="NV">Category</option>
-              </select>
-            </div>
-            <div className="col-lg-3">
-              <select id="select9Basic" className="select2 form-select">
-                <option value="AK">Select&nbsp;Status</option>
-                <option value="HI">Pending</option>
-                <option value="CA">Completed</option>
-              </select>
-            </div>
-            <div className="col-lg-3">
-              <input
-                type="date"
-                id="bs-rangepicker-range"
-                className="form-control"
+              <CustomSelect
+                id="selectItemName"
+                options={[
+                  { value: "all", label: "All Items" }, // ✅ All option first
+                  ...(filterItem?.map((item) => ({
+                    value: item.item_id,
+                    label: item.item_name,
+                  })) || []),
+                ]}
+                value={itemName}
+                onChange={setItemName}
+                placeholder="Select Item"
               />
+            </div>
+            <div className="col-lg-3">
+              <CustomSelect
+                id="selectVendorName"
+                options={[
+                  { value: "all", label: "All Vendors" }, // ✅ All option first
+                  ...(vendorFilter?.map((item) => ({
+                    value: item.id,
+                    label: item.vendor_name,
+                  })) || []),
+                ]}
+                value={vendorName}
+                onChange={setVendorName}
+                placeholder="Select Vendor"
+              />
+            </div>
+            <div className="col-lg-3">
+              <CustomSelect
+                id="selectItemStatus"
+                options={[
+                  { value: "all", label: "Select Status" },
+                  { value: "Pending", label: "Pending" },
+                  // { value: "InProgress", label: "InProgress" },
+                  { value: "Approve", label: "Approve" },
+                  { value: "Reject", label: "Reject" },
+                ]}
+                value={status}
+                onChange={setStatus}
+                placeholder="Select Item Status"
+              />
+            </div>
+            <div className="col-lg-3">
+              <div className="d-flex items-center">
+                <input
+                  type="text"
+                  id="filterFilesByDate"
+                  placeholder="Filter by Date"
+                  className="form-control cursor-pointer"
+                  autoComplete="off"
+                  readOnly
+                  value={selectedDateRange}
+                  onClick={() => setShowDatePicker(!showDatePicker)}
+                />
+                {showDatePicker && (
+                  <Date_Range_Model
+                    style={{
+                      top: "150px",
+                    }}
+                    onDateSelect={handleDateSelect}
+                    onClose={() => setShowDatePicker(false)}
+                  />
+                )}
+                {selectedDateRange && (
+                  <button
+                    onClick={() => {
+                      setSelectedDateRange("");
+                      setDateRange({ start: "", end: "" });
+                      setShowDatePicker(false);
+                    }}
+                    className="btn btn-sm text-danger ms-2"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
             </div>
           </div>
           <div className="card-datatable table-responsive pt-0">
             <GRN_List_Table />
-            <Pagination />
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalItems={pagination.total}
+              itemsPerPage={pagination.perPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
           </div>
         </div>
       </div>
-     
+
       {/* -------------END GRN LIST --------------- */}
     </>
   );

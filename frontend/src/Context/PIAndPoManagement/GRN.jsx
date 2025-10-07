@@ -24,12 +24,46 @@ export const GRNProvider = ({ children }) => {
     items: [],
   });
   const [editId, setEditId] = useState(null);
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("all");
+  const [itemName, setItemName] = useState("all");
+  const [vendorName, setVendorName] = useState("all");
+  const [dateRange, setDateRange] = useState({ start: "", end: "" });
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    total: 0,
+  });
+  const [grnId, setGrnId] = useState(null);
+  const [grnDetails, setGrnDetails] = useState({});
 
   //   GRN List
-  const GRNList = async () => {
+  const GRNList = async ({
+    status,
+    search,
+    page = pagination.currentPage,
+    perPage = pagination.perPage,
+  } = {}) => {
     try {
-      const res = await getData(ENDPOINTS.GRN.LIST);
-      setGrnList(res.data.data);
+      const params = {
+        status: status !== "all" ? status : undefined,
+        search: search !== "" ? search : undefined,
+        item_id: itemName !== "all" ? itemName : undefined,
+        vendor: vendorName !== "all" ? vendorName : undefined,
+        start_date: dateRange.start || undefined,
+        end_date: dateRange.end || undefined,
+        page,
+        per_page: perPage,
+      };
+
+      const res = await getData(ENDPOINTS.GRN.LIST, params);
+
+      setGrnList(res.data.data || []);
+      setPagination({
+        currentPage: res.data.current_page || page,
+        perPage: res.data.per_page || perPage,
+        total: res.data.total || 0,
+      });
     } catch (error) {
       toast.error("Error during Get GRN List");
       console.error("Get GRN List error:", error);
@@ -44,22 +78,31 @@ export const GRNProvider = ({ children }) => {
       // Append all non-array fields
       Object.entries(payload).forEach(([key, value]) => {
         if (key !== "items") {
-          formData.append(key, value ?? "");
+          // Send po_id as integer
+          if (key === "po_id") {
+            formData.append(key, value ? parseInt(value) : 0);
+          } else {
+            formData.append(key, value ?? "");
+          }
         }
       });
 
       // Append items array properly
       payload.items?.forEach((item, index) => {
-        Object.entries(item).forEach(([k, v]) => {
-          formData.append(`items[${index}][${k}]`, v ?? "");
-        });
+        formData.append(
+          `items[${index}][po_item_id]`,
+          parseInt(item.po_item_id) || 0
+        );
+        formData.append(
+          `items[${index}][grn_qty]`,
+          parseInt(item.grn_qty) || 0
+        );
       });
 
       const res = await postData(ENDPOINTS.GRN.ADD_UPDATE, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
+
       if (res.status) {
         toast.success(res.message);
         setGrnData(res.data.data);
@@ -79,31 +122,37 @@ export const GRNProvider = ({ children }) => {
       // Include the ID
       formData.append("id", id);
 
-      // Append all non-array fields
+      // Append non-array fields
       Object.entries(payload).forEach(([key, value]) => {
         if (key !== "items") {
-          formData.append(key, value ?? "");
+          if (key === "po_id") {
+            formData.append(key, value ? parseInt(value) : 0);
+          } else {
+            formData.append(key, value ?? "");
+          }
         }
       });
 
       // Append items array properly
       payload.items?.forEach((item, index) => {
-        Object.entries(item).forEach(([k, v]) => {
-          formData.append(`items[${index}][${k}]`, v ?? "");
-        });
+        formData.append(
+          `items[${index}][po_item_id]`,
+          parseInt(item.po_item_id) || 0
+        );
+        formData.append(
+          `items[${index}][grn_qty]`,
+          parseInt(item.grn_qty) || 0
+        );
       });
 
       const res = await postData(ENDPOINTS.GRN.ADD_UPDATE, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (res.status) {
         toast.success(res.message);
-        // Update local state if needed
         setGrnData(res.data.data);
-        GRNList(); // refresh list
+        GRNList();
       }
     } catch (error) {
       toast.error("Error during Edit GRN");
@@ -138,10 +187,58 @@ export const GRNProvider = ({ children }) => {
             grn_qty: item.grn_qty || 0,
           })) || [],
       });
+      console.log("grn", typeof grn.po_id);
     } else {
       toast.error("GRN data not found in the list");
     }
   };
+
+  // GRN Details
+  const GRNDetails = async (grn_id) => {
+    try {
+      const res = await getData(`${ENDPOINTS.GRN.DETAILS}?grn_id=${grn_id}`);
+      console.log("res", res);
+      if (res.success) {
+        setGrnDetails(res.data);
+      }
+    } catch (error) {
+      toast.error("Error during Details GRN");
+      console.error("Details GRN error:", error);
+    }
+  };
+
+  // -------------------- GRN Request --------------------- //
+  const GRNApprove = async (grn_id) => {
+    try {
+      const res = await postData(ENDPOINTS.GRN.APPROVE, grn_id);
+      if (res.status) {
+        toast.success(res.message);
+      }
+      GRNList();
+    } catch (error) {
+      toast.error("Error during Approve GRN");
+      console.error("Approve GRN error:", error);
+    }
+  };
+
+  // GRN Reject
+  const GRNReject = async ({ grn_id, reject_reason }) => {
+    try {
+      const res = await postData(ENDPOINTS.GRN.REJECT, {
+        grn_id,
+        reject_reason,
+      });
+      if (res.status) {
+        toast.success(res.message);
+      }
+      GRNList();
+    } catch (error) {
+      toast.error("Error during Reject GRN");
+      console.error("Reject GRN error:", error);
+    }
+  };
+
+  
 
   return (
     <GRNContext.Provider
@@ -152,10 +249,29 @@ export const GRNProvider = ({ children }) => {
         setGrnData,
         editId,
         setEditId,
+        search,
+        setSearch,
+        status,
+        setStatus,
+        itemName,
+        setItemName,
+        vendorName,
+        setVendorName,
+        dateRange,
+        setDateRange,
+        pagination,
+        setPagination,
         GRNList,
         CreateGRN,
         EditGRN,
         startEditing,
+        GRNApprove,
+        GRNReject,
+        grnId,
+        setGrnId,
+        grnDetails,
+        setGrnDetails,
+        GRNDetails,
       }}
     >
       {children}

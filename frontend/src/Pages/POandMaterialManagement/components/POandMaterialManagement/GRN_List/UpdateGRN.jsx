@@ -6,17 +6,18 @@ import { useParams } from "react-router-dom";
 
 export default function UpdateGRN({ id }) {
   const { handleClose } = useUIContext();
-  const { grnData, setGrnData, CreateGRN, EditGRN, editId, setEditId } =
+  const { grnData, setGrnData, CreateGRN, EditGRN, editId, setEditId, grnId } =
     useGRN();
   const { PoId, getPoDetails, poDetails } = usePOCreate();
 
-  const po_id = Number(id);
+  const po_id = Number(id) || grnId;
 
   useEffect(() => {
     getPoDetails(po_id);
   }, [po_id]);
 
-  console.log("editId", editId);
+  console.log("grnId", grnId);
+  console.log("poDetails", poDetails);
 
   // Initialize grnData.items when poDetails is available
   useEffect(() => {
@@ -81,7 +82,7 @@ export default function UpdateGRN({ id }) {
     const grnPayload = {
       grn_no: grnData.grn_no,
       grn_date: new Date().toISOString().split("T")[0],
-      po_id: po_id,
+      po_id: Number(grnData.po_id),
       date_of_receipt: grnData.date_of_receipt,
       total_grn_qty: totalGrnQty,
       invoice_file: grnData.invoice_file,
@@ -93,7 +94,7 @@ export default function UpdateGRN({ id }) {
     };
 
     console.log("Sending GRN data:", grnPayload);
-    console.log("editId", editId);
+    console.log("editId", typeof editId);
 
     if (editId) {
       EditGRN({ id: editId, payload: grnPayload });
@@ -128,7 +129,7 @@ export default function UpdateGRN({ id }) {
                   <i className="icon-base ti tabler-truck-delivery icon-22px" />
                 </button>
                 <h5 className="modal-title ms-2 mt-2" id="AddQuoteModelLabel2">
-                  Update GRN
+                  {editId ? "Update GRN" : "Add GRN"}
                 </h5>
               </div>
               <button
@@ -212,6 +213,16 @@ export default function UpdateGRN({ id }) {
                     onChange={handleChange}
                   />
                 </div> */}
+                <div className="col-lg-4">
+                  <label className="form-label">PO ID</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    name="po_id"
+                    value={grnData.po_id}
+                    onChange={handleChange}
+                  />
+                </div>
                 <div className="col-lg-4 d-none">
                   <label className="form-label">GRN Date</label>
                   <input
@@ -269,7 +280,7 @@ export default function UpdateGRN({ id }) {
                     className="btn btn-success ms-2 waves-effect waves-light"
                     onClick={handleSave}
                   >
-                    Add
+                    {editId ? "Update" : "Add"}
                   </button>
                 </div>
               </div>

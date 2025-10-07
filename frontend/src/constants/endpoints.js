@@ -154,8 +154,18 @@ export const ENDPOINTS = {
     REJECT: "/po/reject",
   },
 
+  // GRN
   GRN: {
     ADD_UPDATE: "/po/grn/createGrn",
     LIST: "/po/grn/list",
+    APPROVE: "/po/grn/approve",
+    REJECT: "/po/grn/reject",
+    DETAILS: "/po/grn/details",
+  },
+
+  // Invoice
+  INVOICE: {
+    ADD_UPDATE: "/po/grn/invoice/create",
+    LIST: "/po/grn/invoice/list",
   },
 };

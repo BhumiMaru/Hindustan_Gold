@@ -229,6 +229,9 @@ export const UIProvider = ({ children }) => {
     viewVendorQuoteDetails: false,
     addQuote: false,
     editGRN: false,
+    viewRejectGRN: false,
+    // INVOICE
+    addInvoice: false,
   });
 
   return (

@@ -337,7 +337,18 @@ export default function AppRoutes() {
           }
         />
         <Route path="/po-material/grn-list" element={<GRN_List_Page />} />
-        <Route path="/po-material/grn-details" element={<GRN_Details />} />
+        <Route
+          path="/po-material/grn-details/:id"
+          element={
+            <>
+              <GRNProvider>
+                <UserCreationProvider>
+                  <GRN_Details />
+                </UserCreationProvider>
+              </GRNProvider>
+            </>
+          }
+        />
 
         {/* ---------PAYMENT MANAGMENT-------- */}
         <Route

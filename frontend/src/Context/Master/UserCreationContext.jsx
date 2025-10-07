@@ -351,28 +351,29 @@ export const UserCreationProvider = ({ children }) => {
   // };
 
   // Fetch User Permission List
-  const fetchUserPermission = async (user_id) => {
-    try {
-      const res = await getData(
-        `${ENDPOINTS.USER_CREATION.PERMISSION_LIST}?user_id=${user_id}`
-      );
+  // const fetchUserPermission = async (user_id) => {
+  //   try {
+  //     const res = await getData(
+  //       `${ENDPOINTS.USER_CREATION.PERMISSION_LIST}?user_id=${user_id}`
+  //     );
+  //     console.log("🔍 Backend permission data:", res.data.data); // 👈 Add this
 
-      if (res?.data?.data) {
-        setUserPermission(res.data.data);
-      } else {
-        setUserPermission([]);
-      }
-    } catch (error) {
-      console.log(error);
+  //     if (res?.data?.data) {
+  //       setUserPermission(res.data.data);
+  //     } else {
+  //       setUserPermission([]);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
 
-      // Handle no data cases silently
-      if (error?.response?.status !== 204 && error?.response?.status !== 404) {
-        toast.error("Failed to fetch User Permission List");
-      } else {
-        setUserPermission([]);
-      }
-    }
-  };
+  //     // Handle no data cases silently
+  //     if (error?.response?.status !== 204 && error?.response?.status !== 404) {
+  //       toast.error("Failed to fetch User Permission List");
+  //     } else {
+  //       setUserPermission([]);
+  //     }
+  //   }
+  // };
 
   // Create / Update User Permission
   // Create / Update User Permission
@@ -383,8 +384,8 @@ export const UserCreationProvider = ({ children }) => {
         payload
       );
 
-      console.log("payload", payload);
-      console.log("res", res);
+      // console.log("payload", payload);
+      // console.log("res", res);
 
       // Handle "User permission already exists" message
       if (res.message === "User permission already exists.") {
@@ -417,6 +418,25 @@ export const UserCreationProvider = ({ children }) => {
         toast.error("Failed to update permission");
         console.log("Failed to update permission", error);
       }
+    }
+  };
+
+  const fetchUserPermission = async (user_id) => {
+    try {
+      const res = await getData(
+        `${ENDPOINTS.USER_CREATION.PERMISSION_LIST}?user_id=${user_id}`
+      );
+      console.log("res", res?.data);
+      const data = res?.data || [];
+      // ✅ filter data by correct user id only
+      const filtered = data.filter(
+        (p) => String(p.user_id) === String(user_id)
+      );
+      console.log("✅ Filtered permission data:", filtered);
+      setUserPermission(filtered);
+    } catch (error) {
+      console.error("❌ Error fetching permissions:", error);
+      setUserPermission([]);
     }
   };
 
