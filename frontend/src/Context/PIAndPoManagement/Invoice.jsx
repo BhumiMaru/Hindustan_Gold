@@ -13,7 +13,17 @@ export const useInvoice = () => {
 // Invoice Provider
 export const InvoiceProvider = ({ children }) => {
   const [invoice, setInvoice] = useState([]);
-  const [invoiceData, setInvoiceData] = useState({});
+  const [invoiceData, setInvoiceData] = useState({
+    //     grn_id:null,
+    // sub_cat_id:null,
+    // vendor_id:null,
+    // invoice_date:2025-10-06
+    // taxable_amount:25000
+    // tds_amount:500
+    // paid_amount:20000
+    // remarks:Invoice for October batch
+    // invoice_type:1
+  });
   const [pagination, setPagination] = useState({
     currentPage: 1,
     perPage: 10,
