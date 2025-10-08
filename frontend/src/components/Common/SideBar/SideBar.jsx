@@ -48,7 +48,7 @@ export default function SideBar() {
     try {
       const decrypted = decryptData(savedAuth);
       user = decrypted?.user || null;
-      console.log("user", user);
+      // console.log("user", user);
     } catch (error) {
       console.error("Error decrypting auth data", error);
     }
@@ -117,7 +117,7 @@ export default function SideBar() {
     piAndMaterialManagementRoutes["PO List"] = "/po-material/po-list";
   }
 
-  console.log("user", userPermission);
+  // console.log("user", userPermission);
 
   // 4. GRN List
   piAndMaterialManagementRoutes["GRN List"] =

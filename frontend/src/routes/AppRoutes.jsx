@@ -53,6 +53,8 @@ import GRN_Details from "../Pages/POandMaterialManagement/components/POandMateri
 import UpdateGRN from "../Pages/POandMaterialManagement/components/POandMaterialManagement/GRN_List/UpdateGRN";
 import { GRNProvider } from "../Context/PIAndPoManagement/GRN";
 import PO_Create from "../Pages/POandMaterialManagement/components/POandMaterialManagement/PO_Create/PO_Create";
+import Invoice_details from "../Pages/PaymentManagement/components/PaymentManagement/Invoice_List/Invoice_details";
+import { InvoiceProvider } from "../Context/PIAndPoManagement/Invoice";
 
 export default function AppRoutes() {
   const { isOpenSmallSidebar, closeSmallSidebar, modal } = useUIContext();
@@ -354,6 +356,16 @@ export default function AppRoutes() {
         <Route
           path="/payment-management/invoice-list"
           element={<Invoice_List_page />}
+        />
+        <Route
+          path="/payment-management/invoice-detail/:id"
+          element={
+            <>
+              <InvoiceProvider>
+                <Invoice_details />
+              </InvoiceProvider>
+            </>
+          }
         />
         <Route
           path="/payment-management/vendor-list"

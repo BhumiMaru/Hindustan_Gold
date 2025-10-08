@@ -187,7 +187,7 @@ export const GRNProvider = ({ children }) => {
             grn_qty: item.grn_qty || 0,
           })) || [],
       });
-      console.log("grn", typeof grn.po_id);
+      // console.log("grn", typeof grn.po_id);
     } else {
       toast.error("GRN data not found in the list");
     }
@@ -197,7 +197,7 @@ export const GRNProvider = ({ children }) => {
   const GRNDetails = async (grn_id) => {
     try {
       const res = await getData(`${ENDPOINTS.GRN.DETAILS}?grn_id=${grn_id}`);
-      console.log("res", res);
+      // console.log("res", res);
       if (res.success) {
         setGrnDetails(res.data);
       }
@@ -237,8 +237,6 @@ export const GRNProvider = ({ children }) => {
       console.error("Reject GRN error:", error);
     }
   };
-
-  
 
   return (
     <GRNContext.Provider

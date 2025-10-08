@@ -1,13 +1,67 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useUIContext } from "../../../../../Context/UIContext";
 import { useInvoice } from "../../../../../Context/PIAndPoManagement/Invoice";
+import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
+import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
+import { useSubCategory } from "../../../../../Context/ItemManagement/SubCategoryContext";
+import { useGRN } from "../../../../../Context/PIAndPoManagement/GRN";
+import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
 
-export default function Invoice_List_Form() {
+export default function Invoice_List_Form({ id, type }) {
   const { handleClose } = useUIContext();
   const { createInvoice, invoiceData, setInvoiceData } = useInvoice();
+  const [vendorName, setVendorName] = useState(null);
+  const { vendorFilter, setVendorFilter, getVendorFilter } = useVendor();
+  const { filterSubCategory, fetchSubCategoryFilter } = useSubCategory();
+  const [subCategoryId, setSubCategoryId] = useState(null);
+  const [file, setFile] = useState(null);
+  const [itemName, setItemName] = useState("all");
+  const { fetchItemFilter, filterItem } = useItemRequest();
+  // console.log("grnId grnId", id);
+  console.log("type", type);
 
-  const handleSave = () => {
-    createInvoice(payload);
+  useEffect(() => {
+    getVendorFilter();
+    fetchItemFilter();
+    fetchSubCategoryFilter();
+  }, []);
+
+  useEffect(() => {
+    if (subCategoryId) {
+      fetchItemFilter(subCategoryId);
+      setItemName(null); // reset previous item
+    } else {
+      fetchItemFilter(); // fetch all if subCategory cleared
+    }
+  }, [subCategoryId]);
+
+  console.log("subCategoryId", subCategoryId);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInvoiceData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSave = async () => {
+    const formData = new FormData();
+
+    formData.append("grn_id", id || "");
+    formData.append("invoice_type", type);
+    formData.append("vendor_id", vendorName || "");
+    formData.append("sub_cat_id", subCategoryId || "");
+    formData.append("item_name", itemName || "");
+    formData.append("invoice_date", invoiceData.invoice_date || "");
+    formData.append("taxable_amount", invoiceData.taxable_amount || "");
+    formData.append("tds_amount", invoiceData.tds_amount || "");
+    formData.append("remarks", invoiceData.remarks || "");
+    if (file) formData.append("invoice_file", file);
+
+    console.log("formdata", formData);
+    await createInvoice(formData);
+    handleClose("addInvoice");
   };
 
   return (
@@ -52,57 +106,36 @@ export default function Invoice_List_Form() {
                   <label className="form-label">Sub Category</label>
                   <div className="select2-info">
                     <div className="position-relative">
-                      <select
-                        id="select2info"
-                        className="select2 form-select select2-hidden-accessible"
-                        data-select2-id="select2info"
-                        tabIndex={-1}
-                        aria-hidden="true"
-                      >
-                        <option value={1} selected="">
-                          Option1
-                        </option>
-                        <option value={2} selected="" data-select2-id={8}>
-                          Option2
-                        </option>
-                        <option value={3}>Option3</option>
-                        <option value={4}>Option4</option>
-                      </select>
-                      <span
-                        className="select2 select2-container select2-container--default"
-                        dir="ltr"
-                        data-select2-id={7}
-                        style={{ width: "auto" }}
-                      >
-                        <span className="selection">
-                          <span
-                            className="select2-selection select2-selection--single"
-                            role="combobox"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                            tabIndex={0}
-                            aria-disabled="false"
-                            aria-labelledby="select2-select2info-container"
-                          >
-                            <span
-                              className="select2-selection__rendered"
-                              id="select2-select2info-container"
-                              role="textbox"
-                              aria-readonly="true"
-                              title="Option2"
-                            >
-                              Option2
-                            </span>
-                            <span
-                              className="select2-selection__arrow"
-                              role="presentation"
-                            >
-                              <b role="presentation" />
-                            </span>
-                          </span>
-                        </span>
-                        <span className="dropdown-wrapper" aria-hidden="true" />
-                      </span>
+                      <CustomSelect
+                        id="selectSubCategory"
+                        options={filterSubCategory?.map((subcat) => ({
+                          value: subcat.id,
+                          label: subcat.sub_category_name,
+                        }))}
+                        value={subCategoryId}
+                        onChange={setSubCategoryId}
+                        placeholder="Select SubCategory"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-4">
+                  <label className="form-label">Sub Category</label>
+                  <div className="select2-info">
+                    <div className="position-relative">
+                      <CustomSelect
+                        id="selectItemName"
+                        options={[
+                          ...(filterItem?.map((item) => ({
+                            value: item.item_id,
+                            label: item.item_name,
+                          })) || []),
+                        ]}
+                        value={itemName}
+                        onChange={setItemName}
+                        placeholder="Select Item"
+                        disabled={!subCategoryId}
+                      />
                     </div>
                   </div>
                 </div>
@@ -110,79 +143,68 @@ export default function Invoice_List_Form() {
                   <label className="form-label">Vendor</label>
                   <div className="select2-info">
                     <div className="position-relative">
-                      <select
-                        id=""
-                        className="select2 form-select select2-hidden-accessible"
-                        data-select2-id={9}
-                        tabIndex={-1}
-                        aria-hidden="true"
-                      >
-                        <option value={1} selected="">
-                          Option1
-                        </option>
-                        <option value={2} selected="" data-select2-id={11}>
-                          Option2
-                        </option>
-                        <option value={3}>Option3</option>
-                        <option value={4}>Option4</option>
-                      </select>
-                      <span
-                        className="select2 select2-container select2-container--default"
-                        dir="ltr"
-                        data-select2-id={10}
-                        style={{ width: "auto" }}
-                      >
-                        <span className="selection">
-                          <span
-                            className="select2-selection select2-selection--single"
-                            role="combobox"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                            tabIndex={0}
-                            aria-disabled="false"
-                            aria-labelledby="select2--container"
-                          >
-                            <span
-                              className="select2-selection__rendered"
-                              id="select2--container"
-                              role="textbox"
-                              aria-readonly="true"
-                              title="Option2"
-                            >
-                              Option2
-                            </span>
-                            <span
-                              className="select2-selection__arrow"
-                              role="presentation"
-                            >
-                              <b role="presentation" />
-                            </span>
-                          </span>
-                        </span>
-                        <span className="dropdown-wrapper" aria-hidden="true" />
-                      </span>
+                      <CustomSelect
+                        id="selectVendorName"
+                        options={[
+                          { value: "all", label: "All Vendors" }, // ✅ All option first
+                          ...(vendorFilter?.map((item) => ({
+                            value: item.id,
+                            label: item.vendor_name,
+                          })) || []),
+                        ]}
+                        value={vendorName}
+                        onChange={setVendorName}
+                        placeholder="Select Vendor"
+                      />
                     </div>
                   </div>
                 </div>
                 <div className="col-lg-4">
                   <label className="form-label">Invoice Date</label>
-                  <input type="date" className="form-control" />
+                  <input
+                    type="date"
+                    name="invoice_date"
+                    className="form-control"
+                    value={invoiceData.invoice_date || ""}
+                    onChange={handleChange}
+                  />
                 </div>
                 <div className="col-lg-4 mt-2">
                   <label className="form-label">Taxable Amount</label>
-                  <input type="number" className="form-control" />
+                  <input
+                    type="number"
+                    name="taxable_amount"
+                    className="form-control"
+                    value={invoiceData.taxable_amount || ""}
+                    onChange={handleChange}
+                  />
                 </div>
                 <div className="col-lg-4 mt-2">
                   <label className="form-label">TDS Amount</label>
-                  <input type="number" className="form-control" />
+                  <input
+                    type="number"
+                    name="tds_amount"
+                    className="form-control"
+                    value={invoiceData.tds_amount || ""}
+                    onChange={handleChange}
+                  />
                 </div>
                 <div className="col-lg-12 mt-2">
                   <label className="form-label">Remarks</label>
-                  <textarea className="form-control" defaultValue={""} />
+                  <textarea
+                    className="form-control"
+                    name="remarks"
+                    value={invoiceData.remarks || ""}
+                    onChange={handleChange}
+                  />
                 </div>
                 <div className="col-lg-6 mt-2">
                   <label className="form-label">Invoice Attachment File</label>
-                  <input type="file" className="form-control" />
+                  <input
+                    type="file"
+                    className="form-control"
+                    onChange={(e) => setFile(e.target.files[0])}
+                  />
                 </div>
                 <div className="col-lg-12 mt-4 text-end">
                   <button
@@ -193,7 +215,10 @@ export default function Invoice_List_Form() {
                   >
                     Cancel
                   </button>
-                  <button className="btn  btn-success ms-2 waves-effect waves-light">
+                  <button
+                    className="btn  btn-success ms-2 waves-effect waves-light"
+                    onClick={handleSave}
+                  >
                     Save
                   </button>
                 </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   POProvider,
   usePOCreate,
@@ -8,12 +8,15 @@ import { useUIContext } from "../../../../../Context/UIContext";
 import PO_Reject_Modal from "./PO_Reject_Modal";
 import UpdateGRN from "../GRN_List/UpdateGRN";
 import { GRNProvider } from "../../../../../Context/PIAndPoManagement/GRN";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export default function PO_Details() {
   const { id } = useParams();
   const { handleOpen, modal } = useUIContext();
   const { poDetails, setPoDetails, getPoDetails, PoApprove, PoId, setPoId } =
     usePOCreate();
+  const printRef = useRef();
 
   useEffect(() => {
     getPoDetails(id);
@@ -29,7 +32,16 @@ export default function PO_Details() {
     );
   }, [poDetails]);
 
-  console.log("poDetails", poDetails.id);
+  // Download PDF
+
+  const handleDownloadPDF = () => {
+    const link = document.createElement("a");
+    link.href = `/po-material/po-detail-download/${poDetails?.id}`;
+    link.download = `PO_${poDetails?.po_number}.pdf`;
+    link.click();
+  };
+
+  console.log("poDetails", poDetails);
   return (
     <>
       {/* ------------------------START PO DETAILS--------------------------- */}
@@ -37,34 +49,41 @@ export default function PO_Details() {
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
           <div className="d-flex flex-column justify-content-center"></div>
           <div className="d-flex align-content-center flex-wrap gap-4">
-            <button
-              type="submit"
-              className={`btn btn-success waves-effect waves-light btn-sm ${
-                poDetails.status === "Approve" || poDetails.status === "Reject"
-                  ? "d-none"
-                  : ""
-              }`}
-              onClick={async () => {
-                PoApprove(poDetails.id);
-                await getPoDetails(poDetails.id);
-              }}
-            >
-              Approve
-            </button>
-            <button
-              type="submit"
-              className={`btn btn-danger waves-effect waves-light btn-sm ${
-                poDetails.status === "Approve" || poDetails.status === "Reject"
-                  ? "d-none"
-                  : ""
-              }`}
-              onClick={() => {
-                handleOpen("viewRejectPo");
-                setPoId(poDetails.id);
-              }}
-            >
-              Reject
-            </button>
+            {poDetails.status === "Pending" && (
+              <>
+                <button
+                  type="submit"
+                  className={`btn btn-success waves-effect waves-light btn-sm ${
+                    poDetails.status === "Approve" ||
+                    poDetails.status === "Reject"
+                      ? "d-none"
+                      : ""
+                  }`}
+                  onClick={async () => {
+                    PoApprove(poDetails.id);
+                    await getPoDetails(poDetails.id);
+                  }}
+                >
+                  Approve
+                </button>
+                <button
+                  type="submit"
+                  className={`btn btn-danger waves-effect waves-light btn-sm ${
+                    poDetails.status === "Approve" ||
+                    poDetails.status === "Reject"
+                      ? "d-none"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    handleOpen("viewRejectPo");
+                    setPoId(poDetails.id);
+                  }}
+                >
+                  Reject
+                </button>
+              </>
+            )}
+
             {/*  <div class="d-flex gap-4"><button class="btn btn-label-secondary waves-effect">Discard</button>*/}
             {poDetails.status === "Reject" ? (
               <>
@@ -80,10 +99,15 @@ export default function PO_Details() {
                     poDetails.status === "Reject" ||
                     poDetails.status === "Approve" ||
                     (poDetails.status === "Pending" && "d-none")
-                  }`}
+                  } ${poDetails.po_generat_status === 1 ? "d-none" : ""}`}
                 >
                   Generate PO
                 </Link>
+              </>
+            )}
+
+            {poDetails.po_generat_status === 1 && (
+              <>
                 <button
                   className={`btn btn-info waves-effect btn-sm ${
                     poDetails.status === "Reject" ||
@@ -104,9 +128,9 @@ export default function PO_Details() {
                     poDetails.status === "Approve" ||
                     (poDetails.status === "Pending" && "d-none")
                   }`}
+                  onClick={handleDownloadPDF}
                 >
-                  {" "}
-                  <i className="icon-base ti tabler-download icon-md me-2" />{" "}
+                  <i className="icon-base ti tabler-download icon-md me-2" />
                   Download PO
                 </button>
               </>

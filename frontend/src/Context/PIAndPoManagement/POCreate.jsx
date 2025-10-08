@@ -15,33 +15,61 @@ export const POProvider = ({ children }) => {
   const [PoList, setPoList] = useState([]); //List
   const [poDetails, setPoDetails] = useState({}); // Details
   const [PoId, setPoId] = useState(null);
-  const [PoData, setPoData] = useState({
-    pi_get_quote_id: "",
-    pi_get_quote_vendor_id: "",
-    pi_request_id: "",
-    po_number: "",
-    po_date: null,
-    default_rupees: null,
-    total_discount: null,
-    packing_charge: null,
-    packing_gst: null,
-    fright_charge: null,
-    fright_gst: null,
-    additional_charge_status: null,
-    sub_total: null,
-    gst_value: null,
-    final_total: null,
-    payment_status: null,
-    taxes_pr: null,
-    taxes_number: null,
+  // const [PoData, setPoData] = useState({
+  //   pi_get_quote_id: "",
+  //   pi_get_quote_vendor_id: "",
+  //   pi_request_id: "",
+  //   po_number: "",
+  //   po_date: null,
+  //   default_rupees: null,
+  //   total_discount: null,
+  //   packing_charge: null,
+  //   packing_gst: null,
+  //   fright_charge: null,
+  //   fright_gst: null,
+  //   additional_charge_status: null,
+  //   sub_total: null,
+  //   gst_value: null,
+  //   final_total: null,
+  //   payment_status: null,
+  //   taxes_pr: null,
+  //   taxes_number: null,
+  //   guarantee_and_warranty: "",
+  //   loading_and_freight_charges: "",
+  //   installation_at_site: "",
+  //   delivery: "",
+  //   introduction: "",
+  //   items: [],
+  //   additional_charges: [],
+  //   payment_milestones: [],
+  // });
+  const [formData, setFormData] = useState({
+    id: null,
+    po_date: new Date().toISOString().split("T")[0],
+    default_rupees: "",
+    total_discount: "0",
+    packing_charge: "",
+    packing_gst: "",
+    fright_charge: "",
+    fright_gst: "",
+    additional_charge_status: "1",
+    sub_total: "0",
+    gst_value: "0",
+    final_total: "0",
+    payment_status: "1",
+    taxes_pr: "",
+    taxes_number: "",
     guarantee_and_warranty: "",
     loading_and_freight_charges: "",
     installation_at_site: "",
     delivery: "",
     introduction: "",
+    is_payment_advance_or_partial: "No",
+    currency: "INR",
     items: [],
     additional_charges: [],
     payment_milestones: [],
+    total_item: null,
   });
   const [search, setSearch] = useState("");
   const [pagination, setPagination] = useState({
@@ -136,7 +164,7 @@ export const POProvider = ({ children }) => {
   const PoCreate = async (payload) => {
     try {
       const res = await postData(ENDPOINTS.POCREATE.ADD_UPDATE, payload);
-      setPoData(res.data.data);
+      setFormData(res.data.data);
     } catch (error) {
       console.error("PO creation failed:", error);
     }
@@ -180,8 +208,8 @@ export const POProvider = ({ children }) => {
       value={{
         PoList,
         setPoList,
-        PoData,
-        setPoData,
+        formData,
+        setFormData,
         poDetails,
         setPoDetails,
         PoId,

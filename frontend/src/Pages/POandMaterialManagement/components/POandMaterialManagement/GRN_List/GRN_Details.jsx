@@ -6,15 +6,18 @@ import { useParams } from "react-router-dom";
 import { decryptData } from "../../../../../utils/decryptData";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 import Invoice_List_Form from "../../../../PaymentManagement/components/PaymentManagement/Invoice_List/Invoice_List_Form";
+import { VendorProvider } from "../../../../../Context/PaymentManagement/Vendor";
+import { SubCategoryProvider } from "../../../../../Context/ItemManagement/SubCategoryContext";
 import { InvoiceProvider } from "../../../../../Context/PIAndPoManagement/Invoice";
+import { ItemRequestProvider } from "../../../../../Context/Request Management/Item_Request";
 
 export default function GRN_Details() {
   const { id } = useParams();
-  console.log("id", id);
+  // console.log("id", id);
   const { handleOpen, modal } = useUIContext();
   const { fetchUserPermission, userPermission } = useUserCreation();
   const { grnId, setGrnId, GRNDetails, grnDetails, GRNApprove } = useGRN();
-  console.log("grnDetails", grnDetails);
+  // console.log("grnDetails", grnDetails);
 
   useEffect(() => {
     GRNDetails(id);
@@ -28,13 +31,13 @@ export default function GRN_Details() {
     try {
       const decrypted = decryptData(savedAuth);
       user = decrypted?.user || null;
-      console.log("user", user);
+      // console.log("user", user);
     } catch (error) {
       console.error("Error decrypting auth data", error);
     }
   }
 
-  console.log("userPermission", userPermission);
+  // console.log("userPermission", userPermission);
 
   useEffect(() => {
     fetchUserPermission(user.id);
@@ -127,7 +130,9 @@ export default function GRN_Details() {
                 className="btn btn-info waves-effect btn-sm"
                 data-bs-toggle="modal"
                 data-bs-target="#InvoiceModel"
-                onClick={() => handleOpen("addInvoice")}
+                onClick={() => {
+                  handleOpen("addInvoice");
+                }}
               >
                 Add Invoice
               </a>
@@ -473,7 +478,13 @@ export default function GRN_Details() {
       {modal.viewRejectGRN && <RejectGRN id={id} />}
       {modal.addInvoice && (
         <InvoiceProvider>
-          <Invoice_List_Form />
+          <VendorProvider>
+            <SubCategoryProvider>
+              <ItemRequestProvider>
+                <Invoice_List_Form id={id} type={1} />
+              </ItemRequestProvider>
+            </SubCategoryProvider>
+          </VendorProvider>
         </InvoiceProvider>
       )}
       {/* -----------------------END GRN DETAILS----------------------- */}

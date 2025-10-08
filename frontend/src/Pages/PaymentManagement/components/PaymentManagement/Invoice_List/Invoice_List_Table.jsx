@@ -1,5 +1,6 @@
 import React from "react";
 import { useInvoice } from "../../../../../Context/PIAndPoManagement/Invoice";
+import { Link } from "react-router-dom";
 
 export default function Invoice_List_Table() {
   const { invoice, pagination } = useInvoice();
@@ -38,7 +39,7 @@ export default function Invoice_List_Table() {
           </tr>
         </thead>
         <tbody>
-          {invoice.map((invoice, index) => {
+          {invoice?.map((invoice, index) => {
             return (
               <tr>
                 <td className="dt-select">
@@ -52,32 +53,31 @@ export default function Invoice_List_Table() {
                 </td>
                 <td>
                   {" "}
-                  {(pagination.currentPage - 1) * pagination.perPage +
+                  {(pagination?.currentPage - 1) * pagination?.perPage +
                     (index + 1)}
                 </td>
-                <td>{invoice.id}</td>
-                <td>{invoice.created_at.split("T").shift()}</td>
-                <td>{invoice.invoice_date}</td>
-                <td>{invoice.vendor.vendor_name}</td>
-                <td>{invoice.type}</td>
-                {/* <td>{invoice.created_at}</td> */}
-                <td>{invoice.taxable_amount}/-</td>
-                <td>{invoice.paid_amount}/-</td>
+                <td>{invoice?.id}</td>
+                <td>{invoice?.created_at?.split("T")?.shift()}</td>
+                <td>{invoice?.invoice_date}</td>
+                <td>{invoice?.vendor?.vendor_name}</td>
+                <td>{invoice?.type}</td>
+                {/* <td>{invoice?.created_at}</td> */}
+                <td>{invoice?.taxable_amount}/-</td>
+                <td>{invoice?.paid_amount}/-</td>
                 <td>
-                  <span className="badge bg-label-info">{invoice.status}</span>
+                  <span className="badge bg-label-info">{invoice?.status}</span>
                 </td>
                 <td>
                   <div className="d-inline-flex gap-2">
-                    <a
-                      href="invoice-detail.html"
+                    <Link
+                      to={`/payment-management/invoice-detail/${invoice.id}`}
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                     >
                       <i className="icon-base ti tabler-eye icon-22px" />
-                    </a>
+                    </Link>
                     <div className="d-inline-flex gap-2">
                       <div className="d-inline-block">
                         <a
-                          href="javascript:;"
                           className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
                           data-bs-toggle="dropdown"
                           aria-expanded="false"

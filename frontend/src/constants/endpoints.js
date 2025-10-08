@@ -167,5 +167,9 @@ export const ENDPOINTS = {
   INVOICE: {
     ADD_UPDATE: "/po/grn/invoice/create",
     LIST: "/po/grn/invoice/list",
+    DETAILS: "/po/grn/invoice/detail",
+    APPROVE: "/po/grn/invoice/approve",
+    REJECT: "/po/grn/invoice/reject",
+    PAYMENT: "/po/grn/invoice/payment",
   },
 };

@@ -742,12 +742,13 @@
 
 import React, { useEffect, useState } from "react";
 import { usePOCreate } from "../../../../../Context/PIAndPoManagement/POCreate";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function PO_Create() {
   const { id } = useParams();
-  const { PoCreate, getPoDetails, poDetails } = usePOCreate();
+  const { PoCreate, getPoDetails, poDetails, formData, setFormData } =
+    usePOCreate();
 
   // Form state
   // const [formData, setFormData] = useState({
@@ -770,39 +771,39 @@ export default function PO_Create() {
   //   installation_at_site: "",
   //   delivery: "",
   //   introduction: "",
-  //   is_payment_advance: "",
+  //   is_payment_advance_or_partial: "",
   //   currency: "inr",
   //   items: [],
   //   additional_charges: [],
   //   payment_milestones: [],
   // });
 
-  const [formData, setFormData] = useState({
-    po_date: "",
-    default_rupees: "",
-    total_discount: "0",
-    packing_charge: "",
-    packing_gst: "",
-    fright_charge: "",
-    fright_gst: "",
-    additional_charge_status: "1",
-    sub_total: "0",
-    gst_value: "0",
-    final_total: "0",
-    payment_status: "1",
-    taxes_pr: "",
-    taxes_number: "",
-    guarantee_and_warranty: "",
-    loading_and_freight_charges: "",
-    installation_at_site: "",
-    delivery: "",
-    introduction: "",
-    is_payment_advance: "",
-    currency: "inr",
-    items: [],
-    additional_charges: [],
-    payment_milestones: [],
-  });
+  // const [formData, setFormData] = useState({
+  //   po_date: "",
+  //   default_rupees: "",
+  //   total_discount: "0",
+  //   packing_charge: "",
+  //   packing_gst: "",
+  //   fright_charge: "",
+  //   fright_gst: "",
+  //   additional_charge_status: "1",
+  //   sub_total: "0",
+  //   gst_value: "0",
+  //   final_total: "0",
+  //   payment_status: "1",
+  //   taxes_pr: "",
+  //   taxes_number: "",
+  //   guarantee_and_warranty: "",
+  //   loading_and_freight_charges: "",
+  //   installation_at_site: "",
+  //   delivery: "",
+  //   introduction: "",
+  //   is_payment_advance_or_partial: "",
+  //   currency: "inr",
+  //   items: [],
+  //   additional_charges: [],
+  //   payment_milestones: [],
+  // });
 
   const [charges, setCharges] = useState([{ name: "", amount: "" }]);
   const [milestones, setMilestones] = useState([
@@ -810,6 +811,7 @@ export default function PO_Create() {
   ]);
   const [packingChargeChecked, setPackingChargeChecked] = useState(false);
   const [frightChargeChecked, setFrightChargeChecked] = useState(false);
+  const navigate = useNavigate();
 
   // Initialize form with PO details
   useEffect(() => {
@@ -864,33 +866,40 @@ export default function PO_Create() {
   useEffect(() => {
     if (poDetails?.items) {
       // Initialize items with PO details and calculate initial totals
-      const initializedItems = poDetails.items.map((item) => ({
-        id: item.id,
-        item_name: item.item_name,
-        description: item.description,
-        qty: item.qty,
-        uom: item.uom,
-        unit_price: item.unit_price,
-        disc_pr: "",
-        disc_number: "0",
-        gst_pr: "",
-        taxable_value: "0",
-        base_amount: (item.unit_price * item.qty).toFixed(2),
-        gst_amount: "0",
-      }));
+      const initializedItems = poDetails.items.map((item) => {
+        console.log("itemmmm", item);
+        return {
+          id: item?.pirequestitem?.id,
+          item_name: item?.pirequestitem?.item_name,
+          description: item?.pirequestitem?.remark,
+          qty: item?.pirequestitem?.qty,
+          uom: item?.pirequestitem?.uom,
+          unit_price: item?.unit_price,
+          disc_pr: "",
+          disc_number: "0",
+          gst_pr: "",
+          taxable_value: "0",
+          base_amount: (
+            item?.pirequestitem?.unit_price * item?.pirequestitem?.qty
+          ).toFixed(2),
+          gst_amount: "0",
+        };
+      });
 
       const totals = calculateGrandTotals(initializedItems);
 
       setFormData((prev) => ({
         ...prev,
+        id: poDetails?.id,
         items: initializedItems,
+        total_item: initializedItems.length,
         ...totals,
       }));
     }
   }, [poDetails]);
 
   useEffect(() => {
-    if (formData.items.length > 0) {
+    if (formData?.items.length > 0) {
       const totals = calculateGrandTotals(formData.items);
       setFormData((prev) => ({ ...prev, ...totals }));
     }
@@ -898,19 +907,20 @@ export default function PO_Create() {
     charges,
     packingChargeChecked,
     frightChargeChecked,
-    formData.packing_charge,
-    formData.packing_gst,
-    formData.fright_charge,
-    formData.fright_gst,
+    formData?.packing_charge,
+    formData?.packing_gst,
+    formData?.fright_charge,
+    formData?.fright_gst,
   ]);
 
   // Calculate item totals (no GST included in subtotal here)
   const calculateItemTotals = (items) => {
-    return items.map((item) => {
-      const unitPrice = parseFloat(item.unit_price) || 0;
-      const quantity = parseFloat(item.qty) || 0;
-      const discountPercent = parseFloat(item.disc_pr) || 0;
-      const gstPercent = parseFloat(item.gst_pr) || 0;
+    console.log("itemsssssssss", items);
+    return items?.map((item) => {
+      const unitPrice = parseFloat(item?.unit_price) || 0;
+      const quantity = parseFloat(item?.qty) || 0;
+      const discountPercent = parseFloat(item?.disc_pr) || 0;
+      const gstPercent = parseFloat(item?.gst_pr) || 0;
 
       const baseAmount = unitPrice * quantity;
       const discountAmount = (baseAmount * discountPercent) / 100;
@@ -920,10 +930,10 @@ export default function PO_Create() {
 
       return {
         ...item,
-        base_amount: baseAmount.toFixed(2),
-        disc_number: discountAmount.toFixed(2),
-        gst_amount: gstAmount.toFixed(2),
-        taxable_value: taxableValue.toFixed(2),
+        base_amount: baseAmount?.toFixed(2),
+        disc_number: discountAmount?.toFixed(2),
+        gst_amount: gstAmount?.toFixed(2),
+        taxable_value: taxableValue?.toFixed(2),
       };
     });
   };
@@ -932,43 +942,43 @@ export default function PO_Create() {
     const itemTotals = calculateItemTotals(items);
 
     // Item-wise totals
-    const subTotal = itemTotals.reduce(
+    const subTotal = itemTotals?.reduce(
       (sum, item) =>
         sum +
-        (parseFloat(item.base_amount) - parseFloat(item.disc_number) || 0),
+        (parseFloat(item?.base_amount) - parseFloat(item?.disc_number) || 0),
       0
     );
-    const totalDiscount = itemTotals.reduce(
-      (sum, item) => sum + (parseFloat(item.disc_number) || 0),
+    const totalDiscount = itemTotals?.reduce(
+      (sum, item) => sum + (parseFloat(item?.disc_number) || 0),
       0
     );
-    const totalGST = itemTotals.reduce(
-      (sum, item) => sum + (parseFloat(item.gst_amount) || 0),
+    const totalGST = itemTotals?.reduce(
+      (sum, item) => sum + (parseFloat(item?.gst_amount) || 0),
       0
     );
 
     // Packing/Freight charges
     const packingCharge =
-      packingChargeChecked && formData.packing_charge
-        ? parseFloat(formData.packing_charge) || 0
+      packingChargeChecked && formData?.packing_charge
+        ? parseFloat(formData?.packing_charge) || 0
         : 0;
     const packingGST =
-      packingChargeChecked && formData.packing_gst
-        ? (packingCharge * (parseFloat(formData.packing_gst) || 0)) / 100
+      packingChargeChecked && formData?.packing_gst
+        ? (packingCharge * (parseFloat(formData?.packing_gst) || 0)) / 100
         : 0;
 
     const freightCharge =
-      frightChargeChecked && formData.fright_charge
-        ? parseFloat(formData.fright_charge) || 0
+      frightChargeChecked && formData?.fright_charge
+        ? parseFloat(formData?.fright_charge) || 0
         : 0;
     const freightGST =
-      frightChargeChecked && formData.fright_gst
-        ? (freightCharge * (parseFloat(formData.fright_gst) || 0)) / 100
+      frightChargeChecked && formData?.fright_gst
+        ? (freightCharge * (parseFloat(formData?.fright_gst) || 0)) / 100
         : 0;
 
     // Additional charges
-    const additionalChargesTotal = charges.reduce(
-      (sum, c) => sum + (parseFloat(c.amount) || 0),
+    const additionalChargesTotal = charges?.reduce(
+      (sum, c) => sum + (parseFloat(c?.amount) || 0),
       0
     );
 
@@ -983,14 +993,14 @@ export default function PO_Create() {
       additionalChargesTotal;
 
     return {
-      sub_total: subTotal.toFixed(2),
-      total_discount: totalDiscount.toFixed(2),
-      gst_value: totalGST.toFixed(2),
-      final_total: finalTotal.toFixed(2),
+      sub_total: subTotal?.toFixed(2),
+      total_discount: totalDiscount?.toFixed(2),
+      gst_value: totalGST?.toFixed(2),
+      final_total: finalTotal?.toFixed(2),
     };
   };
 
-  // Handle item field changes (discount, GST, etc.)
+  // Handle item field changes (discount, GST, etc?.)
   const handleItemChange = (index, field, value) => {
     const updatedItems = [...formData.items];
     const item = { ...updatedItems[index] };
@@ -1000,10 +1010,10 @@ export default function PO_Create() {
 
     // Recalculate item totals if discount percentage or GST percentage changes
     if (field === "disc_pr" || field === "gst_pr") {
-      const unitPrice = parseFloat(item.unit_price) || 0;
-      const quantity = parseFloat(item.qty) || 0;
-      const discountPercent = parseFloat(item.disc_pr) || 0;
-      const gstPercent = parseFloat(item.gst_pr) || 0;
+      const unitPrice = parseFloat(item?.unit_price) || 0;
+      const quantity = parseFloat(item?.qty) || 0;
+      const discountPercent = parseFloat(item?.disc_pr) || 0;
+      const gstPercent = parseFloat(item?.gst_pr) || 0;
 
       // Calculate base amount
       const baseAmount = unitPrice * quantity;
@@ -1054,27 +1064,29 @@ export default function PO_Create() {
         ...formData,
         // Charges
         additional_charges: charges
-          .filter((charge) => charge.name && charge.amount)
-          .map((charge) => ({
-            charge_name: charge.name,
-            amount: parseFloat(charge.amount) || 0,
+          ?.filter((charge) => charge?.name && charge?.amount)
+          ?.map((charge) => ({
+            charge_name: charge?.name,
+            amount: parseFloat(charge?.amount) || 0,
           })),
         // Milestones
         payment_milestones: milestones
-          .filter((m) => m.percentage && m.payment_number)
-          .map((m, idx) => ({
-            payment_pr: parseFloat(m.percentage) || 0,
-            payment_number: m.payment_number, // keep as string/sequence if needed
+          ?.filter((m) => m?.percentage && m?.payment_number)
+          ?.map((m, idx) => ({
+            payment_pr: parseFloat(m?.percentage) || 0,
+            payment_number: m?.payment_number, // keep as string/sequence if needed
           })),
         // Respect checkboxes
-        packing_charge: packingChargeChecked ? formData.packing_charge : "0",
-        packing_gst: packingChargeChecked ? formData.packing_gst : "0",
-        fright_charge: frightChargeChecked ? formData.fright_charge : "0",
-        fright_gst: frightChargeChecked ? formData.fright_gst : "0",
+        packing_charge: packingChargeChecked ? formData?.packing_charge : "0",
+        packing_gst: packingChargeChecked ? formData?.packing_gst : "0",
+        fright_charge: frightChargeChecked ? formData?.fright_charge : "0",
+        fright_gst: frightChargeChecked ? formData?.fright_gst : "0",
       };
 
       console.log("PO Create Payload:", payload);
       PoCreate(payload);
+
+      navigate(`/po-material/po-detail/${poDetails?.id}`);
     } catch (error) {
       console.log("Po Create Error:", error);
     }
@@ -1084,7 +1096,7 @@ export default function PO_Create() {
     <>
       <div className="flex-grow-1 container-p-y container-fluid">
         <div className="row invoice-preview">
-          <div className="card invoice-preview-card p-sm-12 p-6">
+          <div className="card invoice-preview-card">
             <div className="card-body invoice-preview-header rounded">
               <div className="d-flex flex-wrap flex-column flex-sm-row justify-content-between text-heading">
                 <div className="mb-md-0 mb-6">
@@ -1124,9 +1136,10 @@ export default function PO_Create() {
                       <input
                         type="date"
                         className="form-control invoice-date"
-                        value={formData.po_date}
+                        // value={formData?.po_date}
+                        value={new Date()?.toISOString()?.split("T")[0]}
                         onChange={(e) =>
-                          handleInputChange("po_date", e.target.value)
+                          handleInputChange("po_date", e?.target?.value)
                         }
                       />
                     </dd>
@@ -1179,9 +1192,12 @@ export default function PO_Create() {
                     &nbsp;
                     <select
                       className="form-select mt-2 w-25 form-select-sm"
-                      value={formData.is_payment_advance}
+                      value={formData?.is_payment_advance_or_partial}
                       onChange={(e) =>
-                        handleInputChange("is_payment_advance", e.target.value)
+                        handleInputChange(
+                          "is_payment_advance_or_partial",
+                          e.target.value
+                        )
                       }
                     >
                       <option value="">Select</option>
@@ -1207,9 +1223,10 @@ export default function PO_Create() {
                         <th>UOM</th>
                         <th>
                           <span>Unit&nbsp;Price</span>
+
                           <select
-                            className="form-select"
-                            value={formData.default_rupees}
+                            class="form-select-sm w-auto"
+                            value={formData?.default_rupees}
                             onChange={(e) =>
                               handleInputChange(
                                 "default_rupees",
@@ -1217,9 +1234,9 @@ export default function PO_Create() {
                               )
                             }
                           >
-                            <option value="">Select Currency</option>
-                            <option value="INR">INR (₹)</option>
-                            <option value="USD">USD ($)</option>
+                            <option value="">Select</option>
+                            <option value="INR">INR(₹)</option>
+                            <option value="USD">Dollar($)</option>
                           </select>
                         </th>
                         <th>Disc(%)</th>
@@ -1232,19 +1249,20 @@ export default function PO_Create() {
                     <tbody>
                       {formData?.items?.map((item, index) => (
                         <tr key={index}>
+                          {console.log("item", item)}
                           <td>{index + 1}</td>
-                          <td>{item.item_name}</td>
-                          <td>{item.item_name}</td>
-                          <td>{item.description}</td>
-                          <td>{item.qty}</td>
-                          <td>{item.uom}</td>
-                          <td>{item.unit_price}</td>
+                          <td>{item?.item_name}</td>
+                          <td>{item?.item_name}</td>
+                          <td>{item?.description}</td>
+                          <td>{item?.qty}</td>
+                          <td>{item?.uom}</td>
+                          <td>{item?.unit_price}</td>
                           <td>
                             <input
                               type="number"
                               className="form-control form-control-sm"
                               style={{ width: 61 }}
-                              value={item.disc_pr}
+                              value={item?.disc_pr}
                               onChange={(e) =>
                                 handleItemChange(
                                   index,
@@ -1259,7 +1277,7 @@ export default function PO_Create() {
                               type="number"
                               className="form-control form-control-sm"
                               style={{ width: 120 }}
-                              value={item.disc_number}
+                              value={item?.disc_number}
                               readOnly
                             />
                           </td>
@@ -1268,7 +1286,7 @@ export default function PO_Create() {
                               type="number"
                               className="form-control form-control-sm"
                               style={{ width: 61 }}
-                              value={item.gst_pr}
+                              value={item?.gst_pr}
                               onChange={(e) =>
                                 handleItemChange(
                                   index,
@@ -1283,17 +1301,17 @@ export default function PO_Create() {
                               type="number"
                               className="form-control form-control-sm"
                               style={{ width: 120 }}
-                              value={item.gst_amount}
+                              value={item?.gst_amount}
                               readOnly
                             />
                           </td>
-                          <td>{item.taxable_value}</td>
+                          <td>{item?.taxable_value}</td>
                           {/* <td>
                             <input
                               type="number"
                               className="form-control form-control-sm"
                               style={{ width: 120 }}
-                              value={item.taxable_value}
+                              value={item?.taxable_value}
                               readOnly
                               className="form-control-plaintext"
                             />
@@ -1314,7 +1332,7 @@ export default function PO_Create() {
                             type="number"
                             className="form-control form-control-sm"
                             style={{ width: 120 }}
-                            value={formData.total_discount}
+                            value={formData?.total_discount}
                             // onChange={(e) =>
                             //   handleInputChange(
                             //     "total_discount",
@@ -1351,7 +1369,7 @@ export default function PO_Create() {
                             type="number"
                             className="form-control form-control-sm"
                             style={{ width: 120 }}
-                            value={formData.packing_charge}
+                            value={formData?.packing_charge}
                             onChange={(e) =>
                               handleInputChange(
                                 "packing_charge",
@@ -1378,7 +1396,7 @@ export default function PO_Create() {
                             type="number"
                             className="form-control form-control-sm"
                             style={{ width: 120 }}
-                            value={formData.packing_gst}
+                            value={formData?.packing_gst}
                             onChange={(e) =>
                               handleInputChange("packing_gst", e.target.value)
                             }
@@ -1412,7 +1430,7 @@ export default function PO_Create() {
                             type="number"
                             className="form-control form-control-sm"
                             style={{ width: 120 }}
-                            value={formData.fright_charge}
+                            value={formData?.fright_charge}
                             onChange={(e) =>
                               handleInputChange("fright_charge", e.target.value)
                             }
@@ -1434,7 +1452,7 @@ export default function PO_Create() {
                             type="number"
                             className="form-control form-control-sm"
                             style={{ width: 120 }}
-                            value={formData.fright_gst}
+                            value={formData?.fright_gst}
                             onChange={(e) =>
                               handleInputChange("fright_gst", e.target.value)
                             }
@@ -1464,7 +1482,7 @@ export default function PO_Create() {
                         </td>
                       </tr>
 
-                      {charges.map((charge, index) => (
+                      {charges?.map((charge, index) => (
                         <tr key={index}>
                           <td colSpan={9} className="border-transparent"></td>
                           <td colSpan={2}>
@@ -1486,7 +1504,7 @@ export default function PO_Create() {
                                 type="text"
                                 className="form-control form-control-sm"
                                 placeholder="Enter Charge Name"
-                                value={charge.name}
+                                value={charge?.name}
                                 onChange={(e) =>
                                   handleChargeChange(
                                     index,
@@ -1502,7 +1520,7 @@ export default function PO_Create() {
                               type="number"
                               className="form-control form-control-sm"
                               style={{ width: 120 }}
-                              value={charge.amount}
+                              value={charge?.amount}
                               onChange={(e) =>
                                 handleChargeChange(
                                   index,
@@ -1525,7 +1543,9 @@ export default function PO_Create() {
                         </td>
                         <td>
                           <div className="d-flex ">
-                            <span className="mt-1">₹ {formData.sub_total}</span>
+                            <span className="mt-1">
+                              ₹ {formData?.sub_total}
+                            </span>
                           </div>
                         </td>
                       </tr>
@@ -1538,7 +1558,9 @@ export default function PO_Create() {
                         </td>
                         <td>
                           <div className="d-flex ">
-                            <span className="mt-1">₹ {formData.gst_value}</span>
+                            <span className="mt-1">
+                              ₹ {formData?.gst_value}
+                            </span>
                           </div>
                         </td>
                       </tr>
@@ -1552,7 +1574,7 @@ export default function PO_Create() {
                         <td>
                           <div className="d-flex">
                             <span className="mt-1">
-                              ₹ {formData.final_total}
+                              ₹ {formData?.final_total}
                             </span>
                           </div>
                         </td>
@@ -1572,13 +1594,13 @@ export default function PO_Create() {
               {/* Payment Milestones */}
               <label className="form-label">Payment</label>
               <div className="row mb-2">
-                {milestones.map((milestone, index) => (
+                {milestones?.map((milestone, index) => (
                   <div className="col-4 mt-3" key={index}>
                     <div className="d-flex">
                       <select
                         className="form-select form-control form-select-sm"
                         style={{ width: 100 }}
-                        value={milestone.percentage}
+                        value={milestone?.percentage}
                         onChange={(e) =>
                           handleMilestoneChange(
                             index,
@@ -1604,7 +1626,7 @@ export default function PO_Create() {
                         className="form-control form-control-sm"
                         aria-label="Text input with segmented dropdown button"
                         placeholder="Description"
-                        value={milestone.payment_number}
+                        value={milestone?.payment_number}
                         onChange={
                           (e) =>
                             handleMilestoneChange(
@@ -1622,7 +1644,7 @@ export default function PO_Create() {
                           className="btn btn-sm me-2 text-danger fs-5"
                           onClick={() => {
                             const updatedMilestones = [...milestones];
-                            updatedMilestones.splice(index, 1);
+                            updatedMilestones?.splice(index, 1);
                             setMilestones(updatedMilestones);
                           }}
                         >
@@ -1655,7 +1677,7 @@ export default function PO_Create() {
                     <select
                       className="form-select form-control form-select-sm"
                       style={{ width: 100 }}
-                      value={formData.taxes_pr}
+                      value={formData?.taxes_pr}
                       onChange={(e) =>
                         handleInputChange("taxes_pr", e.target.value)
                       }
@@ -1671,7 +1693,7 @@ export default function PO_Create() {
                       className="form-control form-control-sm"
                       aria-label="Text input with segmented dropdown button"
                       placeholder="Tax Number"
-                      value={formData.taxes_number}
+                      value={formData?.taxes_number}
                       onChange={(e) =>
                         handleInputChange("taxes_number", e.target.value)
                       }
@@ -1689,7 +1711,7 @@ export default function PO_Create() {
                     className="form-control form-control-sm"
                     aria-label="Text input with segmented dropdown button"
                     placeholder="Enter Guarantee and Warranty"
-                    value={formData.guarantee_and_warranty}
+                    value={formData?.guarantee_and_warranty}
                     onChange={(e) =>
                       handleInputChange(
                         "guarantee_and_warranty",
@@ -1708,7 +1730,7 @@ export default function PO_Create() {
                   </label>
                   <select
                     className="form-select mb-4 form-select-sm"
-                    value={formData.loading_and_freight_charges}
+                    value={formData?.loading_and_freight_charges}
                     onChange={(e) =>
                       handleInputChange(
                         "loading_and_freight_charges",
@@ -1725,7 +1747,7 @@ export default function PO_Create() {
                   <label className="form-label">Installation at Site:</label>
                   <select
                     className="form-select mb-4 form-select-sm"
-                    value={formData.installation_at_site}
+                    value={formData?.installation_at_site}
                     onChange={(e) =>
                       handleInputChange("installation_at_site", e.target.value)
                     }
@@ -1742,7 +1764,7 @@ export default function PO_Create() {
                     className="form-control form-control-sm"
                     aria-label="Text input with segmented dropdown button"
                     placeholder="Delivery terms"
-                    value={formData.delivery}
+                    value={formData?.delivery}
                     onChange={(e) =>
                       handleInputChange("delivery", e.target.value)
                     }
@@ -1762,7 +1784,7 @@ export default function PO_Create() {
                   className="form-control form-control-sm"
                   aria-label="Text input with segmented dropdown button"
                   placeholder="Enter introduction"
-                  value={formData.introduction}
+                  value={formData?.introduction}
                   onChange={(e) =>
                     handleInputChange("introduction", e.target.value)
                   }

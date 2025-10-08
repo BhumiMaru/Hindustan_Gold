@@ -426,13 +426,13 @@ export const UserCreationProvider = ({ children }) => {
       const res = await getData(
         `${ENDPOINTS.USER_CREATION.PERMISSION_LIST}?user_id=${user_id}`
       );
-      console.log("res", res?.data);
+      // console.log("res", res?.data);
       const data = res?.data || [];
       // ✅ filter data by correct user id only
       const filtered = data.filter(
         (p) => String(p.user_id) === String(user_id)
       );
-      console.log("✅ Filtered permission data:", filtered);
+      // console.log("✅ Filtered permission data:", filtered);
       setUserPermission(filtered);
     } catch (error) {
       console.error("❌ Error fetching permissions:", error);

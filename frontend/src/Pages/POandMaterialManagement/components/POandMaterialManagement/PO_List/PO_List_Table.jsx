@@ -93,33 +93,43 @@ export default function PO_List_Table() {
                 </td>
                 <td>{po.po_number}</td>
                 <td>{po.po_date}</td>
-                <td>PI_000001</td>
+                <td>{po.pi_request_id}</td>
                 <td>{po.po_type}</td>
                 <td>{po.total_item}</td>
                 <td>
                   <div className="d-flex justify-content-start align-items-center user-name">
                     <div className="avatar-wrapper">
-                      <div className="avatar me-2">
+                      {/* <div className="avatar me-2">
                         <img
                           src="assets/img/avatars/10.png"
                           alt="Avatar"
                           className="rounded-circle"
                         />
-                      </div>
+                      </div> */}
                     </div>
                     <div className="d-flex flex-column">
                       <span className="emp_name text-truncate text-heading fw-medium">
-                        Evangelina Carnock
+                        {po?.venderdetail?.vendor_name}
                       </span>
-                      <small className="emp_post text-truncate">
+                      {/* <small className="emp_post text-truncate">
                         Cost Accountant
-                      </small>
+                      </small> */}
                     </div>
                   </div>
                 </td>
                 <td>₹{po.final_total}/-</td>
                 <td>
-                  <span className="badge bg-label-warning">{po.status}</span>
+                  <span
+                    className={`badge  ${
+                      po.status === "Approve"
+                        ? "bg-label-success"
+                        : po.status === "Reject"
+                        ? "bg-label-danger"
+                        : "bg-label-warning"
+                    }`}
+                  >
+                    {po.status}
+                  </span>
                 </td>
 
                 <td>
@@ -160,17 +170,20 @@ export default function PO_List_Table() {
                     )}
                     {console.log("po", po)}
                     <div className="d-inline-flex gap-2">
-                      <Link
-                        to={`/po-material/po-detail-download/${po.id}`}
-                        type="button"
-                        className="btn btn-text-success rounded-pill btn-icon waves-effect"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        aria-label="Download PO"
-                        data-bs-original-title="Download PO"
-                      >
-                        <i className="icon-base ti tabler-file-invoice text-success  icon-20px" />
-                      </Link>
+                      {po.po_generat_status === 1 && (
+                        <Link
+                          to={`/po-material/po-detail-download/${po.id}`}
+                          type="button"
+                          className="btn btn-text-success rounded-pill btn-icon waves-effect"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"
+                          aria-label="Download PO"
+                          data-bs-original-title="Download PO"
+                        >
+                          <i className="icon-base ti tabler-file-invoice text-success  icon-20px" />
+                        </Link>
+                      )}
+
                       <div className="d-inline-block">
                         <a
                           className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"

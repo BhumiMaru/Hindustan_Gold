@@ -774,16 +774,27 @@ export const ItemRequestProvider = ({ children }) => {
   };
 
   //   // Fetch item request Filter
-  const fetchItemFilter = async () => {
+  const fetchItemFilter = async (sub_c_id = null) => {
     try {
-      const res = await postData(ENDPOINTS.ITEM_REQUEST.FILTER);
-      // console.log("res", res);
-      setFilterItem(res.data);
+      const payload = sub_c_id ? { sub_c_id } : {}; // only send if provided
+      const res = await postData(ENDPOINTS.ITEM_REQUEST.FILTER, payload);
+      setFilterItem(res.data || []);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("Failed to fetch Item Request Filter");
     }
   };
+
+  // const fetchItemFilter = async (sub_c_id) => {
+  //   try {
+  //     const res = await postData(ENDPOINTS.ITEM_REQUEST.FILTER, sub_c_id);
+  //     // console.log("res", res);
+  //     setFilterItem(res.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error("Failed to fetch Item Request Filter");
+  //   }
+  // };
 
   return (
     <ItemRequestContext.Provider
