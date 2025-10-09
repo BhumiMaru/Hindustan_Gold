@@ -730,7 +730,6 @@ export default function User_Creation_Permission() {
               </div>
 
               {/* PO and Material Management Module */}
-              {/* PO and Material Management Module */}
               <h5 className="card-title mb-4">
                 PO &amp; Material Management Module
               </h5>
@@ -746,12 +745,14 @@ export default function User_Creation_Permission() {
                         <th className="text-nowrap text-center w-px-50">
                           Add/Generate
                         </th>
-                        <th className="text-nowrap text-center w-px-50">
+                        {/* <th className="text-nowrap text-center w-px-50">
                           Edit
-                        </th>
-                        <th className="text-nowrap text-center w-px-50">
+                        </th> */}
+                        {/* <th></th>
+                        <th></th> */}
+                        {/* <th className="text-nowrap text-center w-px-50">
                           Delete
-                        </th>
+                        </th> */}
                         <th className="text-nowrap text-center w-px-50">
                           Approve
                         </th>
@@ -776,15 +777,15 @@ export default function User_Creation_Permission() {
                             id="defaultCheck_cust_50"
                           />
                         </td>
-                        <td></td>
-                        <td>
+                        {/* <td></td> */}
+                        {/* <td>
                           <PermissionCheckbox
                             module="PO and Material Management Module"
                             type="PI Request"
                             permission="delete"
                             id="defaultCheck_cust_9"
                           />
-                        </td>
+                        </td> */}
                         <td>
                           <PermissionCheckbox
                             module="PO and Material Management Module"
@@ -814,22 +815,22 @@ export default function User_Creation_Permission() {
                             id="defaultCheck_cust_12"
                           />
                         </td>
-                        <td>
+                        {/* <td>
                           <PermissionCheckbox
                             module="PO and Material Management Module"
                             type="Get Quotation"
                             permission="edit"
                             id="defaultCheck_cust_13"
                           />
-                        </td>
-                        <td>
+                        </td> */}
+                        {/* <td>
                           <PermissionCheckbox
                             module="PO and Material Management Module"
                             type="Get Quotation"
                             permission="delete"
                             id="defaultCheck_cust_14"
                           />
-                        </td>
+                        </td> */}
                         <td></td>
                       </tr>
                       <tr>
@@ -852,8 +853,8 @@ export default function User_Creation_Permission() {
                             id="defaultCheck_cust_16"
                           />
                         </td>
-                        <td></td>
-                        <td></td>
+                        {/* <td></td>
+                        <td></td> */}
                         <td>
                           <PermissionCheckbox
                             module="PO and Material Management Module"
@@ -881,15 +882,15 @@ export default function User_Creation_Permission() {
                             id="defaultCheck_cust_19"
                           />
                         </td>
-                        <td></td>
-                        <td>
+                        {/* <td></td> */}
+                        {/* <td>
                           <PermissionCheckbox
                             module="PO and Material Management Module"
                             type="GRN"
                             permission="delete"
                             id="defaultCheck_cust_20"
                           />
-                        </td>
+                        </td> */}
                         <td>
                           <PermissionCheckbox
                             module="PO and Material Management Module"
@@ -912,22 +913,22 @@ export default function User_Creation_Permission() {
                             id="defaultCheck_cust_22"
                           />
                         </td>
-                        <td>
+                        {/* <td>
                           <PermissionCheckbox
                             module="PO and Material Management Module"
                             type="Invoice Entry"
                             permission="edit"
                             id="defaultCheck_cust_23"
                           />
-                        </td>
-                        <td>
+                        </td> */}
+                        {/* <td>
                           <PermissionCheckbox
                             module="PO and Material Management Module"
                             type="Invoice Entry"
                             permission="delete"
                             id="defaultCheck_cust_24"
                           />
-                        </td>
+                        </td> */}
                         <td></td>
                       </tr>
                     </tbody>

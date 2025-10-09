@@ -10,7 +10,12 @@ export const usePIRequest = () => useContext(PIRequestContext);
 export const PIRequestProvider = ({ children }) => {
   const { itemMaster } = useItemMaster();
 
-  const [activeTab, setActiveTab] = useState("my_request");
+  // const [activeTab, setActiveTab] = useState("my_request");
+  const [activeTab, setActiveTab] = useState(() => {
+    // ✅ Initialize from sessionStorage if exists
+    return sessionStorage.getItem("activeTab") || "my_request";
+  });
+
   const [piRequest, setPiRequest] = useState([]);
   const [items, setItems] = useState([
     {
@@ -54,19 +59,54 @@ export const PIRequestProvider = ({ children }) => {
   const [selectedItemsMap, setSelectedItemsMap] = useState({});
 
   // Toggle single item
+  // const handleSelectItem = (piId, itemId) => {
+  //   setSelectedItemsMap((prev) => {
+  //     const rowSelections = prev[piId] || [];
+  //     return {
+  //       ...prev,
+  //       [piId]: rowSelections.includes(itemId)
+  //         ? rowSelections.filter((id) => id !== itemId) // uncheck
+  //         : [...rowSelections, itemId], // check
+  //     };
+  //   });
+  // };
+
+  // // Toggle all items of a PI
+  // const handleSelectAll = (piId, piItems) => {
+  //   const itemIds = piItems.map((item) => item.id);
+
+  //   setSelectedItemsMap((prev) => {
+  //     const rowSelections = prev[piId] || [];
+  //     const isAllSelected = itemIds.every((id) => rowSelections.includes(id));
+
+  //     return {
+  //       ...prev,
+  //       [piId]: isAllSelected
+  //         ? rowSelections.filter((id) => !itemIds.includes(id)) // Uncheck all
+  //         : [...new Set([...rowSelections, ...itemIds])], // Check all
+  //     };
+  //   });
+  // };
+
+  // ✅ Toggle single item
   const handleSelectItem = (piId, itemId) => {
     setSelectedItemsMap((prev) => {
       const rowSelections = prev[piId] || [];
-      return {
-        ...prev,
-        [piId]: rowSelections.includes(itemId)
-          ? rowSelections.filter((id) => id !== itemId) // uncheck
-          : [...rowSelections, itemId], // check
-      };
+      const updated = rowSelections.includes(itemId)
+        ? rowSelections.filter((id) => id !== itemId)
+        : [...rowSelections, itemId];
+
+      const newMap = { ...prev, [piId]: updated };
+
+      // flatten all selected items into a single array for global use
+      const allSelected = Object.values(newMap).flat();
+      setSelectedItems(allSelected);
+
+      return newMap;
     });
   };
 
-  // Toggle all items of a PI
+  // ✅ Toggle all items of a PI
   const handleSelectAll = (piId, piItems) => {
     const itemIds = piItems.map((item) => item.id);
 
@@ -74,12 +114,17 @@ export const PIRequestProvider = ({ children }) => {
       const rowSelections = prev[piId] || [];
       const isAllSelected = itemIds.every((id) => rowSelections.includes(id));
 
-      return {
-        ...prev,
-        [piId]: isAllSelected
-          ? rowSelections.filter((id) => !itemIds.includes(id)) // Uncheck all
-          : [...new Set([...rowSelections, ...itemIds])], // Check all
-      };
+      const updated = isAllSelected
+        ? rowSelections.filter((id) => !itemIds.includes(id))
+        : [...new Set([...rowSelections, ...itemIds])];
+
+      const newMap = { ...prev, [piId]: updated };
+
+      // flatten all selected items into a single array
+      const allSelected = Object.values(newMap).flat();
+      setSelectedItems(allSelected);
+
+      return newMap;
     });
   };
 

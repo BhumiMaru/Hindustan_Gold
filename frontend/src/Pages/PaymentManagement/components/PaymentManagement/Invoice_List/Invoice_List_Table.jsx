@@ -1,9 +1,20 @@
 import React from "react";
 import { useInvoice } from "../../../../../Context/PIAndPoManagement/Invoice";
 import { Link } from "react-router-dom";
+import { useUIContext } from "../../../../../Context/UIContext";
 
 export default function Invoice_List_Table() {
-  const { invoice, pagination } = useInvoice();
+  const { handleOpen } = useUIContext();
+  const {
+    invoice,
+    pagination,
+    setType,
+    type,
+    invoiceId,
+    setInvoiceId,
+    startEditing,
+  } = useInvoice();
+  console.log("type", type);
   console.log("invoice", invoice);
   return (
     <>
@@ -65,7 +76,19 @@ export default function Invoice_List_Table() {
                 <td>{invoice?.taxable_amount}/-</td>
                 <td>{invoice?.paid_amount}/-</td>
                 <td>
-                  <span className="badge bg-label-info">{invoice?.status}</span>
+                  <span
+                    className={`badge ${
+                      invoice?.status === "Pending"
+                        ? "bg-label-warning"
+                        : invoice.status === "Approve"
+                        ? "bg-label-success"
+                        : invoice.status === "Paid"
+                        ? "bg-label-info"
+                        : "bg-label-danger"
+                    } `}
+                  >
+                    {invoice?.status}
+                  </span>
                 </td>
                 <td>
                   <div className="d-inline-flex gap-2">
@@ -89,7 +112,6 @@ export default function Invoice_List_Table() {
                           style={{}}
                         >
                           <a
-                            href="javascript:;"
                             className="dropdown-item waves-effect"
                             data-bs-toggle="modal"
                             data-bs-target="#grnCreateModel"
@@ -97,18 +119,23 @@ export default function Invoice_List_Table() {
                             Download Invoice
                           </a>
                           <a
-                            href="javascript:;"
                             className="dropdown-item waves-effect"
                             data-bs-toggle="modal"
                             data-bs-target="#grnCreateModel"
+                            onClick={() => {
+                              console.log("invoice?.id", invoice?.id);
+                              startEditing({
+                                id: invoice?.id,
+                                payload: invoice,
+                              });
+                              setType(0); // editing mode
+                              setTimeout(() => handleOpen("addInvoice"), 100);
+                            }}
                           >
                             Edit
                           </a>
                           <div className="dropdown-divider" />
-                          <a
-                            href="javascript:;"
-                            className="dropdown-item text-danger delete-record waves-effect"
-                          >
+                          <a className="dropdown-item text-danger delete-record waves-effect">
                             Delete
                           </a>
                         </div>

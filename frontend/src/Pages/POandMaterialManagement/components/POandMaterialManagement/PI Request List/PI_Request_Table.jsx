@@ -34,6 +34,10 @@ export default function PI_Request_Table({ userPermission }) {
     setExpandedRows((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  useEffect(() => {
+    sessionStorage.setItem("activeTab", activeTab);
+  }, [activeTab]);
+
   // Clear selection when tab changes or component unmounts
   useEffect(() => {
     return () => {
@@ -52,8 +56,10 @@ export default function PI_Request_Table({ userPermission }) {
     );
   }, [piRequest, expandedRows]);
 
-  // console.log("userrrrrrrrrrrrrrrrrrr", userPermission);
+  console.log("aa", activeTab);
 
+  console.log("userrrrrrrrrrrrrrrrrrr", userPermission);
+  //
   return (
     <>
       {/* ----------------START PI REQUEST TABLE------------------ */}
@@ -70,7 +76,9 @@ export default function PI_Request_Table({ userPermission }) {
             <th>Get Quote</th>
             <th>PO</th>
             <th>Status</th>
-            <th style={{ width: "180px" }}>Action</th>
+            {activeTab === "my_request" && (
+              <th style={{ width: "180px" }}>Action</th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -115,7 +123,74 @@ export default function PI_Request_Table({ userPermission }) {
                     {pi.final_approve_status}
                   </span>
                 </td>
-                <td>
+                {activeTab === "my_request" &&
+                  pi.final_approve_status === "Pending" && (
+                    <td>
+                      <div className="d-inline-flex gap-2">
+                        <a
+                          className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
+                        </a>
+
+                        <div className="d-inline-block">
+                          <div className="dropdown-menu dropdown-menu-end m-0">
+                            <button
+                              className={`dropdown-item waves-effect ${
+                                userPermission.some(
+                                  (prem) =>
+                                    prem.type === "PI Request" &&
+                                    prem.permission === "add_generate"
+                                )
+                                  ? "d-block"
+                                  : "d-none"
+                              }`}
+                              onClick={() => {
+                                navigate(
+                                  `/po-material/pi-request-create/${pi.pi_type}/${pi.id}`
+                                );
+                                StartEditing(pi.id);
+                              }}
+                            >
+                              Edit
+                            </button>
+                            {/* <a
+                          href="#"
+                          className="dropdown-item waves-effect"
+                          data-bs-toggle="modal"
+                          data-bs-target="#grnCreateModel"
+                          onClick={() => {
+                            handleOpen("viewSubCategory");
+                            setSubCategoryData(subCat);
+                          }}
+                        >
+                          View
+                        </a> */}
+                            {/* <div className="dropdown-divider"></div> */}
+                            <a
+                              // className={`dropdown-item text-danger delete-record waves-effect ${
+                              //   userPermission.some(
+                              //     (prem) =>
+                              //       prem.type === "PI Request" &&
+                              //       prem.permission === "delete"
+                              //   )
+                              //     ? "d-block"
+                              //     : "d-none"
+                              // }`}
+                              className="dropdown-item text-danger delete-record waves-effect"
+                              onClick={() => DeletePiRequest(pi.id)}
+                            >
+                              Delete
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  )}
+
+                {/* <td>
                   <div className="d-inline-flex gap-2">
                     <button
                       type="button"
@@ -141,7 +216,7 @@ export default function PI_Request_Table({ userPermission }) {
                       <i className="icon-base ti tabler-trash text-danger icon-22px" />
                     </button>
                   </div>
-                </td>
+                </td> */}
               </tr>
 
               {expandedRows[pi.id] && pi?.piitems.length > 0 && (
@@ -159,8 +234,17 @@ export default function PI_Request_Table({ userPermission }) {
                           <th>
                             <div className="ms-4">
                               <input
-                                className="form-check-input"
-                                type="checkbox"
+                                className={`form-check-input ${
+                                  activeTab === "approval_request"
+                                    ? "d-block"
+                                    : "d-none"
+                                } ${
+                                  pi.piitems.every(
+                                    (item) => item.status === "Approve"
+                                  )
+                                    ? "d-none"
+                                    : "d-block"
+                                }`}
                                 checked={
                                   pi.piitems.length > 0 &&
                                   pi.piitems.every((item) =>
@@ -193,6 +277,7 @@ export default function PI_Request_Table({ userPermission }) {
                       <tbody>
                         {pi?.piitems?.map((piItem) => (
                           <tr key={`piItem-${pi.id}-${piItem.id}`}>
+                            {console.log("piitem", piItem)}
                             {/* {activeTab === "approval_request" ||
                               (activeTab === "all_request" && ( */}
                             <td className="dt-select">
@@ -200,13 +285,11 @@ export default function PI_Request_Table({ userPermission }) {
                                 <input
                                   aria-label="Select row"
                                   className={`form-check-input ${
-                                    activeTab === "approval_request" &&
-                                    piItem.status === "Approve" &&
-                                    "d-none"
-                                  } ${
                                     activeTab === "all_request" &&
-                                    piItem.status === "Approve" &&
-                                    "d-none"
+                                    (piItem.status === "Approve" ||
+                                      piItem.status === "Reject")
+                                      ? "d-block"
+                                      : "d-none"
                                   }`}
                                   type="checkbox"
                                   checked={(
@@ -338,19 +421,18 @@ export default function PI_Request_Table({ userPermission }) {
                         ))}
                       </tbody>
                     </table>
+                    {console.log("ppp", pi)}
                     {selectedItems.length > 0 && selectedItems && (
                       <div className="text-center w-100">
                         {activeTab === "all_request" &&
-                          selectedItems.length > 0 &&
                           userPermission.some(
                             (prem) =>
                               prem.type === "Get Quotation" &&
-                              (prem.permission === "Add" ||
-                                prem.permission === "View")
+                              prem.permission === "add"
                           ) && (
-                            <>
+                            <div className="text-center w-100">
                               <Link
-                                className="btn btn-primary btn-sm mt-2 mb-2 waves-effect waves-light text-decoration-none"
+                                className="btn btn-primary btn-sm mt-2 waves-effect waves-light text-decoration-none"
                                 onClick={async () => {
                                   const res = await getQuoteCreate({
                                     pi_request_id: pi.id,
@@ -366,15 +448,15 @@ export default function PI_Request_Table({ userPermission }) {
                               >
                                 Get Quotation
                               </Link>
-                            </>
+                            </div>
                           )}
-
+                        {console.log("pi", userPermission)}
                         <div className="d-inline-flex gap-2 ms-1">
                           {activeTab === "approval_request" &&
                             selectedItems.length > 0 && (
                               <>
                                 <button
-                                  className="btn btn-success btn-sm mt-2 mb-2 waves-effect waves-light"
+                                  className={`btn btn-success btn-sm mt-2 mb-2 waves-effect waves-light`}
                                   data-bs-toggle="modal"
                                   data-bs-target="#servicesModal"
                                   onClick={() => {
@@ -441,7 +523,7 @@ export default function PI_Request_Table({ userPermission }) {
                                 >
                                   Bulk Item Reject
                                 </button>
-                                <button
+                                {/* <button
                                   className="btn btn-primary btn-sm waves-effect waves-light mt-2 mb-2"
                                   tabIndex={0}
                                   aria-controls="DataTables_Table_0"
@@ -453,12 +535,13 @@ export default function PI_Request_Table({ userPermission }) {
                                       Upload Invoice
                                     </span>
                                   </span>
-                                </button>
+                                </button> */}
                               </>
                             )}
 
+                          {console.log("activeTab", activeTab)}
                           {activeTab === "my_request" &&
-                            selectedItems.length > 0 && (
+                            pi?.pi_type === "service" && (
                               <div className="">
                                 <button
                                   className="btn btn-info btn-sm waves-effect waves-light mt-2 mb-2"

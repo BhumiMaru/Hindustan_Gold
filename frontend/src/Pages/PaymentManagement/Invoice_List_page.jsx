@@ -1,4 +1,5 @@
 import React from "react";
+import "../../../public/assets/vendor/css/core.css";
 import Invoice_List_List from "./components/PaymentManagement/Invoice_List/Invoice_List_List";
 import { InvoiceProvider } from "../../Context/PIAndPoManagement/Invoice";
 import { VendorProvider } from "../../Context/PaymentManagement/Vendor";

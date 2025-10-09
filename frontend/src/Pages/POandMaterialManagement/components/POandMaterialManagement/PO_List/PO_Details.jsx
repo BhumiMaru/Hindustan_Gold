@@ -10,6 +10,11 @@ import UpdateGRN from "../GRN_List/UpdateGRN";
 import { GRNProvider } from "../../../../../Context/PIAndPoManagement/GRN";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { VendorProvider } from "../../../../../Context/PaymentManagement/Vendor";
+import { SubCategoryProvider } from "../../../../../Context/ItemManagement/SubCategoryContext";
+import { ItemRequestProvider } from "../../../../../Context/Request Management/Item_Request";
+import Invoice_List_Form from "../../../../PaymentManagement/components/PaymentManagement/Invoice_List/Invoice_List_Form";
+import { useInvoice } from "../../../../../Context/PIAndPoManagement/Invoice";
 
 export default function PO_Details() {
   const { id } = useParams();
@@ -17,6 +22,7 @@ export default function PO_Details() {
   const { poDetails, setPoDetails, getPoDetails, PoApprove, PoId, setPoId } =
     usePOCreate();
   const printRef = useRef();
+  const { setType } = useInvoice();
 
   useEffect(() => {
     getPoDetails(id);
@@ -104,6 +110,20 @@ export default function PO_Details() {
                   Generate PO
                 </Link>
               </>
+            )}
+
+            {poDetails.po_type === "service" && (
+              <button
+                className="btn btn-primary waves-effect waves-light"
+                data-bs-toggle="modal"
+                data-bs-target="#InvoiceModel"
+                onClick={() => {
+                  handleOpen("addInvoice");
+                  setType(2);
+                }}
+              >
+                Add Invoice
+              </button>
             )}
 
             {poDetails.po_generat_status === 1 && (
@@ -729,6 +749,15 @@ export default function PO_Details() {
             </GRNProvider>
           </POProvider>
         </>
+      )}
+      {modal.addInvoice && (
+        <VendorProvider>
+          <SubCategoryProvider>
+            <ItemRequestProvider>
+              <Invoice_List_Form type={0} />
+            </ItemRequestProvider>
+          </SubCategoryProvider>
+        </VendorProvider>
       )}
       {/* ------------------------END PO DETAILS--------------------------- */}
     </>

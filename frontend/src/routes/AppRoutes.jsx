@@ -325,7 +325,9 @@ export default function AppRoutes() {
           path="/po-material/po-detail/:id"
           element={
             <POProvider>
-              <PO_Details />
+              <InvoiceProvider>
+                <PO_Details />
+              </InvoiceProvider>
             </POProvider>
           }
         />

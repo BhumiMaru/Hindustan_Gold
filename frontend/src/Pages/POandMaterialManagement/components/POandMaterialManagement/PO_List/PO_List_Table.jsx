@@ -209,11 +209,11 @@ export default function PO_List_Table() {
                           >
                             View
                           </Link>
-                          <a className="dropdown-item waves-effect">Edit</a>
-                          <div className="dropdown-divider" />
+                          {/* <a className="dropdown-item waves-effect">Edit</a> */}
+                          {/* <div className="dropdown-divider" />
                           <a className="dropdown-item text-danger delete-record waves-effect">
                             Delete
-                          </a>
+                          </a> */}
                         </div>
                       </div>
                     </div>

@@ -150,7 +150,7 @@ export default function Invoice_List_List() {
             <div className="col-lg-3">
               <div className="position-relative">
                 <CustomSelect
-                  id="selectVendorName"
+                  id="Vendor_Name"
                   options={[
                     { value: "all", label: "All Vendors" }, // ✅ All option first
                     ...(vendorFilter?.map((item) => ({
@@ -246,15 +246,13 @@ export default function Invoice_List_List() {
         </div>
       </div>
       {modal.addInvoice && (
-        <InvoiceProvider>
-          <VendorProvider>
-            <SubCategoryProvider>
-              <ItemRequestProvider>
-                <Invoice_List_Form type={0} />
-              </ItemRequestProvider>
-            </SubCategoryProvider>
-          </VendorProvider>
-        </InvoiceProvider>
+        <VendorProvider>
+          <SubCategoryProvider>
+            <ItemRequestProvider>
+              <Invoice_List_Form type={0} />
+            </ItemRequestProvider>
+          </SubCategoryProvider>
+        </VendorProvider>
       )}
       {/* ------------END INVOICE LIST----------- */}
     </>

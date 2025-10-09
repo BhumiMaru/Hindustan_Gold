@@ -24,7 +24,7 @@ export default function Group_Master_Table() {
         <tbody>
           {groups.map((group, index) => {
             return (
-              <tr key={group.id}>
+              <tr key={group?.id}>
                 <td>
                   <div className="ms-2">
                     {" "}
@@ -32,8 +32,8 @@ export default function Group_Master_Table() {
                       (index + 1)}
                   </div>
                 </td>
-                <td>{group.group_name}</td>
-                <td>
+                <td>{group?.group_name}</td>
+                {/* <td>
                   <div className="d-inline-flex gap-2">
                     <button
                       type="button"
@@ -56,6 +56,49 @@ export default function Group_Master_Table() {
                     >
                       <i className="icon-base ti tabler-trash text-danger icon-22px"></i>
                     </button>
+                  </div>
+                </td> */}
+                <td>
+                  <div className="d-inline-flex gap-2">
+                    <a
+                      className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
+                    </a>
+                    <div className="d-inline-block">
+                      <div className="dropdown-menu dropdown-menu-end m-0">
+                        <button
+                          className="dropdown-item waves-effect"
+                          onClick={() => {
+                            handleOpen("addNewGroup");
+                            startEditing(group?.id, group?.group_name);
+                          }}
+                        >
+                          Edit
+                        </button>
+                        {/* <a
+                          href="#"
+                          className="dropdown-item waves-effect"
+                          data-bs-toggle="modal"
+                          data-bs-target="#grnCreateModel"
+                          onClick={() => {
+                            handleOpen("viewSubCategory");
+                            setSubCategoryData(subCat);
+                          }}
+                        >
+                          View
+                        </a> */}
+                        {/* <div className="dropdown-divider"></div> */}
+                        <a
+                          className="dropdown-item text-danger delete-record waves-effect"
+                          onClick={() => deleteGroup(group?.id)}
+                        >
+                          Delete
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </td>
               </tr>

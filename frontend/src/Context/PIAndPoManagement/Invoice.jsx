@@ -15,15 +15,18 @@ export const InvoiceProvider = ({ children }) => {
   const [invoice, setInvoice] = useState([]);
   const [invoiceData, setInvoiceData] = useState({
     grn_id: "",
-    sub_cat_id: "",
-    vendor_id: "",
+    sub_cat_id: null,
+    sub_cat_name: "",
+    vendor_id: null,
+    vendor_name: "",
     invoice_date: "",
     taxable_amount: "",
     tds_amount: "",
     paid_amount: "",
     remarks: "",
     invoice_type: "",
-    item_name: "",
+    item_id: null,
+    invoice_file: null,
   });
   const [invoiceDetail, setInvoiceDetail] = useState(null);
   const [type, setType] = useState(null);
@@ -39,15 +42,19 @@ export const InvoiceProvider = ({ children }) => {
     perPage: 10,
     total: 0,
   });
+  const [subCategoryId, setSubCategoryId] = useState(null);
+  const [itemName, setItemName] = useState(null);
+  const [vendor, setVendor] = useState(null);
 
   // payment
   const [paymentData, setPaymentData] = useState({
     // id:
     invoice_id: null,
-    amount: null,
+    amount: "",
     payment_date: "",
     remark: "",
-    type_of_payment: null,
+    type_of_payment: "",
+    paymentslip: null,
   });
 
   // Invoice List
@@ -99,10 +106,10 @@ export const InvoiceProvider = ({ children }) => {
         },
       });
 
+      console.log("res.data", res);
+      setInvoiceData(res);
       if (res?.status === true) {
         toast.success(res.message || "Invoice created successfully");
-        setInvoiceData(res.data);
-        console.log("res.data", res.data);
       } else {
         toast.error(res?.message || "Failed to create invoice");
       }
@@ -117,11 +124,93 @@ export const InvoiceProvider = ({ children }) => {
         paid_amount: null,
         remarks: "",
         invoice_type: null,
+        invoice_file: null,
       });
+      setInvoiceId(null);
     } catch (error) {
       console.error("Invoice Create error:", error);
       toast.error("Error while creating invoice");
     }
+  };
+
+  // Invoice Edit
+  const editInvoice = async ({ id, formData }) => {
+    try {
+      // Append ID to FormData
+      formData.append("id", id);
+
+      const res = await postData(
+        ENDPOINTS.INVOICE.ADD_UPDATE,
+        formData, // send FormData with ID included
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (res?.status === true) {
+        toast.success(res.message || "Invoice Updated successfully");
+        setInvoiceData(res.data);
+      } else {
+        toast.error(res?.message || "Failed to update invoice");
+      }
+
+      invoiceList(); // refresh list
+
+      // Reset form
+      setInvoiceData({
+        grn_id: null,
+        sub_cat_id: null,
+        vendor_id: null,
+        invoice_date: null,
+        taxable_amount: null,
+        tds_amount: null,
+        paid_amount: null,
+        remarks: "",
+        invoice_type: null,
+        invoice_file: null,
+      });
+      setInvoiceId(null);
+    } catch (error) {
+      console.error("Invoice Update error:", error);
+      toast.error("Error while updating invoice");
+    }
+  };
+
+  // Start Editing
+  // Start Editing - Fixed version
+  const startEditing = ({ id, payload }) => {
+    console.log("id , payload", id, payload);
+    setInvoiceId(id);
+
+    // Prefill fields
+    setInvoiceData({
+      id: payload.id,
+      invoice_id: payload.invoice_id,
+      grn_id: payload.grn_id,
+      invoice_date: payload.invoice_date || "",
+      invoice_type:
+        payload.invoice_type !== null ? Number(payload.invoice_type) : null,
+      sub_cat_id:
+        payload.sub_cat_id !== null ? Number(payload.sub_cat_id) : null,
+      sub_cat_name: payload.sub_cat_name || "",
+      vendor_id: payload.vendor?.id !== null ? Number(payload.vendor.id) : null,
+      vendor_name: payload.vendor?.vendor_name || "", // Make sure this is set
+      item_id: payload.item_id !== null ? Number(payload.item_id) : null,
+      taxable_amount:
+        payload.taxable_amount !== null ? Number(payload.taxable_amount) : 0,
+      tds_amount: payload.tds_amount !== null ? Number(payload.tds_amount) : 0,
+      paid_amount:
+        payload.paid_amount !== null ? Number(payload.paid_amount) : 0,
+      remarks: payload.remarks || "",
+      invoice_file: payload.invoice_file || "",
+    });
+
+    // Set selects - FIXED: Use the vendor ID from payload
+    setVendor(payload.vendor?.id ? Number(payload.vendor.id) : null);
+    setSubCategoryId(payload.sub_cat_id ? Number(payload.sub_cat_id) : null);
+    setItemName(payload.item_id ? Number(payload.item_id) : null);
   };
 
   // Invoice details
@@ -169,12 +258,33 @@ export const InvoiceProvider = ({ children }) => {
   // Payment Partial
   const paymentPartial = async (payload) => {
     try {
-      const res = await postData(ENDPOINTS.INVOICE.PAYMENT, payload);
+      const formData = new FormData();
+      for (const key in payload) {
+        formData.append(key, payload[key]);
+      }
+
+      const res = await postData(ENDPOINTS.INVOICE.PAYMENT, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log("res", res);
+
+      toast.success("Partial payment added successfully!");
       setPaymentData(res.data);
     } catch (error) {
       toast.error("Error during paymentPartial");
       console.error("paymentPartial error:", error);
     }
+  };
+
+  const resetPaymentData = () => {
+    setPaymentData({
+      invoice_id: null,
+      amount: "",
+      payment_date: "",
+      remark: "",
+      type_of_payment: "",
+      paymentslip: null,
+    });
   };
 
   return (
@@ -200,17 +310,28 @@ export const InvoiceProvider = ({ children }) => {
         setPagination,
         invoiceDetail,
         setInvoiceDetail,
+        invoiceId,
+        setInvoiceId,
         invoiceList,
         createInvoice,
+        editInvoice,
         invoiceDetails,
         setInvoiceId,
         InvoiceReject,
         InvoiceApprove,
+        subCategoryId,
+        setSubCategoryId,
+        itemName,
+        setItemName,
+        vendor,
+        setVendor,
 
         // Payment
         paymentData,
         setPaymentData,
         paymentPartial,
+        resetPaymentData,
+        startEditing,
       }}
     >
       {children}

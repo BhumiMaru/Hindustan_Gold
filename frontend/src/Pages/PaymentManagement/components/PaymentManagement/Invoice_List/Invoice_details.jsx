@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useInvoice } from "../../../../../Context/PIAndPoManagement/Invoice";
 import Invoice_Reject from "./Invoice_Reject";
 import { useUIContext } from "../../../../../Context/UIContext";
 import Mark_as_Paid from "./Mark_as_Paid";
 import Payment_Paritals from "./Payment_Paritals";
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function Invoice_details() {
   const { id } = useParams();
@@ -58,33 +59,52 @@ export default function Invoice_details() {
             </div>
           </div>
           <div className="d-flex align-content-center flex-wrap gap-4">
+            {invoiceDetail?.status === "Approve" && (
+              <>
+                <button
+                  type="button"
+                  // className={`btn btn-success waves-effect waves-light btn-sm ${
+                  //   invoiceDetail.is_payment_advance_or_partial === "No"
+                  //     ? "d-block"
+                  //     : "d-none"
+                  // }`}
+                  className="btn btn-success waves-effect waves-light btn-sm"
+                  data-bs-toggle="modal"
+                  data-bs-target="#markaspaidModal"
+                  onClick={() => handleOpen("markaspaid")}
+                >
+                  <span className="icon-xs icon-base ti tabler-checks me-2" />
+                  Mark as Paid
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn-primary waves-effect waves-light btn-sm ${
+                    invoiceDetail.is_payment_advance_or_partial === "No"
+                      ? "d-none"
+                      : ""
+                  }`}
+                  data-bs-toggle="modal"
+                  data-bs-target="#partialModal"
+                  onClick={() => handleOpen("paymentPartials")}
+                >
+                  <span className="icon-xs icon-base ti tabler-plus me-2" />
+                  Add Partial Payment
+                </button>
+              </>
+            )}
+
             <button
               type="button"
-              className="btn btn-success waves-effect waves-light btn-sm"
-              data-bs-toggle="modal"
-              data-bs-target="#markaspaidModal"
-              onClick={() => handleOpen("markaspaid")}
-            >
-              <span className="icon-xs icon-base ti tabler-checks me-2" />
-              Mark as Paid
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary waves-effect waves-light btn-sm"
-              data-bs-toggle="modal"
-              data-bs-target="#partialModal"
-              onClick={() => handleOpen("paymentPartials")}
-            >
-              <span className="icon-xs icon-base ti tabler-plus me-2" />
-              Add Partial Payment
-            </button>
-            <button
-              type="button"
-              className="btn btn-success waves-effect waves-light btn-sm"
+              className={`btn btn-success waves-effect waves-light btn-sm ${
+                invoiceDetail?.status === "Approve" ||
+                invoiceDetail?.status === "Reject"
+                  ? "d-none"
+                  : ""
+              }`}
               onClick={async () => {
                 try {
                   await InvoiceApprove({ id: invoiceDetail.id });
-                  await invoiceDetail(invoiceDetail.id);
+                  await invoiceDetails(invoiceDetail.id);
                 } catch (error) {
                   console.error("Error approving GRN:", error);
                 }
@@ -94,7 +114,12 @@ export default function Invoice_details() {
             </button>
             <button
               type="button"
-              className="btn btn-danger waves-effect waves-light btn-sm"
+              className={`btn btn-danger waves-effect waves-light btn-sm ${
+                invoiceDetail?.status === "Approve" ||
+                invoiceDetail?.status === "Reject"
+                  ? "d-none"
+                  : ""
+              }`}
               onClick={() => {
                 setInvoiceId(id);
                 handleOpen("rejectInvoice");
@@ -120,19 +145,21 @@ export default function Invoice_details() {
                   <div>
                     <div className="badge bg-label-info rounded-3">
                       <img
-                        src="assets/img/icons/misc/doc.png"
+                        src={`${publicUrl}assets/img/icons/misc/doc.png`}
                         alt="img"
                         width={15}
                         className="me-2"
                       />
-                      <span className="h6 mb-0 text-info">invoices.pdf</span>
+                      <span className="h6 mb-0 text-info">
+                        {invoiceDetail?.invoice_file}
+                      </span>
                     </div>
-                    <a
-                      href="invoice-list.html"
+                    <Link
+                      to="/payment-management/invoice-list"
                       className="badge bg-label-primary rounded p-1_5 mt-1"
                     >
                       <i className="icon-base ti tabler-eye icon-md" />
-                    </a>
+                    </Link>
                   </div>
                 </div>
                 <div className="row ms-2">
@@ -154,7 +181,7 @@ export default function Invoice_details() {
                   </div>
                   <div className="col-lg-12">
                     <label className="form-label">Remark</label>
-                    <p className="text-danger">{invoiceDetail?.status}</p>
+                    <p className="text-danger">{invoiceDetail?.remarks}</p>
                   </div>
                 </div>
               </div>
@@ -559,8 +586,8 @@ export default function Invoice_details() {
         </div>
       </div>
       {modal.rejectInvoice && <Invoice_Reject id={id} />}
-      {modal.markaspaid && <Mark_as_Paid />}
-      {modal.paymentPartials && <Payment_Paritals />}
+      {modal.markaspaid && <Mark_as_Paid id={id} />}
+      {modal.paymentPartials && <Payment_Paritals id={id} />}
       {/* --------------------END INVOICE DETAILS--------------------- */}
     </>
   );

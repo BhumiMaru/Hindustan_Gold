@@ -124,7 +124,7 @@ export default function SideBar() {
     piAndMaterialManagementRoutesBase["GRN List"];
 
   const paymentManagementRoutes = {
-    "Invoice List": "/payment-management/invoice-list",
+    "Payment List": "/payment-management/invoice-list",
     "Vendor List": "/payment-management/vendor-list",
   };
 
@@ -157,7 +157,7 @@ export default function SideBar() {
             <span className="app-brand-logo demo">
               <span className="text-primary">
                 <img
-                  src={`${publicUrl}/assets/img/logo.png`}
+                  src={`${publicUrl}assets/img/logo.png`}
                   className="img-fluid"
                 />
               </span>

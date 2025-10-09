@@ -35,7 +35,7 @@ export default function SubCategory_Master_Table() {
         <tbody>
           {subCategory.map((subCat, index) => {
             return (
-              <tr key={subCat.id}>
+              <tr key={subCat?.id}>
                 <td>
                   <div className="ms-4">
                     {" "}
@@ -44,11 +44,11 @@ export default function SubCategory_Master_Table() {
                   </div>
                 </td>
 
-                <td>{subCat.sub_category_name}</td>
-                <td>{subCat.category.category_name}</td>
-                <td>{subCat.group.group_name}</td>
-                <td>{subCat.type}</td>
-                <td>{subCat.prefix_code}</td>
+                <td>{subCat?.sub_category_name}</td>
+                <td>{subCat?.category?.category_name}</td>
+                <td>{subCat?.group?.group_name}</td>
+                <td>{subCat?.type}</td>
+                <td>{subCat?.prefix_code}</td>
                 <td>
                   {/* {subCat?.owners?.map((owner, i) => (
                     <span key={owner.id}>

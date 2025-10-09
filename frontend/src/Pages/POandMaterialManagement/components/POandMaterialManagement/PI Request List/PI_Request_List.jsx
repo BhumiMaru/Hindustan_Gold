@@ -144,7 +144,7 @@ export default function PI_Request_List() {
                 {userPermission.some(
                   (prem) =>
                     prem.type === "Get Quotation" &&
-                    (prem.permission === "Add" || prem.permission === "View")
+                    (prem.permission === "add" || prem.permission === "view")
                 ) && (
                   <li className="nav-item mb-1 mb-sm-0" role="presentation">
                     <button
@@ -204,7 +204,7 @@ export default function PI_Request_List() {
                   >
                     <span className="d-none d-sm-inline-flex align-items-center">
                       <i className="icon-base ti tabler-user icon-sm me-1_5" />
-                      Approvel Request
+                      Approval Request
                     </span>
                     {activeTab === "approval_request" && (
                       // (loading ? (
