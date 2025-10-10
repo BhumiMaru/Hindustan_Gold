@@ -15,17 +15,37 @@ import { SubCategoryProvider } from "../../../../../Context/ItemManagement/SubCa
 import { ItemRequestProvider } from "../../../../../Context/Request Management/Item_Request";
 import Invoice_List_Form from "../../../../PaymentManagement/components/PaymentManagement/Invoice_List/Invoice_List_Form";
 import { useInvoice } from "../../../../../Context/PIAndPoManagement/Invoice";
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function PO_Details() {
   const { id } = useParams();
   const { handleOpen, modal } = useUIContext();
-  const { poDetails, setPoDetails, getPoDetails, PoApprove, PoId, setPoId } =
-    usePOCreate();
+  const {
+    poDetails,
+    setPoDetails,
+    getPoDetails,
+    PoApprove,
+    PoId,
+    setPoId,
+    poWorkflowDetails,
+    setPoWorkflowDetails,
+    poWorkflow,
+  } = usePOCreate();
   const printRef = useRef();
   const { setType } = useInvoice();
 
+  // useEffect(() => {
+  //   getPoDetails(id);
+  // }, [id]);
+
+  // ✅ Fetch PO detail + workflow on mount
   useEffect(() => {
-    getPoDetails(id);
+    const loadData = async () => {
+      if (!id) return;
+      await getPoDetails(id);
+      await poWorkflow(id);
+    };
+    loadData();
   }, [id]);
 
   useEffect(() => {
@@ -592,35 +612,70 @@ export default function PO_Details() {
               <div className=" h-100">
                 <div className="card-body">
                   <ul className="timeline mb-0">
-                    <li className="timeline-item timeline-item-transparent">
-                      <span className="timeline-point timeline-point-success" />
-                      <div className="timeline-event">
-                        <div className="timeline-header mb-3">
-                          <h6 className="mb-0">PO Close</h6>
-                          <small className="text-body-secondary">
-                            12-03-2025&nbsp;2:45&nbsp;PM
-                          </small>
-                        </div>
-                        <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
-                          <div className="d-flex flex-wrap align-items-center mb-50">
-                            <div className="avatar avatar-sm me-2">
-                              <img
-                                src="assets/img/avatars/1.png"
-                                alt="Avatar"
-                                className="rounded-circle"
-                              />
+                    {poWorkflowDetails?.map((po, index) => {
+                      console.log("po", po);
+                      const formateDate = po?.detail
+                        ? new Date(po?.detail?.create_at)
+                            .toLocaleString("en-GB", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                            .replace(/\//g, "-")
+                            .replace(",", " ")
+                            .replace(/\s?(am|pm)$/i, (match) =>
+                              match.toUpperCase()
+                            )
+                        : "Pending";
+
+                      const colors = [
+                        "info",
+                        "success",
+                        "primary",
+                        "info",
+                        "success",
+                      ];
+                      // const formateDate = po?.detail ? new Date(po?.detail?.create_at)
+                      return (
+                        <li
+                          className="timeline-item timeline-item-transparent"
+                          key={index}
+                        >
+                          <span
+                            className={`timeline-point timeline-point-${colors[index]}`}
+                          />
+                          <div className="timeline-event">
+                            <div className="timeline-header mb-3">
+                              <h6 className="mb-0">{po?.type}</h6>
+                              <small className="text-body-secondary">
+                                {formateDate}
+                              </small>
                             </div>
-                            <div>
-                              <p className="mb-0 small fw-medium">
-                                Mitul Patel
-                              </p>
-                              <small>Store Head</small>
+                            <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
+                              <div className="d-flex flex-wrap align-items-center mb-50">
+                                <div className="avatar avatar-sm me-2">
+                                  <img
+                                    src={`${publicUrl}/assets/img/avatars/1.png`}
+                                    alt="Avatar"
+                                    className="rounded-circle"
+                                  />
+                                </div>
+                                <div>
+                                  <p className="mb-0 small fw-medium">
+                                    {po?.detail?.create_by_name}
+                                  </p>
+                                  <small>{po?.detail?.role_name}</small>
+                                </div>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    </li>
-                    <li className="timeline-item timeline-item-transparent">
+                        </li>
+                      );
+                    })}
+                    {/* <li className="timeline-item timeline-item-transparent">
                       <span className="timeline-point timeline-point-info" />
                       <div className="timeline-event">
                         <div className="timeline-header mb-3">
@@ -713,7 +768,7 @@ export default function PO_Details() {
                             11-08-2025&nbsp;11:25&nbsp;AM
                           </small>
                         </div>
-                        {/*<p class="mb-2">6 team members in a project</p>*/}
+                        <p class="mb-2">6 team members in a project</p>
                         <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
                           <div className="d-flex flex-wrap align-items-center mb-50">
                             <div className="avatar avatar-sm me-2">
@@ -732,7 +787,7 @@ export default function PO_Details() {
                           </div>
                         </div>
                       </div>
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </div>

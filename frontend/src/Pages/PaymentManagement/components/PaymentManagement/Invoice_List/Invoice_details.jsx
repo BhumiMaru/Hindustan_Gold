@@ -16,12 +16,23 @@ export default function Invoice_details() {
     setInvoiceId,
     InvoiceReject,
     InvoiceApprove,
+    invoiceWorkflowDetails,
+    setInvoiceWorkflowDetails,
+    InvoiceWorkflow,
+    revertStatus,
   } = useInvoice();
   console.log("invoiceDetail", invoiceDetail);
 
+  // ✅ Fetch invoice detail + workflow on mount
   useEffect(() => {
-    invoiceDetails(id);
+    const loadData = async () => {
+      if (!id) return;
+      await invoiceDetails(id);
+      await InvoiceWorkflow(id);
+    };
+    loadData();
   }, [id]);
+
   return (
     <>
       {/* --------------------STRAT INVOICE DETAILS--------------------- */}
@@ -52,6 +63,9 @@ export default function Invoice_details() {
                   data-bs-placement="top"
                   aria-label="Revert to Unpaid"
                   data-bs-original-title="Revert to Unpaid"
+                  onClick={() => {
+                    revertStatus(invoiceDetail?.id);
+                  }}
                 >
                   <i className="icon-base ti tabler-restore text-primary  icon-20px" />
                 </a>
@@ -433,39 +447,84 @@ export default function Invoice_details() {
               </div>
             </div>
             <div className="card mt-4">
-              <h4 className="mx-4 my-2">Vendor Detail</h4>
+              <h4 className="mx-4 my-2">Time Line</h4>
               <div className=" h-100">
                 <div className="card-body">
                   <ul className="timeline mb-0">
-                    <li className="timeline-item timeline-item-transparent">
-                      <span className="timeline-point timeline-point-success" />
-                      <div className="timeline-event">
-                        <div className="timeline-header mb-3">
-                          <h6 className="mb-0">GRN Close</h6>
-                          <small className="text-body-secondary">
-                            12-03-2025&nbsp;2:45&nbsp;PM
-                          </small>
-                        </div>
-                        <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
-                          <div className="d-flex flex-wrap align-items-center mb-50">
-                            <div className="avatar avatar-sm me-2">
-                              <img
-                                src="assets/img/avatars/1.png"
-                                alt="Avatar"
-                                className="rounded-circle"
-                              />
+                    {invoiceWorkflowDetails?.map((step, index) => {
+                      console.log("steps", step);
+                      const formattedDate = step?.detail
+                        ? new Date(step?.detail?.create_at)
+                            .toLocaleString("en-GB", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                            .replace(/\//g, "-")
+                            .replace(",", " ")
+                        : "Pending";
+
+                      // const steps = [
+                      //   "Create PI",
+                      //   "Generate Quote",
+                      //   "Generate PO",
+                      //   "Generate GRN",
+                      //   "GRN Close",
+                      // ];
+
+                      // const stepLabel = steps[index] || "Unknown Step";
+                      // console.log("stepLabel", stepLabel);
+
+                      // ✅ Color classes
+                      const colors = [
+                        "info",
+                        "success",
+                        "primary",
+                        "info",
+                        "success",
+                      ];
+
+                      return (
+                        <li
+                          className="timeline-item timeline-item-transparent"
+                          key={index}
+                        >
+                          <span
+                            className={`timeline-point ${`timeline-point-${colors[index]}`}`}
+                          />
+                          <div className="timeline-event">
+                            <div className="timeline-header mb-3">
+                              <h6 className="mb-0">{step?.type}</h6>
+                              <small className="text-body-secondary">
+                                {formattedDate}
+                              </small>
                             </div>
-                            <div>
-                              <p className="mb-0 small fw-medium">
-                                Mitul Patel
-                              </p>
-                              <small>Store Head</small>
+                            <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
+                              <div className="d-flex flex-wrap align-items-center mb-50">
+                                <div className="avatar avatar-sm me-2">
+                                  <img
+                                    src={`${publicUrl}/assets/img/avatars/1.png`}
+                                    alt="Avatar"
+                                    className="rounded-circle"
+                                  />
+                                </div>
+                                <div>
+                                  <p className="mb-0 small fw-medium">
+                                    {step?.detail?.create_by_name}
+                                  </p>
+                                  <small> {step?.detail?.role_name}</small>
+                                </div>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    </li>
-                    <li className="timeline-item timeline-item-transparent">
+                        </li>
+                      );
+                    })}
+
+                    {/* <li className="timeline-item timeline-item-transparent">
                       <span className="timeline-point timeline-point-info" />
                       <div className="timeline-event">
                         <div className="timeline-header mb-3">
@@ -558,7 +617,7 @@ export default function Invoice_details() {
                             11-08-2025&nbsp;11:25&nbsp;AM
                           </small>
                         </div>
-                        {/*<p class="mb-2">6 team members in a project</p>*/}
+                        <p class="mb-2">6 team members in a project</p>
                         <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
                           <div className="d-flex flex-wrap align-items-center mb-50">
                             <div className="avatar avatar-sm me-2">
@@ -577,7 +636,7 @@ export default function Invoice_details() {
                           </div>
                         </div>
                       </div>
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </div>

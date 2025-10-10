@@ -22,7 +22,7 @@ export default function Invoice_List_Table() {
       <table className="table datatables-basic align-middle">
         <thead>
           <tr className="align-items-center">
-            <th>
+            {/* <th>
               <div className="ms-4">
                 <input
                   className="form-check-input"
@@ -33,7 +33,7 @@ export default function Invoice_List_Table() {
                   }}
                 />
               </div>
-            </th>
+            </th> */}
             <th scope="col" style={{ width: 80 }}>
               Sr.No.
             </th>
@@ -53,7 +53,7 @@ export default function Invoice_List_Table() {
           {invoice?.map((invoice, index) => {
             return (
               <tr>
-                <td className="dt-select">
+                {/* <td className="dt-select">
                   <div className="ms-4">
                     <input
                       aria-label="Select row"
@@ -61,8 +61,8 @@ export default function Invoice_List_Table() {
                       type="checkbox"
                     />
                   </div>
-                </td>
-                <td>
+                </td> */}
+                <td className="pe-1">
                   {" "}
                   {(pagination?.currentPage - 1) * pagination?.perPage +
                     (index + 1)}

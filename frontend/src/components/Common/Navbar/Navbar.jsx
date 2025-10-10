@@ -74,7 +74,6 @@ export default function Navbar() {
                   activeMenu === "avatar" ? "show" : ""
                 }`}
                 onClick={() => toggleMenu("avatar")}
-                //   href="javascript:void(0);"
                 data-bs-toggle="dropdown"
                 aria-expanded="true"
               >

@@ -449,6 +449,9 @@ export const ItemRequestProvider = ({ children }) => {
     workflowId: null,
     receiving_person: "",
   });
+  const [wholeItemRequestData, setWholeItemRequestData] = useState();
+  const [itemRequestId, setItemRequestId] = useState(null);
+  const [item_Request_Id, set_ItemRequest_Id] = useState(null);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     perPage: 10,
@@ -587,7 +590,8 @@ export const ItemRequestProvider = ({ children }) => {
         workflowId: itemRequestId,
       });
 
-      // console.log("API Response:", res);
+      console.log("API Response:", res);
+      setWholeItemRequestData(res.data);
 
       if (res.status && res.data) {
         const data = res.data;
@@ -696,12 +700,14 @@ export const ItemRequestProvider = ({ children }) => {
   // Approve request
   const approveRequest = async (workflow_id) => {
     try {
+      console.log("workflow_id", workflow_id);
       const res = await postData(ENDPOINTS.ITEM_REQUEST.APPROVE, {
-        workflow_id,
+        workflow_id: workflow_id,
       });
 
       if (res.status) {
         toast.success(res.message);
+        console.log("res".res);
         getItemRequestData();
       }
     } catch (error) {
@@ -832,6 +838,12 @@ export const ItemRequestProvider = ({ children }) => {
         startEditing,
         setEditId,
         fetchItemFilter,
+        itemRequestId,
+        setItemRequestId,
+        item_Request_Id,
+        set_ItemRequest_Id,
+        setWholeItemRequestData,
+        wholeItemRequestData,
       }}
     >
       {children}

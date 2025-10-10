@@ -10,18 +10,40 @@ import { VendorProvider } from "../../../../../Context/PaymentManagement/Vendor"
 import { SubCategoryProvider } from "../../../../../Context/ItemManagement/SubCategoryContext";
 import { InvoiceProvider } from "../../../../../Context/PIAndPoManagement/Invoice";
 import { ItemRequestProvider } from "../../../../../Context/Request Management/Item_Request";
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function GRN_Details() {
   const { id } = useParams();
   // console.log("id", id);
   const { handleOpen, modal } = useUIContext();
   const { fetchUserPermission, userPermission } = useUserCreation();
-  const { grnId, setGrnId, GRNDetails, grnDetails, GRNApprove } = useGRN();
+  const {
+    grnId,
+    setGrnId,
+    GRNDetails,
+    grnDetails,
+    GRNApprove,
+    GRNWorkflowdetails,
+    setGRNWorkflowdetails,
+    grnWorkflow,
+  } = useGRN();
   // console.log("grnDetails", grnDetails);
 
+  // useEffect(() => {
+  //   GRNDetails(id);
+  // }, [id]);
+
+  // ✅ Fetch GRN detail + workflow on mount
   useEffect(() => {
-    GRNDetails(id);
+    const loadData = async () => {
+      if (!id) return;
+      await GRNDetails(id);
+      await grnWorkflow(id);
+    };
+    loadData();
   }, [id]);
+
+  console.log("GRNWorkflowdetails", GRNWorkflowdetails);
 
   // ✅ Get saved auth data
   const savedAuth = sessionStorage.getItem("authData");
@@ -42,6 +64,7 @@ export default function GRN_Details() {
   useEffect(() => {
     fetchUserPermission(user.id);
   }, [user.id]);
+
   return (
     <>
       {/* -----------------------START GRN DETAILS----------------------- */}
@@ -327,7 +350,71 @@ export default function GRN_Details() {
               <div className=" h-100">
                 <div className="card-body">
                   <ul className="timeline mb-0">
-                    <li className="timeline-item timeline-item-transparent">
+                    {GRNWorkflowdetails?.slice()
+                      ?.reverse()
+                      ?.map((grn, index) => {
+                        const formateDate = grn?.detail
+                          ? new Date(grn?.detail?.create_at)
+                              .toLocaleString("en-GB", {
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                              })
+                              .replace(/\//g, "-")
+                              .replace(",", " ")
+                              .replace(/\s?(am|pm)$/i, (match) =>
+                                match.toUpperCase()
+                              )
+                          : "Pending";
+
+                        const colors = [
+                          "info",
+                          "success",
+                          "primary",
+                          "info",
+                          "success",
+                        ];
+                        // const formateDate = grn?.detail ? new Date(grn?.detail?.create_at)
+                        return (
+                          <li
+                            className="timeline-item timeline-item-transparent"
+                            key={index}
+                          >
+                            <span
+                              className={`timeline-point timeline-point-${colors[index]}`}
+                            />
+                            <div className="timeline-event">
+                              <div className="timeline-header mb-3">
+                                <h6 className="mb-0">{grn?.type}</h6>
+                                <small className="text-body-secondary">
+                                  {formateDate}
+                                </small>
+                              </div>
+                              <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
+                                <div className="d-flex flex-wrap align-items-center mb-50">
+                                  <div className="avatar avatar-sm me-2">
+                                    <img
+                                      src={`${publicUrl}/assets/img/avatars/1.png`}
+                                      alt="Avatar"
+                                      className="rounded-circle"
+                                    />
+                                  </div>
+                                  <div>
+                                    <p className="mb-0 small fw-medium">
+                                      {grn?.detail?.create_by_name}
+                                    </p>
+                                    <small> {grn?.detail?.role_name}</small>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    {/* <li className="timeline-item timeline-item-transparent">
                       <span className="timeline-point timeline-point-success" />
                       <div className="timeline-event">
                         <div className="timeline-header mb-3">
@@ -448,7 +535,7 @@ export default function GRN_Details() {
                             11-08-2025&nbsp;11:25&nbsp;AM
                           </small>
                         </div>
-                        {/*<p class="mb-2">6 team members in a project</p>*/}
+                        <p class="mb-2">6 team members in a project</p>
                         <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
                           <div className="d-flex flex-wrap align-items-center mb-50">
                             <div className="avatar avatar-sm me-2">
@@ -467,7 +554,7 @@ export default function GRN_Details() {
                           </div>
                         </div>
                       </div>
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </div>

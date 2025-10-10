@@ -212,13 +212,13 @@ export default function Get_Quote_List() {
                 placeholder="Select Item Status"
               />
             </div>
-            <div className="col-lg-2">
-              <input
+            {/* <div className="col-lg-2"> */}
+            {/* <input
                 type="date"
                 id="bs-rangepicker-range"
                 className="form-control"
-              />
-              {/* <input
+              /> */}
+            {/* <input
                 type="date"
                 className="form-control mb-1"
                 value={dateRange.start}
@@ -234,9 +234,9 @@ export default function Get_Quote_List() {
                   setDateRange((prev) => ({ ...prev, end: e.target.value }))
                 }
                 /> */}
-            </div>
+            {/* </div> */}
 
-            <div className="col-lg-4 mt-2">
+            <div className="col-lg-2">
               <div className="d-flex items-center">
                 <input
                   type="text"

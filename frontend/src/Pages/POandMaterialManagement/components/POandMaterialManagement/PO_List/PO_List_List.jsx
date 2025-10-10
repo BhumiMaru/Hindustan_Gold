@@ -252,7 +252,7 @@ export default function PO_List_List() {
                 placeholder="Select Item Status"
               />
             </div>
-            <div className="col-lg-4 mt-2">
+            <div className="col-lg-3 mt-2">
               <div className="d-flex items-center">
                 <input
                   type="text"

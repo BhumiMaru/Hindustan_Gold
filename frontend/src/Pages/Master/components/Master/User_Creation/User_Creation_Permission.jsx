@@ -646,9 +646,9 @@ export default function User_Creation_Permission() {
                         <th className="text-nowrap text-center w-px-50">
                           Add/Edit
                         </th>
-                        <th className="text-nowrap text-center w-px-50">
+                        {/* <th className="text-nowrap text-center w-px-50">
                           Delete
-                        </th>
+                        </th> */}
                         <th className="text-nowrap text-center w-px-50">
                           Approval
                         </th>
@@ -675,14 +675,14 @@ export default function User_Creation_Permission() {
                             id="defaultCheck_cust_44"
                           />
                         </td>
-                        <td>
+                        {/* <td>
                           <PermissionCheckbox
                             module="Item Request Module"
                             type="Item Request"
                             permission="delete"
                             id="defaultCheck_cust_45"
                           />
-                        </td>
+                        </td> */}
                         <td></td>
                       </tr>
                       <tr>
@@ -697,7 +697,7 @@ export default function User_Creation_Permission() {
                             id="defaultCheck_cust_46"
                           />
                         </td>
-                        <td></td>
+                        {/* <td></td> */}
                         <td></td>
                         <td>
                           <PermissionCheckbox
@@ -722,7 +722,7 @@ export default function User_Creation_Permission() {
                         </td>
                         <td></td>
                         <td></td>
-                        <td></td>
+                        {/* <td></td> */}
                       </tr>
                     </tbody>
                   </table>

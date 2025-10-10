@@ -97,7 +97,7 @@ export const UserCreationProvider = ({ children }) => {
         total: apiData.total,
       });
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       toast.error("Failed to fetch users");
     }
   };
@@ -231,7 +231,7 @@ export const UserCreationProvider = ({ children }) => {
         profile_photo_url: user?.profile_photo_url || "", // if backend gives a URL
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

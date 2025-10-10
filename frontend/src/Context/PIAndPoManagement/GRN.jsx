@@ -36,6 +36,8 @@ export const GRNProvider = ({ children }) => {
   });
   const [grnId, setGrnId] = useState(null);
   const [grnDetails, setGrnDetails] = useState({});
+  // GRN Worlflow
+  const [GRNWorkflowdetails, setGRNWorkflowdetails] = useState();
 
   //   GRN List
   const GRNList = async ({
@@ -238,6 +240,22 @@ export const GRNProvider = ({ children }) => {
     }
   };
 
+  // Invoice Workflow
+  const grnWorkflow = async (grn_id) => {
+    try {
+      const res = await postData(`${ENDPOINTS.GRN.WORKFLOW}?grn_id=${grn_id}`);
+
+      if (res.status) {
+        setGRNWorkflowdetails(res.data); // Save workflow data
+      } else {
+        toast.error(res.message || "Failed to fetch workflow data");
+      }
+    } catch (error) {
+      toast.error("Error during GRN Workflow");
+      console.error("GRN Workflow error:", error);
+    }
+  };
+
   return (
     <GRNContext.Provider
       value={{
@@ -270,6 +288,11 @@ export const GRNProvider = ({ children }) => {
         grnDetails,
         setGrnDetails,
         GRNDetails,
+
+        // grn workflow
+        GRNWorkflowdetails,
+        setGRNWorkflowdetails,
+        grnWorkflow,
       }}
     >
       {children}

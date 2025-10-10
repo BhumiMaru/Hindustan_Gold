@@ -152,6 +152,7 @@ export const ENDPOINTS = {
     DETAILS: "/po/detail",
     APPROVE: "/po/approve",
     REJECT: "/po/reject",
+    WORKFLOW: "/po/workflow",
   },
 
   // GRN
@@ -161,6 +162,7 @@ export const ENDPOINTS = {
     APPROVE: "/po/grn/approve",
     REJECT: "/po/grn/reject",
     DETAILS: "/po/grn/details",
+    WORKFLOW: "/po/grn/workflow",
   },
 
   // Invoice
@@ -171,5 +173,7 @@ export const ENDPOINTS = {
     APPROVE: "/po/grn/invoice/approve",
     REJECT: "/po/grn/invoice/reject",
     PAYMENT: "/po/grn/invoice/payment",
+    WORKFLOW: "/po/grn/invoice/workflow",
+    REVERT_STATUS: "/po/grn/invoice/status-update",
   },
 };

@@ -231,14 +231,24 @@ export default function PI_Request_Table({ userPermission }) {
                     <table className="table table1 datatables-basic align-middle w-100">
                       <thead>
                         <tr className="bg-label-secondary">
-                          <th>
+                          {/* <th>
                             <div className="ms-4">
                               <input
-                                className={`form-check-input ${
-                                  activeTab === "approval_request"
-                                    ? "d-block"
-                                    : "d-none"
-                                } ${
+                                // className={`form-check-input ${
+                                //   activeTab === "approval_request"
+                                //     ? "d-block"
+                                //     : "d-none"
+                                // }
+                                // ${
+                                //   pi.piitems.every(
+                                //     (item) => item.status === "Approve"
+                                //   )
+                                //     ? "d-none"
+                                //     : "d-block"
+                                // }`}
+                                className={`form-check-input 
+                                ${
+                                  activeTab === "approval_request" &&
                                   pi.piitems.every(
                                     (item) => item.status === "Approve"
                                   )
@@ -262,7 +272,148 @@ export default function PI_Request_Table({ userPermission }) {
                                 }}
                               />
                             </div>
+                          </th> */}
+                          {/* <th>
+                            <div className="ms-4">
+                              <input
+                                className={`form-check-input ${
+                                  activeTab === "approval_request" &&
+                                  !pi.piitems.every(
+                                    (item) =>
+                                      item.status === "Approve" ||
+                                      item.status === "Reject"
+                                  )
+                                    ? "d-block"
+                                    : "d-none"
+                                } ${
+                                  activeTab === "my_request" &&
+                                  !pi.piitems.every(
+                                    (item) =>
+                                      item.status.toLowerCase() !== "pending"
+                                  )
+                                    ? "none"
+                                    : ""
+                                }`}
+                                type="checkbox"
+                                checked={
+                                  pi.piitems.length > 0 &&
+                                  pi.piitems
+                                    .filter(
+                                      (item) =>
+                                        item.status === "Pending" ||
+                                        item.status === "pending"
+                                    )
+                                    .every((item) =>
+                                      (selectedItemsMap[pi.id] || []).includes(
+                                        item.id
+                                      )
+                                    )
+                                }
+                                onChange={() =>
+                                  handleSelectAll(pi.id, pi.piitems)
+                                }
+                                style={{ width: "1rem", height: "1rem" }}
+                              />
+                            </div>
+                          </th> */}
+                          {/* <th>
+                            <div className="ms-4">
+                              <input
+                                className={`form-check-input ${
+                                  activeTab === "approval_request"
+                                    ? pi?.piitems?.some(
+                                        (item) =>
+                                          item.status.toLowerCase() ===
+                                          "pending"
+                                      )
+                                      ? "d-block"
+                                      : "d-none"
+                                    : activeTab === "my_request"
+                                    ? pi?.piitems?.some(
+                                        (item) =>
+                                          item.status.toLowerCase() !==
+                                          "pending"
+                                      )
+                                      ? "d-block"
+                                      : "d-none"
+                                    : "d-none"
+                                }`}
+                                type="checkbox"
+                                checked={pi.piitems
+                                  .filter(
+                                    (item) =>
+                                      item.status.toLowerCase() === "pending"
+                                  )
+                                  .every((item) =>
+                                    (selectedItemsMap[pi.id] || []).includes(
+                                      item.id
+                                    )
+                                  )}
+                                onChange={() =>
+                                  handleSelectAll(pi.id, pi.piitems)
+                                }
+                                style={{ width: "1rem", height: "1rem" }}
+                              />
+                            </div>
+                          </th> */}
+                          <th>
+                            <div className="ms-4">
+                              <input
+                                className={`form-check-input ${
+                                  activeTab === "approval_request"
+                                    ? pi?.piitems?.some(
+                                        (item) =>
+                                          item.status.toLowerCase() ===
+                                          "pending"
+                                      )
+                                      ? "d-block"
+                                      : "d-none"
+                                    : activeTab === "my_request"
+                                    ? pi?.piitems?.some(
+                                        (item) =>
+                                          item.status.toLowerCase() !==
+                                          "pending"
+                                      )
+                                      ? "d-block"
+                                      : "d-none"
+                                    : "d-none"
+                                }`}
+                                type="checkbox"
+                                checked={
+                                  activeTab === "approval_request"
+                                    ? pi.piitems
+                                        .filter(
+                                          (item) =>
+                                            item.status.toLowerCase() ===
+                                            "pending"
+                                        )
+                                        .every((item) =>
+                                          (
+                                            selectedItemsMap[pi.id] || []
+                                          ).includes(item.id)
+                                        )
+                                    : activeTab === "my_request"
+                                    ? pi.piitems
+                                        .filter(
+                                          (item) =>
+                                            item.status.toLowerCase() !==
+                                            "pending"
+                                        )
+                                        .every((item) =>
+                                          (
+                                            selectedItemsMap[pi.id] || []
+                                          ).includes(item.id)
+                                        )
+                                    : false
+                                }
+                                onChange={() =>
+                                  handleSelectAll(pi.id, pi.piitems)
+                                }
+                                style={{ width: "1rem", height: "1rem" }}
+                              />
+                            </div>
                           </th>
+
                           <th>Item</th>
                           <th>Qty.</th>
                           <th>UOM</th>
@@ -271,7 +422,22 @@ export default function PI_Request_Table({ userPermission }) {
                           <th>Approval Date</th>
                           <th>Remarks</th>
                           <th>Status</th>
-                          {activeTab === "approval_request" && <th>Action</th>}
+                          {/* {activeTab === "approval_request" && ( */}
+                          <th
+                            className={`${
+                              activeTab === "approval_request" &&
+                              pi?.piitems?.every(
+                                (item) =>
+                                  item.status === "Approve" ||
+                                  item.status === "Reject"
+                              )
+                                ? "d-none"
+                                : ""
+                            }`}
+                          >
+                            Action
+                          </th>
+                          {/* )} */}
                         </tr>
                       </thead>
                       <tbody>
@@ -280,7 +446,7 @@ export default function PI_Request_Table({ userPermission }) {
                             {console.log("piitem", piItem)}
                             {/* {activeTab === "approval_request" ||
                               (activeTab === "all_request" && ( */}
-                            <td className="dt-select">
+                            {/* <td className="dt-select">
                               <div className="ms-4">
                                 <input
                                   aria-label="Select row"
@@ -288,6 +454,12 @@ export default function PI_Request_Table({ userPermission }) {
                                     activeTab === "all_request" &&
                                     (piItem.status === "Approve" ||
                                       piItem.status === "Reject")
+                                      ? "d-block"
+                                      : "d-none"
+                                  } ${
+                                    activeTab === "approval_request" &&
+                                    (piItem.status === "Pending" ||
+                                      piItem.status === "pending")
                                       ? "d-block"
                                       : "d-none"
                                   }`}
@@ -300,7 +472,42 @@ export default function PI_Request_Table({ userPermission }) {
                                   }
                                 />
                               </div>
+                            </td> */}
+                            <td className="dt-select">
+                              <div className="ms-4">
+                                <input
+                                  aria-label="Select row"
+                                  // className={`form-check-input ${
+                                  //   activeTab === "approval_request" &&
+                                  //   piItem.status.toLowerCase() === "pending"
+                                  //     ? "d-block"
+                                  //     : "d-none"
+                                  // } `}
+                                  className={`form-check-input ${
+                                    activeTab === "approval_request"
+                                      ? piItem.status.toLowerCase() ===
+                                        "pending"
+                                        ? "d-block"
+                                        : "d-none"
+                                      : activeTab === "my_request"
+                                      ? piItem.status.toLowerCase() ===
+                                        "pending"
+                                        ? "d-block"
+                                        : "d-none"
+                                      : "d-none"
+                                  }`}
+                                  type="checkbox"
+                                  checked={(
+                                    selectedItemsMap[pi.id] || []
+                                  ).includes(piItem.id)}
+                                  onChange={() =>
+                                    handleSelectItem(pi.id, piItem.id)
+                                  }
+                                />
+                              </div>
                             </td>
+
+                            {console.log("Pi item", piItem)}
                             {/* ))} */}
 
                             <td>{piItem.item_name}</td>
@@ -377,46 +584,66 @@ export default function PI_Request_Table({ userPermission }) {
 
                               {/* {console.log("pi", pi)} */}
                             </td>
-                            {activeTab === "approval_request" && (
-                              <td>
-                                <div className="d-inline-flex gap-2">
-                                  <div
-                                    className={`badge rounded bg-label-success p-1_5 ${
-                                      piItem.status === "Approve" ||
-                                      piItem.status === "Reject"
-                                        ? "d-none"
-                                        : ""
-                                    }`}
-                                  >
-                                    <i
-                                      className="icon-base ti tabler-circle-check icon-md cursor-pointer"
-                                      onClick={() => singleApprove(piItem.id)}
-                                    />
-                                  </div>
-                                  <div
-                                    className={`badge rounded bg-label-danger p-1_5 ${
-                                      piItem.status === "Approve" ||
-                                      piItem.status === "Reject"
-                                        ? "d-none"
-                                        : ""
-                                    }`}
-                                  >
-                                    <i
-                                      className="icon-base ti tabler-xbox-x icon-md cursor-pointer"
-                                      onClick={() => {
-                                        singleReject({
-                                          pi_request_item_id: piItem.id,
-                                          pi_request_id: piItem.pi_request_id,
-                                        });
-                                        // handleOpen("viewRejectPi");
-                                      }}
-                                    />
-                                  </div>
+                            {/* <td>
+                              <div
+                                className={`d-inline-flex gap-2 ${
+                                  activeTab === "approval_request" &&
+                                  piItem.status.toLowerCase() !== "pending"
+                                    ? "d-none"
+                                    : ""
+                                }`}
+                              >
+                                Approve button
+                                <div className="badge rounded bg-label-success p-1_5">
+                                  <i
+                                    className="icon-base ti tabler-circle-check icon-md cursor-pointer"
+                                    onClick={() => singleApprove(piItem.id)}
+                                  />
                                 </div>
-                                {/* {console.log("pi", pi)}
-                                {console.log("pi items", piItem)} */}
-                              </td>
-                            )}
+
+                                Reject button
+                                <div className="badge rounded bg-label-danger p-1_5">
+                                  <i
+                                    className="icon-base ti tabler-xbox-x icon-md cursor-pointer"
+                                    onClick={() =>
+                                      singleReject({
+                                        pi_request_item_id: piItem.id,
+                                        pi_request_id: piItem.pi_request_id,
+                                      })
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </td> */}
+                            <td
+                              style={{
+                                display:
+                                  activeTab === "approval_request" &&
+                                  piItem.status.toLowerCase() !== "pending"
+                                    ? "none"
+                                    : "table-cell",
+                              }}
+                            >
+                              <div className="d-inline-flex gap-2">
+                                <div className="badge rounded bg-label-success p-1_5">
+                                  <i
+                                    className="icon-base ti tabler-circle-check icon-md cursor-pointer"
+                                    onClick={() => singleApprove(piItem.id)}
+                                  />
+                                </div>
+                                <div className="badge rounded bg-label-danger p-1_5">
+                                  <i
+                                    className="icon-base ti tabler-xbox-x icon-md cursor-pointer"
+                                    onClick={() =>
+                                      singleReject({
+                                        pi_request_item_id: piItem.id,
+                                        pi_request_id: piItem.pi_request_id,
+                                      })
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -541,12 +768,14 @@ export default function PI_Request_Table({ userPermission }) {
 
                           {console.log("activeTab", activeTab)}
                           {activeTab === "my_request" &&
-                            pi?.pi_type === "service" && (
-                              <div className="">
+                            pi?.pi_type === "service" &&
+                            pi?.piitems?.every(
+                              (item) => item.status.toLowerCase() === "approve"
+                            ) && (
+                              <div>
                                 <button
                                   className="btn btn-info btn-sm waves-effect waves-light mt-2 mb-2"
                                   tabIndex={0}
-                                  aria-controls="DataTables_Table_0"
                                   type="button"
                                 >
                                   <span>

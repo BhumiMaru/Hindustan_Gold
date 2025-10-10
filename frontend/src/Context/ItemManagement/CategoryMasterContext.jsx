@@ -52,7 +52,10 @@ export const CategoryMasterProvider = ({ children }) => {
         total: apiData.total,
       });
     } catch (error) {
-      toast.error(`Category Fetch Error: ${error.message}`);
+      if (error.response && error.response.data) {
+        console.error(error.response.data.message);
+      }
+      // toast.error(`Category Fetch Error: ${error.message}`);
     }
   };
 
@@ -63,7 +66,10 @@ export const CategoryMasterProvider = ({ children }) => {
       setFilterCategory(res.data);
     } catch (error) {
       console.log(error);
-      toast.error("Failed to fetch Group Filter");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
+      // toast.error("Failed to fetch Group Filter");
     }
   };
 
@@ -75,8 +81,11 @@ export const CategoryMasterProvider = ({ children }) => {
       fetchCategories(); // refresh
       return res;
     } catch (error) {
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
       console.log(`Create Category Error: ${error.message}`, error);
-      toast.error(`Create Category Error: ${error.message}`);
+      // toast.error(`Create Category Error: ${error.message}`);
     }
   };
 
@@ -89,7 +98,10 @@ export const CategoryMasterProvider = ({ children }) => {
       fetchCategories(); // refresh
       return res;
     } catch (error) {
-      toast.error(`Update Category Error: ${error.message}`);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
+      // toast.error(`Update Category Error: ${error.message}`);
     }
   };
 
@@ -114,7 +126,10 @@ export const CategoryMasterProvider = ({ children }) => {
       toast.success("Category Deleted Successfully");
       fetchCategories(); // refresh
     } catch (error) {
-      toast.error(`Delete Category Error: ${error.message}`);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
+      // toast.error(`Delete Category Error: ${error.message}`);
     }
   };
 

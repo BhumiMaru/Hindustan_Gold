@@ -45,6 +45,10 @@ export const InvoiceProvider = ({ children }) => {
   const [subCategoryId, setSubCategoryId] = useState(null);
   const [itemName, setItemName] = useState(null);
   const [vendor, setVendor] = useState(null);
+  // Invoice Workflow
+  const [invoiceWorkflowDetails, setInvoiceWorkflowDetails] = useState();
+  // Revert Invoice Status
+  const [revertStatusData, setRevertStatusData] = useState();
 
   // payment
   const [paymentData, setPaymentData] = useState({
@@ -92,7 +96,10 @@ export const InvoiceProvider = ({ children }) => {
         total: apiData.total || 0,
       });
     } catch (error) {
-      toast.error("Error during Invoice List Fetch");
+      // toast.error("Error during Invoice List Fetch");
+      // if (error.response && error.response.data) {
+      //   toast.error(error.response.data.message);
+      // }
       console.error("Invoice List error:", error);
     }
   };
@@ -129,7 +136,9 @@ export const InvoiceProvider = ({ children }) => {
       setInvoiceId(null);
     } catch (error) {
       console.error("Invoice Create error:", error);
-      toast.error("Error while creating invoice");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -174,12 +183,13 @@ export const InvoiceProvider = ({ children }) => {
       setInvoiceId(null);
     } catch (error) {
       console.error("Invoice Update error:", error);
-      toast.error("Error while updating invoice");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
   // Start Editing
-  // Start Editing - Fixed version
   const startEditing = ({ id, payload }) => {
     console.log("id , payload", id, payload);
     setInvoiceId(id);
@@ -219,21 +229,44 @@ export const InvoiceProvider = ({ children }) => {
       const res = await getData(`${ENDPOINTS.INVOICE.DETAILS}?id=${id}`);
       setInvoiceDetail(res.data);
     } catch (error) {
-      console.error("Invoice Create error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
       toast.error("Error while creating invoice");
     }
   };
 
   // Approve
+  // const InvoiceApprove = async (id) => {
+  //   try {
+  //     const res = await postData(ENDPOINTS.INVOICE.APPROVE, id);
+  //     if (res.status) {
+  //       toast.success(res.message);
+  //     }
+  //     invoiceList();
+  //   } catch (error) {
+  //     toast.error("Error during Approve invoice");
+  //     console.error("Approve invoice error:", error);
+  //   }
+  // };
+
   const InvoiceApprove = async (id) => {
     try {
       const res = await postData(ENDPOINTS.INVOICE.APPROVE, id);
+
+      // Check the response from API
       if (res.status) {
         toast.success(res.message);
+        invoiceList(); // Refresh invoice list after success
+      } else {
+        toast.error(res.message);
       }
-      invoiceList();
     } catch (error) {
-      toast.error("Error during Approve invoice");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Error during invoice approval");
+      }
       console.error("Approve invoice error:", error);
     }
   };
@@ -247,11 +280,14 @@ export const InvoiceProvider = ({ children }) => {
       });
       if (res.status) {
         toast.success(res.message);
+      } else {
+        toast.error(res.message);
       }
       invoiceList();
     } catch (error) {
-      toast.error("Error during Reject invoice");
-      console.error("Reject invoice error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -271,8 +307,9 @@ export const InvoiceProvider = ({ children }) => {
       toast.success("Partial payment added successfully!");
       setPaymentData(res.data);
     } catch (error) {
-      toast.error("Error during paymentPartial");
-      console.error("paymentPartial error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -285,6 +322,47 @@ export const InvoiceProvider = ({ children }) => {
       type_of_payment: "",
       paymentslip: null,
     });
+  };
+
+  // Invoice Workflow
+  const InvoiceWorkflow = async (invoiceId) => {
+    try {
+      const res = await postData(
+        `${ENDPOINTS.INVOICE.WORKFLOW}?invoice_id=${invoiceId}`
+      );
+
+      if (res.status) {
+        invoiceDetails(invoiceId);
+      } else {
+        toast.error(res.message || "Failed to fetch workflow data");
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
+      console.error("Invoice Workflow error:", error);
+    }
+  };
+
+  // Revert Status
+  const revertStatus = async (invoiceId) => {
+    try {
+      const res = await postData(ENDPOINTS.INVOICE.REVERT_STATUS, {
+        invoice_id: invoiceId,
+      });
+
+      if (res.status) {
+        setRevertStatusData(res.data); // Save workflow data
+        invoiceDetails(invoiceId);
+      } else {
+        toast.error(res.message || "Failed to fetch Revert Status");
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
+      console.error("Invoice Revert error:", error);
+    }
   };
 
   return (
@@ -332,6 +410,16 @@ export const InvoiceProvider = ({ children }) => {
         paymentPartial,
         resetPaymentData,
         startEditing,
+
+        // Invoice workflow
+        invoiceWorkflowDetails,
+        setInvoiceWorkflowDetails,
+        InvoiceWorkflow,
+
+        // Revert Status
+        revertStatusData,
+        setRevertStatusData,
+        revertStatus,
       }}
     >
       {children}

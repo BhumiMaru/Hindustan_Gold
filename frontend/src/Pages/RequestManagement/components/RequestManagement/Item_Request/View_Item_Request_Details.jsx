@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
 import { useUIContext } from "../../../../../Context/UIContext";
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function View_Item_Request_Details() {
   const { handleClose } = useUIContext();
-  const { itemRequestData } = useItemRequest();
-  // console.log("itemRequestData", itemRequestData);
+  const {
+    itemRequestData,
+    serviceReceived,
+    wholeItemRequestData,
+    fetchItemRequestById,
+    itemRequestId,
+  } = useItemRequest();
+
+  useEffect(() => {
+    fetchItemRequestById(itemRequestId);
+  }, [itemRequestId]);
+
+  console.log("wholeItemRequestData", wholeItemRequestData);
   return (
     <>
       {/* ---------------------START VIEW ITEM REQUEST DETAILS----------------------- */}
@@ -40,81 +52,109 @@ export default function View_Item_Request_Details() {
                   <div className="row">
                     <div className="col-lg-4">
                       <label className="form-label">Request&nbsp;ID</label>
-                      <p>{itemRequestData?.item_request_id} </p>
+                      <p>{wholeItemRequestData?.item_request_id} </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Date</label>
-                      <p>{itemRequestData?.item_request?.created_at}</p>
+                      <p>{wholeItemRequestData?.item_request?.created_at}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Item&nbsp;Type</label>
-                      <p>{itemRequestData?.item_request?.item_type}</p>
+                      <p>{wholeItemRequestData?.item_request?.item_type}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Item&nbsp;Name</label>
                       <p>
-                        {itemRequestData?.item_request?.item_master?.item_name}
+                        {
+                          wholeItemRequestData?.item_request?.item_master
+                            ?.item_name
+                        }
                       </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Category</label>
-                      <p> {itemRequestData?.item_request?.item_master?.c_id}</p>
+                      <p>
+                        {" "}
+                        {wholeItemRequestData?.item_request?.item_master?.c_id}
+                      </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Subcategory</label>
-                      <p>{itemRequestData?.item_request?.sub_c_id}</p>
+                      <p>{wholeItemRequestData?.item_request?.sub_c_id}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Item Code </label>
-                      <p>{itemRequestData?.item_request?.item_code}</p>
+                      <p>{wholeItemRequestData?.item_request?.item_code}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Service Location </label>
                       <p>
-                        {itemRequestData?.item_request?.service_location_3_id}
+                        {
+                          wholeItemRequestData?.item_request
+                            ?.service_location_3_id
+                        }
                       </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Purpose </label>
-                      <p>{itemRequestData?.item_request?.purpose}</p>
+                      <p>{wholeItemRequestData?.item_request?.purpose}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">
                         Request&nbsp;Person&nbsp;Name
                       </label>
-                      <p>{itemRequestData?.item_request?.request_user_id}</p>
+                      <p>
+                        {wholeItemRequestData?.item_request?.request_user_id}
+                      </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Quantity</label>
-                      <p>{itemRequestData?.item_request?.quantity}</p>
+                      <p>{wholeItemRequestData?.item_request?.quantity}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">UOM</label>
-                      <p>{itemRequestData?.item_request?.uom}</p>
+                      <p>{wholeItemRequestData?.item_request?.uom}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Unit&nbsp;Price</label>
-                      <p>{itemRequestData?.item_request?.unit_price}</p>
+                      <p>{wholeItemRequestData?.item_request?.unit_price}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Total&nbsp;Amount</label>
-                      <p>{itemRequestData?.item_request?.total_amount}</p>
+                      <p>{wholeItemRequestData?.item_request?.total_amount}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Total&nbsp;Status</label>
                       <p>
-                        <span className="badge bg-label-warning">
-                          {itemRequestData?.item_request?.final_approve_status}
+                        <span
+                          className={`badge ${
+                            wholeItemRequestData?.item_request
+                              ?.final_approve_status === "Completed" ||
+                            wholeItemRequestData?.item_request
+                              ?.final_approve_status === "Approve"
+                              ? "bg-label-success"
+                              : wholeItemRequestData?.item_request
+                                  ?.final_approve_status === "Pending"
+                              ? "bg-label-warning"
+                              : "bg-label-danger"
+                          }`}
+                        >
+                          {
+                            wholeItemRequestData?.item_request
+                              ?.final_approve_status
+                          }
                         </span>
                       </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Remarks</label>
-                      <p>{itemRequestData?.item_request?.remarks}</p>
+                      <p>{wholeItemRequestData?.item_request?.remarks}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Receiving Person</label>
-                      <p>{itemRequestData?.item_request?.receiving_person}</p>
+                      <p>
+                        {wholeItemRequestData?.item_request?.receiving_person}
+                      </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">File </label>
@@ -130,10 +170,17 @@ export default function View_Item_Request_Details() {
                         </div>
                         <h6 className="mb-0 ms-4 mt-1">Reject Reason</h6>
                       </div>
-                      <p className="ms-6 ps-6">Qty Not Avaliable </p>
+                      <p className="ms-6 ps-6">
+                        {wholeItemRequestData?.item_request?.reject_reason}{" "}
+                      </p>
                     </div>
                     <div className="col-lg-12 text-center">
-                      <button className="btn btn-success btn-sm waves-effect waves-light">
+                      <button
+                        className="btn btn-success btn-sm waves-effect waves-light"
+                        onClick={() =>
+                          serviceReceived(wholeItemRequestData?.item_request_id)
+                        }
+                      >
                         Service Received
                       </button>
                     </div>
@@ -291,28 +338,68 @@ export default function View_Item_Request_Details() {
                           </div>
                         </li>
                       </ul> */}
+                      {console.log(
+                        "wholeItemRequestData",
+                        wholeItemRequestData
+                      )}
                       <ul className="timeline mb-0">
-                        {itemRequestData?.item_request?.workflows?.map(
-                          (workflow) => {
-                            const user =
-                              workflow.assign_user || workflow.request_user; // fallback
+                        {wholeItemRequestData?.item_request?.workflows
+                          // ?.slice()
+                          // ?.reverse()
+                          ?.map((workflow, index) => {
+                            const step = [
+                              "Create a new Request",
+                              "Reporting Manager Approval",
+                              "Category Head Approval",
+                              "Store Head Approval",
+                              "Headover",
+                            ];
+                            const user = workflow.assign_user; // fallback
                             return (
                               <li
                                 className="timeline-item timeline-item-transparent"
                                 key={workflow.id}
                               >
-                                <span className="timeline-point timeline-point-info" />
+                                <span
+                                  className={`timeline-point ${
+                                    workflow?.status === "Completed" ||
+                                    workflow?.status === "Approve"
+                                      ? "timeline-point-success"
+                                      : workflow?.status === "Pending"
+                                      ? "timeline-point-warning"
+                                      : "timeline-point-danger"
+                                  }`}
+                                />
                                 <div className="timeline-event">
                                   <div className="timeline-header mb-3">
                                     <h6 className="mb-0">
-                                      {workflow.status}{" "}
+                                      {/* {workflow.status}{" "} */}
+                                      {step[index]}
                                       {/* e.g., Approved / Pending */}
                                     </h6>
-                                    <small className="text-body-secondary">
-                                      {new Date(
-                                        workflow.updated_at
-                                      ).toLocaleString()}
-                                    </small>
+                                    <div className="d-flex flex-column">
+                                      {/* 🕒 Date */}
+                                      <small className="text-body-secondary">
+                                        {new Date(
+                                          workflow.updated_at
+                                        ).toLocaleString()}
+                                      </small>
+
+                                      {/* ✅ Status (displayed below date) */}
+                                      <small
+                                        // className="text-primary fw-semibold"
+                                        className={`badge ${
+                                          workflow?.status === "Completed" ||
+                                          workflow?.status === "Approve"
+                                            ? "bg-label-success"
+                                            : workflow?.status === "Pending"
+                                            ? "bg-label-warning"
+                                            : "bg-label-danger"
+                                        }`}
+                                      >
+                                        {workflow?.status}
+                                      </small>
+                                    </div>
                                   </div>
 
                                   <p>
@@ -325,11 +412,7 @@ export default function View_Item_Request_Details() {
                                     <div className="d-flex flex-wrap align-items-center mb-50">
                                       <div className="avatar avatar-sm me-2">
                                         <img
-                                          src={
-                                            user?.profile_photo
-                                              ? `/uploads/${user.profile_photo}`
-                                              : "assets/img/avatars/1.png"
-                                          }
+                                          src={`${publicUrl}/assets/img/avatars/1.png`}
                                           alt="Avatar"
                                           className="rounded-circle"
                                         />
@@ -338,12 +421,18 @@ export default function View_Item_Request_Details() {
                                         <p className="mb-0 small fw-medium">
                                           {user?.name}
                                         </p>
-                                        <small>
+                                        {/* <small>
                                           {workflow.task_level === 1
                                             ? "Reporting Manager"
                                             : workflow.task_level === 2
                                             ? "Store Head"
                                             : "Category Head"}
+                                        </small> */}
+                                        <small>
+                                          {
+                                            workflow?.request_user?.role
+                                              ?.role_name
+                                          }
                                         </small>
                                       </div>
                                     </div>
@@ -351,8 +440,7 @@ export default function View_Item_Request_Details() {
                                 </div>
                               </li>
                             );
-                          }
-                        )}
+                          })}
                       </ul>
                     </div>
                   </div>

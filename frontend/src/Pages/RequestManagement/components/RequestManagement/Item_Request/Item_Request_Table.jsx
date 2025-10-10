@@ -19,6 +19,8 @@ export default function Item_Request_Table({ search }) {
     serviceReceived,
     startEditing,
     pagination,
+    setItemRequestId,
+    set_ItemRequest_Id,
   } = useItemRequest();
 
   // Initialize Bootstrap tooltips
@@ -82,6 +84,7 @@ export default function Item_Request_Table({ search }) {
             </tr>
           ) : (
             filteredData.map((item, index) => {
+              console.log("item", item);
               return (
                 <tr key={index}>
                   <td>
@@ -163,124 +166,36 @@ export default function Item_Request_Table({ search }) {
                   </td>
                   <td>
                     <div className="d-flex align-items-center">
-                      {activeTab === "my_request" && (
-                        <div className="d-inline-flex gap-2">
-                          <a    
-                            className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                          >
-                            <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
-                          </a>
-                          <div className="d-inline-block">
-                            <div className="dropdown-menu dropdown-menu-end m-0">
-                              <button
-                                key={item.id}
-                                className={`dropdown-item waves-effect ${
-                                  item?.task_level === 2 &&
-                                  item?.status === "Approve"
-                                    ? "d-none"
-                                    : ""
-                                }`}
-                                onClick={() => {
-                                  // FIXED: Pass the correct ID (item_request_id instead of workflow_id)
-                                  const itemRequestId = item?.id; // This should be the item_request_id
-                                  // console.log("Editing item request ID:", item);
+                      {/* {activeTab === "my_request" && ( */}
 
-                                  // Use the correct function to start editing
-                                  startEditing(itemRequestId);
-
-                                  navigate(
-                                    `/user/request/request-create/${item?.item_request?.item_type}/${itemRequestId}`
-                                  );
-                                }}
-                              >
-                                Edit
-                              </button>
-
-                              <a
-                                href="#"
-                                className="dropdown-item waves-effect"
-                                data-bs-toggle="modal"
-                                data-bs-target="#grnCreateModel"
-                                onClick={() => {
-                                  handleOpen("viewItemRequest");
-                                  setItemRequestData(item);
-                                }}
-                              >
-                                View
-                              </a>
-
-                              {/* <a
-                            href="#"
-                            className="dropdown-item waves-effect"
-                            data-bs-toggle="modal"
-                            data-bs-target="#grnCreateModel"
-                            onClick={() => {
-                              handleOpen("viewApprove");
-                              // setItemRequestData(item);
-                            }}
-                          >
-                            Approve
-                          </a>
-
-                          <a
-                            href="#"
-                            className="dropdown-item waves-effect"
-                            data-bs-toggle="modal"
-                            data-bs-target="#grnCreateModel"
-                            onClick={() => {
-                              handleOpen("viewReject");
-                              // setItemRequestData(item);
-                            }}
-                          >
-                            Reject
-                          </a> */}
-
-                              <div
-                                className={`dropdown-divider ${
-                                  item?.task_level === 2 &&
-                                  item?.status === "Approve"
-                                    ? "d-none"
-                                    : ""
-                                }`}
-                              ></div>
-                              <a
-                                className={`dropdown-item text-danger delete-record waves-effect ${
-                                  item?.task_level === 2 &&
-                                  item?.status === "Approve"
-                                    ? "d-none"
-                                    : ""
-                                }`}
-                                onClick={() =>
-                                  deleteItemRequest(item?.item_request_id)
-                                }
-                              >
-                                Delete
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      )}
+                      {/* )} */}
 
                       {activeTab === "approval_request" && (
                         <div className="d-inline-flex gap-2">
-                          {item?.status === "Approve" &&
-                            item?.final_approve_status === "Approve" && (
+                          {item?.final_approve_status === "Pending" &&
+                            item?.status === "Pending" && (
                               <button
                                 className={`btn btn-success btn-sm waves-effect waves-light ${
-                                  item?.status === "Approve" ? "d-none" : ""
+                                  item?.status === "Approve" ||
+                                  item?.status === "Reject"
+                                    ? "d-none"
+                                    : ""
                                 }`}
                                 data-bs-toggle="modal"
                                 data-bs-target="#servicesModal"
                                 onClick={() => {
-                                  // const workflow_id = item?.id;
-                                  const workflow_id =
-                                    item?.item_request?.workflows[0]?.id;
+                                  const workflow_id = item?.id;
+                                  const item_request_id = item?.item_request_id;
+                                  console.log("hh", item_request_id); // ✅ logs item_request_id
+
                                   if (
                                     item.item_type === "service" &&
                                     item?.task_level === 4
                                   ) {
+                                    console.log("hhh");
+                                    set_ItemRequest_Id(item_request_id); // store item_request_id
+                                    setItemRequestId(workflow_id); // store workflow_id
+                                    fetchItemRequestById(workflow_id);
                                     handleOpen("viewApprove");
                                   } else {
                                     approveRequest(workflow_id);
@@ -291,11 +206,14 @@ export default function Item_Request_Table({ search }) {
                               </button>
                             )}
 
-                          {item?.status === "Reject" &&
-                            item?.final_approve_status === "Reject" && (
+                          {item?.final_approve_status === "Pending" &&
+                            item?.status === "Pending" && (
                               <button
                                 className={`btn btn-danger btn-sm waves-effect waves-light ${
-                                  item?.status === "Reject" ? "d-none" : ""
+                                  item?.status === "Reject" ||
+                                  item?.status === "Approve"
+                                    ? "d-none"
+                                    : ""
                                 }`}
                                 data-bs-toggle="modal"
                                 data-bs-target="#rejectRemarkModal"
@@ -340,8 +258,9 @@ export default function Item_Request_Table({ search }) {
                             )}
 
                           {item?.task_level === 4 &&
-                            item?.status === "Pending" &&
-                            item?.final_approve_status === "Approve" && (
+                            item?.status === "Approve" &&
+                            (item?.final_approve_status === "Approve" ||
+                              item?.final_approve_status === "GeneratePI") && (
                               <button
                                 className="btn btn-success btn-sm waves-effect waves-light"
                                 onClick={() =>
@@ -353,6 +272,111 @@ export default function Item_Request_Table({ search }) {
                             )}
                         </div>
                       )}
+                      <div className="d-inline-flex gap-2">
+                        <a
+                          className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
+                        </a>
+                        <div className="d-inline-block">
+                          <div className="dropdown-menu dropdown-menu-end m-0">
+                            <button
+                              key={item.id}
+                              className={`dropdown-item waves-effect ${
+                                item?.task_level === 2 &&
+                                item?.status === "Approve"
+                                  ? "d-none"
+                                  : ""
+                              } ${
+                                activeTab === "approval_request" ? "d-none" : ""
+                              }`}
+                              onClick={() => {
+                                // FIXED: Pass the correct ID (item_request_id instead of workflow_id)
+                                const itemRequestId = item?.id; // This should be the item_request_id
+                                // console.log("Editing item request ID:", item);
+
+                                // Use the correct function to start editing
+                                startEditing(itemRequestId);
+
+                                navigate(
+                                  `/user/request/request-create/${item?.item_request?.item_type}/${itemRequestId}`
+                                );
+                              }}
+                            >
+                              Edit
+                            </button>
+
+                            <a
+                              href="#"
+                              className="dropdown-item waves-effect"
+                              data-bs-toggle="modal"
+                              data-bs-target="#grnCreateModel"
+                              onClick={() => {
+                                const workflow_id = item?.id;
+                                setItemRequestId(workflow_id);
+                                handleOpen("viewItemRequest");
+                                setItemRequestData(item);
+                              }}
+                            >
+                              View
+                            </a>
+
+                            {/* <a
+                            href="#"
+                            className="dropdown-item waves-effect"
+                            data-bs-toggle="modal"
+                            data-bs-target="#grnCreateModel"
+                            onClick={() => {
+                              handleOpen("viewApprove");
+                              // setItemRequestData(item);
+                            }}
+                          >
+                            Approve
+                          </a>
+
+                          <a
+                            href="#"
+                            className="dropdown-item waves-effect"
+                            data-bs-toggle="modal"
+                            data-bs-target="#grnCreateModel"
+                            onClick={() => {
+                              handleOpen("viewReject");
+                              // setItemRequestData(item);
+                            }}
+                          >
+                            Reject
+                          </a> */}
+
+                            <div
+                              className={`dropdown-divider ${
+                                item?.task_level === 2 &&
+                                item?.status === "Approve"
+                                  ? "d-none"
+                                  : ""
+                              }  ${
+                                activeTab === "approval_request" ? "d-none" : ""
+                              }`}
+                            ></div>
+                            <a
+                              className={`dropdown-item text-danger delete-record waves-effect ${
+                                item?.task_level === 2 &&
+                                item?.status === "Approve"
+                                  ? "d-none"
+                                  : ""
+                              }  ${
+                                activeTab === "approval_request" ? "d-none" : ""
+                              }`}
+                              onClick={() =>
+                                deleteItemRequest(item?.item_request_id)
+                              }
+                            >
+                              Delete
+                            </a>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </td>
                 </tr>

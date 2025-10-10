@@ -12,7 +12,7 @@ import { decryptData } from "../../../../../utils/decryptData";
 import Date_Range_Model from "../../../../../components/Date Range/Date_Range_Model";
 import moment from "moment";
 
-export default function PI_Request_List() {
+export default function PI_Request_List({ findById }) {
   const {
     search,
     setSearch,

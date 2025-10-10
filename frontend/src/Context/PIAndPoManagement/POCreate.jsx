@@ -84,6 +84,9 @@ export const POProvider = ({ children }) => {
   const [endDate, setEndDate] = useState(null);
   const [vendor, setVendor] = useState(null);
 
+  // PO Details Workflow
+  const [poWorkflowDetails, setPoWorkflowDetails] = useState();
+
   // Po List
   // const getPoList = async ({
   //   search: searchText = search,
@@ -203,6 +206,24 @@ export const POProvider = ({ children }) => {
     }
   };
 
+  // PO Workflow
+  const poWorkflow = async (po_id) => {
+    try {
+      const res = await postData(ENDPOINTS.POCREATE.WORKFLOW, {
+        po_id: po_id,
+      });
+
+      if (res.status) {
+        setPoWorkflowDetails(res.data); // Save workflow data
+      } else {
+        toast.error(res.message || "Failed to fetch workflow data");
+      }
+    } catch (error) {
+      toast.error("Error during PO Workflow");
+      console.error("IPOnvoice Workflow error:", error);
+    }
+  };
+
   return (
     <POCreateContext.Provider
       value={{
@@ -235,6 +256,11 @@ export const POProvider = ({ children }) => {
         getPoDetails,
         PoApprove,
         PoReject,
+
+        // PO WORKFLOW
+        poWorkflowDetails,
+        setPoWorkflowDetails,
+        poWorkflow,
       }}
     >
       {children}

@@ -50,7 +50,17 @@ export default function GRN_List_Table() {
                 <td>{grn?.vendor?.vendor_name}</td>
                 <td>10</td>
                 <td>
-                  <span className="badge bg-label-warning">{grn.status}</span>
+                  <span
+                    className={`badge ${
+                      grn.status === "Approve"
+                        ? "bg-label-success"
+                        : grn.status === "Reject"
+                        ? "bg-label-danger"
+                        : "bg-label-warning"
+                    }`}
+                  >
+                    {grn.status}
+                  </span>
                 </td>
                 <td>
                   <div className="d-inline-flex gap-2">

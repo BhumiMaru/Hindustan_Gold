@@ -55,6 +55,7 @@ import { GRNProvider } from "../Context/PIAndPoManagement/GRN";
 import PO_Create from "../Pages/POandMaterialManagement/components/POandMaterialManagement/PO_Create/PO_Create";
 import Invoice_details from "../Pages/PaymentManagement/components/PaymentManagement/Invoice_List/Invoice_details";
 import { InvoiceProvider } from "../Context/PIAndPoManagement/Invoice";
+import { PIRequestProvider } from "../Context/PIAndPoManagement/PIRequestList";
 
 export default function AppRoutes() {
   const { isOpenSmallSidebar, closeSmallSidebar, modal } = useUIContext();
@@ -299,7 +300,13 @@ export default function AppRoutes() {
         />
         <Route
           path="/po-material/pi-request-list"
-          element={<PI_Request_List_Page />}
+          element={
+            <ItemMasterProvider>
+              <PIRequestProvider>
+                <PI_Request_List_Page />
+              </PIRequestProvider>
+            </ItemMasterProvider>
+          }
         />
         <Route
           path="/po-material/get-quote-list"
