@@ -14,7 +14,7 @@ function App() {
           <LayoutPage />
         </AuthProvider>
       </BrowserRouter>
-      <ToastContainer position="bottom-center" autoClose={3000} />
+      <ToastContainer position="bottom-center" autoClose={500} />
       {/* ----------End App---------- */}
     </>
   );

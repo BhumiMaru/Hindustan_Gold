@@ -345,7 +345,77 @@ export default function User_Creation_Permission() {
     }
   }, [userPermission]);
 
-  // Handle checkbox change
+  // Handle checkbox change --- old
+  // const handlePermissionChange = async (
+  //   module_name,
+  //   type,
+  //   permission,
+  //   isChecked
+  // ) => {
+  //   const key = makePermissionKey(module_name, type, permission);
+
+  //   // Optimistic update
+  //   setOptimisticUpdates((prev) => ({ ...prev, [key]: isChecked }));
+  //   setLoadingStates((prev) => ({ ...prev, [key]: true }));
+
+  //   const payload = {
+  //     user_id: Number(id),
+  //     role_id: useCreationData?.role_id ?? 0,
+  //     module_name,
+  //     type,
+  //     permission,
+  //     status: isChecked ? 1 : 0,
+  //   };
+
+  //   console.log("payload", payload);
+
+  //   try {
+  //     await createUserPermission(payload);
+  //     setLocalPermissions((prev) => ({ ...prev, [key]: isChecked }));
+  //     fetchUserPermission(id);
+  //   } catch (error) {
+  //     console.error("Error updating permission:", error);
+  //     setOptimisticUpdates((prev) => {
+  //       const newState = { ...prev };
+  //       delete newState[key];
+  //       return newState;
+  //     });
+  //     fetchUserPermission(id); // refresh
+  //   } finally {
+  //     setLoadingStates((prev) => ({ ...prev, [key]: false }));
+  //   }
+  // };
+  // Checkbox Component with persistent state
+  // Checkbox component ---old
+  // const PermissionCheckbox = ({ module, type, permission, id }) => {
+  //   const key = makePermissionKey(module, type, permission);
+  //   const isLoading = loadingStates[key];
+  //   const isChecked =
+  //     key in optimisticUpdates
+  //       ? optimisticUpdates[key]
+  //       : localPermissions[key] || false;
+
+  //   // console.log("key", key, "ischecked", isChecked);
+
+  //   return (
+  //     <div className="form-check d-flex justify-content-center align-items-center">
+  //       <input
+  //         className="form-check-input"
+  //         type="checkbox"
+  //         id={id}
+  //         checked={isChecked}
+  //         onChange={(e) => {
+  //           handlePermissionChange(module, type, permission, e.target.checked);
+  //         }}
+  //         disabled={isLoading}
+  //       />
+  //       {isLoading && (
+  //         <span className="spinner-border spinner-border-sm ms-2"></span>
+  //       )}
+  //     </div>
+  //   );
+  // };
+
   const handlePermissionChange = async (
     module_name,
     type,
@@ -354,9 +424,17 @@ export default function User_Creation_Permission() {
   ) => {
     const key = makePermissionKey(module_name, type, permission);
 
-    // Optimistic update
+    // Optimistic update (local UI)
     setOptimisticUpdates((prev) => ({ ...prev, [key]: isChecked }));
     setLoadingStates((prev) => ({ ...prev, [key]: true }));
+
+    // const payload = {
+    //   role_id: Number(id),
+    //   module_name,
+    //   type,
+    //   permission,
+    //   status: isChecked ? 1 : 0,
+    // };
 
     const payload = {
       user_id: Number(id),
@@ -367,11 +445,100 @@ export default function User_Creation_Permission() {
       status: isChecked ? 1 : 0,
     };
 
-    console.log("payload", payload);
-
     try {
+      // 1️⃣ Update current permission
       await createUserPermission(payload);
       setLocalPermissions((prev) => ({ ...prev, [key]: isChecked }));
+
+      const normalizedType = type?.trim()?.toLowerCase();
+      const normalizedPerm = permission?.trim()?.toLowerCase();
+
+      // --- Helper function for auto-checks ---
+      const ensurePermission = async (targetType, targetPerm) => {
+        const targetKey = makePermissionKey(
+          module_name,
+          targetType,
+          targetPerm
+        );
+        if (!localPermissions[targetKey]) {
+          const newPayload = {
+            role_id: Number(id),
+            module_name,
+            type: targetType,
+            permission: targetPerm,
+            status: 1,
+          };
+          setOptimisticUpdates((prev) => ({ ...prev, [targetKey]: true }));
+          setLoadingStates((prev) => ({ ...prev, [targetKey]: true }));
+          await createUserPermission(newPayload);
+          setLocalPermissions((prev) => ({ ...prev, [targetKey]: true }));
+          setLoadingStates((prev) => ({ ...prev, [targetKey]: false }));
+        }
+      };
+
+      // --- Auto-check logic starts here ---
+      if (isChecked && ["add", "generate"].includes(normalizedPerm)) {
+        // ----------- start PO and Material Management Module ------ //
+
+        // Case 1: For Get Quotation
+        if (normalizedType === "get quotation") {
+          await ensurePermission(type, "view"); // view same module
+          await ensurePermission("PO Generation", "add"); // add PO Generation
+          await ensurePermission("PO Generation", "view"); // view PO Generation
+        }
+
+        // Case 2: For GRN
+        if (normalizedType === "grn") {
+          await ensurePermission(type, "view");
+        }
+
+        // Case 3: For PO Generation
+        if (normalizedType === "po generation") {
+          await ensurePermission(type, "view");
+        }
+
+        // Case 4: For GRN
+        if (normalizedType === "pi request") {
+          await ensurePermission(type, "view");
+        }
+        // ----------- start PO and Material Management Module ------ //
+        // -----------------------------------------------------------------------------------//
+        // ----------- start Payment Management Module -------------- //
+        // Case 2: For Pending Payment Vendor List
+        if (normalizedType === "pending payment vendor list") {
+          await ensurePermission(type, "view");
+        }
+
+        // Case 3: For Payment Request
+        if (normalizedType === "payment request") {
+          await ensurePermission(type, "view");
+        }
+
+        // Case 4: For Vendor Payment History
+        if (normalizedType === "vendor payment history") {
+          await ensurePermission(type, "view");
+        }
+        // ----------- start Payment Management Module -------------- //
+        // -----------------------------------------------------------------------------------//
+        // ----------- start Item Request Module -------------- //
+        // Case 2: For Item Request
+        if (normalizedType === "item request") {
+          await ensurePermission(type, "view");
+        }
+
+        // Case 3: For Material Approval
+        if (normalizedType === "material approval") {
+          await ensurePermission(type, "view");
+        }
+
+        // Case 4: For Request History Report
+        if (normalizedType === "request history report") {
+          await ensurePermission(type, "view");
+        }
+        // ----------- start Item Request Module -------------- //
+      }
+
+      // Refresh backend after all changes
       fetchUserPermission(id);
     } catch (error) {
       console.error("Error updating permission:", error);
@@ -380,14 +547,14 @@ export default function User_Creation_Permission() {
         delete newState[key];
         return newState;
       });
-      fetchUserPermission(id); // refresh
+      fetchUserPermission(id);
     } finally {
       setLoadingStates((prev) => ({ ...prev, [key]: false }));
     }
   };
-  // Checkbox Component with persistent state
-  // Checkbox component
-  const PermissionCheckbox = ({ module, type, permission, id }) => {
+
+  // Checkbox Component with persistent state ---new
+  const PermissionCheckbox = ({ module, type, permission }) => {
     const key = makePermissionKey(module, type, permission);
     const isLoading = loadingStates[key];
     const isChecked =
@@ -395,18 +562,18 @@ export default function User_Creation_Permission() {
         ? optimisticUpdates[key]
         : localPermissions[key] || false;
 
-    // console.log("key", key, "ischecked", isChecked);
+    const uniqueId = `${module}_${type}_${permission}`.replace(/\s+/g, "_");
 
     return (
       <div className="form-check d-flex justify-content-center align-items-center">
         <input
           className="form-check-input"
           type="checkbox"
-          id={id}
+          id={uniqueId}
           checked={isChecked}
-          onChange={(e) => {
-            handlePermissionChange(module, type, permission, e.target.checked);
-          }}
+          onChange={(e) =>
+            handlePermissionChange(module, type, permission, e.target.checked)
+          }
           disabled={isLoading}
         />
         {isLoading && (
@@ -491,8 +658,8 @@ export default function User_Creation_Permission() {
                           </div>
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            {/* <input
+                          {/* <div className="form-check d-flex justify-content-center text-center"> */}
+                          {/* <input
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_34"
@@ -515,13 +682,13 @@ export default function User_Creation_Permission() {
                                 )
                               }
                             /> */}
-                            <PermissionCheckbox
-                              module="Item Management Module"
-                              type="Material Code"
-                              permission="allrights"
-                              id="material_code_allrights"
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="Item Management Module"
+                            type="Material Code"
+                            permission="allrights"
+                            id="material_code_allrights"
+                          />
+                          {/* </div> */}
                         </td>
                       </tr>
                       <tr>
@@ -544,8 +711,8 @@ export default function User_Creation_Permission() {
                           </div>
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            {/* <input
+                          {/* <div className="form-check d-flex justify-content-center"> */}
+                          {/* <input
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_38"
@@ -568,13 +735,13 @@ export default function User_Creation_Permission() {
                                 )
                               }
                             /> */}
-                            <PermissionCheckbox
-                              module="Item Management Module"
-                              type="Service Code"
-                              permission="allrights"
-                              id="service_code_allrights"
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="Item Management Module"
+                            type="Service Code"
+                            permission="allrights"
+                            id="service_code_allrights"
+                          />
+                          {/* </div> */}
                         </td>
                       </tr>
                       <tr className="border-transparent">
@@ -595,8 +762,8 @@ export default function User_Creation_Permission() {
                           </div>
                         </td>
                         <td>
-                          <div className="form-check d-flex justify-content-center">
-                            {/* <input
+                          {/* <div className="form-check d-flex justify-content-center"> */}
+                          {/* <input
                               className="form-check-input"
                               type="checkbox"
                               id="defaultCheck_cust_42"
@@ -619,13 +786,13 @@ export default function User_Creation_Permission() {
                                 )
                               }
                             /> */}
-                            <PermissionCheckbox
-                              module="Item Management Module"
-                              type="Asset Code"
-                              permission="allrights"
-                              id="asset_code_allrights"
-                            />
-                          </div>
+                          <PermissionCheckbox
+                            module="Item Management Module"
+                            type="Asset Code"
+                            permission="allrights"
+                            id="asset_code_allrights"
+                          />
+                          {/* </div> */}
                         </td>
                       </tr>
                     </tbody>
@@ -644,7 +811,7 @@ export default function User_Creation_Permission() {
                           View
                         </th>
                         <th className="text-nowrap text-center w-px-50">
-                          Add/Edit
+                          Add/Generate
                         </th>
                         {/* <th className="text-nowrap text-center w-px-50">
                           Delete
@@ -671,7 +838,7 @@ export default function User_Creation_Permission() {
                           <PermissionCheckbox
                             module="Item Request Module"
                             type="Item Request"
-                            permission="add_edit"
+                            permission="add"
                             id="defaultCheck_cust_44"
                           />
                         </td>
@@ -713,14 +880,21 @@ export default function User_Creation_Permission() {
                           Request History Report
                         </td>
                         <td>
-                          <PermissionCheckbox
+                          {/* <PermissionCheckbox
                             module="Item Request Module"
                             type="Request History Report"
                             permission="view"
                             id="defaultCheck_cust_48"
+                          /> */}
+                        </td>
+                        <td>
+                          <PermissionCheckbox
+                            module="Item Request Module"
+                            type="Request History Report"
+                            permission="add"
+                            id="defaultCheck_cust_48"
                           />
                         </td>
-                        <td></td>
                         <td></td>
                         {/* <td></td> */}
                       </tr>
@@ -773,7 +947,7 @@ export default function User_Creation_Permission() {
                           <PermissionCheckbox
                             module="PO and Material Management Module"
                             type="PI Request"
-                            permission="add_generate"
+                            permission="add"
                             id="defaultCheck_cust_50"
                           />
                         </td>
@@ -892,15 +1066,15 @@ export default function User_Creation_Permission() {
                           />
                         </td> */}
                         <td>
-                          <PermissionCheckbox
+                          {/* <PermissionCheckbox
                             module="PO and Material Management Module"
                             type="GRN"
                             permission="approve"
                             id="defaultCheck_cust_21"
-                          />
+                          /> */}
                         </td>
                       </tr>
-                      <tr className="border-transparent">
+                      {/* <tr className="border-transparent">
                         <td className="text-nowrap text-heading">
                           Invoice Entry
                         </td>
@@ -913,24 +1087,24 @@ export default function User_Creation_Permission() {
                             id="defaultCheck_cust_22"
                           />
                         </td>
-                        {/* <td>
+                        <td>
                           <PermissionCheckbox
                             module="PO and Material Management Module"
                             type="Invoice Entry"
                             permission="edit"
                             id="defaultCheck_cust_23"
                           />
-                        </td> */}
-                        {/* <td>
+                        </td>
+                        <td>
                           <PermissionCheckbox
                             module="PO and Material Management Module"
                             type="Invoice Entry"
                             permission="delete"
                             id="defaultCheck_cust_24"
                           />
-                        </td> */}
+                        </td>
                         <td></td>
-                      </tr>
+                      </tr> */}
                     </tbody>
                   </table>
                 </div>
@@ -993,10 +1167,18 @@ export default function User_Creation_Permission() {
                             id="defaultCheck_cust_27"
                           />
                         </td>
-                        <td></td>
+                        <td>
+                          {" "}
+                          <PermissionCheckbox
+                            module="Payment Management Module"
+                            type="Payment Request"
+                            permission="approve"
+                            id="defaultCheck_cust_28"
+                          />
+                        </td>
                         <td></td>
                       </tr>
-                      <tr>
+                      {/* <tr>
                         <td className="text-nowrap text-heading">
                           Payment Approval
                         </td>
@@ -1011,7 +1193,7 @@ export default function User_Creation_Permission() {
                           />
                         </td>
                         <td></td>
-                      </tr>
+                      </tr> */}
                       <tr>
                         <td className="text-nowrap text-heading">
                           Vendor Payment History
