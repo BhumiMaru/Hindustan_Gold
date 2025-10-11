@@ -66,15 +66,19 @@ export default function User_Creation_Form() {
 
     try {
       if (id) {
+        console.log("before id", id, "payload", payload);
         await updateUser(id, payload);
-        resetUserData();
-        setIsEditUserId(null);
+        // resetUserData();
+        // setIsEditUserId(null);
       } else {
+        console.log("before payload", payload);
         const newUser = await createUser(payload); // ✅ get response
         if (newUser?.id) {
           navigate(`/super_admin/master/user-create/${newUser.id}`); // ✅ use real id
         }
       }
+
+      console.log("submitting form", payload);
     } catch (error) {
       console.log(error);
     }
@@ -196,7 +200,7 @@ export default function User_Creation_Form() {
                   onChange={(selected) =>
                     setUserCreationData({
                       ...useCreationData,
-                      role_id: selected,
+                      role_id: Number(selected),
                     })
                   }
                 />
@@ -338,7 +342,7 @@ export default function User_Creation_Form() {
                   onChange={(selected) =>
                     setUserCreationData({
                       ...useCreationData,
-                      company_id: selected,
+                      company_id: Number(selected),
                     })
                   }
                   placeholder="Select Company"

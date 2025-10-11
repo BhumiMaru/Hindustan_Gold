@@ -33,6 +33,7 @@ export default function Category_Master_Form() {
         toast.error(error);
         return;
       }
+      console.log("category Data", categoryData);
 
       if (categoryEditId) {
         // Update
@@ -105,7 +106,7 @@ export default function Category_Master_Form() {
                           value: grp.id,
                           label: grp.group_name,
                         }))}
-                        value={categoryData.group_id}
+                        value={categoryData?.group_id}
                         onChange={(opt) =>
                           setCategoryData({
                             ...categoryData,
@@ -124,7 +125,7 @@ export default function Category_Master_Form() {
                       id="nameSmall"
                       className="form-control"
                       placeholder="Enter Category Name"
-                      value={categoryData.category_name}
+                      value={categoryData?.category_name}
                       onChange={(e) =>
                         setCategoryData({
                           ...categoryData,
@@ -143,7 +144,7 @@ export default function Category_Master_Form() {
                       className="form-control"
                       max="3"
                       placeholder="Enter Prefix Code"
-                      value={categoryData.prefix_code}
+                      value={categoryData?.prefix_code}
                       onChange={(e) =>
                         setCategoryData({
                           ...categoryData,

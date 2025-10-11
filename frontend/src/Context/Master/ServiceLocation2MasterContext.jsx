@@ -18,15 +18,22 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
   const [serviceLocation2EditId, setServiceLocation2EditId] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
   const [filterSelectedOption, setFilterSelectedOption] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: 10,
+    total: 0,
+  });
 
   // Fetch All
-  const fetchServiceLocations2 = async (
+  const fetchServiceLocations2 = async ({
     search = "",
-    serviceLocation1Id = null
-  ) => {
+    serviceLocation1Id = null,
+    page = 1,
+    perPage = 10,
+  } = {}) => {
     try {
       // If serviceLocation1Id is null, don't include it in the request
-      const params = { search };
+      const params = { search, page, per_page: perPage };
       if (serviceLocation1Id !== null) {
         params.service_location_1_id = serviceLocation1Id;
       }
@@ -36,6 +43,14 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
         params
       );
       setServiceLocation2(res.data.data);
+
+      // ✅ Update pagination
+      setPagination((prev) => ({
+        ...prev,
+        currentPage: res.data.current_page || page,
+        perPage: perPage,
+        total: res.data.total || 0,
+      }));
     } catch (error) {
       toast.error(`Service Location 2 Master Fetch Error: ${error.message}`);
     }
@@ -127,6 +142,8 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
         serviceL2,
         filterSelectedOption,
         setFilterSelectedOption,
+        pagination,
+        setPagination,
 
         fetchSL2Filter,
         fetchServiceLocations2,

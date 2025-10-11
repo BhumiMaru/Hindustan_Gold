@@ -816,26 +816,27 @@ export default function Item_Request_Form() {
                 }
               />
             </div>
-
             {/* Receiving Person */}
-            <div className="col-sm-3 mb-4">
-              <label htmlFor="ReceivingPerson" className="form-label">
-                Receiving Person
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="ReceivingPerson"
-                placeholder="Receiving Person"
-                value={itemRequestData?.receiving_person || ""}
-                onChange={(e) =>
-                  setItemRequestData((prev) => ({
-                    ...prev,
-                    receiving_person: e.target.value,
-                  }))
-                }
-              />
-            </div>
+            {type === "material" && (
+              <div className="col-sm-3 mb-4">
+                <label htmlFor="ReceivingPerson" className="form-label">
+                  Receiving Person
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="ReceivingPerson"
+                  placeholder="Receiving Person"
+                  value={itemRequestData?.receiving_person || ""}
+                  onChange={(e) =>
+                    setItemRequestData((prev) => ({
+                      ...prev,
+                      receiving_person: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+            )}
 
             {/* Upload File */}
             <div className="col-sm-6 mb-4">

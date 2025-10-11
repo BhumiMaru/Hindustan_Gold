@@ -123,11 +123,16 @@ export const UserCreationProvider = ({ children }) => {
       // fetchUserCreationData();
     } catch (error) {
       // ✅ Check if backend sent validation errors
-      if (error.response && error.response.data && error.response.data.errors) {
+      if (error.response?.data?.errors) {
         const errors = error.response.data.errors;
-        Object.values(errors).forEach((errArray) => {
-          errArray.forEach((msg) => toast.error(msg)); // Show all error messages
+        Object.values(errors).forEach((errItem) => {
+          if (Array.isArray(errItem)) {
+            errItem.forEach((msg) => toast.error(msg));
+          } else if (typeof errItem === "string") {
+            toast.error(errItem);
+          }
         });
+        console.log("create errors", errors);
       } else {
         toast.error(error.response?.data?.message || "Failed to create user");
       }
@@ -194,11 +199,16 @@ export const UserCreationProvider = ({ children }) => {
       toast.success("User updated successfully");
       fetchUserCreationData();
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.errors) {
+      if (error.response?.data?.errors) {
         const errors = error.response.data.errors;
-        Object.values(errors).forEach((errArray) => {
-          errArray.forEach((msg) => toast.error(msg));
+        Object.values(errors).forEach((errItem) => {
+          if (Array.isArray(errItem)) {
+            errItem.forEach((msg) => toast.error(msg));
+          } else if (typeof errItem === "string") {
+            toast.error(errItem);
+          }
         });
+        console.log("update errors", errors);
       } else {
         toast.error(error.response?.data?.message || "Failed to update user");
       }
@@ -209,7 +219,7 @@ export const UserCreationProvider = ({ children }) => {
   const fetchUserById = async (id) => {
     try {
       const res = await postData(ENDPOINTS.USER_CREATION.DETAILS, { id });
-      // console.log("res", res.data);
+      console.log("res", res.data);
       const user = res.data;
       setUserCreationData({
         name: user?.name || "",
@@ -376,7 +386,6 @@ export const UserCreationProvider = ({ children }) => {
   // };
 
   // Create / Update User Permission
-  // Create / Update User Permission
   const createUserPermission = async (payload) => {
     try {
       const res = await postData(
@@ -384,8 +393,8 @@ export const UserCreationProvider = ({ children }) => {
         payload
       );
 
-      // console.log("payload", payload);
-      // console.log("res", res);
+      console.log("payload", payload);
+      console.log("res", res);
 
       // Handle "User permission already exists" message
       if (res.message === "User permission already exists.") {
@@ -426,8 +435,8 @@ export const UserCreationProvider = ({ children }) => {
       const res = await getData(
         `${ENDPOINTS.USER_CREATION.PERMISSION_LIST}?user_id=${user_id}`
       );
-      // console.log("res", res?.data);
       const data = res?.data || [];
+      // console.log("res", res?.data);
       // ✅ filter data by correct user id only
       const filtered = data.filter(
         (p) => String(p.user_id) === String(user_id)

@@ -416,6 +416,155 @@ export default function User_Creation_Permission() {
   //   );
   // };
 
+  // const handlePermissionChange = async (
+  //   module_name,
+  //   type,
+  //   permission,
+  //   isChecked
+  // ) => {
+  //   const key = makePermissionKey(module_name, type, permission);
+
+  //   // Optimistic update (local UI)
+  //   setOptimisticUpdates((prev) => ({ ...prev, [key]: isChecked }));
+  //   setLoadingStates((prev) => ({ ...prev, [key]: true }));
+
+  //   // const payload = {
+  //   //   role_id: Number(id),
+  //   //   module_name,
+  //   //   type,
+  //   //   permission,
+  //   //   status: isChecked ? 1 : 0,
+  //   // };
+
+  //   // const payload = {
+  //   //   user_id: Number(id),
+  //   //   role_id: useCreationData?.role_id ?? 0,
+  //   //   module_name,
+  //   //   type,
+  //   //   permission,
+  //   //   status: isChecked ? 1 : 0,
+  //   // };
+
+  //   const payload = {
+  //     user_id: id ? Number(id) : null,
+  //     role_id: useCreationData?.role_id || null, // null if not set
+  //     module_name,
+  //     type,
+  //     permission,
+  //     status: isChecked ? 1 : 0,
+  //   };
+  //   console.log("payload", payload);
+
+  //   try {
+  //     // 1️⃣ Update current permission
+  //     await createUserPermission(payload);
+  //     setLocalPermissions((prev) => ({ ...prev, [key]: isChecked }));
+
+  //     const normalizedType = type?.trim()?.toLowerCase();
+  //     const normalizedPerm = permission?.trim()?.toLowerCase();
+
+  //     // --- Helper function for auto-checks ---
+  //     const ensurePermission = async (targetType, targetPerm) => {
+  //       const targetKey = makePermissionKey(
+  //         module_name,
+  //         targetType,
+  //         targetPerm
+  //       );
+  //       if (!localPermissions[targetKey]) {
+  //         const newPayload = {
+  //           user_id: Number(id),
+  //           role_id: useCreationData?.role_id || null,
+  //           module_name,
+  //           type: targetType,
+  //           permission: targetPerm,
+  //           status: 1,
+  //         };
+  //         console.log("new payload", newPayload);
+  //         setOptimisticUpdates((prev) => ({ ...prev, [targetKey]: true }));
+  //         setLoadingStates((prev) => ({ ...prev, [targetKey]: true }));
+  //         await createUserPermission(newPayload);
+  //         setLocalPermissions((prev) => ({ ...prev, [targetKey]: true }));
+  //         setLoadingStates((prev) => ({ ...prev, [targetKey]: false }));
+  //       }
+  //     };
+
+  //     // --- Auto-check logic starts here ---
+  //     if (isChecked && ["add", "generate"].includes(normalizedPerm)) {
+  //       // ----------- start PO and Material Management Module ------ //
+
+  //       // Case 1: For Get Quotation
+  //       if (normalizedType === "get quotation") {
+  //         await ensurePermission(type, "view"); // view same module
+  //         await ensurePermission("PO Generation", "add"); // add PO Generation
+  //         await ensurePermission("PO Generation", "view"); // view PO Generation
+  //       }
+
+  //       // Case 2: For GRN
+  //       if (normalizedType === "grn") {
+  //         await ensurePermission(type, "view");
+  //       }
+
+  //       // Case 3: For PO Generation
+  //       if (normalizedType === "po generation") {
+  //         await ensurePermission(type, "view");
+  //       }
+
+  //       // Case 4: For GRN
+  //       if (normalizedType === "pi request") {
+  //         await ensurePermission(type, "view");
+  //       }
+  //       // ----------- start PO and Material Management Module ------ //
+  //       // -----------------------------------------------------------------------------------//
+  //       // ----------- start Payment Management Module -------------- //
+  //       // Case 2: For Pending Payment Vendor List
+  //       if (normalizedType === "pending payment vendor list") {
+  //         await ensurePermission(type, "view");
+  //       }
+
+  //       // Case 3: For Payment Request
+  //       if (normalizedType === "payment request") {
+  //         await ensurePermission(type, "view");
+  //       }
+
+  //       // Case 4: For Vendor Payment History
+  //       if (normalizedType === "vendor payment history") {
+  //         await ensurePermission(type, "view");
+  //       }
+  //       // ----------- start Payment Management Module -------------- //
+  //       // -----------------------------------------------------------------------------------//
+  //       // ----------- start Item Request Module -------------- //
+  //       // Case 2: For Item Request
+  //       if (normalizedType === "item request") {
+  //         await ensurePermission(type, "view");
+  //       }
+
+  //       // Case 3: For Material Approval
+  //       if (normalizedType === "material approval") {
+  //         await ensurePermission(type, "view");
+  //       }
+
+  //       // Case 4: For Request History Report
+  //       if (normalizedType === "request history report") {
+  //         await ensurePermission(type, "view");
+  //       }
+  //       // ----------- start Item Request Module -------------- //
+  //     }
+
+  //     // Refresh backend after all changes
+  //     fetchUserPermission(id);
+  //   } catch (error) {
+  //     console.error("Error updating permission:", error);
+  //     setOptimisticUpdates((prev) => {
+  //       const newState = { ...prev };
+  //       delete newState[key];
+  //       return newState;
+  //     });
+  //     fetchUserPermission(id);
+  //   } finally {
+  //     setLoadingStates((prev) => ({ ...prev, [key]: false }));
+  //   }
+  // };
+
   const handlePermissionChange = async (
     module_name,
     type,
@@ -428,22 +577,15 @@ export default function User_Creation_Permission() {
     setOptimisticUpdates((prev) => ({ ...prev, [key]: isChecked }));
     setLoadingStates((prev) => ({ ...prev, [key]: true }));
 
-    // const payload = {
-    //   role_id: Number(id),
-    //   module_name,
-    //   type,
-    //   permission,
-    //   status: isChecked ? 1 : 0,
-    // };
-
     const payload = {
-      user_id: Number(id),
-      role_id: useCreationData?.role_id ?? 0,
+      user_id: id ? Number(id) : null,
+      role_id: useCreationData?.role_id || null,
       module_name,
       type,
       permission,
       status: isChecked ? 1 : 0,
     };
+    console.log("payload", payload);
 
     try {
       // 1️⃣ Update current permission
@@ -453,7 +595,7 @@ export default function User_Creation_Permission() {
       const normalizedType = type?.trim()?.toLowerCase();
       const normalizedPerm = permission?.trim()?.toLowerCase();
 
-      // --- Helper function for auto-checks ---
+      // --- Helper function for auto-check ---
       const ensurePermission = async (targetType, targetPerm) => {
         const targetKey = makePermissionKey(
           module_name,
@@ -462,12 +604,14 @@ export default function User_Creation_Permission() {
         );
         if (!localPermissions[targetKey]) {
           const newPayload = {
-            role_id: Number(id),
+            user_id: Number(id),
+            role_id: useCreationData?.role_id || null,
             module_name,
             type: targetType,
             permission: targetPerm,
             status: 1,
           };
+          console.log("auto-check payload", newPayload);
           setOptimisticUpdates((prev) => ({ ...prev, [targetKey]: true }));
           setLoadingStates((prev) => ({ ...prev, [targetKey]: true }));
           await createUserPermission(newPayload);
@@ -476,72 +620,73 @@ export default function User_Creation_Permission() {
         }
       };
 
-      // --- Auto-check logic starts here ---
+      // --- Helper function for auto-uncheck ---
+      const removeDependentPermission = async (targetType, targetPerm) => {
+        const targetKey = makePermissionKey(
+          module_name,
+          targetType,
+          targetPerm
+        );
+        if (localPermissions[targetKey]) {
+          const newPayload = {
+            user_id: Number(id),
+            role_id: useCreationData?.role_id || null,
+            module_name,
+            type: targetType,
+            permission: targetPerm,
+            status: 0,
+          };
+          console.log("auto-uncheck payload", newPayload);
+          setOptimisticUpdates((prev) => ({ ...prev, [targetKey]: false }));
+          setLoadingStates((prev) => ({ ...prev, [targetKey]: true }));
+          await createUserPermission(newPayload);
+          setLocalPermissions((prev) => ({ ...prev, [targetKey]: false }));
+          setLoadingStates((prev) => ({ ...prev, [targetKey]: false }));
+        }
+      };
+
+      // --- Auto-check logic ---
       if (isChecked && ["add", "generate"].includes(normalizedPerm)) {
-        // ----------- start PO and Material Management Module ------ //
-
-        // Case 1: For Get Quotation
+        // ----------- PO and Material Management Module ------ //
         if (normalizedType === "get quotation") {
-          await ensurePermission(type, "view"); // view same module
-          await ensurePermission("PO Generation", "add"); // add PO Generation
-          await ensurePermission("PO Generation", "view"); // view PO Generation
+          await ensurePermission(type, "view");
+          await ensurePermission("PO Generation", "add");
+          await ensurePermission("PO Generation", "view");
         }
+        if (normalizedType === "grn") await ensurePermission(type, "view");
+        if (normalizedType === "po generation")
+          await ensurePermission(type, "view");
+        if (normalizedType === "pi request")
+          await ensurePermission(type, "view");
+        // ----------- Payment Management Module -------------- //
+        if (normalizedType === "pending payment vendor list")
+          await ensurePermission(type, "view");
+        if (normalizedType === "payment request")
+          await ensurePermission(type, "view");
+        if (normalizedType === "vendor payment history")
+          await ensurePermission(type, "view");
+        // ----------- Item Request Module -------------- //
+        if (normalizedType === "item request")
+          await ensurePermission(type, "view");
+        if (normalizedType === "material approval")
+          await ensurePermission(type, "view");
+        if (normalizedType === "request history report")
+          await ensurePermission(type, "view");
+      }
 
-        // Case 2: For GRN
-        if (normalizedType === "grn") {
-          await ensurePermission(type, "view");
+      // --- Auto-uncheck logic ---
+      if (!isChecked && normalizedPerm === "view") {
+        const dependentPerms = ["add", "generate"];
+        for (const dep of dependentPerms) {
+          await removeDependentPermission(type, dep);
         }
-
-        // Case 3: For PO Generation
-        if (normalizedType === "po generation") {
-          await ensurePermission(type, "view");
-        }
-
-        // Case 4: For GRN
-        if (normalizedType === "pi request") {
-          await ensurePermission(type, "view");
-        }
-        // ----------- start PO and Material Management Module ------ //
-        // -----------------------------------------------------------------------------------//
-        // ----------- start Payment Management Module -------------- //
-        // Case 2: For Pending Payment Vendor List
-        if (normalizedType === "pending payment vendor list") {
-          await ensurePermission(type, "view");
-        }
-
-        // Case 3: For Payment Request
-        if (normalizedType === "payment request") {
-          await ensurePermission(type, "view");
-        }
-
-        // Case 4: For Vendor Payment History
-        if (normalizedType === "vendor payment history") {
-          await ensurePermission(type, "view");
-        }
-        // ----------- start Payment Management Module -------------- //
-        // -----------------------------------------------------------------------------------//
-        // ----------- start Item Request Module -------------- //
-        // Case 2: For Item Request
-        if (normalizedType === "item request") {
-          await ensurePermission(type, "view");
-        }
-
-        // Case 3: For Material Approval
-        if (normalizedType === "material approval") {
-          await ensurePermission(type, "view");
-        }
-
-        // Case 4: For Request History Report
-        if (normalizedType === "request history report") {
-          await ensurePermission(type, "view");
-        }
-        // ----------- start Item Request Module -------------- //
       }
 
       // Refresh backend after all changes
       fetchUserPermission(id);
     } catch (error) {
       console.error("Error updating permission:", error);
+      // Revert optimistic update
       setOptimisticUpdates((prev) => {
         const newState = { ...prev };
         delete newState[key];

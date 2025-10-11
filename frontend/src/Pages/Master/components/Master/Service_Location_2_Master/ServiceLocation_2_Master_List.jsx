@@ -16,6 +16,8 @@ export default function ServiceLocation_2_Master_List() {
     setSelectedOption,
     filterSelectedOption,
     setFilterSelectedOption,
+    pagination,
+    setPagination,
   } = useServiceLocation2Master();
   const { serviceLocation, fetchServiceLocations } =
     useServiceLocation1Master();
@@ -23,8 +25,26 @@ export default function ServiceLocation_2_Master_List() {
 
   useEffect(() => {
     fetchServiceLocations();
-    fetchServiceLocations2(search, filterSelectedOption);
-  }, [search, filterSelectedOption]);
+    fetchServiceLocations2({
+      search,
+      serviceLocation1Id: filterSelectedOption,
+      page: pagination.currentPage,
+      perPage: pagination.perPage,
+    });
+  }, [
+    search,
+    filterSelectedOption,
+    pagination.currentPage,
+    pagination.perPage,
+  ]);
+
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
+
+  const handleItemsPerPageChange = (size) => {
+    setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
+  };
 
   // Create options with "All" option
   const locationOptions = [
@@ -84,7 +104,13 @@ export default function ServiceLocation_2_Master_List() {
           </div>
           <div className="card-datatable table-responsive pt-0">
             <ServiceLocation_2_Master_Table />
-            <Pagination />
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalItems={pagination.total}
+              itemsPerPage={pagination.perPage}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
           </div>
         </div>
       </div>

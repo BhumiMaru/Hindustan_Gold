@@ -23,7 +23,7 @@ export default function GRN_List_Table() {
             <th scope="col">PO&nbsp;ID</th>
             <th scope="col">Type</th>
             <th scope="col">PI Request Person</th>
-            <th scope="col">PI Receiving Person</th>
+            {/* <th scope="col">PI Receiving Person</th> */}
             <th scope="col">Vendor</th>
             <th scope="col">Total Item</th>
             <th scope="col">Status</th>
@@ -45,7 +45,7 @@ export default function GRN_List_Table() {
                 <td>{grn.grn_date}</td>
                 <td>{grn.po_id}</td>
                 <td>Material</td>
-                <td>{grn.pi_request_person}</td>
+                {/* <td>{grn.pi_request_person}</td> */}
                 <td>Evangelina Carnock</td>
                 <td>{grn?.vendor?.vendor_name}</td>
                 <td>10</td>

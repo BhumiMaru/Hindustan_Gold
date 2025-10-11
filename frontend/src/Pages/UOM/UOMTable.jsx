@@ -33,7 +33,7 @@ export default function UOMTable() {
                 </td>
                 <td>{uom.name}</td>
                 <td>
-                  <div className="d-inline-flex gap-2">
+                  {/* <div className="d-inline-flex gap-2">
                     <button
                       type="button"
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
@@ -55,6 +55,47 @@ export default function UOMTable() {
                     >
                       <i className="icon-base ti tabler-trash text-danger icon-22px"></i>
                     </button>
+                  </div> */}
+
+                  <div className="d-inline-flex gap-2">
+                    <a
+                      className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="true"
+                    >
+                      <i className="icon-base ti tabler-dots-vertical icon-20px" />
+                    </a>
+                    <div className="d-inline-block">
+                      <div
+                        className="dropdown-menu dropdown-menu-end m-0"
+                        style={{
+                          position: "absolute",
+                          inset: "auto 0px 0px auto",
+                          margin: 0,
+                          transform: "translate(-24px, -136px)",
+                        }}
+                        data-popper-placement="top-end"
+                      >
+                        <button
+                          // key={user.id}
+                          className="dropdown-item waves-effect"
+                          onClick={() => {
+                            handleOpen("addNewUOM");
+                            startEditing(uom.id, uom.name);
+                          }}
+                        >
+                          Edit
+                        </button>
+
+                        <div className="dropdown-divider" />
+                        <a
+                          className="dropdown-item text-danger delete-record waves-effect"
+                          onClick={() => DestroyUom(uom.id)}
+                        >
+                          Delete
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </td>
               </tr>

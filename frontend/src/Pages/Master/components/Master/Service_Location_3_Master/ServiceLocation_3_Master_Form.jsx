@@ -69,7 +69,11 @@ export default function ServiceLocation_3_Master_Form() {
         toast.error("Please select Service Location 1 & 2 for new entry");
         return;
       }
-
+      // console.log("sl3", {
+      //   service_location_3_name: serviceLocation3Data.service_location_3_name,
+      //   service_location_1_id: serviceLocation3Data.selectedSl1,
+      //   service_location_2_id: serviceLocation3Data.selectedSl2,
+      // });
       createServiceLocation3(
         serviceLocation3Data.service_location_3_name,
         serviceLocation3Data.selectedSl1,
@@ -174,7 +178,6 @@ export default function ServiceLocation_3_Master_Form() {
                       }))
                     }
                   />
-                
                 </div>
               </div>
             </div>

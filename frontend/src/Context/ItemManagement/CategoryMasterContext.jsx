@@ -78,6 +78,8 @@ export const CategoryMasterProvider = ({ children }) => {
     try {
       const res = await postData(ENDPOINTS.CATEGORY_MASTER.ADD_UPDATE, payload);
       toast.success("Category Created Successfully");
+      console.log("res", res);
+      setCategoryData(res.data.data);
       fetchCategories(); // refresh
       return res;
     } catch (error) {

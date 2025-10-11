@@ -45,7 +45,11 @@ export default function ZoneTable() {
                 </td>
 
                 <td>
-                  <div className="d-inline-flex gap-2">
+                  <div
+                    className={`d-inline-flex gap-2 ${
+                      zone.id === 2 ? "d-none" : ""
+                    }`}
+                  >
                     <a
                       className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
                       data-bs-toggle="dropdown"

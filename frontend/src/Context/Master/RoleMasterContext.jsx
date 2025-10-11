@@ -114,27 +114,48 @@ export const RoleMasterProvider = ({ children }) => {
   // -----------------------Role Permission List--------------------------- //
 
   // Fetch Role Permission List
+  // const fetchRolePermission = async (role_id) => {
+  //   try {
+  //     const res = await getData(
+  //       `${ENDPOINTS.ROLE_MASTER.PERMISSION_LIST}?role_id=${role_id}`
+  //     );
+
+  //     // If the API returns a valid response
+  //     if (res?.data?.data) {
+  //       setPermission(res.data.data);
+  //     } else {
+  //       setPermission([]); // no data, but not an error
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+
+  //     // ✅ Only show error if it’s not “no data”
+  //     if (error?.response?.status !== 204 && error?.response?.status !== 404) {
+  //       toast.error("Failed to fetch Role Permission List");
+  //     } else {
+  //       setPermission([]); // no data → treat as empty
+  //     }
+  //   }
+  // };
+
   const fetchRolePermission = async (role_id) => {
     try {
+      console.log("role_id", role_id);
       const res = await getData(
         `${ENDPOINTS.ROLE_MASTER.PERMISSION_LIST}?role_id=${role_id}`
       );
-
-      // If the API returns a valid response
-      if (res?.data?.data) {
-        setPermission(res.data.data);
-      } else {
-        setPermission([]); // no data, but not an error
-      }
+      // console.log("res", res?.data);
+      const data = res?.data || [];
+      // ✅ filter data by correct user id only
+      const filtered = data?.filter((p) => {
+        // console.log("p", p.role_id);
+        return String(p.role_id) === String(role_id);
+      });
+      // console.log("✅ Filtered permission data:", filtered);
+      setPermission(filtered);
     } catch (error) {
-      console.log(error);
-
-      // ✅ Only show error if it’s not “no data”
-      if (error?.response?.status !== 204 && error?.response?.status !== 404) {
-        toast.error("Failed to fetch Role Permission List");
-      } else {
-        setPermission([]); // no data → treat as empty
-      }
+      console.error(" Error fetching permissions:", error);
+      setPermission([]);
     }
   };
 

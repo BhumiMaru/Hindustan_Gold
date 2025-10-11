@@ -55,7 +55,7 @@ export default function User_Creation_Table() {
   // console.log("filteredUsers", filteredUsers);
 
   const handleEditClick = (user) => {
-    // console.log("user", user);
+    console.log("user", user);
     startEditing(user.id); // set edit data in context
     navigate(`/super_admin/master/user-create/${user.id}`); // then navigate
   };
