@@ -28,9 +28,20 @@ export default function User_Creation_Form() {
   } = useUserCreation();
   const { fetchRoleFilter, filterRole } = useRoleMaster();
   const { fetchCompanyFilter, companyFilter } = useCompanyMaster();
-  const { serviceL1, fetchSL1Filter } = useServiceLocation1Master();
-  const { serviceL2, fetchSL2Filter } = useServiceLocation2Master();
-  const { serviceL3, fetchSL3Filter } = useServiceLocation3Master();
+  const { serviceL1, fetchSL1Filter, fetchServiceLocations, serviceLocation } =
+    useServiceLocation1Master();
+  const {
+    serviceL2,
+    fetchSL2Filter,
+    fetchServiceLocations2,
+    serviceLocation2,
+  } = useServiceLocation2Master();
+  const {
+    serviceL3,
+    fetchSL3Filter,
+    fetchServiceLocations3,
+    serviceLocation3,
+  } = useServiceLocation3Master();
   const { zoneFilter, fetchZoneFilter } = useZone();
   const { deptFilter, fetchDeptFilter } = useDepartment();
   // console.log("id", id);
@@ -49,9 +60,12 @@ export default function User_Creation_Form() {
   }, [id]);
 
   useEffect(() => {
-    fetchSL1Filter();
-    fetchSL2Filter();
-    fetchSL3Filter();
+    // fetchSL1Filter();
+    // fetchSL2Filter();
+    // fetchSL3Filter();
+    fetchServiceLocations();
+    fetchServiceLocations2();
+    fetchServiceLocations3();
     fetchCompanyFilter();
     fetchDeptFilter();
     fetchZoneFilter();
@@ -66,19 +80,19 @@ export default function User_Creation_Form() {
 
     try {
       if (id) {
-        console.log("before id", id, "payload", payload);
+        // console.log("before id", id, "payload", payload);
         await updateUser(id, payload);
         // resetUserData();
         // setIsEditUserId(null);
       } else {
-        console.log("before payload", payload);
+        // console.log("before payload", payload);
         const newUser = await createUser(payload); // ✅ get response
         if (newUser?.id) {
           navigate(`/super_admin/master/user-create/${newUser.id}`); // ✅ use real id
         }
       }
 
-      console.log("submitting form", payload);
+      // console.log("submitting form", payload);
     } catch (error) {
       console.log(error);
     }
@@ -257,73 +271,114 @@ export default function User_Creation_Form() {
 
             {/* Service Location 1 */}
             <div className="col-sm-3 mb-4">
-              <div className="position-relative">
-                <CustomSelect
-                  id="selectServiceLocation"
-                  label="Service Location 1"
-                  options={serviceL1.map((sl1) => {
-                    return {
-                      value: sl1.id,
-                      label: sl1.service_location_name,
-                    };
-                  })}
-                  value={useCreationData?.service_location_1_id}
-                  onChange={(selected) => {
-                    setUserCreationData({
-                      ...useCreationData,
-                      service_location_1_id: selected,
-                    });
-                  }}
-                  placeholder="Select Service Location"
-                  required
-                />
-              </div>
+              <CustomSelect
+                id="selectServiceLocation1"
+                label="Service Location 1"
+                options={serviceLocation.map((sl1) => ({
+                  value: sl1.id,
+                  label: sl1.service_location_name,
+                }))}
+                value={useCreationData?.service_location_1_id || ""}
+                onChange={(selected) => {
+                  setUserCreationData({
+                    ...useCreationData,
+                    service_location_1_id: selected,
+                    service_location_2_id: "",
+                    service_location_3_id: "",
+                  });
+                  fetchServiceLocations2({ serviceLocation1Id: selected });
+                }}
+                placeholder="Select Service Location 1"
+                required
+              />
             </div>
 
             {/* Service Location 2 */}
             <div className="col-sm-3 mb-4">
-              <div className="position-relative">
-                <CustomSelect
-                  id="selectServiceLocation2"
-                  label="Service Location 2"
-                  options={serviceL2.map((sl2) => ({
-                    value: sl2.id,
-                    label: sl2.service_location_2_name,
-                  }))}
-                  value={useCreationData?.service_location_2_id}
-                  onChange={(selected) =>
-                    setUserCreationData({
-                      ...useCreationData,
-                      service_location_2_id: selected,
+              <CustomSelect
+                id="selectServiceLocation2"
+                label="Service Location 2"
+                options={
+                  serviceLocation2
+                    ?.filter((sl2) => {
+                      // console.log("sl2", typeof sl2.service_location_1_id);
+                      // console.log(
+                      //   "useCreationData?.service_location_1_id",
+                      //   typeof useCreationData?.service_location_1_id
+                      // );
+                      // console.log(
+                      //   "bb",
+                      //   sl2.service_location_1_id ===
+                      //     useCreationData?.service_location_1_id
+                      // );
+                      return (
+                        sl2.service_location_1_id ==
+                        useCreationData?.service_location_1_id
+                      );
                     })
-                  }
-                  placeholder="Select Service Location"
-                  required
-                />
-              </div>
+                    .map((sl2) => ({
+                      value: sl2.id,
+                      label: sl2.service_location_2_name,
+                    })) || []
+                }
+                value={useCreationData?.service_location_2_id || ""}
+                onChange={(selected) => {
+                  setUserCreationData({
+                    ...useCreationData,
+                    service_location_2_id: selected,
+                    service_location_3_id: "",
+                  });
+                  fetchServiceLocations3({
+                    serviceLocation1Id: useCreationData?.service_location_1_id,
+                    serviceLocation2Id: selected,
+                  });
+                }}
+                placeholder="Select Service Location 2"
+                required
+                disabled={!useCreationData?.service_location_1_id}
+              />
             </div>
 
             {/* Service Location 3 */}
             <div className="col-sm-3 mb-4">
-              <div className="position-relative">
-                <CustomSelect
-                  id="selectServiceLocation3"
-                  label="Service Location 3"
-                  options={serviceL3.map((sl3) => ({
-                    value: sl3.id,
-                    label: sl3.service_location_3_name,
-                  }))}
-                  value={useCreationData?.service_location_3_id}
-                  onChange={(selected) =>
-                    setUserCreationData({
-                      ...useCreationData,
-                      service_location_3_id: selected,
+              <CustomSelect
+                id="selectServiceLocation3"
+                label="Service Location 3"
+                options={
+                  serviceLocation3
+                    ?.filter((sl3) => {
+                      // Compare numbers to numbers
+                      // console.log("sl1", typeof sl3.service_location_1_id);
+                      // console.log("sl2", typeof sl3.service_location_2_id);
+                      return (
+                        sl3.service_location_1_id ==
+                          Number(useCreationData?.service_location_1_id) &&
+                        sl3.service_location_2_id ==
+                          Number(useCreationData?.service_location_2_id)
+                      );
                     })
-                  }
-                  placeholder="Select Service Location"
-                  required
-                />
-              </div>
+                    .map((sl3) => ({
+                      value: sl3.id,
+                      label: sl3.service_location_3_name,
+                    })) || []
+                }
+                value={useCreationData?.service_location_3_id || ""}
+                onChange={(selected) => {
+                  setUserCreationData({
+                    ...useCreationData,
+                    service_location_3_id: selected, // ✅ set SL3, not SL2
+                  });
+
+                  fetchServiceLocations3(
+                    "",
+                    Number(useCreationData?.service_location_1_id), // ensure number
+                    Number(useCreationData?.service_location_2_id) // ensure number
+                  );
+                }}
+                placeholder="Select Service Location 3"
+                required
+                disabled={!useCreationData?.service_location_2_id}
+              />
             </div>
 
             <div className="col-sm-3 mb-4">

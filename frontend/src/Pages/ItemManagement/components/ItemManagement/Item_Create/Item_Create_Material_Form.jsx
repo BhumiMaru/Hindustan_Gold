@@ -81,6 +81,7 @@ export default function Item_Create_Material_Form() {
         ? itemMasterData.zone_id
         : [],
     };
+    console.log("payload", payload);
 
     try {
       if (id) {

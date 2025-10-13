@@ -56,6 +56,7 @@ import PO_Create from "../Pages/POandMaterialManagement/components/POandMaterial
 import Invoice_details from "../Pages/PaymentManagement/components/PaymentManagement/Invoice_List/Invoice_details";
 import { InvoiceProvider } from "../Context/PIAndPoManagement/Invoice";
 import { PIRequestProvider } from "../Context/PIAndPoManagement/PIRequestList";
+import ProfileMasterPage from "../Pages/Profile/ProfileMasterPage";
 
 export default function AppRoutes() {
   const { isOpenSmallSidebar, closeSmallSidebar, modal } = useUIContext();
@@ -66,6 +67,9 @@ export default function AppRoutes() {
         {/* Default redirect */}
         {/* <Route path="/" element={<Navigate to="/dashboard" replace />} /> */}
         {/* Login Routes */}
+
+        {/* Profile */}
+        <Route path="/pages-profile-user" element={<ProfileMasterPage />} />
 
         {/* Dashboard */}
         <Route path="/dashboard" element={<DashboardPage />} />

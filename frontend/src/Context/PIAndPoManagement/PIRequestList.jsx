@@ -2,13 +2,14 @@ import { createContext, useContext, useState } from "react";
 import api, { deleteData, postData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
 import { toast } from "react-toastify";
-// import { useItemMaster } from "../ItemManagement/ItemMasterContext";
+import { useItemMaster } from "../ItemManagement/ItemMasterContext";
 
 export const PIRequestContext = createContext();
 export const usePIRequest = () => useContext(PIRequestContext);
 
 export const PIRequestProvider = ({ children }) => {
-  // const { itemMaster } = useItemMaster();
+  const itemMasterContext = useItemMaster();
+  const itemMaster = itemMasterContext?.itemMaster || [];
 
   // const [activeTab, setActiveTab] = useState("my_request");
   const [activeTab, setActiveTab] = useState(() => {
@@ -194,10 +195,11 @@ export const PIRequestProvider = ({ children }) => {
   const CreatePIRequest = async (payload) => {
     try {
       const res = await postData(ENDPOINTS.PI_REQUEST.ADD_UPDATE, payload);
+      console.log("res", res);
       if (res?.status) {
         toast.success(res.message || "PI Request saved successfully!");
-        getPIRequest();
       }
+      getPIRequest();
       return res;
     } catch (error) {
       toast.error("Error saving PI Request");
@@ -220,93 +222,93 @@ export const PIRequestProvider = ({ children }) => {
   };
 
   // // Prefill helper
-  // const setItemDetailsFromMaster = (itemId, itemData, itemMaster) => {
-  //   const selectedItem = itemMaster.find((itm) => itm.id === Number(itemId));
-  //   if (!selectedItem) return itemData;
-  //   // console.log("selectedItem selectedItem", selectedItem);
+  const setItemDetailsFromMaster = (itemId, itemData, itemMaster) => {
+    const selectedItem = itemMaster.find((itm) => itm.id === Number(itemId));
+    if (!selectedItem) return itemData;
+    // console.log("selectedItem selectedItem", selectedItem);
 
-  //   const storage = selectedItem?.storage_locations?.[0];
-  //   let serviceLocation1 = "";
-  //   let serviceLocation2 = "";
-  //   let serviceLocation3 = "";
+    const storage = selectedItem?.storage_locations?.[0];
+    let serviceLocation1 = "";
+    let serviceLocation2 = "";
+    let serviceLocation3 = "";
 
-  //   if (storage) {
-  //     serviceLocation1 =
-  //       storage?.service_location3?.service_location2?.service_location1
-  //         ?.service_location_name || "";
-  //     serviceLocation2 =
-  //       storage?.service_location3?.service_location2
-  //         ?.service_location_2_name || "";
-  //     serviceLocation3 =
-  //       storage?.service_location3?.service_location_3_name || "";
-  //   }
+    if (storage) {
+      serviceLocation1 =
+        storage?.service_location3?.service_location2?.service_location1
+          ?.service_location_name || "";
+      serviceLocation2 =
+        storage?.service_location3?.service_location2
+          ?.service_location_2_name || "";
+      serviceLocation3 =
+        storage?.service_location3?.service_location_3_name || "";
+    }
 
-  //   // ✅ extract zone safely
-  //   const zoneName =
-  //     selectedItem?.zones?.length > 0
-  //       ? selectedItem.zones[0]?.zone?.zone_name
-  //       : "";
+    // ✅ extract zone safely
+    const zoneName =
+      selectedItem?.zones?.length > 0
+        ? selectedItem.zones[0]?.zone?.zone_name
+        : "";
 
-  //   // console.log({
-  //   //   ...itemData,
-  //   //   item_name: selectedItem?.item_name || "",
-  //   //   category: selectedItem?.category?.category_name || "",
-  //   //   subcategory: selectedItem?.subcategory?.sub_category_name || "",
-  //   //   uom: selectedItem?.uom || "KG",
-  //   //   zone: zoneName || "",
-  //   //   serviceLocation1,
-  //   //   serviceLocation2,
-  //   //   serviceLocation3,
-  //   // });
+    // console.log({
+    //   ...itemData,
+    //   item_name: selectedItem?.item_name || "",
+    //   category: selectedItem?.category?.category_name || "",
+    //   subcategory: selectedItem?.subcategory?.sub_category_name || "",
+    //   uom: selectedItem?.uom || "KG",
+    //   zone: zoneName || "",
+    //   serviceLocation1,
+    //   serviceLocation2,
+    //   serviceLocation3,
+    // });
 
-  //   return {
-  //     ...itemData,
-  //     item_name: selectedItem?.item_name || "",
-  //     category: selectedItem?.category?.category_name || "",
-  //     subcategory: selectedItem?.subcategory?.sub_category_name || "",
-  //     uom: selectedItem?.uom || "KG",
-  //     zone: zoneName || "",
-  //     serviceLocation1,
-  //     serviceLocation2,
-  //     serviceLocation3,
-  //   };
-  // };
+    return {
+      ...itemData,
+      item_name: selectedItem?.item_name || "",
+      category: selectedItem?.category?.category_name || "",
+      subcategory: selectedItem?.subcategory?.sub_category_name || "",
+      uom: selectedItem?.uom || "KG",
+      zone: zoneName || "",
+      serviceLocation1,
+      serviceLocation2,
+      serviceLocation3,
+    };
+  };
 
   // // Fetch by ID
-  // const findById = async (id) => {
-  //   try {
-  //     const res = await postData(ENDPOINTS.PI_REQUEST.DETAILS, { id });
-  //     if (res?.status) {
-  //       const piRequestData = res.data.piitems;
-  //       // console.log("pi request", piRequestData);
-  //       setItems(
-  //         piRequestData?.map((it, index) =>
-  //           setItemDetailsFromMaster(
-  //             it.item_id,
-  //             {
-  //               id: index + 1,
-  //               dbId: it.id,
-  //               existing: true,
-  //               requestedItem: it.item_id,
-  //               qty: it.qty,
-  //               purpose: it.purpose,
-  //               priority: it.priority,
-  //               requestDate: it.request_date,
-  //               remarks: it.remark,
-  //               tentative_consumption_day: it.tentative_consumption_day,
-  //               file: null,
-  //               status: it.status || "pending",
-  //             },
-  //             itemMaster
-  //           )
-  //         )
-  //       );
-  //     }
-  //   } catch (error) {
-  //     toast.error("Error fetching PI Request for edit");
-  //     console.error("Find by id PIRequest error:", error);
-  //   }
-  // };
+  const findById = async (id) => {
+    try {
+      const res = await postData(ENDPOINTS.PI_REQUEST.DETAILS, { id });
+      if (res?.status) {
+        const piRequestData = res.data.piitems;
+        // console.log("pi request", piRequestData);
+        setItems(
+          piRequestData?.map((it, index) =>
+            setItemDetailsFromMaster(
+              it.item_id,
+              {
+                id: index + 1,
+                dbId: it.id,
+                existing: true,
+                requestedItem: it.item_id,
+                qty: it.qty,
+                purpose: it.purpose,
+                priority: it.priority,
+                requestDate: it.request_date,
+                remarks: it.remark,
+                tentative_consumption_day: it.tentative_consumption_day,
+                file: null,
+                status: it.status || "pending",
+              },
+              itemMaster
+            )
+          )
+        );
+      }
+    } catch (error) {
+      toast.error("Error fetching PI Request for edit");
+      console.error("Find by id PIRequest error:", error);
+    }
+  };
 
   const StartEditing = (piId) => {
     setEditId(piId);
@@ -407,6 +409,7 @@ export const PIRequestProvider = ({ children }) => {
   };
 
   return (
+    // <ItemMasterProvider>
     <PIRequestContext.Provider
       value={{
         activeTab,
@@ -436,7 +439,7 @@ export const PIRequestProvider = ({ children }) => {
         setPiRequest,
         getPIRequest,
         CreatePIRequest,
-        // findById,
+        findById,
         StartEditing,
         editPiRequest,
         DeletePiRequest,
@@ -453,5 +456,6 @@ export const PIRequestProvider = ({ children }) => {
     >
       {children}
     </PIRequestContext.Provider>
+    // </ItemMasterProvider>
   );
 };

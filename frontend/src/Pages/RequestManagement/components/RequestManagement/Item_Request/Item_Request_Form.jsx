@@ -520,7 +520,7 @@ export default function Item_Request_Form() {
     getItemNameAndId,
   } = useItemRequest();
   const { itemMaster, fetchItemMaster } = useItemMaster();
-
+  console.log("type", type);
   // FIXED: Enhanced useEffect for data loading
   useEffect(() => {
     // console.log("Component mounted with type:", type, "id:", id);
@@ -584,11 +584,19 @@ export default function Item_Request_Form() {
               <CustomSelect
                 id="selectItem"
                 label="Select Item"
+                // options={
+                //   itemMaster?.map((item) => ({
+                //     value: item.id,
+                //     label: item.item_name,
+                //   })) || []
+                // }
                 options={
-                  itemList?.map((item) => ({
-                    value: item.id,
-                    label: item.item_name,
-                  })) || []
+                  itemMaster
+                    ?.filter((item) => item.type === type) // ✅ Filter items of selected type
+                    ?.map((item) => ({
+                      value: item.id,
+                      label: item.item_name,
+                    })) || []
                 }
                 value={itemRequestData?.item_id || ""}
                 onChange={(selected) => {

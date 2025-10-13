@@ -5,11 +5,14 @@ import Invoice_Reject from "./Invoice_Reject";
 import { useUIContext } from "../../../../../Context/UIContext";
 import Mark_as_Paid from "./Mark_as_Paid";
 import Payment_Paritals from "./Payment_Paritals";
+import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
+import { decryptData } from "../../../../../utils/decryptData";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function Invoice_details() {
   const { id } = useParams();
   const { modal, handleOpen } = useUIContext();
+  const { fetchUserPermission, userPermission } = useUserCreation();
   const {
     invoiceDetail,
     invoiceDetails,
@@ -21,7 +24,11 @@ export default function Invoice_details() {
     InvoiceWorkflow,
     revertStatus,
   } = useInvoice();
-  console.log("invoiceDetail", invoiceDetail);
+  console.log("userPermission", userPermission);
+
+  const getAuthData = sessionStorage.getItem("authData");
+  const decryptAuthData = decryptData(getAuthData);
+  const user = decryptAuthData?.user;
 
   // ✅ Fetch invoice detail + workflow on mount
   useEffect(() => {
@@ -32,6 +39,10 @@ export default function Invoice_details() {
     };
     loadData();
   }, [id]);
+
+  useEffect(() => {
+    fetchUserPermission(user.id);
+  }, [user.id]);
 
   return (
     <>
@@ -114,6 +125,14 @@ export default function Invoice_details() {
                 invoiceDetail?.status === "Reject"
                   ? "d-none"
                   : ""
+              } ${
+                userPermission.some(
+                  (prem) =>
+                    prem.type == "Payment Request" &&
+                    prem.permission == "approve"
+                )
+                  ? "d-block"
+                  : "d-none"
               }`}
               onClick={async () => {
                 try {
@@ -133,6 +152,14 @@ export default function Invoice_details() {
                 invoiceDetail?.status === "Reject"
                   ? "d-none"
                   : ""
+              } ${
+                userPermission.some(
+                  (prem) =>
+                    prem.type == "Payment Request" &&
+                    prem.permission == "approve"
+                )
+                  ? "d-block"
+                  : "d-none"
               }`}
               onClick={() => {
                 setInvoiceId(id);

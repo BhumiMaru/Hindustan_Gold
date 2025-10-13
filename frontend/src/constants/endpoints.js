@@ -134,6 +134,7 @@ export const ENDPOINTS = {
     LIST: "/vendors/list",
     DETAILS: "/vendors/detail",
     FILTER: "/vendors/filter",
+    DELETE: "/vendors/delete",
   },
 
   // Get Quotation Details

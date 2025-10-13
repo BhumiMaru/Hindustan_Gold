@@ -37,6 +37,7 @@ export const VendorProvider = ({ children }) => {
     total_invoice: null,
     status: null,
   }); //data
+  const [vendorDetail, setVendorDetail] = useState();
   const [vendorFilter, setVendorFilter] = useState([]);
   const [vendorEditId, setVendorEditId] = useState(null);
 
@@ -87,8 +88,8 @@ export const VendorProvider = ({ children }) => {
         // console.log("res", res);
         setVendorData(res.data.data);
         toast.success(res.message);
-        getVendorList();
       }
+      getVendorList();
 
       return res.data.data;
     } catch (error) {
@@ -108,8 +109,8 @@ export const VendorProvider = ({ children }) => {
       if (res.success) {
         setVendorData(res.data.data);
         toast.success(res.message);
-        getVendorList();
       }
+      getVendorList();
 
       return res.data.data;
     } catch (error) {
@@ -122,34 +123,56 @@ export const VendorProvider = ({ children }) => {
   const vendorDetails = async (id) => {
     try {
       // console.log("mm", id);
-      const res = await postData(ENDPOINTS.VENDOR.DETAILS, {
+      const res = await getData(ENDPOINTS.VENDOR.DETAILS, {
         id: id,
       });
       if (res.success) {
         // console.log("res res", res);
         const vendorData = res.data;
+        setVendorDetail(vendorData);
 
-        setVendorData({
-          vendor_name: vendorData.vendor_name || "",
-          contact_person_name: vendorData.contact_person_name || "",
-          email: vendorData.email || "",
-          mobile: vendorData.mobile || "",
-          address: vendorData.address || "",
-          gst_number: vendorData.gst_number || "",
-          pan_number: vendorData.pan_number || "",
-          msme_certificate: vendorData.msme_certificate || "",
-          bank_name: vendorData.bank_name || "",
-          account_no: vendorData.account_no || "",
-          ifsc_code: vendorData.ifsc_code || "",
-          branch_name: vendorData.branch_name || "",
-          total_invoice: vendorData.total_invoice || null,
-          status: vendorData.status || null,
-        });
+        // setVendorDetail({
+        //   vendor_name: vendorData.vendor_name || "",
+        //   contact_person_name: vendorData.contact_person_name || "",
+        //   email: vendorData.email || "",
+        //   mobile: vendorData.mobile || "",
+        //   address: vendorData.address || "",
+        //   gst_number: vendorData.gst_number || "",
+        //   pan_number: vendorData.pan_number || "",
+        //   msme_certificate: vendorData.msme_certificate || "",
+        //   bank_name: vendorData.bank_name || "",
+        //   account_no: vendorData.account_no || "",
+        //   ifsc_code: vendorData.ifsc_code || "",
+        //   branch_name: vendorData.branch_name || "",
+        //   total_invoice: vendorData.total_invoice || null,
+        //   status: vendorData.status || null,
+        // });
       }
       return res.data;
     } catch (error) {
       toast.error("Error during Vendor Details");
       console.error("Vendor Details error:", error);
+    }
+  };
+
+  // Vendor Delete
+  const vendorDelete = async (id) => {
+    try {
+      const res = await postData(ENDPOINTS.VENDOR.DELETE, { id: id });
+
+      if (res.success) {
+        toast.success(res.message);
+      }
+      getVendorList(); // Refresh vendor list after approval
+
+      return res.data;
+    } catch (error) {
+      const backendMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Error during Vendor Delete";
+      toast.error(backendMessage);
+      console.error("Vendor Delete error:", error);
     }
   };
 
@@ -230,6 +253,10 @@ export const VendorProvider = ({ children }) => {
         startEditing,
         resetVendorData,
         vendorApprove,
+        vendorDetail,
+        setVendorDetail,
+        vendorDetails,
+        vendorDelete,
       }}
     >
       {children}

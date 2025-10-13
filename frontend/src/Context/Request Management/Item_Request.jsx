@@ -787,7 +787,7 @@ export const ItemRequestProvider = ({ children }) => {
       setFilterItem(res.data || []);
     } catch (error) {
       console.error(error);
-      toast.error("Failed to fetch Item Request Filter");
+      // toast.error("Failed to fetch Item Request Filter");
     }
   };
 

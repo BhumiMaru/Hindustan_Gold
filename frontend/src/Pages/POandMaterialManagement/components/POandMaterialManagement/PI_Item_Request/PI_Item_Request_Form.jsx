@@ -727,8 +727,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
-import { usePIRequest } from "../../../../../Context/PIAndPoManagement/PIRequestList";
 import { toast } from "react-toastify";
+import { usePIRequest } from "../../../../../Context/PIAndPoManagement/PIRequestList";
 
 export default function PI_Item_Request_Form() {
   const { type, id } = useParams();
@@ -790,13 +790,16 @@ export default function PI_Item_Request_Form() {
 
       if (id) formData.append("id", id);
       formData.append("pi_type", type);
-      formData.append("total_item", items.length);
+      formData.append("total_item", Number(items.length));
       // console.log("pi items", items);
 
       items.forEach((item, index) => {
-        formData.append(`items[${index}][item_id]`, item.requestedItem || "");
+        formData.append(
+          `items[${index}][item_id]`,
+          Number(item.requestedItem) || 0
+        );
         formData.append(`items[${index}][item_name]`, item.item_name || "");
-        formData.append(`items[${index}][qty]`, item.qty || 0);
+        formData.append(`items[${index}][qty]`, Number(item.qty) || 0);
         formData.append(`items[${index}][uom]`, item.uom || "KG");
         formData.append(`items[${index}][priority]`, item.priority || "");
         formData.append(`items[${index}][purpose]`, item.purpose || "");
@@ -814,6 +817,10 @@ export default function PI_Item_Request_Form() {
           formData.append(`items[${index}][file]`, item.file);
         }
       });
+
+      for (const pair of formData.entries()) {
+        console.log(pair[0], ":", pair[1]);
+      }
 
       if (id) {
         await editPiRequest(id, formData);
@@ -902,10 +909,12 @@ export default function PI_Item_Request_Form() {
                     <CustomSelect
                       id={`selectItem-${item.id}`}
                       label="Requested Item"
-                      options={itemMaster.map((itm) => ({
-                        value: itm.id,
-                        label: itm.item_name || itm.name || "Unnamed",
-                      }))}
+                      options={itemMaster
+                        ?.filter((item) => item.type === type)
+                        .map((itm) => ({
+                          value: itm.id,
+                          label: itm.item_name || itm.name || "Unnamed",
+                        }))}
                       value={item.requestedItem}
                       onChange={(selected) =>
                         handleItemSelect(item.id, selected)

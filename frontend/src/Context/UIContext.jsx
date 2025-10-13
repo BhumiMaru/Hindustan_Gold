@@ -235,6 +235,8 @@ export const UIProvider = ({ children }) => {
     rejectInvoice: false,
     paymentPartials: false,
     markaspaid: false,
+    // Vendor
+    viewVendorDetails: false,
   });
 
   return (

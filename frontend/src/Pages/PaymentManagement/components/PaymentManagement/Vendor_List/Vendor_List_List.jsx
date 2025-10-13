@@ -6,6 +6,7 @@ import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
 import Vendor_List_Form from "./Vendor_List_Form";
 import { useUIContext } from "../../../../../Context/UIContext";
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
+import Vendor_detail_Modal from "./Vendor_detail_Modal";
 
 export default function Vendor_List_List() {
   const [status, setStatus] = useState(null);
@@ -91,6 +92,7 @@ export default function Vendor_List_List() {
           </div>
         </div>
       </div>
+      {modal.viewVendorDetails && <Vendor_detail_Modal />}
       {/* {modal.addNewVendor && <Vendor_List_Form />} */}
       {/* ------------------END VENDOR LIST----------------------- */}
     </>

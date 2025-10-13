@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../../../../public/assets/vendor/css/core.css";
 import "../../../../public/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css";
 import { useUIContext } from "../../../Context/UIContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Small_Screen_Sidebar from "../SideBar/Small_Screen_Sidebar";
 import { decryptData } from "../../../utils/decryptData";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
@@ -118,13 +118,13 @@ export default function Navbar() {
                   <div className="dropdown-divider my-1 mx-n2"></div>
                 </li>
                 <li>
-                  <a
+                  <Link
                     className="dropdown-item waves-effect"
-                    href="pages-profile-user.html"
+                    to="/pages-profile-user"
                   >
                     <i className="icon-base ti tabler-user me-3 icon-md"></i>
                     <span className="align-middle">My Profile</span>
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <div className="d-grid px-2 pt-2 pb-1">

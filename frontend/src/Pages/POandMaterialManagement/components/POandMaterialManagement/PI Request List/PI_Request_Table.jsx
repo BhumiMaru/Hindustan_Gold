@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { usePIRequest } from "../../../../../Context/PIAndPoManagement/PIRequestList";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Reject_Pi_request from "./Reject_Pi_request";
 import { useUIContext } from "../../../../../Context/UIContext";
 import { toast } from "react-toastify";
 import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
+import { usePIRequest } from "../../../../../Context/PIAndPoManagement/PIRequestList";
 
 export default function PI_Request_Table({ userPermission }) {
   const { type, id } = useParams();
@@ -56,10 +56,9 @@ export default function PI_Request_Table({ userPermission }) {
     );
   }, [piRequest, expandedRows]);
 
-  console.log("aa", activeTab);
+  // console.log("aa", activeTab);
 
-  console.log("userrrrrrrrrrrrrrrrrrr", userPermission);
-  //
+  // console.log("userrrrrrrrrrrrrrrrrrr", userPermission);
   return (
     <>
       {/* ----------------START PI REQUEST TABLE------------------ */}
@@ -142,7 +141,7 @@ export default function PI_Request_Table({ userPermission }) {
                                 userPermission.some(
                                   (prem) =>
                                     prem.type === "PI Request" &&
-                                    prem.permission === "add_generate"
+                                    prem.permission === "add"
                                 )
                                   ? "d-block"
                                   : "d-none"
@@ -359,23 +358,36 @@ export default function PI_Request_Table({ userPermission }) {
                           <th>
                             <div className="ms-4">
                               <input
+                                // className={`form-check-input ${
+                                //   activeTab === "approval_request"
+                                //     ? pi?.piitems?.some(
+                                //         (item) =>
+                                //           item.status.toLowerCase() ===
+                                //           "pending"
+                                //       )
+                                //       ? "d-block"
+                                //       : "d-none"
+                                //     : activeTab === "my_request"
+                                //     ? pi?.piitems?.some(
+                                //         (item) =>
+                                //           item.status.toLowerCase() !==
+                                //           "pending"
+                                //       )
+                                //       ? "d-block"
+                                //       : "d-none"
+                                //     : "d-none"
+                                // }`}
                                 className={`form-check-input ${
                                   activeTab === "approval_request"
                                     ? pi?.piitems?.some(
                                         (item) =>
-                                          item.status.toLowerCase() ===
+                                          item.status?.toLowerCase() ===
                                           "pending"
                                       )
                                       ? "d-block"
                                       : "d-none"
                                     : activeTab === "my_request"
-                                    ? pi?.piitems?.some(
-                                        (item) =>
-                                          item.status.toLowerCase() !==
-                                          "pending"
-                                      )
-                                      ? "d-block"
-                                      : "d-none"
+                                    ? "d-none"
                                     : "d-none"
                                 }`}
                                 type="checkbox"
@@ -423,20 +435,28 @@ export default function PI_Request_Table({ userPermission }) {
                           <th>Remarks</th>
                           <th>Status</th>
                           {/* {activeTab === "approval_request" && ( */}
-                          <th
-                            className={`${
-                              activeTab === "approval_request" &&
-                              pi?.piitems?.every(
-                                (item) =>
-                                  item.status === "Approve" ||
-                                  item.status === "Reject"
-                              )
-                                ? "d-none"
-                                : ""
-                            }`}
-                          >
-                            Action
-                          </th>
+                          {activeTab === "approval_request" &&
+                            userPermission.some(
+                              (prem) =>
+                                prem.type === "PI Request" &&
+                                prem.permission === "approve"
+                            ) && (
+                              <th
+                                className={`${
+                                  activeTab === "approval_request" &&
+                                  pi?.piitems?.every(
+                                    (item) =>
+                                      item.status === "Approve" ||
+                                      item.status === "Reject"
+                                  )
+                                    ? "d-none"
+                                    : ""
+                                }`}
+                              >
+                                Action
+                              </th>
+                            )}
+
                           {/* )} */}
                         </tr>
                       </thead>
@@ -483,17 +503,30 @@ export default function PI_Request_Table({ userPermission }) {
                                   //     ? "d-block"
                                   //     : "d-none"
                                   // } `}
+                                  // className={`form-check-input ${
+                                  //   activeTab === "approval_request"
+                                  //     ? piItem.status.toLowerCase() ===
+                                  //       "pending"
+                                  //       ? "d-block"
+                                  //       : "d-none"
+                                  //     : activeTab === "my_request"
+                                  //     ? piItem.status.toLowerCase() ===
+                                  //       "pending"
+                                  //       ? "d-block"
+                                  //       : "d-none"
+                                  //     : "d-none"
+                                  // }`}
                                   className={`form-check-input ${
                                     activeTab === "approval_request"
-                                      ? piItem.status.toLowerCase() ===
-                                        "pending"
+                                      ? pi?.piitems?.some(
+                                          (item) =>
+                                            item.status?.toLowerCase() ===
+                                            "pending"
+                                        )
                                         ? "d-block"
                                         : "d-none"
                                       : activeTab === "my_request"
-                                      ? piItem.status.toLowerCase() ===
-                                        "pending"
-                                        ? "d-block"
-                                        : "d-none"
+                                      ? "d-none"
                                       : "d-none"
                                   }`}
                                   type="checkbox"
@@ -615,35 +648,42 @@ export default function PI_Request_Table({ userPermission }) {
                                 </div>
                               </div>
                             </td> */}
-                            <td
-                              style={{
-                                display:
-                                  activeTab === "approval_request" &&
-                                  piItem.status.toLowerCase() !== "pending"
-                                    ? "none"
-                                    : "table-cell",
-                              }}
-                            >
-                              <div className="d-inline-flex gap-2">
-                                <div className="badge rounded bg-label-success p-1_5">
-                                  <i
-                                    className="icon-base ti tabler-circle-check icon-md cursor-pointer"
-                                    onClick={() => singleApprove(piItem.id)}
-                                  />
-                                </div>
-                                <div className="badge rounded bg-label-danger p-1_5">
-                                  <i
-                                    className="icon-base ti tabler-xbox-x icon-md cursor-pointer"
-                                    onClick={() =>
-                                      singleReject({
-                                        pi_request_item_id: piItem.id,
-                                        pi_request_id: piItem.pi_request_id,
-                                      })
-                                    }
-                                  />
-                                </div>
-                              </div>
-                            </td>
+                            {activeTab === "approval_request" &&
+                              userPermission.some(
+                                (prem) =>
+                                  prem.type === "PI Request" &&
+                                  prem.permission === "approve"
+                              ) && (
+                                <td
+                                  style={{
+                                    display:
+                                      activeTab === "approval_request" &&
+                                      piItem.status.toLowerCase() !== "pending"
+                                        ? "none"
+                                        : "table-cell",
+                                  }}
+                                >
+                                  <div className="d-inline-flex gap-2">
+                                    <div className="badge rounded bg-label-success p-1_5">
+                                      <i
+                                        className="icon-base ti tabler-circle-check icon-md cursor-pointer"
+                                        onClick={() => singleApprove(piItem.id)}
+                                      />
+                                    </div>
+                                    <div className="badge rounded bg-label-danger p-1_5">
+                                      <i
+                                        className="icon-base ti tabler-xbox-x icon-md cursor-pointer"
+                                        onClick={() =>
+                                          singleReject({
+                                            pi_request_item_id: piItem.id,
+                                            pi_request_id: piItem.pi_request_id,
+                                          })
+                                        }
+                                      />
+                                    </div>
+                                  </div>
+                                </td>
+                              )}
                           </tr>
                         ))}
                       </tbody>

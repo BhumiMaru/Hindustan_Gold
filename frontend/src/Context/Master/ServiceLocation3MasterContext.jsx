@@ -30,6 +30,43 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
   const [filterSelectedSl2, setFilterSelectedSl2] = useState(null);
 
   // Fetch All
+  // const fetchServiceLocations3 = async (
+  //   search = "",
+  //   serviceLocation1Id = null,
+  //   serviceLocation2Id = null,
+  //   page = 1,
+  //   perPage = 10
+  // ) => {
+  //   try {
+  //     const params = { search };
+  //     // if (params.serviceLocation1Id !== null) {
+  //     //   params.service_location_1_id = serviceLocation1Id;
+  //     // }
+  //     // if (params.serviceLocation2Id !== null) {
+  //     //   params.service_location_2_id = serviceLocation2Id;
+  //     // }
+
+  //     if (serviceLocation1Id) params.service_location_1_id = serviceLocation1Id;
+  //     if (serviceLocation2Id) params.service_location_2_id = serviceLocation2Id;
+
+  //     const res = await getData(
+  //       ENDPOINTS.SERVICES_LOCATION_3_MASTER.LIST,
+  //       params
+  //     );
+
+  //     const apiData = res.data;
+  //     setServiceLocation3(apiData.data);
+  //     setPagination({
+  //       currentPage: apiData.current_page,
+  //       perPage: apiData.per_page,
+  //       total: apiData.total,
+  //     });
+  //   } catch (error) {
+  //     toast.error(`Service Location 3 Master Fetch Error: ${error.message}`);
+  //   }
+  // };
+
+  // Fetch Service Location 3
   const fetchServiceLocations3 = async (
     search = "",
     serviceLocation1Id = null,
@@ -38,27 +75,35 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
     perPage = 10
   ) => {
     try {
-      const params = { search };
-      if (params.serviceLocation1Id !== null) {
-        params.service_location_1_id = serviceLocation1Id;
+      const params = { search, page, per_page: perPage };
+
+      // Only include if it's a single numeric value
+      if (serviceLocation1Id !== null && !Array.isArray(serviceLocation1Id)) {
+        params.service_location_1_id = Number(serviceLocation1Id);
       }
-      if (params.serviceLocation2Id !== null) {
-        params.service_location_2_id = serviceLocation2Id;
+
+      if (serviceLocation2Id !== null && !Array.isArray(serviceLocation2Id)) {
+        params.service_location_2_id = Number(serviceLocation2Id);
       }
+
       const res = await getData(
         ENDPOINTS.SERVICES_LOCATION_3_MASTER.LIST,
         params
       );
 
-      const apiData = res.data;
-      setServiceLocation3(apiData.data);
+      // Ensure serviceLocation3 is always an array
+      setServiceLocation3(res.data?.data || []);
+
+      // Optional: set pagination if your UI uses it
       setPagination({
-        currentPage: apiData.current_page,
-        perPage: apiData.per_page,
-        total: apiData.total,
+        currentPage: res.data?.current_page || 1,
+        perPage: res.data?.per_page || 10,
+        total: res.data?.total || 0,
       });
     } catch (error) {
-      toast.error(`Service Location 3 Master Fetch Error: ${error.message}`);
+      console.error(
+        `Something went wrong while fetching Service Location 3 list. ${error.message}`
+      );
     }
   };
 

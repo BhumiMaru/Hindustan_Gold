@@ -4,7 +4,13 @@ import { useUIContext } from "../../../../../Context/UIContext";
 
 export default function Vendor_List_Table() {
   const { handleOpen } = useUIContext();
-  const { vendorList, pagination, startEditing } = useVendor();
+  const {
+    vendorList,
+    pagination,
+    startEditing,
+    setVendorEditId,
+    vendorDelete,
+  } = useVendor();
   return (
     <>
       {/* ------------------START VENDOR LIST TABLE----------------------- */}
@@ -58,6 +64,10 @@ export default function Vendor_List_Table() {
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
                       data-bs-toggle="modal"
                       data-bs-target="#vendorViewModel"
+                      onClick={() => {
+                        setVendorEditId(vendor.id);
+                        handleOpen("viewVendorDetails");
+                      }}
                     >
                       <i className="icon-base ti tabler-eye icon-22px" />
                     </a>
@@ -78,6 +88,7 @@ export default function Vendor_List_Table() {
                       href="#"
                       type="button"
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
+                      onClick={() => vendorDelete(vendor.id)}
                     >
                       <i className="icon-base ti tabler-trash text-danger icon-22px" />
                     </a>

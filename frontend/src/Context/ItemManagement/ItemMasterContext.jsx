@@ -86,7 +86,7 @@ export const ItemMasterProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("item master fetch error:", error);
-      toast.error("Failed to fetch item master");
+      // toast.error("Failed to fetch item master");
     }
   };
 

@@ -12,7 +12,7 @@ import { decryptData } from "../../../../../utils/decryptData";
 import Date_Range_Model from "../../../../../components/Date Range/Date_Range_Model";
 import moment from "moment";
 
-export default function PI_Request_List({ findById }) {
+export default function PI_Request_List() {
   const {
     search,
     setSearch,
@@ -391,7 +391,7 @@ export default function PI_Request_List({ findById }) {
               />
             </div> */}
 
-            <div className="col-lg-4 mt-2">
+            <div className="col-lg-3 mt-2">
               <div className="d-flex items-center">
                 <input
                   type="text"

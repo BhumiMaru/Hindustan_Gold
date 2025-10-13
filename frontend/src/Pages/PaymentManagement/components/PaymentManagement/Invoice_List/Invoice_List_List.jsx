@@ -17,6 +17,8 @@ import { useUIContext } from "../../../../../Context/UIContext";
 import Invoice_List_Form from "./Invoice_List_Form";
 import { SubCategoryProvider } from "../../../../../Context/ItemManagement/SubCategoryContext";
 import { ItemRequestProvider } from "../../../../../Context/Request Management/Item_Request";
+import { decryptData } from "../../../../../utils/decryptData";
+import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 
 export default function Invoice_List_List() {
   const { modal, handleOpen } = useUIContext();
@@ -36,9 +38,18 @@ export default function Invoice_List_List() {
     setPagination,
     setType,
   } = useInvoice();
+  const { fetchUserPermission, userPermission } = useUserCreation();
   const { vendorFilter, setVendorFilter, getVendorFilter } = useVendor();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDateRange, setSelectedDateRange] = useState("");
+
+  const getAuthData = sessionStorage.getItem("authData");
+  const decryptAuthData = decryptData(getAuthData);
+  const user = decryptAuthData?.user;
+
+  useEffect(() => {
+    fetchUserPermission(user.id);
+  }, [user.id]);
 
   useEffect(() => {
     getVendorFilter();
@@ -107,7 +118,15 @@ export default function Invoice_List_List() {
                 Payment Request
               </button> */}
               <a
-                className="btn btn-primary waves-effect waves-light"
+                className={`btn btn-primary waves-effect waves-light ${
+                  userPermission.some(
+                    (prem) =>
+                      prem.type == "Payment Request" &&
+                      (prem.permission == "add" || prem.permission == "view")
+                  )
+                    ? "d-block"
+                    : "d-none"
+                }`}
                 data-bs-toggle="modal"
                 data-bs-target="#InvoiceModel"
                 onClick={() => {
