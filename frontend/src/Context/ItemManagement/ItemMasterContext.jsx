@@ -113,7 +113,9 @@ export const ItemMasterProvider = ({ children }) => {
       return res.data.data;
     } catch (error) {
       console.log("item master create error:", error);
-      toast.error("item master create error");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -131,7 +133,9 @@ export const ItemMasterProvider = ({ children }) => {
       // fetchItemMaster();
     } catch (error) {
       console.log("Failed to Edit Item", error);
-      toast.error("Failed to Edit Item");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -440,7 +444,9 @@ export const ItemMasterProvider = ({ children }) => {
       toast.success("Item Delete Successfully!");
     } catch (error) {
       console.log("item master Delete error:", error);
-      toast.error("item master Delete error");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -523,7 +529,9 @@ export const ItemMasterProvider = ({ children }) => {
         "item master getCategoryGroupAndItemCodeBySubCategoryId error:",
         error
       );
-      toast.error("Failed to generate item code");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
       return null;
     }
   };
