@@ -39,7 +39,7 @@ export const GroupMasterProvider = ({ children }) => {
       });
     } catch (error) {
       console.log(error);
-      toast.error("Failed to fetch Group");
+      // toast.error("Failed to fetch Group");
     }
   };
 
@@ -50,7 +50,7 @@ export const GroupMasterProvider = ({ children }) => {
       setFilterGroup(res.data);
     } catch (error) {
       console.log(error);
-      toast.error("Failed to fetch Group Filter");
+      // toast.error("Failed to fetch Group Filter");
     }
   };
 

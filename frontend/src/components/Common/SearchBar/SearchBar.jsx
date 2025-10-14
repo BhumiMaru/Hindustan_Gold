@@ -20,7 +20,7 @@ export default function SearchBar({
         </span>
         <input
           type="text"
-          className="form-control"
+          className="form-control p-0"
           placeholder={placeholder}
           aria-label={placeholder}
           aria-describedby="basic-addon-search31"

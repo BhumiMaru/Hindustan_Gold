@@ -30,7 +30,6 @@ export const SubCategoryProvider = ({ children }) => {
     total: 0,
   });
 
-  //   Fetch user Creations
   //   Fetch Sub Categories
   const fetchSubCategoryData = async ({
     search = "",
@@ -51,7 +50,7 @@ export const SubCategoryProvider = ({ children }) => {
         category_id,
         user_id,
       };
-
+      console.log("params", params);
       const res = await getData(ENDPOINTS.SUBCATEGORY_MASTER.LIST, params);
       const apiData = res.data;
       setSubCategory(apiData.data);
@@ -62,7 +61,10 @@ export const SubCategoryProvider = ({ children }) => {
       });
     } catch (error) {
       console.log(error);
-      toast.error("Failed to fetch Sub Category");
+      if (error.response && error.response.data) {
+        console.error(error.response.data.message);
+      }
+      // toast.error("Failed to fetch Sub Category");
     }
   };
 
@@ -73,7 +75,7 @@ export const SubCategoryProvider = ({ children }) => {
       setFilterSubCategory(res.data);
     } catch (error) {
       console.log(error);
-      toast.error("Failed to fetch SubCat Filter");
+      // toast.error("Failed to fetch SubCat Filter");
     }
   };
 

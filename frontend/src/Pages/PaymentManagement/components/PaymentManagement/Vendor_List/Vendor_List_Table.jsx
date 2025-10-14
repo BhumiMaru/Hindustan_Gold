@@ -53,8 +53,14 @@ export default function Vendor_List_Table() {
                 <td>{vendor.mobile}</td>
                 <td>{vendor.invoice_total}</td>
                 <td>
-                  <span className="badge bg-label-success">
-                    {vendor.status}
+                  <span
+                    className={`badge ${
+                      vendor?.status === 1
+                        ? "bg-label-success"
+                        : "bg-label-danger"
+                    }`}
+                  >
+                    {vendor?.status === 1 ? "Active" : "Deactive"}
                   </span>
                 </td>
                 <td>

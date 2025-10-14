@@ -206,24 +206,28 @@ export default function SubCategory_Master_Form() {
                 </div>
               </div>
               <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-label-secondary waves-effect"
-                  data-bs-dismiss="modal"
-                  onClick={() => {
-                    handleClose("addNewSubCategory");
-                    ReserSubCategory();
-                  }}
-                >
-                  Close
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary waves-effect waves-light"
-                  onClick={handleSave}
-                >
-                  Save changes
-                </button>
+                <div>
+                  <button
+                    type="button"
+                    className="btn btn-label-secondary waves-effect btn-sm"
+                    data-bs-dismiss="modal"
+                    onClick={() => {
+                      handleClose("addNewSubCategory");
+                      ReserSubCategory();
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    className="btn btn-primary waves-effect waves-light btn-sm"
+                    onClick={handleSave}
+                  >
+                    Save changes
+                  </button>
+                </div>
               </div>
             </div>
           </div>

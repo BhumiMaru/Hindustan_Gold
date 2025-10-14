@@ -10,27 +10,37 @@ import Category_Master_Form from "./Category_Master_Form";
 
 export default function Category_Master_List() {
   const { modal, handleOpen } = useUIContext();
-  const { groups, fetchGroupData } = useGroupMasterContext();
-  const { fetchCategories, selectedGroup, setSelectedGroup, pagination } =
-    useCategoryMaster();
+  const { groups, fetchGroupData, filterGroup, fetchGroupFilter } =
+    useGroupMasterContext();
+  const {
+    fetchCategories,
+    selectedGroup,
+    setSelectedGroup,
+    pagination,
+    setPagination,
+  } = useCategoryMaster();
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetchGroupData();
-    fetchCategories(
+    fetchGroupFilter();
+  }, []);
+
+  useEffect(() => {
+    fetchCategories({
       search,
-      selectedGroup,
-      pagination.currentPage,
-      pagination.perPage
-    );
-  }, [search, selectedGroup]);
+      group_id: selectedGroup === "all" ? "" : selectedGroup,
+      page: pagination.currentPage,
+      perPage: pagination.perPage,
+    });
+  }, [search, selectedGroup, pagination.currentPage, pagination.perPage]);
 
   const handlePageChange = (page) => {
-    fetchCategories(search, page, pagination.perPage);
+    setPagination((prev) => ({ ...prev, currentPage: page }));
   };
 
   const handleItemsPerPageChange = (size) => {
-    fetchCategories(search, 1, size); // reset to page 1 when changing size
+    setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
   };
 
   return (
@@ -50,13 +60,16 @@ export default function Category_Master_List() {
                   onSubmit={(val) => setSearch(val)} // ✅ handle Enter key
                 />
               </div>
-              <div className="d-flex gap-1">
+              <div className="d-flex gap-1 align-items-center">
                 <div className="position-relative">
                   <CustomSelect
-                    options={groups?.map((g) => ({
-                      value: g.id,
-                      label: g.group_name, // depends on your API
-                    }))}
+                    options={[
+                      { value: "all", label: "Select Groups" },
+                      ...filterGroup?.map((g) => ({
+                        value: g.id,
+                        label: g.group_name, // depends on your API
+                      })),
+                    ]}
                     value={selectedGroup}
                     onChange={setSelectedGroup}
                     placeholder="Filter by Group"
@@ -69,16 +82,34 @@ export default function Category_Master_List() {
                   />
                 </div>
 
-                <button
-                  type="button"
-                  className="btn btn-primary waves-effect waves-light"
-                  data-bs-toggle="modal"
-                  data-bs-target="#smallModal"
-                  onClick={() => handleOpen("addNewCategory")}
-                >
-                  <span className="icon-xs icon-base ti tabler-plus me-2"></span>
-                  Add New Category
-                </button>
+                <div className="d-flex align-items-center">
+                  <div>
+                    <button
+                      className="btn btn-danger waves-effect btn-sm"
+                      // onClick={handleClearFilters}
+                      onClick={() => {
+                        // setSearch("");
+                        setSelectedGroup("all");
+                      }}
+                    >
+                      {/* <i className="ti ti-refresh me-1"></i> */}
+                      Clear
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <button
+                    type="button"
+                    className="btn btn-primary waves-effect waves-light  btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#smallModal"
+                    onClick={() => handleOpen("addNewCategory")}
+                  >
+                    <span className="icon-xs icon-base ti tabler-plus me-2"></span>
+                    Add New Category
+                  </button>
+                </div>
               </div>
             </div>
             <div className="card-datatable table-responsive pt-0">

@@ -226,31 +226,40 @@ export default function CustomSelect({
   }, [value]);
 
   return (
-    <div ref={containerRef}>
-      {label && (
-        <label className="form-label" htmlFor={id}>
-          {label}
-          {/* {required && <span className="text-danger">*</span>} */}
-        </label>
-      )}
+    <>
+      {/* <style>
+        {`
+        .select2-selection select2-selection--single{
+        width:"150px !important";
+        }
+        `}
+      </style> */}
+      <div ref={containerRef}>
+        {label && (
+          <label className="form-label" htmlFor={id}>
+            {label}
+            {/* {required && <span className="text-danger">*</span>} */}
+          </label>
+        )}
 
-      <select
-        id={id}
-        ref={selectRef}
-        className="form-select"
-        value={value || (multiple ? [] : "")}
-        multiple={multiple}
-        disabled={disabled}
-        // ✅ Added to prevent React warning (since Select2 handles changes)
-        onChange={() => {}}
-      >
-        {!multiple && <option value="">{placeholder}</option>}
-        {options.map((opt, idx) => (
-          <option key={idx} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-    </div>
+        <select
+          id={id}
+          ref={selectRef}
+          className="form-select"
+          value={value || (multiple ? [] : "")}
+          multiple={multiple}
+          disabled={disabled}
+          // ✅ Added to prevent React warning (since Select2 handles changes)
+          onChange={() => {}}
+        >
+          {!multiple && <option value="">{placeholder}</option>}
+          {options.map((opt, idx) => (
+            <option key={idx} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    </>
   );
 }

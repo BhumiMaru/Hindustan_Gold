@@ -735,11 +735,17 @@ export default function PI_Item_Request_Form() {
   const { CreatePIRequest, items, setItems, findById, editPiRequest } =
     usePIRequest();
   const { itemMaster, fetchItemMaster } = useItemMaster();
+  const [isPurpose, setIsPurpose] = useState(false);
+  const [isStock, setIsStock] = useState();
+  // Add state to track quantity errors
+  const [quantityError, setQuantityError] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchItemMaster();
   }, []);
+
+  console.log("itemMaster", itemMaster);
 
   useEffect(() => {
     if (id && itemMaster.length > 0) {
@@ -784,14 +790,87 @@ export default function PI_Item_Request_Form() {
     setItems(items.filter((item) => item.id !== id));
   };
 
+  // const handleSave = async () => {
+  //   try {
+  //     const formData = new FormData();
+
+  //     if (id) formData.append("id", id);
+  //     formData.append("pi_type", type);
+  //     formData.append("total_item", Number(items.length));
+  //     // console.log("pi items", items);
+
+  //     items.forEach((item, index) => {
+  //       formData.append(
+  //         `items[${index}][item_id]`,
+  //         Number(item.requestedItem) || 0
+  //       );
+  //       formData.append(`items[${index}][item_name]`, item.item_name || "");
+  //       formData.append(`items[${index}][qty]`, Number(item.qty) || 0);
+  //       formData.append(`items[${index}][uom]`, item.uom || "KG");
+  //       formData.append(`items[${index}][priority]`, item.priority || "");
+  //       formData.append(`items[${index}][purpose]`, item.purpose || "");
+  //       formData.append(
+  //         `items[${index}][tentative_consumption_day]`,
+  //         item.tentative_consumption_day || 1
+  //       );
+  //       formData.append(`items[${index}][remark]`, item.remarks || "");
+  //       formData.append(`items[${index}][status]`, item.status || "pending");
+
+  //       if (item.existing && item.dbId) {
+  //         formData.append(`items[${index}][id]`, item.dbId);
+  //       }
+  //       if (item.file) {
+  //         formData.append(`items[${index}][file]`, item.file);
+  //       }
+  //     });
+
+  //     for (const pair of formData.entries()) {
+  //       console.log(pair[0], ":", pair[1]);
+  //     }
+
+  //     let res;
+  //     if (id) {
+  //       res = await editPiRequest(id, formData);
+  //       // if (res?.status === true) {
+  //       //   navigate("/po-material/pi-request-list");
+  //       // }
+  //     } else {
+  //       res = await CreatePIRequest(formData);
+  //       // if (res?.status === true) {
+  //       //   navigate("/po-material/pi-request-list");
+  //       // }
+  //     }
+  //     if (res?.status === true) {
+  //       navigate("/po-material/pi-request-list");
+  //     }
+  //   } catch (err) {
+  //     toast.error("Error saving PI Request");
+  //     console.error("handleSave error:", err);
+  //   }
+  // };
+
+  // Handle individual field changes
+
   const handleSave = async () => {
     try {
-      const formData = new FormData();
+      // Check if any item qty exceeds stock
+      const invalidItems = items.filter(
+        (item) => isStock && Number(item.qty) > Number(isStock)
+      );
 
+      if (invalidItems.length > 0) {
+        toast.error(
+          `Quantity for Item(s) ${invalidItems
+            .map((i) => i.id)
+            .join(", ")} exceeds available stock (${isStock})`
+        );
+        return; // Stop saving
+      }
+
+      const formData = new FormData();
       if (id) formData.append("id", id);
       formData.append("pi_type", type);
       formData.append("total_item", Number(items.length));
-      // console.log("pi items", items);
 
       items.forEach((item, index) => {
         formData.append(
@@ -818,15 +897,14 @@ export default function PI_Item_Request_Form() {
         }
       });
 
-      for (const pair of formData.entries()) {
-        console.log(pair[0], ":", pair[1]);
+      let res;
+      if (id) {
+        res = await editPiRequest(id, formData);
+      } else {
+        res = await CreatePIRequest(formData);
       }
 
-      if (id) {
-        await editPiRequest(id, formData);
-        navigate("/po-material/pi-request-list");
-      } else {
-        await CreatePIRequest(formData);
+      if (res?.status === true) {
         navigate("/po-material/pi-request-list");
       }
     } catch (err) {
@@ -835,7 +913,6 @@ export default function PI_Item_Request_Form() {
     }
   };
 
-  // Handle individual field changes
   const handleItemChange = (itemId, field, value) => {
     setItems((prev) =>
       prev.map((item) =>
@@ -853,12 +930,24 @@ export default function PI_Item_Request_Form() {
     );
   };
 
+  // Handle quantity change with stock validation
+  const handleQuantityChange = (itemId, value, stock) => {
+    const qty = Number(value);
+    if (qty > stock) {
+      const errorMsg = `Quantity cannot exceed available stock (${stock})`;
+      setQuantityError((prev) => ({ ...prev, [itemId]: errorMsg }));
+    } else {
+      setQuantityError((prev) => ({ ...prev, [itemId]: "" }));
+    }
+    handleItemChange(itemId, "qty", value);
+  };
+
   // Handle item selection from item master
   const handleItemSelect = (itemId, selectedId) => {
     const selectedItem = itemMaster.find(
       (itm) => itm.id === Number(selectedId)
     );
-    // console.log("selectedItem", selectedItem);
+    console.log("selectedItem", selectedItem);
 
     if (selectedItem) {
       const storage = selectedItem?.storage_locations?.[0];
@@ -883,8 +972,17 @@ export default function PI_Item_Request_Form() {
             : item
         )
       );
+
+      const isPurPoseRequired = selectedItem?.is_purpose_required;
+      const isStockRequired = selectedItem?.stock;
+      setIsStock(isStockRequired);
+      setIsPurpose(isPurPoseRequired);
     }
   };
+
+  console.log("isPurpose", isPurpose);
+  console.log("isStock", isStock);
+  console.log(quantityError);
 
   return (
     <>
@@ -960,25 +1058,32 @@ export default function PI_Item_Request_Form() {
                     />
                   </div>
 
-                  <div className="col-sm-3 mb-3">
-                    <label
-                      htmlFor={`Quantity-${item.id}`}
-                      className="form-label"
-                    >
-                      Quantity
-                    </label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      id={`Quantity-${item.id}`}
-                      placeholder="Quantity"
-                      min={0}
-                      value={item.qty}
-                      onChange={(e) =>
-                        handleItemChange(item.id, "qty", e.target.value)
-                      }
-                    />
-                  </div>
+                  {type === "material" && (
+                    <div className="col-sm-3 mb-3">
+                      <label
+                        htmlFor={`Quantity-${item.id}`}
+                        className="form-label"
+                      >
+                        Quantity {isStock ? ` (Stock Is : ${isStock})` : null}
+                      </label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        id={`Quantity-${item.id}`}
+                        placeholder="Quantity"
+                        min={0}
+                        value={item.qty}
+                        onChange={(e) =>
+                          handleQuantityChange(item.id, e.target.value, isStock)
+                        }
+                      />
+                      {quantityError[item.id] && (
+                        <small className="text-danger">
+                          {quantityError[item.id]}
+                        </small>
+                      )}
+                    </div>
+                  )}
 
                   <div className="col-sm-3 mb-3">
                     <label
@@ -1030,9 +1135,11 @@ export default function PI_Item_Request_Form() {
                       readOnly
                     />
                   </div>
-                  {/* {console.log("item", item)} */}
-
-                  <div className="col-sm-3 mb-3">
+                  <div
+                    className={`col-sm-3 mb-3 ${
+                      isPurpose === 1 ? "d-block" : "d-none"
+                    }`}
+                  >
                     <CustomSelect
                       id={`selectPurpose-${item.id}`}
                       label="Purpose"

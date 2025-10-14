@@ -4,12 +4,15 @@ import "./index.css";
 import App from "./App.jsx";
 import { UIProvider } from "./Context/UIContext";
 import { UserCreationProvider } from "./Context/Master/UserCreationContext.jsx";
+import { UOMProvider } from "./Context/UomContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <UIProvider>
       <UserCreationProvider>
-        <App />
+        <UOMProvider>
+          <App />
+        </UOMProvider>
       </UserCreationProvider>
     </UIProvider>
   </StrictMode>

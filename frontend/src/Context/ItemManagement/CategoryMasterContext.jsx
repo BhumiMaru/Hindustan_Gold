@@ -23,7 +23,7 @@ export const CategoryMasterProvider = ({ children }) => {
   const [categoryEditId, setCategoryEditId] = useState(null);
   const [filterCategory, setFilterCategory] = useState([]);
   //   Group Filter
-  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [selectedGroup, setSelectedGroup] = useState("all");
   const [pagination, setPagination] = useState({
     currentPage: 1,
     perPage: 10,
@@ -31,12 +31,12 @@ export const CategoryMasterProvider = ({ children }) => {
   });
 
   // ✅ Fetch All Categories
-  const fetchCategories = async (
+  const fetchCategories = async ({
     search = "",
     group_id = "",
     page = 1,
-    perPage = 10
-  ) => {
+    perPage = 10,
+  } = {}) => {
     try {
       const res = await getData(ENDPOINTS.CATEGORY_MASTER.LIST, {
         search,
@@ -147,6 +147,7 @@ export const CategoryMasterProvider = ({ children }) => {
         setSelectedGroup,
         filterCategory,
         pagination,
+        setPagination,
 
         fetchCategoryFilter,
         fetchCategories,

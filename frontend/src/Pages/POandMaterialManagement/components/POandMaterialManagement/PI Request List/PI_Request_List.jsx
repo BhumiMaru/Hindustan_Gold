@@ -48,6 +48,7 @@ export default function PI_Request_List() {
     fetchUserPermission,
     userPermission,
   } = useUserCreation();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchItemFilter();
@@ -55,12 +56,38 @@ export default function PI_Request_List() {
     fetchUserFilter();
   }, []);
 
+  // useEffect(() => {
+  //   getPIRequest({
+  //     type: activeTab,
+  //     page: pagination.currentPage,
+  //     perPage: pagination.perPage,
+  //   });
+  // }, [
+  //   activeTab,
+  //   selectedType,
+  //   itemName,
+  //   department,
+  //   orderBy,
+  //   search,
+  //   status,
+  //   startDate,
+  //   endDate,
+  //   pagination.currentPage,
+  //   pagination.perPage,
+  // ]);
+
   useEffect(() => {
-    getPIRequest({
-      type: activeTab,
-      page: pagination.currentPage,
-      perPage: pagination.perPage,
-    });
+    const fetchData = async () => {
+      setLoading(true);
+      await getPIRequest({
+        type: activeTab,
+        page: pagination.currentPage,
+        perPage: pagination.perPage,
+      });
+      setLoading(false);
+    };
+
+    fetchData();
   }, [
     activeTab,
     selectedType,
@@ -207,13 +234,8 @@ export default function PI_Request_List() {
                       Approval Request
                     </span>
                     {activeTab === "approval_request" && (
-                      // (loading ? (
-                      //   <span className="h-px-20 w-px-20 d-flex align-items-center justify-content-center">
-                      //     <Loader />
-                      //   </span>
-                      // ) : (
                       <span className="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1_5">
-                        {piRequest.length}
+                        {loading ? 0 : piRequest.length}
                       </span>
                     )}
                     <i className="icon-base ti tabler-user icon-sm d-sm-none" />

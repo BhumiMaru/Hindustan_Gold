@@ -92,7 +92,7 @@ export default function User_Creation_Form() {
         }
       }
 
-      // console.log("submitting form", payload);
+      console.log("submitting form", payload);
     } catch (error) {
       console.log(error);
     }

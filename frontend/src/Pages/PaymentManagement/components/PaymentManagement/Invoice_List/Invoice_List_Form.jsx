@@ -97,8 +97,6 @@ export default function Invoice_List_Form({ id, type }) {
     }));
   };
 
-  console.log("iiii", invoiceData);
-
   const handleSave = async () => {
     const formData = new FormData();
 
@@ -122,7 +120,7 @@ export default function Invoice_List_Form({ id, type }) {
       "item_id",
       itemName
         ? Number(itemName)
-        : invoiceData.item_id
+        : Number(invoiceData.item_id)
         ? Number(invoiceData.item_id)
         : null
     );

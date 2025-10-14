@@ -31,10 +31,10 @@ export default function SubCategory_Master_List() {
     fetchUserFilter();
     fetchSubCategoryData({
       search,
-      type: type,
-      group_id: group,
-      category_id: category,
-      user_id: owner,
+      type: type === "all" ? "" : type,
+      group_id: group === "all" ? "" : group,
+      category_id: category === "all" ? "" : category,
+      user_id: owner === "all" ? "" : owner,
       page: pagination.currentPage,
       perPage: pagination.perPage,
     });
@@ -47,6 +47,13 @@ export default function SubCategory_Master_List() {
     pagination.currentPage,
     pagination.perPage,
   ]);
+
+  const handleClearFilters = () => {
+    setType("all");
+    setGroup("all");
+    setCategory("all");
+    setOwner("all");
+  };
 
   const handlePageChange = (page) => {
     setPagination((prev) => ({ ...prev, currentPage: page }));
@@ -73,17 +80,30 @@ export default function SubCategory_Master_List() {
                   onSubmit={(val) => setSearch(val)} // ✅ handle Enter key
                 />
               </div>
-              <div className="d-flex gap-1">
-                <button
-                  type="button"
-                  className="btn btn-primary waves-effect waves-light"
-                  data-bs-toggle="modal"
-                  data-bs-target="#smallModal"
-                  onClick={() => handleOpen("addNewSubCategory")}
-                >
-                  <span className="icon-xs icon-base ti tabler-plus me-2"></span>
-                  Add New Subcategory
-                </button>
+              <div className="d-flex gap-1 align-items-center">
+                <div className="d-flex align-items-center">
+                  <div>
+                    <button
+                      className="btn btn-danger waves-effect btn-sm"
+                      onClick={handleClearFilters}
+                    >
+                      {/* <i className="ti ti-refresh me-1"></i> */}
+                      Clear
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    className="btn btn-primary waves-effect waves-light btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#smallModal"
+                    onClick={() => handleOpen("addNewSubCategory")}
+                  >
+                    <span className="icon-xs icon-base ti tabler-plus me-2"></span>
+                    Add New Subcategory
+                  </button>
+                </div>
               </div>
             </div>
             <div className="row px-3 pb-3">
@@ -93,6 +113,10 @@ export default function SubCategory_Master_List() {
                     id="selectType"
                     label=""
                     options={[
+                      {
+                        value: "all",
+                        label: "Select Type",
+                      },
                       { value: "material", label: "Material" },
                       { value: "service", label: "Service" },
                       { value: "asset", label: "Asset" },
@@ -147,10 +171,13 @@ export default function SubCategory_Master_List() {
                   <CustomSelect
                     id="selectGroup"
                     label=""
-                    options={filterGroup.map((group) => ({
-                      value: group.id,
-                      label: group.group_name,
-                    }))}
+                    options={[
+                      { value: "all", label: "Select Groups" },
+                      ...filterGroup.map((group) => ({
+                        value: group.id,
+                        label: group.group_name,
+                      })),
+                    ]}
                     value={group}
                     onChange={setGroup}
                     placeholder="Select Group"
@@ -163,10 +190,13 @@ export default function SubCategory_Master_List() {
                   <CustomSelect
                     id="selectCategory"
                     label=""
-                    options={filterCategory.map((cat) => ({
-                      value: cat.id,
-                      label: cat.category_name,
-                    }))}
+                    options={[
+                      { value: "all", label: "Select Categories" },
+                      ...(filterCategory || []).map((cat) => ({
+                        value: cat.id,
+                        label: cat.category_name,
+                      })),
+                    ]}
                     value={category}
                     onChange={setCategory}
                     placeholder="Select Category"
@@ -179,13 +209,16 @@ export default function SubCategory_Master_List() {
                   <CustomSelect
                     id="selectUser"
                     label=""
-                    options={filterUser.map((user) => ({
-                      value: user.id,
-                      label: user.name,
-                    }))}
+                    options={[
+                      { value: "all", label: "Select SubCategory Owners" },
+                      ...filterUser.map((user) => ({
+                        value: user.id,
+                        label: user.name,
+                      })),
+                    ]}
                     value={owner}
                     onChange={setOwner}
-                    placeholder="Select User"
+                    placeholder="Select SubCategory Owners"
                     required
                   />
                 </div>

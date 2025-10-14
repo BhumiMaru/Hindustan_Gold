@@ -493,7 +493,7 @@
 
 //////////////////////
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useServiceLocation1Master } from "../../../../../Context/Master/ServiceLocation1MasterContext";
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
@@ -520,6 +520,7 @@ export default function Item_Request_Form() {
     getItemNameAndId,
   } = useItemRequest();
   const { itemMaster, fetchItemMaster } = useItemMaster();
+  const [isPurpose, setIsPurpose] = useState(false);
   console.log("type", type);
   // FIXED: Enhanced useEffect for data loading
   useEffect(() => {
@@ -634,6 +635,8 @@ export default function Item_Request_Form() {
                     service_location_3_name:
                       storage?.service_location3?.service_location_3_name || "",
                   }));
+                  const isPurPoseRequired = selectedItem?.is_purpose_required;
+                  setIsPurpose(isPurPoseRequired);
                 }}
                 placeholder="Select Item"
                 required
@@ -737,7 +740,11 @@ export default function Item_Request_Form() {
             </div>
 
             {/* Purpose */}
-            <div className="col-sm-3 mb-4">
+            <div
+              className={`col-sm-3 mb-3 ${
+                isPurpose === 1 ? "d-block" : "d-none"
+              }`}
+            >
               <CustomSelect
                 id="selectPurpose"
                 label="Purpose"

@@ -202,7 +202,16 @@ export const PIRequestProvider = ({ children }) => {
       getPIRequest();
       return res;
     } catch (error) {
-      toast.error("Error saving PI Request");
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+
+        // Flatten all error messages into a single array
+        const messages = Object.values(errors).flat();
+
+        // Show each message in toast
+        messages.forEach((msg) => toast.error(msg));
+      }
+
       console.error("savePIRequest error:", error);
     }
   };
@@ -213,10 +222,19 @@ export const PIRequestProvider = ({ children }) => {
       const res = await postData(ENDPOINTS.PI_REQUEST.ADD_UPDATE, payload);
       if (res?.status) {
         toast.success(res.message || "PI Request updated successfully!");
-        getPIRequest();
       }
+      getPIRequest();
+      return res;
     } catch (error) {
-      toast.error("Error Editing PI Request");
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+
+        // Flatten all error messages into a single array
+        const messages = Object.values(errors).flat();
+
+        // Show each message in toast
+        messages.forEach((msg) => toast.error(msg));
+      }
       console.error("Editing PIRequest error:", error);
     }
   };
@@ -305,7 +323,15 @@ export const PIRequestProvider = ({ children }) => {
         );
       }
     } catch (error) {
-      toast.error("Error fetching PI Request for edit");
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+
+        // Flatten all error messages into a single array
+        const messages = Object.values(errors).flat();
+
+        // Show each message in toast
+        messages.forEach((msg) => toast.error(msg));
+      }
       console.error("Find by id PIRequest error:", error);
     }
   };
@@ -324,7 +350,9 @@ export const PIRequestProvider = ({ children }) => {
       }
       getPIRequest();
     } catch (error) {
-      toast.error("Error deleting PI Request");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
       console.error("Delete PIRequest error:", error);
     }
   };
@@ -345,7 +373,15 @@ export const PIRequestProvider = ({ children }) => {
       getPIRequest(); // ✅ refresh after approve
       return res;
     } catch (error) {
-      toast.error("Error approving PI Request");
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+
+        // Flatten all error messages into a single array
+        const messages = Object.values(errors).flat();
+
+        // Show each message in toast
+        messages.forEach((msg) => toast.error(msg));
+      }
       console.error("Single Approve PIRequest error:", error);
     }
   };
@@ -367,7 +403,15 @@ export const PIRequestProvider = ({ children }) => {
       getPIRequest();
       return res;
     } catch (error) {
-      toast.error("Error during bulk approval");
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+
+        // Flatten all error messages into a single array
+        const messages = Object.values(errors).flat();
+
+        // Show each message in toast
+        messages.forEach((msg) => toast.error(msg));
+      }
       console.error("Bulk Approve PIRequest error:", error);
     }
   };
@@ -385,7 +429,15 @@ export const PIRequestProvider = ({ children }) => {
       getPIRequest();
       return res;
     } catch (error) {
-      toast.error("Error during Single Reject");
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+
+        // Flatten all error messages into a single array
+        const messages = Object.values(errors).flat();
+
+        // Show each message in toast
+        messages.forEach((msg) => toast.error(msg));
+      }
       console.error("Single Reject PIRequest error:", error);
     }
   };
@@ -403,7 +455,15 @@ export const PIRequestProvider = ({ children }) => {
       getPIRequest();
       return res;
     } catch (error) {
-      toast.error("Error during bulk Reject");
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+
+        // Flatten all error messages into a single array
+        const messages = Object.values(errors).flat();
+
+        // Show each message in toast
+        messages.forEach((msg) => toast.error(msg));
+      }
       console.error("Bulk Reject PIRequest error:", error);
     }
   };

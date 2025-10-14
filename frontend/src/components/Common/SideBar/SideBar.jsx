@@ -70,6 +70,7 @@ export default function SideBar() {
     "Role Master": "/super_admin/master/role",
     "Company Master": "/super_admin/master/company",
     "User Creation": "/super_admin/master/user",
+    UOM: "/suprer_admin/uom",
   };
 
   const itemRoutes = {
@@ -229,7 +230,7 @@ export default function SideBar() {
                 </ul>
               </li>
               {/* UOM */}
-              <li
+              {/* <li
                 className={`menu-item ${activeMenu === "Uom" ? "active" : ""}`}
                 onClick={() => toggleMenu("Uom")}
               >
@@ -238,51 +239,59 @@ export default function SideBar() {
                   className="menu-link cursor-pointer text-decoration-none"
                 >
                   <i className="menu-icon ti tabler-ruler"></i>
-                  <div data-i="Uom">Uom</div>
+                  <div data-i="Uom">UOM</div>
                 </Link>
-              </li>
+              </li> */}
             </>
           )}
 
           {/* Item Management */}
-          {!isAdmin && (
-            <li
-              className={`menu-item ${
-                activeMenu === "Item" ? "open active" : ""
-              } cursor-pointer`}
-              onClick={() => toggleMenu("Item")}
-            >
-              <a className="menu-link menu-toggle">
-                <i className="menu-icon icon-base ti tabler-color-swatch"></i>
-                <div data-i="Item Management">Item Management</div>
-              </a>
-              <ul
-                className={`menu-sub dropdown ${
-                  activeMenu === "Item" ? "open" : ""
-                }`}
+          {!isAdmin &&
+            userPermission?.some(
+              (perm) =>
+                (perm.type === "Material Code" &&
+                  perm.permission === "allrights") ||
+                (perm.type === "Service Code" &&
+                  perm.permission === "allrights") ||
+                (perm.type === "Asset Code" && perm.permission === "allrights")
+            ) && (
+              <li
+                className={`menu-item ${
+                  activeMenu === "Item" ? "open active" : ""
+                } cursor-pointer`}
+                onClick={() => toggleMenu("Item")}
               >
-                {Object.keys(itemRoutes).map((item) => (
-                  <li
-                    key={item}
-                    className={`menu-item ${
-                      activeSubMenu === item ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSubMenuClick("Item", item);
-                    }}
-                  >
-                    <Link
-                      to={itemRoutes[item]}
-                      className="menu-link cursor-pointer text-decoration-none"
+                <a className="menu-link menu-toggle">
+                  <i className="menu-icon icon-base ti tabler-color-swatch"></i>
+                  <div data-i="Item Management">Item Management</div>
+                </a>
+                <ul
+                  className={`menu-sub dropdown ${
+                    activeMenu === "Item" ? "open" : ""
+                  }`}
+                >
+                  {Object.keys(itemRoutes).map((item) => (
+                    <li
+                      key={item}
+                      className={`menu-item ${
+                        activeSubMenu === item ? "active" : ""
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSubMenuClick("Item", item);
+                      }}
                     >
-                      <div data-i={item}>{item}</div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          )}
+                      <Link
+                        to={itemRoutes[item]}
+                        className="menu-link cursor-pointer text-decoration-none"
+                      >
+                        <div data-i={item}>{item}</div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            )}
 
           {/* Request Management */}
           {!isAdmin && (

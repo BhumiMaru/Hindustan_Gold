@@ -9,6 +9,8 @@ export default function Item_Master_Table({ search }) {
     StartEditing,
     pagination,
     setItemMasterData,
+    fetchItemSubCategoryById,
+    getCategoryGroupAndItemCodeBySubCategoryId,
   } = useItemMaster();
   const navigate = useNavigate();
 
@@ -59,7 +61,7 @@ export default function Item_Master_Table({ search }) {
             <th scope="col">Name</th>
             <th scope="col">Category</th>
             <th scope="col">Subcategory</th>
-            <th scope="col">Quantity</th>
+            <th scope="col">Stock</th>
             <th scope="col">Status</th>
             <th scope="col" style={{ width: 180 }}>
               Action
@@ -68,27 +70,28 @@ export default function Item_Master_Table({ search }) {
         </thead>
         <tbody>
           {filteredData.map((item, index) => {
+            // console.log("item", item);
             return (
-              <tr key={item.id}>
+              <tr key={item?.id}>
                 <td>
                   <div className="ms-4">
-                    {(pagination.currentPage - 1) * pagination.perPage +
+                    {(pagination?.currentPage - 1) * pagination?.perPage +
                       (index + 1)}
                   </div>
                 </td>
-                <td>{item.type}</td>
-                <td>{item.item_code}</td>
-                <td>{item.item_name}</td>
+                <td>{item?.type}</td>
+                <td>{item?.item_code}</td>
+                <td>{item?.item_name}</td>
                 <td>{item?.category?.category_name}</td>
                 <td>{item?.subcategory?.sub_category_name}</td>
-                <td>{item.stock_value}</td>
+                <td>{item?.stock}</td>
                 <td>
                   <span
                     className={`badge ${
                       item.status === 1 ? "bg-label-success" : "bg-label-danger"
                     }`}
                   >
-                    {item.status === 1 ? "Active" : "Deactive"}
+                    {item?.status === 1 ? "Active" : "Deactive"}
                   </span>
                 </td>
                 {/* <td>

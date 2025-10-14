@@ -122,20 +122,8 @@ export const UserCreationProvider = ({ children }) => {
       return res.data;
       // fetchUserCreationData();
     } catch (error) {
-      // ✅ Check if backend sent validation errors
-      if (error.response?.data?.errors) {
-        const errors = error.response.data.errors;
-        Object.values(errors).forEach((errItem) => {
-          if (Array.isArray(errItem)) {
-            errItem.forEach((msg) => toast.error(msg));
-          } else if (typeof errItem === "string") {
-            toast.error(errItem);
-          }
-        });
-        console.log("create errors", errors);
-      } else {
-        toast.error(error.response?.data?.message || "Failed to create user");
-      }
+      console.log("create errors", error);
+      toast.error(error.response?.data?.message || "Failed to create user");
     }
   };
 

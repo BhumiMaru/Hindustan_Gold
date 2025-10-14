@@ -9,6 +9,7 @@ import { useSubCategory } from "../../../../../Context/ItemManagement/SubCategor
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 import { toast } from "react-toastify";
 import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
+import { useUOM } from "../../../../../Context/UomContext";
 
 export default function Item_Create_Material_Form() {
   const { type, id } = useParams();
@@ -34,6 +35,7 @@ export default function Item_Create_Material_Form() {
   const { fetchSL2Filter, serviceL2 } = useServiceLocation2Master();
   const { serviceL3, fetchSL3Filter } = useServiceLocation3Master();
   const { filterSubCategory, fetchSubCategoryFilter } = useSubCategory();
+  const { filterUomList, filterUom } = useUOM();
 
   // Fetch item data when in edit mode
   useEffect(() => {
@@ -52,6 +54,7 @@ export default function Item_Create_Material_Form() {
       status: 1,
     }));
 
+    filterUomList();
     fetchSL1Filter();
     fetchSL2Filter();
     fetchSL3Filter();
@@ -61,6 +64,51 @@ export default function Item_Create_Material_Form() {
   }, [type]);
 
   // Save Item Material Data
+  // const handleSave = async () => {
+  //   // Basic validation
+  //   if (!itemMasterData.item_name) {
+  //     toast.error("Item name is required");
+  //     return;
+  //   }
+
+  //   if (!itemMasterData.sub_c_id) {
+  //     toast.error("Subcategory is required");
+  //     return;
+  //   }
+
+  //   const payload = {
+  //     ...itemMasterData,
+  //     service_location_3_id: Array.isArray(itemMasterData.service_location_3_id)
+  //       ? itemMasterData.service_location_3_id
+  //       : [],
+  //     zone_id: Array.isArray(itemMasterData.zone_id)
+  //       ? itemMasterData.zone_id
+  //       : [],
+  //   };
+  //   console.log("payload", payload);
+
+  //   try {
+  //     if (id) {
+  //       await EditItemMaster(id, payload);
+  //       // console.log("payload update", payload);
+  //       toast.success("Item Updated Successfully!");
+  //       fetchItemMaster();
+  //       navigate("/item/item-master");
+  //       ResetItemMaster();
+  //     } else {
+  //       await createItemMaster(payload);
+  //       // console.log("item create ", payload);
+  //       toast.success("Item Created Successfully!");
+  //       navigate("/item/item-master");
+  //       fetchItemMaster();
+  //       ResetItemMaster();
+  //     }
+  //   } catch (error) {
+  //     console.log("item save error", error);
+  //     toast.error("Failed to save item");
+  //   }
+  // };
+
   const handleSave = async () => {
     // Basic validation
     if (!itemMasterData.item_name) {
@@ -82,26 +130,45 @@ export default function Item_Create_Material_Form() {
         ? itemMasterData.zone_id
         : [],
     };
-    console.log("payload", payload);
 
     try {
+      let res;
       if (id) {
-        await EditItemMaster(id, payload);
-        // console.log("payload update", payload);
-        toast.success("Item Updated Successfully!");
-        fetchItemMaster();
-        navigate("/item/item-master");
-        ResetItemMaster();
+        // 🔹 Update Item
+        res = await EditItemMaster(id, payload);
+        console.log("res", res);
+        // if (res?.status === true) {
+        //   toast.success(res?.message || "Item Updated Successfully!");
+        //   fetchItemMaster();
+        //   ResetItemMaster();
+        //   navigate("/item/item-master"); // ✅ navigate only on success
+        // } else {
+        //   toast.error(res?.message || "Failed to update item");
+        // }
       } else {
-        await createItemMaster(payload);
-        // console.log("item create ", payload);
-        toast.success("Item Created Successfully!");
-        navigate("/item/item-master");
+        // 🔹 Create Item
+        res = await createItemMaster(payload);
+        console.log("res creaye", res);
+        // if (res?.status === true) {
+        //   toast.success(res?.message || "Item Created Successfully!");
+        //   fetchItemMaster();
+        //   ResetItemMaster();
+        //   navigate("/item/item-master"); // ✅ navigate only on success
+        // } else {
+        //   toast.error(res?.message || "Failed to create item");
+        // }
+      }
+      if (res?.status === true) {
+        toast.success(res?.message);
         fetchItemMaster();
         ResetItemMaster();
+        navigate("/item/item-master"); // ✅ navigate only on success
+      } else {
+        toast.error(res?.message || "Failed to update item");
       }
+      console.log("paylod", payload);
     } catch (error) {
-      console.log("item save error", error);
+      console.error("item save error", error);
       toast.error("Failed to save item");
     }
   };
@@ -215,10 +282,16 @@ export default function Item_Create_Material_Form() {
                           <CustomSelect
                             id="selectuom"
                             label="Unit Of Measure"
-                            options={[
-                              { value: "kg", label: "KG" },
-                              { value: "ltr", label: "Ltr" },
-                            ]}
+                            // options={[
+                            //   { value: "kg", label: "KG" },
+                            //   { value: "ltr", label: "Ltr" },
+                            // ]}
+                            options={filterUom.map((uom) => {
+                              return {
+                                value: uom.id,
+                                label: uom.name,
+                              };
+                            })}
                             value={itemMasterData?.uom || ""}
                             onChange={(val) =>
                               setItemMasterData({
@@ -524,10 +597,8 @@ export default function Item_Create_Material_Form() {
 
                     {/* Primary */}
                     {/* service location 1 */}
-                    <div className="col-sm-3 mb-4">
-                      {/* <label htmlFor="select2Primary" className="form-label">
-                        Storage Location
-                      </label> */}
+                    {/* <div className="col-sm-3 mb-4">
+                      
                       <div className="select2-primary">
                         <div className="position-relative">
                           <CustomSelect
@@ -550,12 +621,10 @@ export default function Item_Create_Material_Form() {
                           />
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                     {/* service location 2 */}
-                    <div className="col-sm-3 mb-4">
-                      {/* <label htmlFor="select2Primary" className="form-label">
-                        Storage Location
-                      </label> */}
+                    {/* <div className="col-sm-3 mb-4">
+                      
                       <div className="select2-primary">
                         <div className="position-relative">
                           <CustomSelect
@@ -578,7 +647,7 @@ export default function Item_Create_Material_Form() {
                           />
                         </div>
                       </div>
-                    </div>
+                    </div> */}
 
                     {/* Service Location 3 */}
                     <div className="col-sm-3 mb-4">
@@ -605,8 +674,8 @@ export default function Item_Create_Material_Form() {
                                 service_location_3_id: val.map(Number),
                               })
                             }
-                            label="Service Location 3"
-                            placeholder="Select Service Location 3"
+                            label="Storage Location"
+                            placeholder="Select Storage Location"
                           />
                         </div>
                       </div>
@@ -653,7 +722,7 @@ export default function Item_Create_Material_Form() {
                           className="form-control"
                           id="Stock"
                           placeholder="Stock"
-                          value={itemMasterData?.stock || 0}
+                          value={itemMasterData?.stock}
                           onChange={(e) =>
                             setItemMasterData({
                               ...itemMasterData,
@@ -675,7 +744,7 @@ export default function Item_Create_Material_Form() {
                           className="form-control"
                           id="StockValue"
                           placeholder="Stock Value"
-                          value={itemMasterData?.stock_value || 0}
+                          value={itemMasterData?.stock_value}
                           onChange={(e) =>
                             setItemMasterData({
                               ...itemMasterData,
@@ -697,7 +766,7 @@ export default function Item_Create_Material_Form() {
                           className="form-control"
                           id="MinimumStock"
                           placeholder="Minimum Stock"
-                          value={itemMasterData?.minimum_stock || 0}
+                          value={itemMasterData?.minimum_stock}
                           onChange={(e) =>
                             setItemMasterData({
                               ...itemMasterData,

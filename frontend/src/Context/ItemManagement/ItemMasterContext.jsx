@@ -58,23 +58,27 @@ export const ItemMasterProvider = ({ children }) => {
     perPage = 10,
   } = {}) => {
     try {
-      const res = await getData(ENDPOINTS.ITEM_MASTER.LIST, {
+      const params = {
         search,
         type,
         c_id,
         sub_c_id,
         status,
-        page,
+        page: page,
         per_page: perPage,
-      });
+      };
+      const res = await getData(ENDPOINTS.ITEM_MASTER.LIST, params);
+      console.log("params", params);
 
       if (res.data && res.data.status === false) {
+        toast.error(res.data.message);
         setItemMaster([]);
         setPagination({
           currentPage: 1,
           perPage,
           total: 0,
         });
+        return;
       } else {
         const apiData = res.data;
         setItemMaster(apiData.data || []);
@@ -86,6 +90,9 @@ export const ItemMasterProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("item master fetch error:", error);
+      if (error.response && error.response.data) {
+        console.error(error.response.data.message);
+      }
       // toast.error("Failed to fetch item master");
     }
   };
@@ -101,20 +108,33 @@ export const ItemMasterProvider = ({ children }) => {
         minimum_stock: payload.minimum_stock
           ? Number(payload.minimum_stock)
           : 0,
+        // status: payload.status ?? 1,
       };
 
       const res = await postData(
         ENDPOINTS.ITEM_MASTER.ADD_UPDATE,
         sanitizedPayload
       );
-      // console.log("res", res.data);
-      setItemMasterData(res.data.data);
+      console.log("res", res);
+      if (res?.status === true) {
+        setItemMasterData(res.data.data);
+        ResetItemMaster(null);
+      }
 
-      return res.data.data;
+      return res;
     } catch (error) {
       console.log("item master create error:", error);
-      if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+      // if (error.response && error.response.data) {
+      //   toast.error(error.response.data.message);
+      // }
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+
+        // Flatten all error messages into a single array
+        const messages = Object.values(errors).flat();
+
+        // Show each message in toast
+        messages.forEach((msg) => toast.error(msg));
       }
     }
   };
@@ -128,13 +148,26 @@ export const ItemMasterProvider = ({ children }) => {
       });
 
       // console.log("res", res);
-      setItemMasterData(res.data.data);
+      if (res?.status) {
+        setItemMasterData(res.data.data);
+        ResetItemMaster();
+      }
       // toast.success("Item Updated Successfully!");
       // fetchItemMaster();
+      return res;
     } catch (error) {
       console.log("Failed to Edit Item", error);
-      if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+      // if (error.response && error.response.data) {
+      //   toast.error(error.response.data.message);
+      // }
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+
+        // Flatten all error messages into a single array
+        const messages = Object.values(errors).flat();
+
+        // Show each message in toast
+        messages.forEach((msg) => toast.error(msg));
       }
     }
   };
@@ -404,6 +437,15 @@ export const ItemMasterProvider = ({ children }) => {
         );
       }
     } catch (error) {
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+
+        // Flatten all error messages into a single array
+        const messages = Object.values(errors).flat();
+
+        // Show each message in toast
+        messages.forEach((msg) => toast.error(msg));
+      }
       console.log("fetchitemById error:", error);
     }
   };
@@ -444,8 +486,17 @@ export const ItemMasterProvider = ({ children }) => {
       toast.success("Item Delete Successfully!");
     } catch (error) {
       console.log("item master Delete error:", error);
-      if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+      // if (error.response && error.response.data) {
+      //   toast.error(error.response.data.message);
+      // }
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+
+        // Flatten all error messages into a single array
+        const messages = Object.values(errors).flat();
+
+        // Show each message in toast
+        messages.forEach((msg) => toast.error(msg));
       }
     }
   };
@@ -529,8 +580,17 @@ export const ItemMasterProvider = ({ children }) => {
         "item master getCategoryGroupAndItemCodeBySubCategoryId error:",
         error
       );
-      if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+      // if (error.response && error.response.data) {
+      //   toast.error(error.response.data.message);
+      // }
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+
+        // Flatten all error messages into a single array
+        const messages = Object.values(errors).flat();
+
+        // Show each message in toast
+        messages.forEach((msg) => toast.error(msg));
       }
       return null;
     }

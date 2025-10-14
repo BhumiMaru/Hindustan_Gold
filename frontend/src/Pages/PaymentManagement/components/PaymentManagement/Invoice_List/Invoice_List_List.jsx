@@ -78,7 +78,7 @@ export default function Invoice_List_List() {
   ]);
 
   const handlePageChange = (page) => {
-    setPagination((prev) => ({ ...prev, currentPage: page }));
+    setPagination((prev) => ({ ...prev, currentPage: page }));  
   };
 
   const handleItemsPerPageChange = (size) => {
@@ -156,6 +156,7 @@ export default function Invoice_List_List() {
                 <CustomSelect
                   id="selectType"
                   options={[
+                    { value: "all", label: "Select Type" },
                     { value: "material", label: "Material" },
                     { value: "service", label: "Services" },
                     { value: "asset", label: "Asset" },
