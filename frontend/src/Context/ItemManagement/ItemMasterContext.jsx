@@ -37,7 +37,7 @@ export const ItemMasterProvider = ({ children }) => {
     warranty_expiry: null,
     service_location2: null,
     service_location3: null,
-    status: null,
+    status: 1,
   });
   const [pagination, setPagination] = useState({
     currentPage: 1,

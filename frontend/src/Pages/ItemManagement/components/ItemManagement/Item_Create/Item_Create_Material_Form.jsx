@@ -49,6 +49,7 @@ export default function Item_Create_Material_Form() {
       ...prev,
       type: type,
       item_type: type,
+      status: 1,
     }));
 
     fetchSL1Filter();
