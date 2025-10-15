@@ -58,6 +58,7 @@ export const PIRequestProvider = ({ children }) => {
   const [endDate, setEndDate] = useState("");
   // Store selected items per PI row
   const [selectedItemsMap, setSelectedItemsMap] = useState({});
+  const [selectAllMap, setSelectAllMap] = useState({});
 
   // Toggle single item
   // const handleSelectItem = (piId, itemId) => {
@@ -90,43 +91,113 @@ export const PIRequestProvider = ({ children }) => {
   // };
 
   // ✅ Toggle single item
-  const handleSelectItem = (piId, itemId) => {
-    setSelectedItemsMap((prev) => {
-      const rowSelections = prev[piId] || [];
-      const updated = rowSelections.includes(itemId)
-        ? rowSelections.filter((id) => id !== itemId)
-        : [...rowSelections, itemId];
+  // const handleSelectItem = (piId, itemId) => {
+  //   console.log("before piId", piId);
+  //   console.log("before itemId", itemId);
+  //   setSelectedItemsMap((prev) => {
+  //     const rowSelections = prev[piId] || [];
+  //     const updated = rowSelections.includes(itemId)
+  //       ? rowSelections.filter((id) => id !== itemId)
+  //       : [...rowSelections, itemId];
 
-      const newMap = { ...prev, [piId]: updated };
+  //     const newMap = { ...prev, [piId]: updated };
 
-      // flatten all selected items into a single array for global use
-      const allSelected = Object.values(newMap).flat();
-      setSelectedItems(allSelected);
+  //     // flatten all selected items into a single array for global use
+  //     const allSelected = Object.values(newMap).flat();
+  //     setSelectedItems(allSelected);
 
-      return newMap;
-    });
-  };
+  //     return newMap;
+  //   });
+  // };
 
   // ✅ Toggle all items of a PI
-  const handleSelectAll = (piId, piItems) => {
-    const itemIds = piItems.map((item) => item.id);
+  // const handleSelectAll = (piId, piItems) => {
+  //   console.log("after piId", piId);
+  //   console.log("after piItems", piItems);
+  //   const itemIds = piItems.map((item) => item.id);
+  //   console.log("after itemIds", itemIds);
 
+  //   setSelectedItemsMap((prev) => {
+  //     const rowSelections = prev[piId] || [];
+  //     const isAllSelected = itemIds.every((id) => rowSelections.includes(id));
+
+  //     const updated = isAllSelected
+  //       ? rowSelections.filter((id) => !itemIds.includes(id))
+  //       : [...new Set([...rowSelections, ...itemIds])];
+
+  //     const newMap = { ...prev, [piId]: updated };
+
+  //     // flatten all selected items into a single array
+  //     const allSelected = Object.values(newMap).flat();
+  //     setSelectedItems(allSelected);
+
+  //     return newMap;
+  //   });
+  // };
+
+  // Select individual item
+  // const handleSelectItem = (piIndex, itemId) => {
+  //   setSelectedItemsMap((prev) => {
+  //     const existing = prev[piIndex] || [];
+  //     const updated = existing.includes(itemId)
+  //       ? existing.filter((id) => id !== itemId)
+  //       : [...existing, itemId];
+  //     return { ...prev, [piIndex]: updated };
+  //   });
+  // };
+
+  // Select all / unselect all
+  // const handleSelectAll = (piIndex, piItems) => {
+  //   setSelectAllMap((prev) => {
+  //     const newValue = !prev[piIndex];
+  //     // Sync selected items with "select all"
+  //     setSelectedItemsMap((prevSelected) => ({
+  //       ...prevSelected,
+  //       [piIndex]: newValue ? piItems.map((item) => item.id) : [],
+  //     }));
+  //     return { ...prev, [piIndex]: newValue };
+  //   });
+  // };
+  // ✅ Handle selecting an individual item
+  const handleSelectItem = (piIndex, itemId) => {
     setSelectedItemsMap((prev) => {
-      const rowSelections = prev[piId] || [];
-      const isAllSelected = itemIds.every((id) => rowSelections.includes(id));
-
-      const updated = isAllSelected
-        ? rowSelections.filter((id) => !itemIds.includes(id))
-        : [...new Set([...rowSelections, ...itemIds])];
-
-      const newMap = { ...prev, [piId]: updated };
-
-      // flatten all selected items into a single array
-      const allSelected = Object.values(newMap).flat();
-      setSelectedItems(allSelected);
-
-      return newMap;
+      const existing = prev[piIndex] || [];
+      const updated = existing.includes(itemId)
+        ? existing.filter((id) => id !== itemId)
+        : [...existing, itemId];
+      return { ...prev, [piIndex]: updated };
     });
+
+    // Optional: auto-update "Select All" checkbox state for this PI
+    setSelectAllMap((prev) => ({
+      ...prev,
+      [piIndex]:
+        (selectedItemsMap[piIndex] || []).length + 1 ===
+        (selectedItemsMap[piIndex]?.includes(itemId)
+          ? (selectedItemsMap[piIndex]?.length ?? 0) - 1
+          : (selectedItemsMap[piIndex]?.length ?? 0) + 1),
+    }));
+  };
+
+  // ✅ Handle selecting / unselecting all items
+  const handleSelectAll = (piIndex, piItems) => {
+    setSelectedItemsMap((prev) => {
+      const alreadyAllSelected =
+        (prev[piIndex] || []).length === piItems.length;
+      const newSelectedItems = alreadyAllSelected
+        ? []
+        : piItems.map((item) => item.id);
+
+      return {
+        ...prev,
+        [piIndex]: newSelectedItems,
+      };
+    });
+
+    setSelectAllMap((prev) => ({
+      ...prev,
+      [piIndex]: !(prev[piIndex] ?? false),
+    }));
   };
 
   // Get All PI Requests

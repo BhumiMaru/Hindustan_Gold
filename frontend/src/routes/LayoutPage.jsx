@@ -30,6 +30,8 @@ export default function LayoutPage() {
     }
   }
 
+  console.log("publicUrl", publicUrl);
+
   // console.log("saved", savedAuth);
   // console.log("decryptAuthData", decryptAuthData);
 
@@ -40,6 +42,7 @@ export default function LayoutPage() {
   const isSendRequest = location.pathname === "/send-request";
   const isResetPassword = location.pathname === "/auth-reset-password";
   const isProfile = location.pathname === "/pages-profile-user";
+  console.log("isSendRequest", isSendRequest);
 
   if (isLoginPage) {
     return (
@@ -61,7 +64,7 @@ export default function LayoutPage() {
     );
   }
 
-  if (isSendRequest) {
+  if (isResetPassword) {
     return (
       <>
         <Routes>
@@ -69,6 +72,16 @@ export default function LayoutPage() {
             path="/auth-reset-password"
             element={<ResetPasswordMasterPage />}
           />
+        </Routes>
+      </>
+    );
+  }
+
+  if (isSendRequest) {
+    return (
+      <>
+        <Routes>
+          <Route path="/send-request" element={<Vendor_fill_quote />} />
         </Routes>
       </>
     );

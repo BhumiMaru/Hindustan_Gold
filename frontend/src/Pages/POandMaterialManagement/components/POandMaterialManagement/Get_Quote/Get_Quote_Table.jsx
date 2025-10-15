@@ -197,7 +197,7 @@ export default function Get_Quote_Table() {
                       {userPermission?.some(
                         (perm) =>
                           perm.type === "Get Quotation" &&
-                          perm.permission === "View"
+                          perm.permission === "view"
                       ) ? (
                         <Link
                           to={`/po-material/pi-request-get-quote/${item.id}`}

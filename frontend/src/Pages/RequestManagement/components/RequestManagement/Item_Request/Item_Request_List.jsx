@@ -12,6 +12,8 @@ import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSe
 import Loader from "../../../../../components/Common/Loader/Loader";
 import Date_Range_Model from "../../../../../components/Date Range/Date_Range_Model";
 import moment from "moment";
+import { decryptData } from "../../../../../utils/decryptData";
+import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 
 export default function Item_Request_List() {
   const {
@@ -40,6 +42,7 @@ export default function Item_Request_List() {
   const [itemNameId, setItemNameId] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDateRange, setSelectedDateRange] = useState("");
+  const { userPermission, fetchUserPermission } = useUserCreation();
 
   // when type changes, fetch items and update itemRequestData
   useEffect(() => {
@@ -78,6 +81,14 @@ export default function Item_Request_List() {
     startDate,
     endDate,
   ]);
+
+  const getAuthData = sessionStorage.getItem("authData");
+  const decryptAuthData = decryptData(getAuthData);
+  const user = decryptAuthData?.user;
+
+  useEffect(() => {
+    fetchUserPermission(user?.id);
+  }, [user?.id]);
 
   const handlePageChange = (page) => {
     setPagination((prev) => ({ ...prev, currentPage: page }));
@@ -194,7 +205,15 @@ export default function Item_Request_List() {
                   Service Request
                 </Link>
                 <button
-                  className="btn buttons-collection btn-label-secondary  waves-effect"
+                  className={`btn buttons-collection btn-label-secondary waves-effect ${
+                    userPermission.some(
+                      (perm) =>
+                        perm.type === "Request History Report" &&
+                        perm.permission === "add"
+                    )
+                      ? "d-block"
+                      : "d-none"
+                  }`}
                   type="button"
                 >
                   <span>

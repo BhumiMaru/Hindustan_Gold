@@ -112,7 +112,7 @@ export default function PI_Request_Table({ userPermission }) {
         <tbody>
           {piRequest?.map((pi, index) => (
             <React.Fragment key={`pi-${pi.id}`}>
-              {console.log("pi", pi)}
+              {/* {console.log("pi", pi)} */}
               <tr key={`row-${pi.id}`}>
                 <td
                   onClick={() => toggleRow(pi.id)}
@@ -134,8 +134,8 @@ export default function PI_Request_Table({ userPermission }) {
                 <td>Ronak Patel</td>
                 <td>Electrical</td>
                 <td>{pi.total_item}</td>
-                <td>10</td>
-                <td>{pi.po_total}</td>
+                <td>{pi.totalquate_count}</td>
+                <td>{pi.totalpo_count}</td>
                 <td>
                   <span
                     className={`badge ${
@@ -385,7 +385,7 @@ export default function PI_Request_Table({ userPermission }) {
                               />
                             </div>
                           </th> */}
-                          <th>
+                          {/* <th>
                             <div className="ms-4">
                               <input
                                 // className={`form-check-input ${
@@ -420,27 +420,58 @@ export default function PI_Request_Table({ userPermission }) {
                                 //     ? "d-none"
                                 //     : "d-none"
                                 // }`}
-                                className={`form-check-input ${
-                                  activeTab === "approval_request"
-                                    ? pi?.piitems?.some(
-                                        (item) =>
-                                          item.status?.toLowerCase() ===
-                                          "pending"
-                                      )
-                                      ? "d-block"
-                                      : "d-none"
-                                    : ""
-                                } ${
-                                  activeTab === "my_request" ? "d-none" : ""
-                                } ${
-                                  userPermission.some(
-                                    (prem) =>
-                                      prem.type === "Get Quotation" &&
-                                      prem.permission === "add"
-                                  ) && activeTab === "all_request"
-                                    ? "d-block"
-                                    : "d-none"
-                                }`}
+                                className={`form-check-input ${(() => {
+                                  // Check if any pi item has a pending status
+                                  const hasPendingItem = pi?.piitems?.some(
+                                    (item) =>
+                                      item?.status?.toLowerCase()?.trim() ===
+                                      "pending"
+                                  );
+
+                                  // Check if any pi item has quote_status !== 1 and status = "approve"
+                                  const hasApprovedItemWithoutQuote =
+                                    pi?.piitems?.some(
+                                      (item) =>
+                                        item?.quote_status !== 1 &&
+                                        item?.status?.toLowerCase()?.trim() ===
+                                          "approve"
+                                    );
+
+                                  // 1️⃣ approval_request tab — show if user has Approve permission & any item is pending
+                                  if (
+                                    activeTab === "approval_request" &&
+                                    userPermission?.some(
+                                      (perm) =>
+                                        perm.type === "PI Request" &&
+                                        perm.permission?.toLowerCase() ===
+                                          "approve"
+                                    ) &&
+                                    hasPendingItem
+                                  ) {
+                                    return "d-block";
+                                  }
+
+                                  // 2️⃣ my_request tab — always hide checkbox
+                                  if (activeTab === "my_request") {
+                                    return "d-none";
+                                  }
+
+                                  // 3️⃣ all_request tab — show if user can Add quotation & has an approved item without quote
+                                  if (
+                                    activeTab === "all_request" &&
+                                    userPermission?.some(
+                                      (perm) =>
+                                        perm.type === "Get Quotation" &&
+                                        perm.permission?.toLowerCase() === "add"
+                                    ) &&
+                                    hasApprovedItemWithoutQuote
+                                  ) {
+                                    return "d-block";
+                                  }
+
+                                  // 4️⃣ default — hide
+                                  return "d-none";
+                                })()}`}
                                 type="checkbox"
                                 checked={
                                   activeTab === "approval_request"
@@ -483,6 +514,228 @@ export default function PI_Request_Table({ userPermission }) {
                                 }
                                 onChange={() =>
                                   handleSelectAll(pi.id, pi.piitems)
+                                }
+                                style={{ width: "1rem", height: "1rem" }}
+                              />
+                            </div>
+                          </th> */}
+                          {/* <th>
+                            <div className="ms-4">
+                              <input
+                                type="checkbox"
+                                // className={`form-check-input ${(() => {
+                                //   const hasPendingItem = pi?.piitems?.some(
+                                //     (item) =>
+                                //       item?.status?.toLowerCase()?.trim() ===
+                                //       "pending"
+                                //   );
+
+                                //   if (
+                                //     activeTab === "approval_request" &&
+                                //     hasPendingItem
+                                //   ) {
+                                //     return "d-block";
+                                //   }
+                                //   return "d-none";
+                                // })()}`}
+                                className={`form-check-input ${(() => {
+                                  // Check if any pi item has a pending status
+                                  const hasPendingItem = pi?.piitems?.some(
+                                    (item) =>
+                                      item?.status?.toLowerCase()?.trim() ===
+                                      "pending"
+                                  );
+
+                                  // Check if any pi item has quote_status !== 1 and status = "approve"
+                                  const hasApprovedItemWithoutQuote =
+                                    pi?.piitems?.some(
+                                      (item) =>
+                                        item?.quote_status !== 1 &&
+                                        item?.status?.toLowerCase()?.trim() ===
+                                          "approve"
+                                    );
+
+                                  // 1️⃣ approval_request tab — show if user has Approve permission & any item is pending
+                                  if (
+                                    activeTab === "approval_request" &&
+                                    userPermission?.some(
+                                      (perm) =>
+                                        perm.type === "PI Request" &&
+                                        perm.permission?.toLowerCase() ===
+                                          "approve"
+                                    ) &&
+                                    hasPendingItem
+                                  ) {
+                                    return "d-block";
+                                  }
+
+                                  // 2️⃣ my_request tab — always hide checkbox
+                                  if (activeTab === "my_request") {
+                                    return "d-none";
+                                  }
+
+                                  // 3️⃣ all_request tab — show if user can Add quotation & has an approved item without quote
+                                  if (
+                                    activeTab === "all_request" &&
+                                    userPermission?.some(
+                                      (perm) =>
+                                        perm.type === "Get Quotation" &&
+                                        perm.permission?.toLowerCase() === "add"
+                                    ) &&
+                                    hasApprovedItemWithoutQuote
+                                  ) {
+                                    return "d-block";
+                                  }
+
+                                  // 4️⃣ default — hide
+                                  return "d-none";
+                                })()}`}
+                                checked={
+                                  activeTab === "approval_request"
+                                    ? pi.piitems
+                                        .filter(
+                                          (item) =>
+                                            item.status.toLowerCase() ===
+                                            "pending"
+                                        )
+                                        .every((item) =>
+                                          (
+                                            selectedItemsMap[pi.id] || []
+                                          ).includes(item.id)
+                                        )
+                                    : activeTab === "my_request"
+                                    ? pi.piitems
+                                        .filter(
+                                          (item) =>
+                                            item.status.toLowerCase() !==
+                                            "pending"
+                                        )
+                                        .every((item) =>
+                                          (
+                                            selectedItemsMap[pi.id] || []
+                                          ).includes(item.id)
+                                        )
+                                    : activeTab === "all_request"
+                                    ? pi.piitems
+                                        .filter(
+                                          (item) =>
+                                            item.status.toLowerCase() !==
+                                            "pending"
+                                        )
+                                        .every((item) =>
+                                          (
+                                            selectedItemsMap[pi.id] || []
+                                          ).includes(item.id)
+                                        )
+                                    : false
+                                }
+                                // onChange={(e) =>
+                                //   handleSelectAll(pi.id, pi.piitems)
+                                // }
+                                onChange={() =>
+                                  handleSelectAll(index, pi.piitems)
+                                }
+                                style={{ width: "1rem", height: "1rem" }}
+                              />
+                            </div>
+                          </th> */}
+                          <th>
+                            <div className="ms-4">
+                              <input
+                                type="checkbox"
+                                className={`form-check-input ${(() => {
+                                  // Check if any pi item has a pending status
+                                  const hasPendingItem = pi?.piitems?.some(
+                                    (item) =>
+                                      item?.status?.toLowerCase()?.trim() ===
+                                      "pending"
+                                  );
+
+                                  // Check if any pi item has quote_status !== 1 and status = "approve"
+                                  const hasApprovedItemWithoutQuote =
+                                    pi?.piitems?.some(
+                                      (item) =>
+                                        item?.quote_status !== 1 &&
+                                        item?.status?.toLowerCase()?.trim() ===
+                                          "approve"
+                                    );
+
+                                  // 1️⃣ approval_request tab — show if user has Approve permission & any item is pending
+                                  if (
+                                    activeTab === "approval_request" &&
+                                    userPermission?.some(
+                                      (perm) =>
+                                        perm.type === "PI Request" &&
+                                        perm.permission?.toLowerCase() ===
+                                          "approve"
+                                    ) &&
+                                    hasPendingItem
+                                  ) {
+                                    return "d-block";
+                                  }
+
+                                  // 2️⃣ my_request tab — always hide checkbox
+                                  if (activeTab === "my_request") {
+                                    return "d-none";
+                                  }
+
+                                  // 3️⃣ all_request tab — show if user can Add quotation & has an approved item without quote
+                                  if (
+                                    activeTab === "all_request" &&
+                                    userPermission?.some(
+                                      (perm) =>
+                                        perm.type === "Get Quotation" &&
+                                        perm.permission?.toLowerCase() === "add"
+                                    ) &&
+                                    hasApprovedItemWithoutQuote
+                                  ) {
+                                    return "d-block";
+                                  }
+
+                                  // 4️⃣ default — hide
+                                  return "d-none";
+                                })()}`}
+                                checked={
+                                  activeTab === "approval_request"
+                                    ? pi.piitems
+                                        .filter(
+                                          (item) =>
+                                            item.status.toLowerCase() ===
+                                            "pending"
+                                        )
+                                        .every((item) =>
+                                          (
+                                            selectedItemsMap[index] || []
+                                          ).includes(item.id)
+                                        )
+                                    : activeTab === "my_request"
+                                    ? pi.piitems
+                                        .filter(
+                                          (item) =>
+                                            item.status.toLowerCase() !==
+                                            "pending"
+                                        )
+                                        .every((item) =>
+                                          (
+                                            selectedItemsMap[index] || []
+                                          ).includes(item.id)
+                                        )
+                                    : activeTab === "all_request"
+                                    ? pi.piitems
+                                        .filter(
+                                          (item) =>
+                                            item.status.toLowerCase() !==
+                                            "pending"
+                                        )
+                                        .every((item) =>
+                                          (
+                                            selectedItemsMap[index] || []
+                                          ).includes(item.id)
+                                        )
+                                    : false
+                                }
+                                onChange={() =>
+                                  handleSelectAll(index, pi.piitems)
                                 }
                                 style={{ width: "1rem", height: "1rem" }}
                               />
@@ -559,9 +812,9 @@ export default function PI_Request_Table({ userPermission }) {
                             {/* <td>
                               <div>{piItem?.quote_status}</div>
                             </td> */}
-                            <td className="dt-select">
+                            {/* <td className="dt-select">
                               <div className="ms-4">
-                                {/* <input
+                                <input
                                   aria-label="Select row"
                                   // className={`form-check-input ${
                                   //   activeTab === "approval_request" &&
@@ -614,7 +867,7 @@ export default function PI_Request_Table({ userPermission }) {
                                   onChange={() =>
                                     handleSelectItem(pi.id, piItem.id)
                                   }
-                                /> */}
+                                />
                                 <input
                                   aria-label="Select row"
                                   type="checkbox"
@@ -664,8 +917,114 @@ export default function PI_Request_Table({ userPermission }) {
                                     return "d-none";
                                   })()}`}
                                 />
+                                <input
+                                  type="checkbox"
+                                  checked={(
+                                    selectedItemsMap[pi.id] || []
+                                  ).includes(piItem.id)}
+                                  className={`form-check-input ${(() => {
+                                    const status = piItem?.status
+                                      ?.toLowerCase()
+                                      ?.trim();
+
+                                    if (
+                                      activeTab === "approval_request" &&
+                                      userPermission.some(
+                                        (perm) =>
+                                          perm.type === "PI Request" &&
+                                          perm.permission?.toLowerCase() ===
+                                            "approve"
+                                      ) &&
+                                      status === "pending"
+                                    ) {
+                                      return "d-block";
+                                    }
+
+                                    if (activeTab === "my_request")
+                                      return "d-none";
+
+                                    if (
+                                      activeTab === "all_request" &&
+                                      userPermission.some(
+                                        (perm) =>
+                                          perm.type === "Get Quotation" &&
+                                          perm.permission?.toLowerCase() ===
+                                            "add"
+                                      ) &&
+                                      piItem?.quote_status !== 1 &&
+                                      piItem?.status?.toLowerCase()?.trim() ===
+                                        "approve"
+                                    ) {
+                                      return "d-block";
+                                    }
+
+                                    return "d-none";
+                                  })()}`}
+                                  // onChange={() =>
+                                  //   handleSelectItem(pi.id, piItem.id)
+                                  // }
+                                  onChange={() =>
+                                    handleSelectItem(index, piItem.id)
+                                  }
+                                />
+                              </div>
+                            </td> */}
+                            <td className="dt-select">
+                              <div className="ms-4">
+                                <input
+                                  type="checkbox"
+                                  checked={(
+                                    selectedItemsMap[index] || []
+                                  ).includes(piItem.id)}
+                                  className={`form-check-input ${(() => {
+                                    const status = piItem?.status
+                                      ?.toLowerCase()
+                                      ?.trim();
+
+                                    // approval_request tab + user has approve permission + item pending
+                                    if (
+                                      activeTab === "approval_request" &&
+                                      userPermission.some(
+                                        (perm) =>
+                                          perm.type === "PI Request" &&
+                                          perm.permission?.toLowerCase() ===
+                                            "approve"
+                                      ) &&
+                                      status === "pending"
+                                    ) {
+                                      return "d-block";
+                                    }
+
+                                    // my_request tab hides checkbox
+                                    if (activeTab === "my_request")
+                                      return "d-none";
+
+                                    // all_request tab + user can Add quotation + approved item w/o quote
+                                    if (
+                                      activeTab === "all_request" &&
+                                      userPermission.some(
+                                        (perm) =>
+                                          perm.type === "Get Quotation" &&
+                                          perm.permission?.toLowerCase() ===
+                                            "add"
+                                      ) &&
+                                      piItem?.quote_status !== 1 &&
+                                      piItem?.status?.toLowerCase()?.trim() ===
+                                        "approve"
+                                    ) {
+                                      return "d-block";
+                                    }
+
+                                    // default hide
+                                    return "d-none";
+                                  })()}`}
+                                  onChange={() =>
+                                    handleSelectItem(index, piItem.id)
+                                  }
+                                />
                               </div>
                             </td>
+
                             {/* <td>
                               <span>{piItem?.status}</span>
                             </td> */}
@@ -830,14 +1189,16 @@ export default function PI_Request_Table({ userPermission }) {
                         ))}
                       </tbody>
                     </table>
-                    {console.log("ppp", pi)}
-                    {selectedItems.length > 0 && selectedItems && (
+                    {console.log("pi", pi)}
+
+                    {selectedItemsMap[index]?.length > 0 && (
                       <div className="text-center w-100">
+                        {/* 1️⃣ Get Quotation */}
                         {activeTab === "all_request" &&
                           userPermission.some(
-                            (prem) =>
-                              prem.type === "Get Quotation" &&
-                              prem.permission === "add"
+                            (perm) =>
+                              perm.type === "Get Quotation" &&
+                              perm.permission === "add"
                           ) && (
                             <div className="text-center w-100">
                               <Link
@@ -845,7 +1206,7 @@ export default function PI_Request_Table({ userPermission }) {
                                 onClick={async () => {
                                   const res = await getQuoteCreate({
                                     pi_request_id: pi.id,
-                                    pi_request_item_id: selectedItems,
+                                    pi_request_item_id: selectedItemsMap[index],
                                   });
 
                                   if (res?.data?.id) {
@@ -859,115 +1220,105 @@ export default function PI_Request_Table({ userPermission }) {
                               </Link>
                             </div>
                           )}
-                        {console.log("pi", userPermission)}
+
                         <div className="d-inline-flex gap-2 ms-1">
-                          {activeTab === "approval_request" &&
-                            selectedItems.length > 0 && (
-                              <>
-                                <button
-                                  className={`btn btn-success btn-sm mt-2 mb-2 waves-effect waves-light`}
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#servicesModal"
-                                  onClick={() => {
-                                    // Make sure selectedItems is not empty and get pi_request_id from first selected item
-                                    if (selectedItems.length > 0) {
-                                      const firstItem = pi?.piitems?.find(
-                                        (item) => {
-                                          return selectedItems.includes(
-                                            item.id
-                                          );
-                                        }
-                                      );
+                          {/* 2️⃣ Bulk Approve */}
+                          {activeTab === "approval_request" && (
+                            <button
+                              className={`btn btn-success btn-sm mt-2 mb-2 waves-effect waves-light ${
+                                pi?.piitems?.some(
+                                  (item) =>
+                                    item.status.toLowerCase().trim() ===
+                                    "pending"
+                                )
+                                  ? "d-block"
+                                  : "d-none"
+                              }`}
+                              data-bs-toggle="modal"
+                              data-bs-target="#servicesModal"
+                              onClick={() => {
+                                const selected = selectedItemsMap[index] || [];
+                                if (selected.length === 0)
+                                  return toast.error(
+                                    "No items selected for bulk approve"
+                                  );
 
-                                      if (firstItem) {
-                                        bulkApprove({
-                                          pi_request_item_id: selectedItems,
-                                          pi_request_id:
-                                            firstItem.pi_request_id, // use the correct field
-                                        });
-                                      } else {
-                                        toast.error(
-                                          "Cannot find PI Request ID for selected items"
-                                        );
-                                      }
-                                    } else {
-                                      toast.error(
-                                        "No items selected for bulk approve"
-                                      );
-                                    }
-                                  }}
-                                >
-                                  Bulk Item Approve
-                                </button>
-                                <button
-                                  className="btn btn-danger btn-sm waves-effect mt-2 mb-2 waves-light"
-                                  onClick={() => {
-                                    // Make sure selectedItems is not empty and get pi_request_id from first selected item
-                                    if (selectedItems.length > 0) {
-                                      const firstItem = pi?.piitems?.find(
-                                        (item) => {
-                                          return selectedItems.includes(
-                                            item.id
-                                          );
-                                        }
-                                      );
+                                const firstItem = pi.piitems.find((item) =>
+                                  selected.includes(item.id)
+                                );
 
-                                      if (firstItem) {
-                                        bulkReject({
-                                          pi_request_item_id: selectedItems,
-                                          pi_request_id:
-                                            firstItem.pi_request_id, // use the correct field
-                                        });
-                                      } else {
-                                        toast.error(
-                                          "Cannot find PI Request ID for selected items"
-                                        );
-                                      }
-                                    } else {
-                                      toast.error(
-                                        "No items selected for bulk reject"
-                                      );
-                                    }
-                                  }}
-                                >
-                                  Bulk Item Reject
-                                </button>
-                                {/* <button
-                                  className="btn btn-primary btn-sm waves-effect waves-light mt-2 mb-2"
-                                  tabIndex={0}
-                                  aria-controls="DataTables_Table_0"
-                                  type="button"
-                                >
-                                  <span>
-                                    <i className="icon-base icon-16px ti tabler-plus me-md-2" />
-                                    <span className="d-md-inline-block d-none">
-                                      Upload Invoice
-                                    </span>
-                                  </span>
-                                </button> */}
-                              </>
-                            )}
+                                if (firstItem) {
+                                  bulkApprove({
+                                    pi_request_item_id: selected,
+                                    pi_request_id: firstItem.pi_request_id,
+                                  });
+                                } else {
+                                  toast.error(
+                                    "Cannot find PI Request ID for selected items"
+                                  );
+                                }
+                              }}
+                            >
+                              Bulk Item Approve
+                            </button>
+                          )}
 
-                          {console.log("activeTab", activeTab)}
+                          {/* 3️⃣ Bulk Reject */}
+                          {activeTab === "approval_request" && (
+                            <button
+                              className={`btn btn-danger btn-sm mt-2 mb-2 waves-effect waves-light ${
+                                pi?.piitems?.some(
+                                  (item) =>
+                                    item.status.toLowerCase().trim() ===
+                                    "pending"
+                                )
+                                  ? "d-block"
+                                  : "d-none"
+                              }`}
+                              onClick={() => {
+                                const selected = selectedItemsMap[index] || [];
+                                if (selected.length === 0)
+                                  return toast.error(
+                                    "No items selected for bulk reject"
+                                  );
+
+                                const firstItem = pi.piitems.find((item) =>
+                                  selected.includes(item.id)
+                                );
+
+                                if (firstItem) {
+                                  bulkReject({
+                                    pi_request_item_id: selected,
+                                    pi_request_id: firstItem.pi_request_id,
+                                  });
+                                } else {
+                                  toast.error(
+                                    "Cannot find PI Request ID for selected items"
+                                  );
+                                }
+                              }}
+                            >
+                              Bulk Item Reject
+                            </button>
+                          )}
+
+                          {/* 4️⃣ Service Received (My Request Tab) */}
                           {activeTab === "my_request" &&
                             pi?.pi_type === "service" &&
                             pi?.piitems?.every(
                               (item) => item.status.toLowerCase() === "approve"
                             ) && (
-                              <div>
-                                <button
-                                  className="btn btn-info btn-sm waves-effect waves-light mt-2 mb-2"
-                                  tabIndex={0}
-                                  type="button"
-                                >
-                                  <span>
-                                    <i className="icon-base icon-18px ti tabler-circle-check me-md-2" />
-                                    <span className="d-md-inline-block d-none">
-                                      Service Received
-                                    </span>
+                              <button
+                                className="btn btn-info btn-sm waves-effect waves-light mt-2 mb-2"
+                                type="button"
+                              >
+                                <span>
+                                  <i className="icon-base icon-18px ti tabler-circle-check me-md-2" />
+                                  <span className="d-md-inline-block d-none">
+                                    Service Received
                                   </span>
-                                </button>
-                              </div>
+                                </span>
+                              </button>
                             )}
                         </div>
                       </div>

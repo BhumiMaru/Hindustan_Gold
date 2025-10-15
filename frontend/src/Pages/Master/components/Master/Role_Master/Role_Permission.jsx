@@ -1066,7 +1066,7 @@ export default function Role_Permission() {
                       </tr>
                       <tr>
                         <td className="text-nowrap text-heading">
-                          Material Approval
+                          Store Head Approval
                         </td>
                         <td>
                           <PermissionCheckbox
