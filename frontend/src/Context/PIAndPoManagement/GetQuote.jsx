@@ -2,6 +2,8 @@ import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { getData, postData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
+import axios from "axios";
+const base_url = import.meta.env.VITE_API_BASE_URL;
 
 export const GetQuoteContext = createContext();
 
@@ -39,6 +41,10 @@ export const GetQuoteProvider = ({ children }) => {
     pi_id: null,
     vendor_id: null,
   });
+
+  // Quote Data for Email
+  const [quoteDataForEmail, setQuoteDataForEmail] = useState({});
+  const [vendorEmailData, setVendorEmailData] = useState();
 
   //   Get Quote List
   const getQuoteList = async ({
@@ -163,6 +169,87 @@ export const GetQuoteProvider = ({ children }) => {
     } catch (error) {
       toast.error("Error fetching Get Quote Vendors List");
       console.error("Get Quote Vendors List error:", error);
+    }
+  };
+
+  // Get Quote Vendor List for Email
+  // const quoteVendorListForEmail = async ({ getquoteid, vendorid }) => {
+  //   try {
+  //     const res = await axios.post(
+  //       ENDPOINTS.QUOTATIONDETAILS.LIST,
+  //       { getquoteid, vendorid },
+  //       {
+  //         headers: {
+  //           Authorization:
+  //             "Bearer 441|NCUKDm9rHVVDMwN5JswzPWS7j30BwtpEpxRRklzP6feb1058",
+  //         },
+  //       }
+  //     );
+
+  //     if (res.status) {
+  //       setQuoteDataForEmail(res.data);
+  //       console.log("res quote", res.data);
+  //     } else {
+  //       toast.error("Failed to fetch quote vendor");
+  //     }
+  //   } catch (error) {
+  //     console.error("Get Quote Vendors error:", error);
+  //     if (error.response?.data?.message) {
+  //       toast.error(error.response.data.message);
+  //     } else {
+  //       toast.error("Network error: Failed to fetch quote vendor");
+  //     }
+  //   }
+  // };
+
+  const quoteVendorListForEmail = async ({
+    pi_get_quote_id,
+    vendor_id,
+    token,
+  }) => {
+    try {
+      console.log(
+        `${base_url}${ENDPOINTS.QUOTATIONDETAILS.VENDOREMAILDETAILS}?pi_get_quote_id=${pi_get_quote_id}&vendor_id=${vendor_id}`
+      );
+      console.log(
+        "pi_get_quote_id",
+        pi_get_quote_id,
+        "vendor_id",
+        vendor_id,
+        "token",
+        token
+      );
+
+      const res = await axios.get(
+        `${base_url}${ENDPOINTS.QUOTATIONDETAILS.VENDOREMAILDETAILS}?pi_get_quote_id=${pi_get_quote_id}&vendor_id=${vendor_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("API Response:", res);
+
+      // ✅ Check proper success condition
+      if (res.status) {
+        // ✅ Set only the 'data' object from the response
+        setVendorEmailData(res.data);
+        setQuoteDataForEmail(res.data.data);
+        // console.log("✅ Quote vendor data:", res.data.data);
+      } else {
+        toast.error(
+          res.data?.message || "⚠️ Failed to fetch quote vendor list"
+        );
+      }
+      return res.data;
+    } catch (error) {
+      console.error("❌ Get Quote Vendors error:", error);
+      // const errorMessage =
+      //   error.response?.data?.message ||
+      //   error.message ||
+      //   "Network error: Failed to fetch quote vendor list";
+      // toast.error(errorMessage);
     }
   };
 
@@ -353,6 +440,13 @@ export const GetQuoteProvider = ({ children }) => {
         vendorRateUpdate,
         newVendorData,
         setNewVendorData,
+
+        ///
+        quoteVendorListForEmail,
+        quoteDataForEmail,
+        setQuoteDataForEmail,
+        vendorEmailData,
+        setVendorEmailData,
       }}
     >
       {children}

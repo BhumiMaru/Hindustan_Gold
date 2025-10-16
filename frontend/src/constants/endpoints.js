@@ -128,7 +128,7 @@ export const ENDPOINTS = {
   },
 
   // PAYMENT MANAGEMENT
-  // VENDOR
+  // VENDOR BEFORE
   VENDOR: {
     ADD_UPDATE: "/vendors/add/update",
     LIST: "/vendors/list",
@@ -137,6 +137,14 @@ export const ENDPOINTS = {
     DELETE: "/vendors/delete",
   },
 
+  // VENDOR: {
+  //   ADD_UPDATE: "/pi/get/quote/vendors/add",
+  //   LIST: "/pi/get/quote/vendors/list",
+  //   DETAILS: "/vendors/detail",
+  //   FILTER: "/vendors/filter",
+  //   DELETE: "/vendors/delete",
+  // },
+
   // Get Quotation Details
   QUOTATIONDETAILS: {
     ADD_UPDATE: "/pi/get/quote/vendors/add",
@@ -144,6 +152,7 @@ export const ENDPOINTS = {
     SENDREQUEST: "/pi/get/quote/vendors/request/send",
     RATEUPDATE: "/pi/get/quote/vendors/rate/update",
     VENDORAPPROVE: "/pi/get/quote/vendors/approve",
+    VENDOREMAILDETAILS: "/pi/get/quote/vendors/detail",
   },
 
   // PO CREATE
