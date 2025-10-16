@@ -17,11 +17,11 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log("📤 Submitting login form:", form);
+    console.log("📤 Submitting login form:", form);
 
     const result = await login(form);
 
-    // console.log("✅ Login result:", result);
+    console.log("✅ Login result:", result);
 
     if (result) {
       sessionStorage.setItem("activeMenu", "Dashboard");

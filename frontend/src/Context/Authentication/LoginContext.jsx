@@ -62,17 +62,19 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (payload) => {
     try {
-      //   console.log("📤 Raw login form:", payload);
+      // console.log("📤 Raw login form:", payload);
 
       // 🔐 Use reusable encrypt function
       const encrypted = encryptData(payload);
       if (!encrypted) return null;
+      // console.log("encrypted", encrypted);
 
       const res = await postData(ENDPOINTS.AUTH.LOGIN, { data: encrypted });
-      //   console.log("📥 Raw login response:", res);
+      // console.log("📥 Raw login response:", res);
 
       if (res.status) {
         const decrypted = decryptData(res.data);
+        // console.log("decrypted", decrypted);
         if (!decrypted) {
           toast.error("Invalid server response");
           return null;
@@ -82,6 +84,7 @@ export const AuthProvider = ({ children }) => {
 
         // 🔐 Encrypt before storing in sessionStorage
         const encryptedToStore = encryptData(decrypted);
+        console.log("encryptedToStore", encryptedToStore);
 
         sessionStorage.setItem("authData", encryptedToStore);
         // toast.success(res.message || "Login successful ✅");

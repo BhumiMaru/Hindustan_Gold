@@ -93,7 +93,7 @@ export default function Vendor_List_List() {
         </div>
       </div>
       {modal.viewVendorDetails && <Vendor_detail_Modal />}
-      {/* {modal.addNewVendor && <Vendor_List_Form />} */}
+      {modal.addNewVendor && <Vendor_List_Form />}
       {/* ------------------END VENDOR LIST----------------------- */}
     </>
   );

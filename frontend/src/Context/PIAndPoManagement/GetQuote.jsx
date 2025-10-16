@@ -208,17 +208,17 @@ export const GetQuoteProvider = ({ children }) => {
     token,
   }) => {
     try {
-      console.log(
-        `${base_url}${ENDPOINTS.QUOTATIONDETAILS.VENDOREMAILDETAILS}?pi_get_quote_id=${pi_get_quote_id}&vendor_id=${vendor_id}`
-      );
-      console.log(
-        "pi_get_quote_id",
-        pi_get_quote_id,
-        "vendor_id",
-        vendor_id,
-        "token",
-        token
-      );
+      // console.log(
+      //   `${base_url}${ENDPOINTS.QUOTATIONDETAILS.VENDOREMAILDETAILS}?pi_get_quote_id=${pi_get_quote_id}&vendor_id=${vendor_id}`
+      // );
+      // console.log(
+      //   "pi_get_quote_id",
+      //   pi_get_quote_id,
+      //   "vendor_id",
+      //   vendor_id,
+      //   "token",
+      //   token
+      // );
 
       const res = await axios.get(
         `${base_url}${ENDPOINTS.QUOTATIONDETAILS.VENDOREMAILDETAILS}?pi_get_quote_id=${pi_get_quote_id}&vendor_id=${vendor_id}`,
@@ -229,7 +229,7 @@ export const GetQuoteProvider = ({ children }) => {
         }
       );
 
-      console.log("API Response:", res);
+      // console.log("API Response:", res);
 
       // ✅ Check proper success condition
       if (res.status) {
@@ -289,6 +289,8 @@ export const GetQuoteProvider = ({ children }) => {
     pi_get_quote_vendor_ids,
     // vendor_type, // Make vendor_type dynamic with default value
   }) => {
+    console.log("pi_get_quote_id", pi_get_quote_id);
+    console.log("pi_get_quote_vendor_ids", pi_get_quote_vendor_ids);
     try {
       // Ensure pi_get_quote_vendor_ids is always an array
       const vendorIds = Array.isArray(pi_get_quote_vendor_ids)

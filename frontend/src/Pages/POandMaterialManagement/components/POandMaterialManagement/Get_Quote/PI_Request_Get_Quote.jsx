@@ -3,12 +3,16 @@ import { useUIContext } from "../../../../../Context/UIContext";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
-import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
+import {
+  useVendor,
+  VendorProvider,
+} from "../../../../../Context/PaymentManagement/Vendor";
 import { toast } from "react-toastify"; // ADD THIS IMPORT
 import Vendor_Quote_Detail from "./Vendor_Quote_Detail";
 import Add_Quote_Modal from "./Add_Quote_Modal";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 import { decryptData } from "../../../../../utils/decryptData";
+import Vendor_List_Form from "../../../../PaymentManagement/components/PaymentManagement/Vendor_List/Vendor_List_Form";
 
 export default function PI_Request_Get_Quote() {
   const { handleOpen, modal } = useUIContext();
@@ -290,7 +294,7 @@ export default function PI_Request_Get_Quote() {
         pi_id: quoteData.pi_request.id,
         vendor_id: selectedVendor,
       });
-      console.log("result", result);
+      // console.log("result", result);
       await quoteVendorList({
         pi_get_quote_id: result.pi_get_quote_id,
         vendor_type: result.vendor_type,
@@ -510,7 +514,7 @@ export default function PI_Request_Get_Quote() {
                           {pastVendor.quote_status}
                         </span>
                       </td>
-                      <td>
+                      <td className="d-flex">
                         <a
                           href="#"
                           className="btn btn-icon  waves-effect waves-light"
@@ -673,7 +677,7 @@ export default function PI_Request_Get_Quote() {
                           {quotation.quote_status}
                         </span>
                       </td>
-                      <td>
+                      <td className="d-flex">
                         <a
                           href="#"
                           className="btn btn-icon  waves-effect waves-light"
@@ -709,6 +713,7 @@ export default function PI_Request_Get_Quote() {
                         >
                           <i className="icon-base ti tabler-receipt-rupee icon-md" />
                         </a>
+                        {/* {console.log("quotation", quotation)} */}
                         {quotation.quote_status === "Pending" ? (
                           <button
                             className="btn btn-info btn-sm waves-effect waves-light"
@@ -725,12 +730,12 @@ export default function PI_Request_Get_Quote() {
                           userPermission?.some(
                             (perm) =>
                               perm.type === "Get Quotation" &&
-                              perm.permission === "Add"
+                              perm.permission === "add"
                           ) && (
                             <button
                               // className="btn btn-success btn-sm waves-effect waves-light"
                               className={`btn btn-success btn-sm waves-effect waves-light ${
-                                quotation.po_status === 1 && "d-none"
+                                quotation.po_status === 0 ? "d-block" : "d-none"
                               }`}
                               onClick={() =>
                                 vendorApprove({
@@ -743,7 +748,7 @@ export default function PI_Request_Get_Quote() {
                             </button>
                           )
                         )}
-                        {console.log("qu", quotation)}
+                        {/* {console.log("qu", quotation)} */}
                       </td>
                     </tr>
                   );
@@ -755,6 +760,13 @@ export default function PI_Request_Get_Quote() {
       </div>
       {modal.viewVendorQuoteDetails && <Vendor_Quote_Detail />}
       {modal.addQuote && <Add_Quote_Modal />}
+      {modal.addNewVendor && (
+        <>
+          <VendorProvider>
+            <Vendor_List_Form />
+          </VendorProvider>
+        </>
+      )}
       {/* ---------------END PI REQUEST GET QUOTE-------------------- */}
     </>
   );

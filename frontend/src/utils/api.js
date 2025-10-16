@@ -60,12 +60,23 @@
 import axios from "axios";
 import { decryptData } from "./decryptData";
 
+// const api = axios.create({
+//   baseURL: import.meta.env.VITE_API_BASE_URL,
+//   headers: {
+//     "Content-Type": "application/json",
+//     Accept: "application/json",
+//   },
+//   withCredentials: true,
+// });
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
+    "Access-Control-Allow-Origin": "*",
   },
+  withCredentials: true, // ✅ needed if backend supports cookies
 });
 
 // 🔑 Helper to get token
@@ -92,6 +103,7 @@ export const getData = async (endPoint, params = {}) => {
       params,
       headers: {
         ...getAuthHeader(),
+        "Access-Control-Allow-Origin": "*",
       },
     });
     return response.data;
@@ -108,7 +120,9 @@ export const postData = async (endPoint, data, config = {}) => {
     headers: {
       ...getAuthHeader(),
       ...(config.headers || {}),
+      "Access-Control-Allow-Origin": "*",
     },
+    credentials: "include",
   });
   return response.data;
 };

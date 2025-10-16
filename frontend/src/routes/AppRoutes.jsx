@@ -396,13 +396,7 @@ export default function AppRoutes() {
           }
         />
       </Routes>
-      {modal.addNewVendor && (
-        <>
-          <VendorProvider>
-            <Vendor_List_Form />
-          </VendorProvider>
-        </>
-      )}
+
       {/* {modal.editGRN && (
         <>
           <POProvider>

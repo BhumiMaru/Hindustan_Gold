@@ -2,6 +2,8 @@ import { toast } from "react-toastify";
 import CryptoJS from "crypto-js";
 
 export function decryptData(encryptedData) {
+  // console.log(import.meta.env.VITE_AES_SECRET_KEY);
+  // console.log(import.meta.env.VITE_AES_SECRET_IV);
   const key = CryptoJS.enc.Utf8.parse(import.meta.env.VITE_AES_SECRET_KEY);
   const iv = CryptoJS.enc.Utf8.parse(import.meta.env.VITE_AES_SECRET_IV);
   try {
@@ -11,9 +13,9 @@ export function decryptData(encryptedData) {
       padding: CryptoJS.pad.Pkcs7,
     });
 
-    //   console.log("bytes", CryptoJS.enc.Utf8);
-    //   console.log("bytes", bytes.toString());
-    //   console.log("bytes", bytes.toString(CryptoJS.enc.Utf8));
+    // console.log("bytes", CryptoJS.enc.Utf8);
+    // console.log("bytes", bytes.toString());
+    // console.log("bytes", bytes.toString(CryptoJS.enc.Utf8));
     const decrypted = bytes.toString(CryptoJS.enc.Utf8);
 
     //   console.log("🔓 Raw decrypted string:", decrypted);

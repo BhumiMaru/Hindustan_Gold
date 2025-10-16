@@ -145,7 +145,7 @@ export default function LayoutPage() {
 
   // inside your LayoutPage
   const sendRequestMatch = matchPath("/send-request", location.pathname);
-  console.log("sendRequestMatch", sendRequestMatch);
+  // console.log("sendRequestMatch", sendRequestMatch);
 
   const isPublicRoute =
     location.pathname === "/" ||
@@ -206,7 +206,7 @@ export default function LayoutPage() {
       </Routes>
     );
   }
-  console.log("/send-request");
+  // console.log("/send-request");
   if (sendRequestMatch) {
     return (
       <Routes>

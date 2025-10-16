@@ -21,7 +21,15 @@ export default function Vendor_fill_quote() {
     quoteVendorList,
     quoteData,
     vendorEmailData,
+    newVendorId,
+    // newVendorData,
+    // setNewVendorData,
+    vendorRateUpdate,
+    newVendorList,
   } = useGetQuote();
+
+  const [newVendorData, setNewVendorData] = useState([]);
+
   const location = useLocation();
   // console.log("location", location);
   const params = new URLSearchParams(location.search);
@@ -41,6 +49,8 @@ export default function Vendor_fill_quote() {
       console.log("decrypt error", error);
     }
   }
+
+  // console.log("decryptEmailData", decryptEmailData);
 
   const [file, setFile] = useState(null);
 
@@ -70,29 +80,121 @@ export default function Vendor_fill_quote() {
   //   }
   // }, [quoteDataForEmail]);
 
+  // useEffect(() => {
+  //   if (quoteDataForEmail?.vendor_item?.length > 0) {
+  //     setItems(
+  //       quoteDataForEmail.vendor_item.map((item) => ({
+  //         id: item.id,
+  //         rate: item.rate,
+  //       }))
+  //     );
+  //   }
+  // }, [quoteDataForEmail]);
+  // useEffect(() => {
+  //   if (quoteDataForEmail?.vendor_item?.length > 0) {
+  //     setNewVendorData(
+  //       quoteDataForEmail.vendor_item.map((item) => ({
+  //         id: item.id,
+  //         rate: item.rate,
+  //       }))
+  //     );
+  //   }
+  // }, [quoteDataForEmail]);
+
   useEffect(() => {
     if (quoteDataForEmail?.vendor_item?.length > 0) {
       setItems(
         quoteDataForEmail.vendor_item.map((item) => ({
-          id: item.id,
-          rate: item.rate || 0, // initialize with 0 or empty string
+          id: Number(
+            item.pi_get_quote_vendor_item_id ||
+              item.id ||
+              item.pirequestitem_id ||
+              item.pirequestitem?.id ||
+              0
+          ),
+          rate: item.rate || "", // allow editing empty or zero rates
         }))
       );
     }
   }, [quoteDataForEmail]);
 
+  console.log("quoteDataForEmail.vendor_item", quoteDataForEmail.vendor_item);
   // Update rates
-  const handleRateChange = (index, value) => {
-    const updatedItems = [...items];
-    updatedItems[index].rate = value;
-    setItems(updatedItems);
-  };
+  // const handleRateChange = (index, value) => {
+  //   const updatedItems = [...items];
+  //   updatedItems[index].rate = value;
+  //   setItems(updatedItems);
+  // };
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
+  // Handle rate input change
+  const handleRateChange = (index, value) => {
+    console.log("index", index);
+    console.log("value", value);
+    const updatedItems = [...items];
+    console.log("updatedItems", updatedItems);
+    updatedItems[index] = {
+      ...updatedItems[index],
+      rate: value,
+    };
+    setItems(updatedItems);
+  };
+
+  // console.log("newVendorData", newVendorData);
+  // Handle rate input change
+  // const handleRateChange = (index, value) => {
+  //   if (!Array.isArray(newVendorData)) return; // prevent crash
+  //   console.log("index rate", index);
+  //   console.log("value rate", value);
+  //   console.log("newVendorData", newVendorData);
+
+  //   const updatedData = [...newVendorData];
+  //   console.log("updatedData", updatedData);
+  //   updatedData[index] = {
+  //     ...updatedData[index],
+  //     rate: value,
+  //   };
+  //   setNewVendorData(updatedData);
+  // };
+
   // console.log(`${base_url}${ENDPOINTS.QUOTATIONDETAILS.RATEUPDATE}`);
+
+  // console.log(`${base_url}${ENDPOINTS.QUOTATIONDETAILS.RATEUPDATE}`);
+  // const handleSubmit = async () => {
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("pi_get_quote_id", decryptEmailData?.getquoteid);
+  //     formData.append("pi_get_quote_vendor_id", decryptEmailData?.vendorid);
+
+  //     // Append each item properly
+  //     items.forEach((item, index) => {
+  //       formData.append(`pi_get_quote_vendor_item_ids[${index}][id]`, item?.id);
+  //       formData.append(
+  //         `pi_get_quote_vendor_item_ids[${index}][rate]`,
+  //         Number(item?.rate)
+  //       );
+  //     });
+
+  //     if (file) {
+  //       formData.append("vendor_quote_file", file);
+  //     }
+
+  //     // console.log("res", res);
+
+  //     for (let [key, value] of formData.entries()) {
+  //       console.log("key:", key);
+  //       console.log("value:", value);
+  //     }
+  //   } catch (error) {
+  //     console.log("err", error);
+  //   }
+  // };
+
+  // console.log("decryptEmailData", decryptEmailData);
+
   const handleSubmit = async () => {
     try {
       const formData = new FormData();
@@ -101,60 +203,128 @@ export default function Vendor_fill_quote() {
 
       // Append each item properly
       items.forEach((item, index) => {
-        formData.append(`pi_get_quote_vendor_item_ids[${index}][id]`, item?.id);
+        formData.append(
+          `pi_get_quote_vendor_item_ids[${index}][id]`,
+          Number(item?.id)
+        );
         formData.append(
           `pi_get_quote_vendor_item_ids[${index}][rate]`,
           Number(item?.rate)
         );
       });
 
+      // items.forEach((item, index) => {
+      //   if (!item?.id || isNaN(item.id)) {
+      //     console.warn(`⚠️ Skipping invalid item at index ${index}`, item);
+      //     return;
+      //   }
+      //   formData.append(
+      //     `pi_get_quote_vendor_item_ids[${index}][id]`,
+      //     Number(item.id)
+      //   );
+      //   formData.append(
+      //     `pi_get_quote_vendor_item_ids[${index}][rate]`,
+      //     Number(item.rate)
+      //   );
+      // });
+
       if (file) {
-        formData.append("quote_file", file);
+        formData.append("vendor_quote_file", file);
       }
 
-      const res = await axios.post(
-        `${base_url}${ENDPOINTS.QUOTATIONDETAILS.RATEUPDATE}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${decryptEmailData?.token}`,
-          },
-        }
-      );
+      // console.log("res", res);
+
+      for (let [key, value] of formData.entries()) {
+        console.log("key:", key);
+        console.log("value:", value);
+      }
+
+      // const res = await axios.post(
+      //   `${base_url}${ENDPOINTS.QUOTATIONDETAILS.RATEUPDATE}`,
+      //   formData,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${decryptEmailData?.token}`,
+      //     },
+      //   }
+      // );
+
+      // console.log("res data", res);
+      // console.log("after newVendorData ", newVendorData);
 
       // Check backend response (assuming backend sends { status: true/false, message: "" })
-      if (res.data?.status) {
-        toast.success(res.data.message || "Vendor rates updated successfully!");
-
-        // Refresh vendor lists if needed
-        // if (quoteDataForEmail?.id) {
-        //   quoteVendorList({
-        //     pi_get_quote_id: quoteDataForEmail.id,
-        //     vendor_type: "new",
-        //   });
-        //   quoteVendorList({
-        //     pi_get_quote_id: quoteDataForEmail.id,
-        //     vendor_type: "old",
-        //   });
-        // }
-      } else {
-        toast.error(res.data?.message || "Failed to update vendor rates");
-      }
+      // if (res?.status) {
+      //   toast.success(res.message || "Vendor rates updated successfully!");
+      //   return res.data;
+      // Refresh vendor lists if needed
+      // if (quoteDataForEmail?.id) {
+      //   quoteVendorList({
+      //     pi_get_quote_id: quoteDataForEmail.id,
+      //     vendor_type: "new",
+      //   });
+      //   quoteVendorList({
+      //     pi_get_quote_id: quoteDataForEmail.id,
+      //     vendor_type: "old",
+      //   });
+      // }
+      // } else {
+      //   toast.error(res?.message || "Failed to update vendor rates");
+      // }
     } catch (error) {
       toast.error("Error submitting vendor quote");
       console.error("Submit vendor quote error:", error);
+      if (error.response) {
+        const errorMessage =
+          error.response.data?.message || "Error updating vendor rate";
+        toast.error(errorMessage);
+      } else {
+        toast.error("Network error: Failed to update vendor rate");
+      }
+      console.error("Vendor Rate Update error:", error);
+      throw error;
     }
   };
+  // const handleSubmit = async () => {
+  //   try {
+  //     await vendorRateUpdate({
+  //       pi_get_quote_id: newVendorData[0]?.pi_get_quote_id,
+  //       pi_get_quote_vendor_id: newVendorId,
+  //       items: newVendorData.map((item) => ({
+  //         id: item.id,
+  //         rate: item.rate,
+  //       })),
+  //       vendor_quote_file: file,
+  //     });
 
-  useEffect(() => {
-    quoteVendorListForEmail({
-      pi_get_quote_id: decryptEmailData?.getquoteid,
-      token:
-        decryptEmailData?.token ||
-        "441|NCUKDm9rHVVDMwN5JswzPWS7j30BwtpEpxRRklzP6feb1058",
-      vendor_id: decryptEmailData?.vendorid,
-    });
-  }, []);
+  //     console.log("vendor data", newVendorData);
+  //     handleClose("addQuote");
+  //     console.log("quoteData", quoteData);
+
+  //     // Add this separate useEffect to call quoteVendorList when quoteData is available
+  //     if (quoteData?.id) {
+  //       quoteVendorList({
+  //         pi_get_quote_id: quoteData.id,
+  //         vendor_type: "new",
+  //       });
+  //       quoteVendorList({
+  //         pi_get_quote_id: quoteData.id,
+  //         vendor_type: "old",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error saving vendor rates:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   quoteVendorListForEmail({
+  //     pi_get_quote_id: decryptEmailData?.getquoteid,
+  //     token:
+  //       decryptEmailData?.token ||
+  //       "441|NCUKDm9rHVVDMwN5JswzPWS7j30BwtpEpxRRklzP6feb1058",
+  //     vendor_id: decryptEmailData?.vendorid,
+  //   });
+  // }, []);
   // console.log("decryptEmailData", decryptEmailData);
 
   useEffect(() => {
@@ -214,9 +384,24 @@ export default function Vendor_fill_quote() {
                     type="number"
                     className="form-control form-control-sm"
                     style={{ width: "100%", minWidth: 80 }}
-                    value={item.rate}
+                    // value={items[index]?.rate ?? ""}
                     onChange={(e) => handleRateChange(index, e.target.value)}
+                    // disabled={
+                    //   !(
+                    //     item?.rate === "0.00" ||
+                    //     item?.rate === 0 ||
+                    //     item?.rate === null ||
+                    //     item?.rate === ""
+                    //   )
+                    // }
                   />
+                  {/* <input
+                    type="number"
+                    className="form-control form-control-sm"
+                    style={{ width: "100%", minWidth: 80 }}
+                    value={item?.rate ?? ""}
+                    onChange={(e) => handleRateChange(index, e.target.value)}
+                  /> */}
                 </td>
                 {/* {console.log("item rate", item.rate)} */}
               </tr>
@@ -230,7 +415,8 @@ export default function Vendor_fill_quote() {
             <input
               type="file"
               className="form-control"
-              onChange={handleFileChange}
+              // onChange={handleFileChange}
+              onChange={(e) => setFile(e.target.files[0])}
             />
           </div>
           <div className="col-lg-6 text-end">

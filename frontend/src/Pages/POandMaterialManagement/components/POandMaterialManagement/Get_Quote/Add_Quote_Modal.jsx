@@ -19,7 +19,11 @@ export default function Add_Quote_Modal() {
 
   // Handle rate input change
   const handleRateChange = (index, value) => {
+    console.log("index", index);
+    console.log("value", value);
     const updatedData = [...newVendorData];
+    console.log("update data", updatedData);
+    console.log("newVendorData", newVendorData);
     updatedData[index].rate = value;
     setNewVendorData(updatedData);
   };

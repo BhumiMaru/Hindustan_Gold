@@ -132,7 +132,7 @@ export const ENDPOINTS = {
   VENDOR: {
     ADD_UPDATE: "/vendors/add/update",
     LIST: "/vendors/list",
-    DETAILS: "/vendors/detail",
+    DETAILS: "/vendors/details",
     FILTER: "/vendors/filter",
     DELETE: "/vendors/delete",
   },
@@ -187,3 +187,10 @@ export const ENDPOINTS = {
     REVERT_STATUS: "/po/grn/invoice/status-update",
   },
 };
+
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+export const PUBLIC_URL = import.meta.env.VITE_PUBLIC_URL;
+
+export const VITE_AES_SECRET_KEY = "12345678901234567890123456789012";
+
+export const VITE_AES_SECRET_IV = "1234567890123456";

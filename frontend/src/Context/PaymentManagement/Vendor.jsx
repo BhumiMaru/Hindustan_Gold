@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { getData, postData } from "../../utils/api";
-import { ENDPOINTS } from "../../constants/endpoints";
+import { API_BASE_URL, ENDPOINTS } from "../../constants/endpoints";
 
 export const VendorContext = createContext();
 
@@ -37,6 +37,7 @@ export const VendorProvider = ({ children }) => {
     total_invoice: null,
     status: null,
   }); //data
+  const [vendorname, setVendorName] = useState("");
   const [vendorDetail, setVendorDetail] = useState();
   const [vendorFilter, setVendorFilter] = useState([]);
   const [vendorEditId, setVendorEditId] = useState(null);
@@ -47,9 +48,10 @@ export const VendorProvider = ({ children }) => {
     search = "",
     page = 1,
     perPage = 10,
+    status,
   } = {}) => {
     try {
-      const params = { search, page, per_page: perPage };
+      const params = { search, page, per_page: perPage, status };
       const res = await getData(ENDPOINTS.VENDOR.LIST, params);
 
       const apiData = res.data;
@@ -71,7 +73,6 @@ export const VendorProvider = ({ children }) => {
     try {
       const res = await getData(ENDPOINTS.VENDOR.FILTER);
       if (res.success) {
-        // console.log("rrr", res);
         setVendorFilter(res.data);
       }
     } catch (error) {
@@ -85,7 +86,6 @@ export const VendorProvider = ({ children }) => {
     try {
       const res = await postData(ENDPOINTS.VENDOR.ADD_UPDATE, payload);
       if (res.success) {
-        // console.log("res", res);
         setVendorData(res.data.data);
         toast.success(res.message);
         getVendorList();
@@ -119,42 +119,50 @@ export const VendorProvider = ({ children }) => {
     }
   };
 
+  // Vendor Details - FIXED THIS FUNCTION
   //   Vendor Details
+  // console.log(`${API_BASE_URL}${ENDPOINTS.VENDOR.DETAILS}`);
   const vendorDetails = async (id) => {
-    console.log("id", id);
     try {
-      // console.log("mm", id);
-      const res = await getData(ENDPOINTS.VENDOR.DETAILS, {
-        id: id,
+      const res = await postData(ENDPOINTS.VENDOR.DETAILS, {
+        id,
       });
-      if (res.success) {
-        console.log("res res", res);
-        const vendorData = res.data;
-        setVendorDetail(vendorData);
 
-        // setVendorDetail({
-        //   vendor_name: vendorData.vendor_name || "",
-        //   contact_person_name: vendorData.contact_person_name || "",
-        //   email: vendorData.email || "",
-        //   mobile: vendorData.mobile || "",
-        //   address: vendorData.address || "",
-        //   gst_number: vendorData.gst_number || "",
-        //   pan_number: vendorData.pan_number || "",
-        //   msme_certificate: vendorData.msme_certificate || "",
-        //   bank_name: vendorData.bank_name || "",
-        //   account_no: vendorData.account_no || "",
-        //   ifsc_code: vendorData.ifsc_code || "",
-        //   branch_name: vendorData.branch_name || "",
-        //   total_invoice: vendorData.total_invoice || null,
-        //   status: vendorData.status || null,
-        // });
+      if (res.success && res.data) {
+        console.log("res ", res.data);
+        const vendor = res.data; // ✅ Correct level
+        setVendorDetail(vendor);
+        console.log("vendorr", vendor);
+        setVendorName(vendor?.vendor_name);
+
+        // ✅ Prefill form fields
+        setVendorData({
+          vendor_id: vendor?.id || null,
+          vendor_name: vendor?.vendor_name || "",
+          contact_person_name: vendor?.contact_person_name || "",
+          email: vendor?.email || "",
+          mobile: vendor?.mobile || "",
+          address: vendor?.address || "",
+          gst_number: vendor?.gst_number || "",
+          pan_number: vendor?.pan_number || "",
+          msme_certificate: vendor?.msme_certificate || "",
+          bank_name: vendor?.bank_name || "",
+          account_no: vendor?.account_no || "",
+          ifsc_code: vendor?.ifsc_code || "",
+          branch_name: vendor?.branch_name || "",
+          total_invoice: vendor?.total_invoice || null,
+          status: vendor?.status,
+        });
+
+        return vendor; // ✅ return filled object
       }
-      return res;
     } catch (error) {
       toast.error("Error during Vendor Details");
       console.error("Vendor Details error:", error);
     }
   };
+
+  console.log("vvv", vendorData);
 
   // Vendor Delete
   const vendorDelete = async (id) => {
@@ -177,18 +185,27 @@ export const VendorProvider = ({ children }) => {
     }
   };
 
+  // Start Editing - FIXED THIS FUNCTION
   //   Start Editing
-  const startEditing = (vendorId) => {
-    console.log("vendorId", vendorId);
-    console.log("typeof vendorId", typeof vendorId);
-    setVendorEditId(vendorId);
-    vendorDetails(vendorId);
+  // Enhanced startEditing function
+  const startEditing = async (vendorId) => {
+    try {
+      console.log("Starting edit for vendor ID:", vendorId);
+
+      // Fetch vendor details first
+      await vendorDetails(vendorId);
+
+      // Only set editId after data is fetched
+      setVendorEditId(vendorId);
+    } catch (error) {
+      console.error("Error starting edit:", error);
+    }
   };
 
-  //   Reset Vendor Data
+  // Reset Vendor Data
   const resetVendorData = () => {
     setVendorData({
-      vendor_id: "",
+      vendor_id: null,
       vendor_name: "",
       contact_person_name: "",
       email: "",
@@ -198,12 +215,13 @@ export const VendorProvider = ({ children }) => {
       pan_number: "",
       msme_certificate: "",
       bank_name: "",
-      account_no: null,
+      account_no: "",
       ifsc_code: "",
       branch_name: "",
       total_invoice: null,
       status: null,
     });
+    setVendorEditId(null); // Also reset edit ID
   };
 
   // Vendor Approve
@@ -229,6 +247,7 @@ export const VendorProvider = ({ children }) => {
       console.error("Vendor Approve error:", error);
     }
   };
+  console.log("vendorEditId vendorEditId", vendorEditId);
 
   return (
     <VendorContext.Provider
@@ -256,7 +275,6 @@ export const VendorProvider = ({ children }) => {
         vendorApprove,
         vendorDetail,
         setVendorDetail,
-        vendorDetails,
         vendorDelete,
       }}
     >

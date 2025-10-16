@@ -6,9 +6,9 @@ export default function Vendor_detail_Modal() {
   const { vendorDetail, vendorEditId, vendorDetails } = useVendor();
   const { handleClose } = useUIContext();
 
-  useEffect(() => {
-    vendorDetails(vendorEditId);
-  }, [vendorEditId]);
+  // useEffect(() => {
+  //   vendorDetails(vendorEditId);
+  // }, [vendorEditId]);
   console.log("vendor", vendorDetail);
   return (
     <>
