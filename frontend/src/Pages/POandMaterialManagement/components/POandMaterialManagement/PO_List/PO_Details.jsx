@@ -15,6 +15,8 @@ import { SubCategoryProvider } from "../../../../../Context/ItemManagement/SubCa
 import { ItemRequestProvider } from "../../../../../Context/Request Management/Item_Request";
 import Invoice_List_Form from "../../../../PaymentManagement/components/PaymentManagement/Invoice_List/Invoice_List_Form";
 import { useInvoice } from "../../../../../Context/PIAndPoManagement/Invoice";
+import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
+import { decryptData } from "../../../../../utils/decryptData";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function PO_Details() {
@@ -33,6 +35,15 @@ export default function PO_Details() {
   } = usePOCreate();
   const printRef = useRef();
   const { setType } = useInvoice();
+  const { userPermission, fetchUserPermission } = useUserCreation();
+
+  const getAuthData = sessionStorage.getItem("authData");
+  const decryptAuthData = decryptData(getAuthData);
+  const user = decryptAuthData?.user;
+
+  useEffect(() => {
+    fetchUserPermission(user.id);
+  }, [user.id]);
 
   // useEffect(() => {
   //   getPoDetails(id);
@@ -75,40 +86,45 @@ export default function PO_Details() {
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
           <div className="d-flex flex-column justify-content-center"></div>
           <div className="d-flex align-content-center flex-wrap gap-4">
-            {poDetails.status === "Pending" && (
-              <>
-                <button
-                  type="submit"
-                  className={`btn btn-success waves-effect waves-light btn-sm ${
-                    poDetails.status === "Approve" ||
-                    poDetails.status === "Reject"
-                      ? "d-none"
-                      : ""
-                  }`}
-                  onClick={async () => {
-                    PoApprove(poDetails.id);
-                    await getPoDetails(poDetails.id);
-                  }}
-                >
-                  Approve
-                </button>
-                <button
-                  type="submit"
-                  className={`btn btn-danger waves-effect waves-light btn-sm ${
-                    poDetails.status === "Approve" ||
-                    poDetails.status === "Reject"
-                      ? "d-none"
-                      : ""
-                  }`}
-                  onClick={() => {
-                    handleOpen("viewRejectPo");
-                    setPoId(poDetails.id);
-                  }}
-                >
-                  Reject
-                </button>
-              </>
-            )}
+            {userPermission?.some(
+              (perm) =>
+                perm.type === "PO Generation" && perm.permission === "approve"
+            ) &&
+              poDetails.status === "Pending" && (
+                <>
+                  <button
+                    type="submit"
+                    className={`btn btn-success waves-effect waves-light btn-sm ${
+                      poDetails.status === "Approve" ||
+                      poDetails.status === "Reject"
+                        ? "d-none"
+                        : ""
+                    } `}
+                    onClick={async () => {
+                      PoApprove(poDetails.id);
+                      await getPoDetails(poDetails.id);
+                    }}
+                  >
+                    Approve
+                  </button>
+
+                  <button
+                    type="submit"
+                    className={`btn btn-danger waves-effect waves-light btn-sm ${
+                      poDetails.status === "Approve" ||
+                      poDetails.status === "Reject"
+                        ? "d-none"
+                        : ""
+                    } `}
+                    onClick={() => {
+                      handleOpen("viewRejectPo");
+                      setPoId(poDetails.id);
+                    }}
+                  >
+                    Reject
+                  </button>
+                </>
+              )}
 
             {/*  <div class="d-flex gap-4"><button class="btn btn-label-secondary waves-effect">Discard</button>*/}
             {poDetails.status === "Reject" ? (
@@ -119,16 +135,22 @@ export default function PO_Details() {
               </>
             ) : (
               <>
-                <Link
-                  to={`/po-material/po-create/${poDetails.id}`}
-                  className={`btn btn-warning waves-effect btn-sm ${
-                    poDetails.status === "Reject" ||
-                    poDetails.status === "Approve" ||
-                    (poDetails.status === "Pending" && "d-none")
-                  } ${poDetails.po_generat_status === 1 ? "d-none" : ""}`}
-                >
-                  Generate PO
-                </Link>
+                {userPermission?.some(
+                  (perm) =>
+                    perm.type === "PO Generation" && perm.permission === "add"
+                ) &&
+                  poDetails.status === "Approve" && (
+                    <Link
+                      to={`/po-material/po-create/${poDetails.id}`}
+                      className={`btn btn-warning waves-effect btn-sm ${
+                        poDetails.status === "Reject" ||
+                        poDetails.status === "Approve" ||
+                        (poDetails.status === "Pending" && "d-none")
+                      } ${poDetails.po_generat_status === 1 ? "d-none" : ""} `}
+                    >
+                      Generate PO
+                    </Link>
+                  )}
               </>
             )}
 
@@ -153,7 +175,7 @@ export default function PO_Details() {
                     poDetails.status === "Reject" ||
                     poDetails.status === "Approve" ||
                     (poDetails.status === "Pending" && "d-none")
-                  }`}
+                  } ${poDetails?.status === "Complete" && "d-none"}`}
                   onClick={() => {
                     setPoId(poDetails?.id);
                     handleOpen("editGRN");
@@ -220,7 +242,9 @@ export default function PO_Details() {
                     <div>
                       <span
                         className={`badge ${
-                          poDetails.status === "Reject"
+                          poDetails.status === "Pending"
+                            ? "bg-label-warning"
+                            : poDetails.status === "Reject"
                             ? "bg-label-danger"
                             : "bg-label-success"
                         } mt-2`}
@@ -257,12 +281,14 @@ export default function PO_Details() {
                       return (
                         <tr key={index}>
                           <td>
-                            <div className="ms-4">{poDetails.item_name}</div>
+                            <div className="ms-4">
+                              {poDetails?.pirequestitem?.item_name}
+                            </div>
                           </td>
                           <td>{poDetails.qty}</td>
                           <td>{poDetails.uom}</td>
                           <td>{poDetails.unit_price}</td>
-                          <td>{poDetails.item_name}</td>
+                          <td>{poDetails.Taxable_value}</td>
                         </tr>
                       );
                     })}
@@ -308,7 +334,7 @@ export default function PO_Details() {
                       <td>Ronak Patel</td>
                       <td>Electrical</td>
                       <td>
-                        <span className="badge bg-label-success">Complet</span>
+                        <span className="badge bg-label-success">Complete</span>
                       </td>
                     </tr>
                     <tr>
@@ -446,12 +472,12 @@ export default function PO_Details() {
                         <span className="badge bg-label-warning">Pending</span>
                       </td>
                       <td>
-                        <a
-                          href="invoice-list.html"
+                        <Link
+                          to="/payment-management/invoice-list"
                           className="btn btn-dark btn-sm waves-effect waves-light"
                         >
                           Create Invoice
-                        </a>
+                        </Link>
                       </td>
                     </tr>
                     <tr>
@@ -526,8 +552,8 @@ export default function PO_Details() {
                         <span className="badge bg-label-warning">Pending</span>
                       </td>
                       <td>
-                        <a
-                          href="invoice-list.html"
+                        <Link
+                          to="/payment-management/invoice-list"
                           type="button"
                           className=""
                           data-bs-toggle="tooltip"
@@ -536,7 +562,7 @@ export default function PO_Details() {
                           data-bs-original-title="View Invoice"
                         >
                           <i className="icon-base ti tabler-file-invoice text-success  icon-20px" />
-                        </a>
+                        </Link>
                       </td>
                     </tr>
                   </tbody>

@@ -18,18 +18,23 @@ export default function UpdateGRN({ id }) {
 
   console.log("grnId", grnId);
   console.log("poDetails", poDetails);
+  console.log("grnData", grnData);
 
   // Initialize grnData.items when poDetails is available
   useEffect(() => {
     if (poDetails?.items) {
-      const initialItems = poDetails.items.map((item, index) => ({
-        po_item_id: item.id,
-        item_name: item.item_name,
-        quantity: item.quantity,
-        uom: item.uom,
-        pending_qty: item.pending_quantity || item.quantity,
-        grn_qty: grnData.items?.[index]?.grn_qty || 0, // Preserve existing grn_qty if any
-      }));
+      const initialItems = poDetails.items.map((item, index) => {
+        console.log("item", item);
+        return {
+          grn_item_id: item.id,
+          po_item_id: item.id,
+          item_name: item?.pirequestitem?.item_name,
+          quantity: item?.qty,
+          uom: item.uom,
+          pending_qty: item.pending_quantity || item.quantity,
+          grn_qty: grnData.items?.[index]?.grn_qty || 0, // Preserve existing grn_qty if any
+        };
+      });
 
       setGrnData((prev) => ({
         ...prev,
@@ -88,6 +93,7 @@ export default function UpdateGRN({ id }) {
       invoice_file: grnData.invoice_file,
       remark: grnData.remark,
       items: grnData.items?.map((item) => ({
+        grn_item_id: item.id,
         po_item_id: Number(item.po_item_id),
         grn_qty: Number(item.grn_qty || 0),
       })),
@@ -95,9 +101,11 @@ export default function UpdateGRN({ id }) {
 
     console.log("Sending GRN data:", grnPayload);
     console.log("editId", typeof editId);
+    console.log("GRN items being sent:", grnData.items);
 
     if (editId) {
       EditGRN({ id: editId, payload: grnPayload });
+      console.log("payload", grnPayload);
     } else {
       CreateGRN(grnPayload);
     }

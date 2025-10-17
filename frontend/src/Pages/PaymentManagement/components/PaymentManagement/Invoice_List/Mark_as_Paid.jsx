@@ -32,6 +32,13 @@ export default function Mark_as_Paid({ id }) {
 
   const handleSave = () => {
     if (invoiceDetail.is_payment_advance_or_partial === "Yes") {
+      console.log({
+        amount: invoiceDetail.taxable_amount,
+        // payment_date: "",
+        remark: "Payment Done",
+        type_of_payment: 2,
+        paymentslip: null,
+      });
       setPaymentData({
         amount: invoiceDetail.taxable_amount,
         // payment_date: "",
@@ -40,10 +47,12 @@ export default function Mark_as_Paid({ id }) {
         paymentslip: null,
       });
     } else {
+      console.log("paymentData", paymentData);
       paymentPartial(paymentData);
     }
     handleClose("markaspaid");
   };
+
   return (
     <>
       {/* ---------------------START MARK AS PAID----------------------- */}

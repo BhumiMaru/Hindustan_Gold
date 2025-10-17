@@ -24,6 +24,8 @@ export default function PI_Request_Get_Quote() {
   // Add state for past vendor list
   // const [pastVendorList, setPastVendorList] = useState([]);
   const { userPermission, fetchUserPermission } = useUserCreation();
+  // Loading state
+  const [loading, setLoading] = useState({});
 
   // ✅ Get saved auth data
   const savedAuth = sessionStorage.getItem("authData");
@@ -61,7 +63,10 @@ export default function PI_Request_Get_Quote() {
     newVendorData,
     setNewVendorData,
   } = useGetQuote();
+  console.log("quoteData", quoteData);
   const navigate = useNavigate();
+  // Per-vendor loading state
+  const [loadingVendors, setLoadingVendors] = useState({});
 
   // console.log("quoteData", quoteData);
   const vendor_type = "new";
@@ -216,43 +221,108 @@ export default function PI_Request_Get_Quote() {
       toast.error("Please select at least one past vendor");
       return;
     }
+
     try {
+      // Mark all selected old vendors as loading
+      const loadingState = Object.fromEntries(
+        selectedOldVendors.map((id) => [id, true])
+      );
+      setLoadingVendors((prev) => ({ ...prev, ...loadingState }));
+
+      // Send request
       await sendRequest({
         pi_get_quote_id: parseInt(id),
         pi_get_quote_vendor_ids: selectedOldVendors,
       });
-      // toast.success("Request sent to past vendors!");
+
+      toast.success("Request sent successfully!");
+
+      // Clear selections
       setSelectedOldVendors([]);
       setSelectAllOld(false);
+
+      // Refresh old vendor list
       await quoteVendorList({
         pi_get_quote_id: quoteData.id,
         vendor_type: "old",
       });
     } catch (error) {
       console.error("Error sending request to past vendors:", error);
+    } finally {
+      // Reset loading for all selected old vendors
+      const resetState = Object.fromEntries(
+        selectedOldVendors.map((id) => [id, false])
+      );
+      setLoadingVendors((prev) => ({ ...prev, ...resetState }));
     }
   };
 
   // Send Request for NEW vendors
+  // const handleSendNewVendorRequest = async () => {
+  //   if (selectedNewVendors.length === 0) {
+  //     toast.error("Please select at least one new vendor");
+  //     return;
+  //   }
+  //   try {
+  //     // setLoading(true);
+  //     // setLoadingVendors((prev) => ({ ...prev, [vendorId]: true }));
+  //     await sendRequest({
+  //       pi_get_quote_id: parseInt(id),
+  //       pi_get_quote_vendor_ids: selectedNewVendors,
+  //     });
+  //     // toast.success("Request sent to new vendors!");
+  //     setSelectedNewVendors([]);
+  //     setSelectAllNew(false);
+  //     await quoteVendorList({
+  //       pi_get_quote_id: quoteData.id,
+  //       vendor_type: "new",
+  //     });
+  //   } catch (error) {
+  //     console.error("Error sending request to new vendors:", error);
+  //   } finally {
+  //     setLoading(false);
+  //     // setLoadingVendors((prev) => ({ ...prev, [vendorId]: false }));
+  //   }
+  // };
+
   const handleSendNewVendorRequest = async () => {
     if (selectedNewVendors.length === 0) {
       toast.error("Please select at least one new vendor");
       return;
     }
+
     try {
+      // Mark all selected vendors as loading
+      const loadingState = Object.fromEntries(
+        selectedNewVendors.map((id) => [id, true])
+      );
+      setLoadingVendors((prev) => ({ ...prev, ...loadingState }));
+
+      // Send request
       await sendRequest({
         pi_get_quote_id: parseInt(id),
         pi_get_quote_vendor_ids: selectedNewVendors,
       });
-      // toast.success("Request sent to new vendors!");
+
+      toast.success("Request sent successfully!");
+
+      // Clear selections
       setSelectedNewVendors([]);
       setSelectAllNew(false);
+
+      // Refresh vendor list
       await quoteVendorList({
         pi_get_quote_id: quoteData.id,
         vendor_type: "new",
       });
     } catch (error) {
       console.error("Error sending request to new vendors:", error);
+    } finally {
+      // Reset loading for all selected vendors
+      const resetState = Object.fromEntries(
+        selectedNewVendors.map((id) => [id, false])
+      );
+      setLoadingVendors((prev) => ({ ...prev, ...resetState }));
     }
   };
 
@@ -517,7 +587,9 @@ export default function PI_Request_Get_Quote() {
                       <td className="d-flex">
                         <a
                           href="#"
-                          className="btn btn-icon  waves-effect waves-light"
+                          className={`btn btn-icon  waves-effect waves-light ${
+                            quoteData?.po_status == 1 ? "d-none" : ""
+                          }`}
                           data-bs-placement="top"
                           aria-label="View Detail"
                           data-bs-original-title="View Detail"
@@ -540,7 +612,8 @@ export default function PI_Request_Get_Quote() {
                         >
                           <i className="icon-base ti tabler-receipt-rupee icon-md" />
                         </a>
-                        {pastVendor.quote_status === "Pending" ? (
+                        {console.log("past", pastVendor)}
+                        {/* {pastVendor.quote_status === "Pending" ? (
                           <button
                             className="btn btn-info btn-sm waves-effect waves-light"
                             onClick={handleSendOldVendorRequest}
@@ -556,7 +629,92 @@ export default function PI_Request_Get_Quote() {
                           <button className="btn btn-success btn-sm waves-effect waves-light">
                             Vendor Approve
                           </button>
-                        ) : null}
+                        ) : null} */}
+                        {pastVendor.quote_status === "Pending" ? (
+                          // <button
+                          //   className="btn btn-info btn-sm waves-effect waves-light"
+                          //   onClick={handleSendNewVendorRequest}
+                          // >
+                          //   <div
+                          //     class="spinner-border text-secondary"
+                          //     role="status"
+                          //   ></div>
+                          //   Send Request
+                          // </button>
+                          // <button
+                          //   className="btn btn-info btn-sm waves-effect waves-light d-flex align-items-center justify-content-center"
+                          //   onClick={handleSendOldVendorRequest}
+                          //   disabled={loading[pastVendor.id]}
+                          //   style={{ minWidth: "130px" }}
+                          // >
+                          //   {loading[pastVendor.id] && (
+                          //     <div
+                          //       className="spinner-border spinner-white me-2"
+                          //       role="status"
+                          //     ></div>
+                          //   )}
+                          //   Send Request
+                          // </button>
+                          <button
+                            className="btn btn-info btn-sm waves-effect waves-light d-flex align-items-center justify-content-center"
+                            onClick={() =>
+                              handleSendOldVendorRequest(selectedOldVendors)
+                            }
+                            disabled={selectedOldVendors.some(
+                              (id) => loadingVendors[id]
+                            )}
+                          >
+                            {selectedOldVendors.some(
+                              (id) => loadingVendors[id]
+                            ) && (
+                              <div
+                                className="spinner-border spinner-white me-2"
+                                role="status"
+                              ></div>
+                            )}
+                            Send Request
+                          </button>
+                        ) : pastVendor.quote_status === "Quote Pending" ? (
+                          <button className="btn bg-label-info btn-sm waves-effect waves-light">
+                            Quotation Pending
+                          </button>
+                        ) : (
+                          pastVendor.quote_status === "Complete" &&
+                          userPermission?.some(
+                            (perm) =>
+                              perm.type === "Get Quotation" &&
+                              perm.permission === "add"
+                          ) && (
+                            <button
+                              // className="btn btn-success btn-sm waves-effect waves-light"
+                              className={`btn btn-success btn-sm waves-effect waves-light ${
+                                pastVendor.po_status === 0
+                                  ? "d-block"
+                                  : "d-none"
+                              }`}
+                              onClick={async () => {
+                                setLoading(true);
+                                try {
+                                  await vendorApprove({
+                                    vendor_id: pastVendor.vendor_id,
+                                    pi_get_quote_id: pastVendor.pi_get_quote_id,
+                                  });
+                                  await getQuoteDetails(id);
+                                } finally {
+                                  setLoading(false);
+                                }
+                              }}
+                            >
+                              {loading[oldVendorList.id] && (
+                                <div
+                                  className="spinner-border spinner-white me-2"
+                                  role="status"
+                                ></div>
+                              )}
+                              Vendor Approve
+                            </button>
+                          )
+                        )}
                       </td>
                     </tr>
                   );
@@ -631,8 +789,9 @@ export default function PI_Request_Get_Quote() {
                 </tr>
               </thead>
               <tbody>
+                {console.log("newVendorList", newVendorList)}
                 {newVendorList.map((quotation, index) => {
-                  // console.log("quotation", quotation);
+                  // console.log("newVendorList", quotation);
                   const vendorId = quotation.vendor_id || quotation.id;
                   const isSelected = selectedVendors.includes(vendorId);
                   // console.log("vendorId", vendorId);
@@ -680,7 +839,27 @@ export default function PI_Request_Get_Quote() {
                       <td className="d-flex">
                         <a
                           href="#"
-                          className="btn btn-icon  waves-effect waves-light"
+                          // className={`btn btn-icon waves-effect waves-light ${
+                          //   quotation.quote_status === "Pending"
+                          //     ? "d-none"
+                          //     : // : "d-block"
+                          //     quotation.quote_status === "Quote Pending"
+                          //     ? "d-block"
+                          //     : ""
+                          // } ${
+                          //   quotation?.quote_status === "Quote Pending" &&
+                          //   quotation?.po_status == 0
+                          //     ? "d-none"
+                          //     : ""
+                          // }`}
+                          className={`btn btn-icon waves-effect waves-light ${
+                            quotation?.quote_status === "Pending"
+                              ? "d-none"
+                              : quotation?.quote_status == "Quote Pending" &&
+                                quoteData?.po_status == 1
+                              ? "d-none"
+                              : "d-block"
+                          }`}
                           data-bs-placement="top"
                           aria-label="View Detail"
                           data-bs-original-title="View Detail"
@@ -697,8 +876,28 @@ export default function PI_Request_Get_Quote() {
 
                         <a
                           href="#"
-                          className={`btn btn-icon  waves-effect waves-light ${
-                            quotation.quote_status === "Complete" && "d-none"
+                          // className={`btn btn-icon waves-effect waves-light ${
+                          //   quotation.quote_status === "Pending"
+                          //     ? "d-none"
+                          //     : quotation.quote_status === "Quote Pending"
+                          //     ? "d-block"
+                          //     : quotation.quote_status === "Complete"
+                          //     ? "d-none"
+                          //     : ""
+                          // } ${
+                          //   quotation?.quote_status === "Quote Pending" &&
+                          //   quotation?.po_status == 0
+                          //     ? "d-none"
+                          //     : ""
+                          // }`}
+                          className={`btn btn-icon waves-effect waves-light ${
+                            quotation?.quote_status === "Pending"
+                              ? "d-none"
+                              : (quotation?.quote_status == "Quote Pending" ||
+                                  quotation?.quote_status === "Complete") &&
+                                quoteData?.po_status == 1
+                              ? "d-none"
+                              : "d-block"
                           }`}
                           data-bs-placement="top"
                           aria-label="Add Quote"
@@ -713,16 +912,43 @@ export default function PI_Request_Get_Quote() {
                         >
                           <i className="icon-base ti tabler-receipt-rupee icon-md" />
                         </a>
-                        {/* {console.log("quotation", quotation)} */}
+                        {console.log("quotation", quotation)}
                         {quotation.quote_status === "Pending" ? (
+                          // <button
+                          //   className="btn btn-info btn-sm waves-effect waves-light"
+                          //   onClick={handleSendNewVendorRequest}
+                          // >
+                          //   <div
+                          //     class="spinner-border text-secondary"
+                          //     role="status"
+                          //   ></div>
+                          //   Send Request
+                          // </button>
                           <button
-                            className="btn btn-info btn-sm waves-effect waves-light"
-                            onClick={handleSendNewVendorRequest}
+                            className="btn btn-info btn-sm waves-effect waves-light d-flex align-items-center justify-content-center"
+                            onClick={() =>
+                              handleSendNewVendorRequest(selectedNewVendors)
+                            }
+                            disabled={selectedNewVendors.some(
+                              (id) => loadingVendors[id]
+                            )}
                           >
+                            {selectedNewVendors.some(
+                              (id) => loadingVendors[id]
+                            ) && (
+                              <div
+                                className="spinner-border spinner-white me-2"
+                                role="status"
+                              ></div>
+                            )}
                             Send Request
                           </button>
                         ) : quotation.quote_status === "Quote Pending" ? (
-                          <button className="btn bg-label-info btn-sm waves-effect waves-light">
+                          <button
+                            className={`btn bg-label-info btn-sm waves-effect waves-light ${
+                              quoteData?.po_status == 1 ? "d-none" : ""
+                            }`}
+                          >
                             Quotation Pending
                           </button>
                         ) : (
@@ -731,11 +957,12 @@ export default function PI_Request_Get_Quote() {
                             (perm) =>
                               perm.type === "Get Quotation" &&
                               perm.permission === "add"
-                          ) && (
+                          ) &&
+                          (quotation.po_status === 0 ? (
                             <button
                               // className="btn btn-success btn-sm waves-effect waves-light"
                               className={`btn btn-success btn-sm waves-effect waves-light ${
-                                quotation.po_status === 0 ? "d-block" : "d-none"
+                                quoteData?.po_status == 1 ? "d-none" : ""
                               }`}
                               onClick={() =>
                                 vendorApprove({
@@ -743,10 +970,25 @@ export default function PI_Request_Get_Quote() {
                                   pi_get_quate: quotation.pi_get_quote_id,
                                 })
                               }
+                              disabled={selectedNewVendors.some(
+                                (id) => loadingVendors[id]
+                              )}
                             >
+                              {selectedNewVendors.some(
+                                (id) => loadingVendors[id]
+                              ) && (
+                                <div
+                                  className="spinner-border spinner-white me-2"
+                                  role="status"
+                                ></div>
+                              )}
                               Vendor Approve
                             </button>
-                          )
+                          ) : (
+                            <button className="btn bg-label-success btn-sm waves-effect waves-light">
+                              Vendor Selected
+                            </button>
+                          ))
                         )}
                         {/* {console.log("qu", quotation)} */}
                       </td>

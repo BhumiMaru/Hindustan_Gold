@@ -92,7 +92,7 @@ export default function Get_Quote_Table() {
                 <td>
                   <span
                     className={`badge ${
-                      item.status === "Approve" || item.status === "Completed"
+                      item.status === "Approve" || item.status === "Complete"
                         ? "bg-label-success"
                         : item.status === "InProgress"
                         ? "bg-label-info"

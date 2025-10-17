@@ -22,6 +22,7 @@ export default function Invoice_List_Form({ id, type }) {
     setItemName,
     vendor,
     setVendor,
+    resetPaymentData,
   } = useInvoice();
   const { vendorFilter, setVendorFilter, getVendorFilter } = useVendor();
   const { filterSubCategory, fetchSubCategoryFilter } = useSubCategory();
@@ -183,7 +184,10 @@ export default function Invoice_List_Form({ id, type }) {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
-                onClick={() => handleClose("addInvoice")}
+                onClick={() => {
+                  handleClose("addInvoice");
+                  // resetPaymentData();
+                }}
               />
             </div>
             <div className="modal-body">
@@ -307,7 +311,10 @@ export default function Invoice_List_Form({ id, type }) {
                     type="button"
                     className="btn btn-label-secondary waves-effect"
                     data-bs-dismiss="modal"
-                    onClick={() => handleClose("addInvoice")}
+                    onClick={() => {
+                      handleClose("addInvoice");
+                      resetPaymentData();
+                    }}
                   >
                     Cancel
                   </button>

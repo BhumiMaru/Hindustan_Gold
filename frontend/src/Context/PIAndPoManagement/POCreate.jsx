@@ -46,7 +46,7 @@ export const POProvider = ({ children }) => {
   const [formData, setFormData] = useState({
     id: null,
     po_date: new Date().toISOString().split("T")[0],
-    default_rupees: "",
+    default_rupees: "INR",
     total_discount: "0",
     packing_charge: "",
     packing_gst: "",
@@ -169,6 +169,10 @@ export const POProvider = ({ children }) => {
       const res = await postData(ENDPOINTS.POCREATE.ADD_UPDATE, payload);
       setFormData(res.data.data);
     } catch (error) {
+      if (error.response) {
+        const errorMessage = error.response.data?.message;
+        toast.error(errorMessage);
+      }
       console.error("PO creation failed:", error);
     }
   };
@@ -184,7 +188,10 @@ export const POProvider = ({ children }) => {
       }
       getPoList();
     } catch (error) {
-      toast.error("PO Approve error");
+      if (error.response) {
+        const errorMessage = error.response.data?.message;
+        toast.error(errorMessage);
+      }
       console.error("PO Approve error:", error);
     }
   };
@@ -201,7 +208,10 @@ export const POProvider = ({ children }) => {
       }
       getPoList();
     } catch (error) {
-      toast.error("PO Reject error");
+      if (error.response) {
+        const errorMessage = error.response.data?.message;
+        toast.error(errorMessage);
+      }
       console.error("PO Reject error:", error);
     }
   };

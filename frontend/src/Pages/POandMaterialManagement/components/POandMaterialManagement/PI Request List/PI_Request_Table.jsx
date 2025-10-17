@@ -63,7 +63,7 @@ export default function PI_Request_Table({ userPermission }) {
   // if (
   //   activeTab === "approval_request" &&
   //   userPermission.some(
-  //     (prem) => prem.type === "PI Request" && prem.permission === "Approve"
+  //     (prem) => prem.type === "PI Request" && prem.permission === "approve"
   //   ) &&
   //   (piItem?.status === "pending" || piItem?.status === "Pending")
   // ) {
@@ -131,8 +131,8 @@ export default function PI_Request_Table({ userPermission }) {
                 </td>
                 <td>{pi.pi_date}</td>
                 <td>{pi.pi_type}</td>
-                <td>Ronak Patel</td>
-                <td>Electrical</td>
+                <td>{pi?.order_by?.name}</td>
+                <td>{pi?.department_by?.department_name}</td>
                 <td>{pi.total_item}</td>
                 <td>{pi.totalquate_count}</td>
                 <td>{pi.totalpo_count}</td>
@@ -1028,7 +1028,7 @@ export default function PI_Request_Table({ userPermission }) {
                             {/* <td>
                               <span>{piItem?.status}</span>
                             </td> */}
-                            {/* {console.log("Pi item", piItem)} */}
+                            {console.log("Pi item", piItem)}
                             {/* ))} */}
 
                             <td>{piItem.item_name}</td>
@@ -1116,7 +1116,7 @@ export default function PI_Request_Table({ userPermission }) {
                                   : piItem.status}
                               </span>
 
-                              {/* {console.log("pi", pi)} */}
+                              {console.log("pi", pi)}
                             </td>
                             {/* <td>
                               <div
@@ -1208,7 +1208,10 @@ export default function PI_Request_Table({ userPermission }) {
                                     pi_request_id: pi.id,
                                     pi_request_item_id: selectedItemsMap[index],
                                   });
-
+                                  console.log("get quotation btn", {
+                                    pi_request_id: pi.id,
+                                    pi_request_item_id: selectedItemsMap[index],
+                                  });
                                   if (res?.data?.id) {
                                     navigate(
                                       `/po-material/pi-request-get-quote/${res.data.id}`

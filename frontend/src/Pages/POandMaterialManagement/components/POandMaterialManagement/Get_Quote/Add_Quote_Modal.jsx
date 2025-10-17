@@ -134,6 +134,7 @@ export default function Add_Quote_Modal() {
               </div>
             </div>
 
+            {/* {quoteData?.po_status == 1 && ( */}
             <div className="modal-footer">
               <button
                 type="button"
@@ -151,6 +152,7 @@ export default function Add_Quote_Modal() {
                 Save
               </button>
             </div>
+            {/* )} */}
           </div>
         </div>
       </div>

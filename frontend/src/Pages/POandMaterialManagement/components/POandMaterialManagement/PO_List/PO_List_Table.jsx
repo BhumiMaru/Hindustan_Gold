@@ -137,7 +137,7 @@ export default function PO_List_Table() {
                     {userPermission.some(
                       (prem) =>
                         prem.type === "PO Generation" &&
-                        prem.permission === "Approve"
+                        prem.permission === "approve"
                     ) && (
                       <div className="d-inline-flex gap-2">
                         <button
@@ -245,6 +245,7 @@ export default function PO_List_Table() {
                       <tbody>
                         {po.items.map((poItem, index) => (
                           <tr key={index}>
+                            {console.log("poitem", poItem)}
                             <td>
                               {" "}
                               <div className="ms-4">
@@ -255,7 +256,7 @@ export default function PO_List_Table() {
                             <td>{poItem.pirequestitem.uom}</td>
                             <td>{poItem.pirequestitem.received_qty}</td>
                             <td>{poItem.pirequestitem.pending_qty}</td>
-                            <td>{poItem.pirequestitem.unit_price}/-</td>
+                            <td>{poItem.unit_price}/-</td>
                           </tr>
                         ))}
                       </tbody>

@@ -107,6 +107,7 @@ export const GetQuoteProvider = ({ children }) => {
   const getQuoteCreate = async (payload) => {
     try {
       const res = await postData(ENDPOINTS.GETQUOTE.CREATE, payload);
+      console.log("payload", payload);
       if (res?.status) {
         const newId = res.data.id;
         // toast.success(res.message || "Get Quote Create successful!");
@@ -381,6 +382,10 @@ export const GetQuoteProvider = ({ children }) => {
 
       if (res.status) {
         toast.success(res.message || "Vendor rate updated successfully!");
+        // quoteVendorList({
+        //   pi_get_quote_id,
+        //   vendor_type,
+        // });
         return res.data;
       } else {
         toast.error(res.message || "Failed to update vendor rate");

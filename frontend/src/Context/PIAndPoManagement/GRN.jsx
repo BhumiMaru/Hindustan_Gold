@@ -89,8 +89,27 @@ export const GRNProvider = ({ children }) => {
         }
       });
 
+      console.log("payload", payload);
+
+      // Append items array properly
+      // payload.items?.forEach((item, index) => {
+      //   formData.append(
+      //     `items[${index}][po_item_id]`,
+      //     parseInt(item.po_item_id) || 0
+      //   );
+      //   formData.append(
+      //     `items[${index}][grn_qty]`,
+      //     parseInt(item.grn_qty) || 0
+      //   );
+      // });
       // Append items array properly
       payload.items?.forEach((item, index) => {
+        if (item.grn_item_id) {
+          formData.append(
+            `items[${index}][grn_item_id]`,
+            parseInt(item.grn_item_id)
+          );
+        }
         formData.append(
           `items[${index}][po_item_id]`,
           parseInt(item.po_item_id) || 0
@@ -136,7 +155,25 @@ export const GRNProvider = ({ children }) => {
       });
 
       // Append items array properly
+      // payload.items?.forEach((item, index) => {
+      //   formData.append(
+      //     `items[${index}][po_item_id]`,
+      //     parseInt(item.po_item_id) || 0
+      //   );
+      //   formData.append(
+      //     `items[${index}][grn_qty]`,
+      //     parseInt(item.grn_qty) || 0
+      //   );
+      // });
+      // Append items array properly
       payload.items?.forEach((item, index) => {
+        // Only append if it exists
+        if (item.grn_item_id) {
+          formData.append(
+            `items[${index}][grn_item_id]`,
+            parseInt(item.grn_item_id)
+          );
+        }
         formData.append(
           `items[${index}][po_item_id]`,
           parseInt(item.po_item_id) || 0
@@ -151,9 +188,11 @@ export const GRNProvider = ({ children }) => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
+      console.log("res", res);
+
       if (res.status) {
         toast.success(res.message);
-        setGrnData(res.data.data);
+        setGrnData(res.data);
         GRNList();
       }
     } catch (error) {
@@ -168,9 +207,12 @@ export const GRNProvider = ({ children }) => {
 
     // Find GRN from existing grnList
     const grn = grnList.find((g) => g.id === id);
+    console.log("gg", grn);
 
     if (grn) {
+      console.log("grn", grn);
       setGrnData({
+        id: grn.id,
         grn_no: grn.grn_no || "",
         grn_date: grn.grn_date || new Date().toISOString().split("T")[0],
         po_id: grn.po_id || "",
@@ -181,6 +223,7 @@ export const GRNProvider = ({ children }) => {
         remark: grn.remark || "",
         items:
           grn.items?.map((item) => ({
+            grn_item_id: item.id,
             po_item_id: item.po_item_id,
             item_name: item.item_name,
             quantity: item.quantity,
@@ -189,7 +232,38 @@ export const GRNProvider = ({ children }) => {
             grn_qty: item.grn_qty || 0,
           })) || [],
       });
-      // console.log("grn", typeof grn.po_id);
+      console.log("dd", {
+        id: grn.id,
+        grn_no: grn.grn_no || "",
+        grn_date: grn.grn_date || new Date().toISOString().split("T")[0],
+        po_id: grn.po_id || "",
+        date_of_receipt:
+          grn.date_of_receipt || new Date().toISOString().split("T")[0],
+        total_grn_qty: grn.total_grn_qty || 0,
+        invoice_file: null, // user can re-upload file
+        remark: grn.remark || "",
+        // items:
+        //   grn.items?.map((item) => ({
+        //     grn_item_id: item.id,
+        //     po_item_id: item.po_item_id,
+        //     item_name: item.item_name,
+        //     quantity: item.quantity,
+        //     uom: item.uom,
+        //     pending_qty: item.pending_qty,
+        //     grn_qty: item.grn_qty || 0,
+        //   })) || [],
+        items:
+          grn.items?.map((item) => ({
+            grn_item_id: item.id, // ✅ this is the key
+            po_item_id: item.po_item_id,
+            item_name: item.item_name,
+            quantity: item.quantity,
+            uom: item.uom,
+            pending_qty: item.pending_qty,
+            grn_qty: item.grn_qty || 0,
+          })) || [],
+      });
+      console.log("grn po_id", typeof grn.po_id);
     } else {
       toast.error("GRN data not found in the list");
     }

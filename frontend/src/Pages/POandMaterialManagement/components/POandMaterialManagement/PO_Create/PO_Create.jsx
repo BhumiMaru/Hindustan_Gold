@@ -805,9 +805,9 @@ export default function PO_Create() {
   //   payment_milestones: [],
   // });
 
-  const [charges, setCharges] = useState([{ name: "", amount: "" }]);
+  const [charges, setCharges] = useState([]);
   const [milestones, setMilestones] = useState([
-    { percentage: "", payment_number: "" },
+    // { percentage: "", payment_number: "" },
   ]);
   const [packingChargeChecked, setPackingChargeChecked] = useState(false);
   const [frightChargeChecked, setFrightChargeChecked] = useState(false);
@@ -938,59 +938,177 @@ export default function PO_Create() {
     });
   };
 
+  // const calculateGrandTotals = (items) => {
+  //   const itemTotals = calculateItemTotals(items);
+
+  //   // Item-wise totals
+  //   const subTotal = itemTotals?.reduce(
+  //     (sum, item) =>
+  //       sum +
+  //       (parseFloat(item?.base_amount) - parseFloat(item?.disc_number) || 0),
+  //     0
+  //   );
+  //   const totalDiscount = itemTotals?.reduce(
+  //     (sum, item) => sum + (parseFloat(item?.disc_number) || 0),
+  //     0
+  //   );
+  //   const totalGST = itemTotals?.reduce(
+  //     (sum, item) => sum + (parseFloat(item?.gst_amount) || 0),
+  //     0
+  //   );
+
+  //   const packingGST =
+  //     packingChargeChecked && formData?.packing_gst
+  //       ? (packingCharge * (parseFloat(formData?.packing_gst) || 0)) / 100
+  //       : 0;
+
+  //   // Include Packing and Freight GST in total GST value
+  //   if (packingChargeChecked && formData?.packing_gst) {
+  //     totalGST +=
+  //       (parseFloat(formData?.packing_charge) || 0) *
+  //       ((parseFloat(formData?.packing_gst) || 0) / 100);
+  //   }
+
+  //   if (frightChargeChecked && formData?.fright_gst) {
+  //     totalGST +=
+  //       (parseFloat(formData?.fright_charge) || 0) *
+  //       ((parseFloat(formData?.fright_gst) || 0) / 100);
+  //   }
+
+  //   // const packingGST =
+  //   //   packingChargeChecked && formData?.packing_gst
+  //   //     ? (packingCharge * (parseFloat(formData?.packing_gst) || 0)) / 100
+  //   //     : 0;
+
+  //   const freightCharge =
+  //     frightChargeChecked && formData?.fright_charge
+  //       ? parseFloat(formData?.fright_charge) || 0
+  //       : 0;
+  //   // const freightGST =
+  //   //   frightChargeChecked && formData?.fright_gst
+  //   //     ? (freightCharge * (parseFloat(formData?.fright_gst) || 0)) / 100
+  //   //     : 0;
+
+  //   // Additional charges
+  //   const additionalChargesTotal = charges?.reduce(
+  //     (sum, c) => sum + (parseFloat(c?.amount) || 0),
+  //     0
+  //   );
+
+  //   // Final
+  //   const finalTotal =
+  //     subTotal +
+  //     totalGST +
+  //     packingCharge +
+  //     // packingGST +
+  //     freightCharge +
+  //     // freightGST +
+  //     additionalChargesTotal;
+
+  //   return {
+  //     sub_total: subTotal?.toFixed(2),
+  //     total_discount: totalDiscount?.toFixed(2),
+  //     gst_value: totalGST?.toFixed(2),
+  //     final_total: finalTotal?.toFixed(2),
+  //   };
+  // };
+
   const calculateGrandTotals = (items) => {
     const itemTotals = calculateItemTotals(items);
 
-    // Item-wise totals
-    const subTotal = itemTotals?.reduce(
+    // ------------------------
+    // ITEM-WISE CALCULATIONS
+    // ------------------------
+    const subTotalItems = itemTotals?.reduce(
       (sum, item) =>
         sum +
         (parseFloat(item?.base_amount) - parseFloat(item?.disc_number) || 0),
       0
     );
+
     const totalDiscount = itemTotals?.reduce(
       (sum, item) => sum + (parseFloat(item?.disc_number) || 0),
       0
     );
-    const totalGST = itemTotals?.reduce(
+
+    // let totalGST = itemTotals?.reduce(
+    //   (sum, item) => sum + (parseFloat(item?.gst_amount) || 0),
+    //   0
+    // );
+
+    // // ------------------------
+    // // PACKING & FREIGHT CHARGES
+    // // ------------------------
+    // const packingCharge =
+    //   packingChargeChecked && formData?.packing_charge
+    //     ? parseFloat(formData?.packing_charge) || 0
+    //     : 0;
+
+    // const freightCharge =
+    //   frightChargeChecked && formData?.fright_charge
+    //     ? parseFloat(formData?.fright_charge) || 0
+    //     : 0;
+
+    // // Add Packing & Freight GST into total GST
+    // if (packingChargeChecked && formData?.packing_gst) {
+    //   totalGST +=
+    //     packingCharge * ((parseFloat(formData?.packing_gst) || 0) / 100);
+    // }
+
+    // if (frightChargeChecked && formData?.fright_gst) {
+    //   totalGST +=
+    //     freightCharge * ((parseFloat(formData?.fright_gst) || 0) / 100);
+    // }
+
+    // Calculate GST from items
+    let totalGST = itemTotals?.reduce(
       (sum, item) => sum + (parseFloat(item?.gst_amount) || 0),
       0
     );
 
-    // Packing/Freight charges
+    // ------------------------
+    // PACKING & FREIGHT CHARGES
+    // ------------------------
     const packingCharge =
       packingChargeChecked && formData?.packing_charge
-        ? parseFloat(formData?.packing_charge) || 0
-        : 0;
-    const packingGST =
-      packingChargeChecked && formData?.packing_gst
-        ? (packingCharge * (parseFloat(formData?.packing_gst) || 0)) / 100
+        ? parseFloat(formData.packing_charge) || 0
         : 0;
 
     const freightCharge =
       frightChargeChecked && formData?.fright_charge
-        ? parseFloat(formData?.fright_charge) || 0
-        : 0;
-    const freightGST =
-      frightChargeChecked && formData?.fright_gst
-        ? (freightCharge * (parseFloat(formData?.fright_gst) || 0)) / 100
+        ? parseFloat(formData.fright_charge) || 0
         : 0;
 
-    // Additional charges
+    // Include Packing GST
+    if (packingCharge > 0 && formData?.packing_gst) {
+      const packingGST =
+        packingCharge * (parseFloat(formData.packing_gst) / 100);
+      totalGST += packingGST;
+    }
+
+    // Include Freight GST
+    if (freightCharge > 0 && formData?.fright_gst) {
+      const freightGST =
+        freightCharge * (parseFloat(formData.fright_gst) / 100);
+      totalGST += freightGST;
+    }
+
+    console.log("Total GST including packing & freight:", totalGST);
+
+    // ------------------------
+    // ADDITIONAL CHARGES
+    // ------------------------
     const additionalChargesTotal = charges?.reduce(
       (sum, c) => sum + (parseFloat(c?.amount) || 0),
       0
     );
 
-    // Final
-    const finalTotal =
-      subTotal +
-      totalGST +
-      packingCharge +
-      packingGST +
-      freightCharge +
-      freightGST +
-      additionalChargesTotal;
+    // ------------------------
+    // FINAL TOTALS
+    // ------------------------
+    const subTotal = subTotalItems + packingCharge + freightCharge;
+
+    const finalTotal = subTotal + totalGST + additionalChargesTotal;
 
     return {
       sub_total: subTotal?.toFixed(2),
@@ -1234,7 +1352,7 @@ export default function PO_Create() {
                               )
                             }
                           >
-                            <option value="">Select</option>
+                            {/* <option value="">Select</option> */}
                             <option value="INR">INR(₹)</option>
                             <option value="USD">Dollar($)</option>
                           </select>

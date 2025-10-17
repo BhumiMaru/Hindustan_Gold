@@ -166,7 +166,7 @@ export const InvoiceProvider = ({ children }) => {
       }
 
       invoiceList(); // refresh list
-
+      // resetPaymentData();
       // Reset form
       setInvoiceData({
         grn_id: null,
@@ -310,6 +310,7 @@ export const InvoiceProvider = ({ children }) => {
       if (error.response && error.response.data) {
         toast.error(error.response.data.message);
       }
+      console.log("payment error", error);
     }
   };
 
