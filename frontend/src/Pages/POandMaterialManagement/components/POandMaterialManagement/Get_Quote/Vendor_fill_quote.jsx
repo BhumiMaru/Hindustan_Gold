@@ -101,18 +101,33 @@ export default function Vendor_fill_quote() {
   //   }
   // }, [quoteDataForEmail]);
 
+  // useEffect(() => {
+  //   if (quoteDataForEmail?.vendor_item?.length > 0) {
+  //     setItems(
+  //       quoteDataForEmail.vendor_item.map((item) => ({
+  //         id: Number(
+  //           item.pi_get_quote_vendor_item_id ||
+  //             item.id ||
+  //             item.pirequestitem_id ||
+  //             item.pirequestitem?.id
+  //         ),
+  //         rate: item.rate || "", // keep as string for input control
+  //       }))
+  //     );
+  //   }
+  // }, [quoteDataForEmail]);
+
   useEffect(() => {
-    if (quoteDataForEmail?.vendor_item?.length > 0) {
+    if (quoteDataForEmail?.vendor_item?.length > 0 && items.length === 0) {
       setItems(
         quoteDataForEmail.vendor_item.map((item) => ({
           id: Number(
             item.pi_get_quote_vendor_item_id ||
               item.id ||
               item.pirequestitem_id ||
-              item.pirequestitem?.id ||
-              0
+              item.pirequestitem?.id
           ),
-          rate: item.rate || "", // allow editing empty or zero rates
+          rate: item.rate || "", // keep as string for controlled input
         }))
       );
     }
@@ -131,6 +146,18 @@ export default function Vendor_fill_quote() {
   };
 
   // Handle rate input change
+  // const handleRateChange = (index, value) => {
+  //   console.log("index", index);
+  //   console.log("value", value);
+  //   const updatedItems = [...items];
+  //   console.log("updatedItems", updatedItems);
+  //   updatedItems[index] = {
+  //     ...updatedItems[index],
+  //     rate: value,
+  //   };
+  //   setItems(updatedItems);
+  // };
+
   const handleRateChange = (index, value) => {
     console.log("index", index);
     console.log("value", value);
@@ -138,7 +165,7 @@ export default function Vendor_fill_quote() {
     console.log("updatedItems", updatedItems);
     updatedItems[index] = {
       ...updatedItems[index],
-      rate: value,
+      rate: value, // store as string for controlled input
     };
     setItems(updatedItems);
   };
@@ -193,6 +220,8 @@ export default function Vendor_fill_quote() {
   //   }
   // };
 
+  console.log("Items:", items);
+
   // console.log("decryptEmailData", decryptEmailData);
 
   const handleSubmit = async () => {
@@ -209,7 +238,7 @@ export default function Vendor_fill_quote() {
         );
         formData.append(
           `pi_get_quote_vendor_item_ids[${index}][rate]`,
-          Number(item?.rate)
+          Number(item?.rate || 0)
         );
       });
 
@@ -385,6 +414,7 @@ export default function Vendor_fill_quote() {
                     className="form-control form-control-sm"
                     style={{ width: "100%", minWidth: 80 }}
                     // value={items[index]?.rate ?? ""}
+                    value={items[index]?.rate ?? ""}
                     onChange={(e) => handleRateChange(index, e.target.value)}
                     // disabled={
                     //   !(
