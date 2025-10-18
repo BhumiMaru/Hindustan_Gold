@@ -62,7 +62,7 @@ export default function ForgotPassword() {
                 <form
                   id="formAuthentication"
                   className="mb-6"
-                  action="auth-reset-password-basic.html"
+                  action="auth-reset-password-basic"
                   method="GET"
                 >
                   <div className="mb-6 form-control-validation">
@@ -79,7 +79,7 @@ export default function ForgotPassword() {
                     />
                   </div>
                   <a
-                    href="auth-reset-password-basic.html"
+                    href="auth-reset-password-basic"
                     className="btn btn-primary d-grid w-100"
                   >
                     Send Reset Link
@@ -87,7 +87,7 @@ export default function ForgotPassword() {
                 </form>
                 <div className="text-center">
                   <a
-                    href="login.html"
+                    href="login"
                     className="d-flex justify-content-center"
                   >
                     <i className="icon-base ti tabler-chevron-left scaleX-n1-rtl me-1_5" />

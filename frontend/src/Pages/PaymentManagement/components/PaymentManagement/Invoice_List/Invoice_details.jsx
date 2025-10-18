@@ -121,10 +121,7 @@ export default function Invoice_details() {
             <button
               type="button"
               className={`btn btn-success waves-effect waves-light btn-sm ${
-                invoiceDetail?.status === "Approve" ||
-                invoiceDetail?.status === "Reject"
-                  ? "d-none"
-                  : ""
+                invoiceDetail?.status === "Pending" ? "d-block" : "d-none"
               } ${
                 userPermission.some(
                   (prem) =>
@@ -148,10 +145,7 @@ export default function Invoice_details() {
             <button
               type="button"
               className={`btn btn-danger waves-effect waves-light btn-sm ${
-                invoiceDetail?.status === "Approve" ||
-                invoiceDetail?.status === "Reject"
-                  ? "d-none"
-                  : ""
+                invoiceDetail?.status === "Pending" ? "d-block" : "d-none"
               } ${
                 userPermission.some(
                   (prem) =>

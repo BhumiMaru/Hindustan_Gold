@@ -36,7 +36,7 @@ export default function Vendor_List_List() {
       {/* ------------------START VENDOR LIST----------------------- */}
       <div className="container-xxl flex-grow-1 container-p-y">
         {/* DataTable with Buttons */}
-        <div className="card">
+        <div className="card">  
           <div className="d-flex justify-content-between p-3">
             <div className="d-flex align-items-center ">
               {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}

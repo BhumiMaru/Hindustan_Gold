@@ -337,7 +337,9 @@ export default function AppRoutes() {
           element={
             <POProvider>
               <InvoiceProvider>
-                <PO_Details />
+                <GRNProvider>
+                  <PO_Details />
+                </GRNProvider>
               </InvoiceProvider>
             </POProvider>
           }

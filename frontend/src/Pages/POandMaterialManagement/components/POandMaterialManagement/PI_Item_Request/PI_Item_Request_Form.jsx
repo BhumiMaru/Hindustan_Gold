@@ -723,7 +723,7 @@
 //   );
 // }
 
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
@@ -760,6 +760,18 @@ export default function PI_Item_Request_Form() {
   //   }
   // }, [id]);
 
+  useEffect(() => {
+    if (type === "service") {
+      setItems((prevItems) =>
+        prevItems.map((item) => ({
+          ...item,
+          qty: 1, // Must be at least 1, not 0
+          purpose: "service",
+        }))
+      );
+    }
+  }, [type]);
+
   const handleAddItem = () => {
     setItems([
       ...items,
@@ -768,11 +780,11 @@ export default function PI_Item_Request_Form() {
         requestedItem: "",
         category: "",
         subcategory: "",
-        qty: "",
+        qty: type == "service" ? 1 : "",
         uom: "KG",
         serviceLocation: "",
         zone: "",
-        purpose: "",
+        purpose: type == "service" ? "service" : "",
         priority: "",
         requestDate: "",
         remarks: "",
@@ -878,7 +890,7 @@ export default function PI_Item_Request_Form() {
           Number(item.requestedItem) || 0
         );
         formData.append(`items[${index}][item_name]`, item.item_name || "");
-        formData.append(`items[${index}][qty]`, Number(item.qty) || 0);
+        formData.append(`items[${index}][qty]`, Number(item.qty) || 1);
         formData.append(`items[${index}][uom]`, item.uom || "KG");
         formData.append(`items[${index}][priority]`, item.priority || "");
         formData.append(`items[${index}][purpose]`, item.purpose || "");

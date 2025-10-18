@@ -45,6 +45,7 @@ export const GRNProvider = ({ children }) => {
     search,
     page = pagination.currentPage,
     perPage = pagination.perPage,
+    po_id,
   } = {}) => {
     try {
       const params = {
@@ -54,6 +55,7 @@ export const GRNProvider = ({ children }) => {
         vendor: vendorName !== "all" ? vendorName : undefined,
         start_date: dateRange.start || undefined,
         end_date: dateRange.end || undefined,
+        po_id,
         page,
         per_page: perPage,
       };
@@ -67,7 +69,7 @@ export const GRNProvider = ({ children }) => {
         total: res.data.total || 0,
       });
     } catch (error) {
-      toast.error("Error during Get GRN List");
+      // toast.error("Error during Get GRN List");
       console.error("Get GRN List error:", error);
     }
   };
@@ -202,15 +204,16 @@ export const GRNProvider = ({ children }) => {
   };
 
   //   Start Editing
+  // In your GRNContext, update the startEditing function:
   const startEditing = (id) => {
     setEditId(id);
 
     // Find GRN from existing grnList
     const grn = grnList.find((g) => g.id === id);
-    console.log("gg", grn);
+    console.log("Found GRN:", grn);
 
     if (grn) {
-      console.log("grn", grn);
+      console.log("GRN items:", grn.items);
       setGrnData({
         id: grn.id,
         grn_no: grn.grn_no || "",
@@ -223,47 +226,15 @@ export const GRNProvider = ({ children }) => {
         remark: grn.remark || "",
         items:
           grn.items?.map((item) => ({
-            grn_item_id: item.id,
+            grn_item_id: item.id, // ✅ This should be item.id (the actual GRN item ID)
             po_item_id: item.po_item_id,
-            item_name: item.item_name,
+            item_name: item.item_name || `Item ${item.item_id}`, // Fallback if item_name not available
             quantity: item.quantity,
             uom: item.uom,
             pending_qty: item.pending_qty,
             grn_qty: item.grn_qty || 0,
           })) || [],
       });
-      console.log("dd", {
-        id: grn.id,
-        grn_no: grn.grn_no || "",
-        grn_date: grn.grn_date || new Date().toISOString().split("T")[0],
-        po_id: grn.po_id || "",
-        date_of_receipt:
-          grn.date_of_receipt || new Date().toISOString().split("T")[0],
-        total_grn_qty: grn.total_grn_qty || 0,
-        invoice_file: null, // user can re-upload file
-        remark: grn.remark || "",
-        // items:
-        //   grn.items?.map((item) => ({
-        //     grn_item_id: item.id,
-        //     po_item_id: item.po_item_id,
-        //     item_name: item.item_name,
-        //     quantity: item.quantity,
-        //     uom: item.uom,
-        //     pending_qty: item.pending_qty,
-        //     grn_qty: item.grn_qty || 0,
-        //   })) || [],
-        items:
-          grn.items?.map((item) => ({
-            grn_item_id: item.id, // ✅ this is the key
-            po_item_id: item.po_item_id,
-            item_name: item.item_name,
-            quantity: item.quantity,
-            uom: item.uom,
-            pending_qty: item.pending_qty,
-            grn_qty: item.grn_qty || 0,
-          })) || [],
-      });
-      console.log("grn po_id", typeof grn.po_id);
     } else {
       toast.error("GRN data not found in the list");
     }

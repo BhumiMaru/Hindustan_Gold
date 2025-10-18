@@ -650,7 +650,10 @@ export const ItemRequestProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("fetchItemRequestById error", error);
-      toast.error("Failed to fetch item request");
+      // toast.error("Failed to fetch item request");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
       return false;
     }
   };
@@ -682,7 +685,10 @@ export const ItemRequestProvider = ({ children }) => {
       }
     } catch (error) {
       console.log("Edit Error:", error);
-      toast.error("Error updating item request");
+      // toast.error("Error updating item request");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -694,6 +700,9 @@ export const ItemRequestProvider = ({ children }) => {
       getItemRequestData();
     } catch (error) {
       console.log("delete Error", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -712,7 +721,10 @@ export const ItemRequestProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("approve Request error:", error);
-      toast.error("Failed to approve request");
+      // toast.error("Failed to approve request");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -726,7 +738,10 @@ export const ItemRequestProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("handOver Request error:", error);
-      toast.error("Failed to handover request");
+      // toast.error("Failed to handover request");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -743,7 +758,10 @@ export const ItemRequestProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Reject Request error:", error);
-      toast.error("Failed to reject request");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
+      // toast.error("Failed to reject request");
     }
   };
 
@@ -756,7 +774,10 @@ export const ItemRequestProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Service Received Request error:", error);
-      toast.error("Failed to Service Received");
+      // toast.error("Failed to Service Received");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 

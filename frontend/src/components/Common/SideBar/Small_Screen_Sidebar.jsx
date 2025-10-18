@@ -83,7 +83,7 @@ export default function Small_Screen_Sidebar({ onClose }) {
         }}
       >
         <div className="app-brand demo">
-          <a href="index.html" className="app-brand-link me-4">
+          <a href="index" className="app-brand-link me-4">
             <span className="app-brand-logo demo">
               <span className="text-primary">
                 {/*  <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">

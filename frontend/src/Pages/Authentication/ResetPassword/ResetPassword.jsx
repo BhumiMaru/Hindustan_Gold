@@ -58,7 +58,7 @@ export default function ResetPassword() {
                 </p>
                 <form
                   id="formAuthentication"
-                  action="login.html"
+                  action="login"
                   method="GET"
                   className="fv-plugins-bootstrap5 fv-plugins-framework"
                   noValidate="novalidate"
@@ -106,7 +106,7 @@ export default function ResetPassword() {
                   </button>
                   <div className="text-center">
                     <a
-                      href="auth-login-basic.html"
+                      href="auth-login-basic"
                       className="d-flex justify-content-center"
                     >
                       <i className="icon-base ti tabler-chevron-left scaleX-n1-rtl me-1_5" />

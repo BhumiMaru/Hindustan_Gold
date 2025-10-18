@@ -77,7 +77,7 @@ export const InvoiceProvider = ({ children }) => {
         status: status !== "all" ? status : undefined,
         search: search || undefined,
         type: selectedType !== "all" ? selectedType : undefined,
-        vendor_name: vendorName !== "all" ? vendorName : undefined,
+        vendor_id: vendorName !== "all" ? vendorName : undefined,
         start_date: startDate || dateRange.start || undefined,
         end_date: endDate || dateRange.end || undefined,
         page,

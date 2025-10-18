@@ -20,19 +20,19 @@ export default function UpdateGRN({ id }) {
   console.log("poDetails", poDetails);
   console.log("grnData", grnData);
 
-  // Initialize grnData.items when poDetails is available
+  // For new GRN, initialize from PO details
   useEffect(() => {
-    if (poDetails?.items) {
+    if (!editId && poDetails?.items) {
       const initialItems = poDetails.items.map((item, index) => {
-        console.log("item", item);
+        console.log("PO Item:", item);
         return {
-          grn_item_id: item.id,
+          grn_item_id: null, // ✅ null for new items (no existing GRN item ID)
           po_item_id: item.id,
           item_name: item?.pirequestitem?.item_name,
           quantity: item?.qty,
           uom: item.uom,
           pending_qty: item.pending_quantity || item.quantity,
-          grn_qty: grnData.items?.[index]?.grn_qty || 0, // Preserve existing grn_qty if any
+          grn_qty: 0, // Start with 0 for new GRN
         };
       });
 
@@ -42,7 +42,7 @@ export default function UpdateGRN({ id }) {
         items: initialItems,
       }));
     }
-  }, [poDetails]);
+  }, [poDetails, editId]); // Added editId to dependency
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -93,19 +93,17 @@ export default function UpdateGRN({ id }) {
       invoice_file: grnData.invoice_file,
       remark: grnData.remark,
       items: grnData.items?.map((item) => ({
-        grn_item_id: item.id,
+        grn_item_id: item.grn_item_id, // ✅ Use grn_item_id from the item object
         po_item_id: Number(item.po_item_id),
         grn_qty: Number(item.grn_qty || 0),
       })),
     };
 
     console.log("Sending GRN data:", grnPayload);
-    console.log("editId", typeof editId);
     console.log("GRN items being sent:", grnData.items);
 
     if (editId) {
       EditGRN({ id: editId, payload: grnPayload });
-      console.log("payload", grnPayload);
     } else {
       CreateGRN(grnPayload);
     }
@@ -167,12 +165,14 @@ export default function UpdateGRN({ id }) {
                   <p>{poDetails?.venderdetail?.address}</p>
                 </div>
               </div>
+
               <style
                 dangerouslySetInnerHTML={{
                   __html:
                     "\n                    .table2 thead tr th {\n                        padding-block: 0.5rem !important;\n                        padding-inline-end: 1rem;\n                    }\n\n                ",
                 }}
               />
+
               <table className="table table2 datatables-basic align-middle w-100">
                 <thead>
                   <tr className="bg-label-secondary">
@@ -205,22 +205,19 @@ export default function UpdateGRN({ id }) {
                           min="0"
                           max={item?.pending_qty}
                         />
+                        {/* Debug info - remove in production */}
+                        {process.env.NODE_ENV === "development" && (
+                          <small className="text-muted">
+                            GRN Item ID: {item.grn_item_id || "new"}
+                          </small>
+                        )}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+
               <div className="row">
-                {/* <div className="col-lg-4">
-                  <label className="form-label">GRN NO.</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="grn_no"
-                    value={grnData?.grn_no || ""}
-                    onChange={handleChange}
-                  />
-                </div> */}
                 <div className="col-lg-4">
                   <label className="form-label">PO ID</label>
                   <input
@@ -229,6 +226,7 @@ export default function UpdateGRN({ id }) {
                     name="po_id"
                     value={grnData.po_id}
                     onChange={handleChange}
+                    disabled={!!editId} // Disable when editing existing GRN
                   />
                 </div>
                 <div className="col-lg-4 d-none">
@@ -260,10 +258,8 @@ export default function UpdateGRN({ id }) {
                     className="form-control"
                     onChange={handleFileChange}
                   />
-                  {editId ? (
-                    <span>Invoice File : {grnData?.invoice_file}</span>
-                  ) : (
-                    ""
+                  {editId && grnData?.invoice_file && (
+                    <span>Current File: {grnData.invoice_file}</span>
                   )}
                 </div>
                 <div className="col-lg-12 mt-4">

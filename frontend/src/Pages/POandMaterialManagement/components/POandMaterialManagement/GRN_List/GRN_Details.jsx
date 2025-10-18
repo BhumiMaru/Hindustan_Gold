@@ -27,7 +27,7 @@ export default function GRN_Details() {
     setGRNWorkflowdetails,
     grnWorkflow,
   } = useGRN();
-  // console.log("grnDetails", grnDetails);
+  console.log("grnDetails", grnDetails);
 
   // useEffect(() => {
   //   GRNDetails(id);
@@ -85,7 +85,7 @@ export default function GRN_Details() {
                 {grnDetails.status}
               </span>
             </div>
-            <div className="ms-2">
+            {/* <div className="ms-2">
               <a
                 href="#"
                 type="button"
@@ -100,56 +100,65 @@ export default function GRN_Details() {
               >
                 <i className="icon-base ti tabler-restore text-primary  icon-20px" />
               </a>
-            </div>
+            </div> */}
           </div>
           <div className="d-flex align-content-center flex-wrap gap-4">
-            {userPermission.some(
-              (prem) => prem.type == "GRN" && prem.permission == "approve"
-            ) && (
-              <>
-                <button
-                  onClick={async () => {
-                    try {
-                      await GRNApprove({ grn_id: grnDetails.id });
-                      await GRNDetails(grnDetails.id);
-                    } catch (error) {
-                      console.error("Error approving GRN:", error);
-                    }
-                  }}
-                  className={`btn btn-success waves-effect waves-light btn-sm ${
-                    grnDetails.status === "Approve" ||
-                    grnDetails.status === "Reject"
-                      ? "d-none"
-                      : ""
-                  }`}
-                >
-                  Approve
-                </button>
-
-                <button
-                  // type="submit"
-                  className={`btn btn-danger waves-effect waves-light btn-sm ${
-                    grnDetails.status === "Approve" ||
-                    grnDetails.status === "Reject"
-                      ? "d-none"
-                      : ""
-                  }`}
-                  onClick={() => {
-                    setGrnId(id);
-                    handleOpen("viewRejectGRN");
-                  }}
-                >
-                  Reject
-                </button>
-              </>
+            {/* {console.log(
+              "grnDetails?.pi_request_person",
+              typeof grnDetails?.pi_request_person
             )}
+            {console.log("user.id", typeof user.id)} */}
+            {
+              // userPermission.some(
+              //   (prem) => prem.type == "GRN" && prem.permission == "approve"
+              // ) &&
+              grnDetails?.status == "Pending" &&
+                grnDetails?.pi_request_person == user.id && (
+                  <>
+                    <button
+                      onClick={async () => {
+                        try {
+                          await GRNApprove({ grn_id: grnDetails.id });
+                          await GRNDetails(grnDetails.id);
+                        } catch (error) {
+                          console.error("Error approving GRN:", error);
+                        }
+                      }}
+                      className={`btn btn-success waves-effect waves-light btn-sm ${
+                        grnDetails.status === "Approve" ||
+                        grnDetails.status === "Reject"
+                          ? "d-none"
+                          : ""
+                      }`}
+                    >
+                      Approve
+                    </button>
+
+                    <button
+                      // type="submit"
+                      className={`btn btn-danger waves-effect waves-light btn-sm ${
+                        grnDetails.status === "Approve" ||
+                        grnDetails.status === "Reject"
+                          ? "d-none"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        setGrnId(id);
+                        handleOpen("viewRejectGRN");
+                      }}
+                    >
+                      Reject
+                    </button>
+                  </>
+                )
+            }
 
             {/*  <div class="d-flex gap-4"><button class="btn btn-label-secondary waves-effect">Discard</button>*/}
 
             {(grnDetails.status === "Approve" ||
               grnDetails.status === "Reject") && (
               <a
-                href="po-create.html"
+                href="po-create"
                 className="btn btn-info waves-effect btn-sm"
                 data-bs-toggle="modal"
                 data-bs-target="#InvoiceModel"
@@ -256,7 +265,7 @@ export default function GRN_Details() {
                       <span className="h6 mb-0 text-info">invoices.pdf</span>
                     </div>
                     <a
-                      href="invoice-list.html"
+                      href="invoice-list"
                       className="badge bg-label-primary rounded p-1_5 mt-1"
                     >
                       <i className="icon-base ti tabler-eye icon-md" />

@@ -78,7 +78,7 @@ export default function Invoice_List_List() {
   ]);
 
   const handlePageChange = (page) => {
-    setPagination((prev) => ({ ...prev, currentPage: page }));  
+    setPagination((prev) => ({ ...prev, currentPage: page }));
   };
 
   const handleItemsPerPageChange = (size) => {
@@ -183,6 +183,7 @@ export default function Invoice_List_List() {
                   placeholder="Select Vendor"
                 />
               </div>
+              {console.log("vendorName", vendorName)}
             </div>
             <div className="col-lg-3">
               <div className="position-relative">
@@ -198,16 +199,20 @@ export default function Invoice_List_List() {
                       label: "Pending",
                     },
                     {
-                      value: "InProgress",
-                      label: "InProgress",
-                    },
-                    {
-                      value: "Completed",
-                      label: "Completed",
+                      value: "Approve",
+                      label: "Approve",
                     },
                     {
                       value: "Reject",
                       label: "Reject",
+                    },
+                    {
+                      value: "InProgress",
+                      label: "InProgress",
+                    },
+                    {
+                      value: "Paid",
+                      label: "Paid",
                     },
                   ]}
                   value={status}

@@ -154,7 +154,7 @@ export default function SideBar() {
         }}
       >
         <div className="app-brand demo">
-          <a href="index.html" className="app-brand-link me-4">
+          <a href="index" className="app-brand-link me-4">
             <span className="app-brand-logo demo">
               <span className="text-primary">
                 <img

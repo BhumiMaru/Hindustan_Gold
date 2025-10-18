@@ -7,7 +7,10 @@ import { Link, useParams } from "react-router-dom";
 import { useUIContext } from "../../../../../Context/UIContext";
 import PO_Reject_Modal from "./PO_Reject_Modal";
 import UpdateGRN from "../GRN_List/UpdateGRN";
-import { GRNProvider } from "../../../../../Context/PIAndPoManagement/GRN";
+import {
+  GRNProvider,
+  useGRN,
+} from "../../../../../Context/PIAndPoManagement/GRN";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { VendorProvider } from "../../../../../Context/PaymentManagement/Vendor";
@@ -36,6 +39,14 @@ export default function PO_Details() {
   const printRef = useRef();
   const { setType } = useInvoice();
   const { userPermission, fetchUserPermission } = useUserCreation();
+  const { GRNList, grnList } = useGRN();
+
+  useEffect(() => {
+    GRNList({
+      po_id: poDetails?.id,
+    });
+  }, [poDetails?.id]);
+  console.log("grnList", grnList);
 
   const getAuthData = sessionStorage.getItem("authData");
   const decryptAuthData = decryptData(getAuthData);
@@ -168,35 +179,36 @@ export default function PO_Details() {
               </button>
             )}
 
-            {poDetails.po_generat_status === 1 && (
-              <>
-                <button
-                  className={`btn btn-info waves-effect btn-sm ${
-                    poDetails.status === "Reject" ||
-                    poDetails.status === "Approve" ||
-                    (poDetails.status === "Pending" && "d-none")
-                  } ${poDetails?.status === "Complete" && "d-none"}`}
-                  onClick={() => {
-                    setPoId(poDetails?.id);
-                    handleOpen("editGRN");
-                  }}
-                >
-                  Generate GRN
-                </button>
-                <button
-                  type="submit"
-                  className={`btn btn-label-success waves-effect btn-sm ${
-                    poDetails.status === "Reject" ||
-                    poDetails.status === "Approve" ||
-                    (poDetails.status === "Pending" && "d-none")
-                  }`}
-                  onClick={handleDownloadPDF}
-                >
-                  <i className="icon-base ti tabler-download icon-md me-2" />
-                  Download PO
-                </button>
-              </>
-            )}
+            {poDetails.po_type === "material" &&
+              poDetails.po_generat_status === 1 && (
+                <>
+                  <button
+                    className={`btn btn-info waves-effect btn-sm ${
+                      poDetails.status === "Reject" ||
+                      poDetails.status === "Approve" ||
+                      (poDetails.status === "Pending" && "d-none")
+                    } ${poDetails?.status === "Complete" && "d-none"}`}
+                    onClick={() => {
+                      setPoId(poDetails?.id);
+                      handleOpen("editGRN");
+                    }}
+                  >
+                    Generate GRN
+                  </button>
+                  <button
+                    type="submit"
+                    className={`btn btn-label-success waves-effect btn-sm ${
+                      poDetails.status === "Reject" ||
+                      poDetails.status === "Approve" ||
+                      (poDetails.status === "Pending" && "d-none")
+                    }`}
+                    onClick={handleDownloadPDF}
+                  >
+                    <i className="icon-base ti tabler-download icon-md me-2" />
+                    Download PO
+                  </button>
+                </>
+              )}
             {/* {poDetails.status === "Approve" && (
               <>
                 <Link
@@ -440,47 +452,55 @@ export default function PO_Details() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>
-                        <div className="ms-4">1</div>
-                      </td>
-                      <td>GR_00001</td>
-                      <td>03-08-2025</td>
-                      <td>
-                        <div className="d-flex justify-content-start align-items-center user-name">
-                          <div className="avatar-wrapper">
-                            <div className="avatar me-2">
-                              <img
-                                src="assets/img/avatars/10.png"
-                                alt="Avatar"
-                                className="rounded-circle"
-                              />
+                    {grnList?.map((grn, index) => {
+                      return (
+                        <tr>
+                          <td>
+                            <div className="ms-4">{index + 1}</div>
+                          </td>
+                          <td>{grn?.grn_no}</td>
+                          <td>{grn?.grn_date}</td>
+                          <td>
+                            <div className="d-flex justify-content-start align-items-center user-name">
+                              <div className="avatar-wrapper">
+                                {/* <div className="avatar me-2">
+                                  <img
+                                    src="assets/img/avatars/10.png"
+                                    alt="Avatar"
+                                    className="rounded-circle"
+                                  />
+                                </div> */}
+                              </div>
+                              <div className="d-flex flex-column">
+                                <span className="emp_name text-truncate text-heading fw-medium">
+                                  {grn?.pirequestperson?.name}
+                                </span>
+                                {/* <small className="emp_post text-truncate">
+                                  {grnList?.pirequestperson?.department}
+                                </small> */}
+                              </div>
                             </div>
-                          </div>
-                          <div className="d-flex flex-column">
-                            <span className="emp_name text-truncate text-heading fw-medium">
-                              Evangelina Carnock
+                          </td>
+                          <td>{grn.items?.length}</td>
+
+                          <td>
+                            <span className="badge bg-label-warning">
+                              {grn?.status}
                             </span>
-                            <small className="emp_post text-truncate">
-                              Department Head
-                            </small>
-                          </div>
-                        </div>
-                      </td>
-                      <td>10</td>
-                      <td>
-                        <span className="badge bg-label-warning">Pending</span>
-                      </td>
-                      <td>
-                        <Link
-                          to="/payment-management/invoice-list"
-                          className="btn btn-dark btn-sm waves-effect waves-light"
-                        >
-                          Create Invoice
-                        </Link>
-                      </td>
-                    </tr>
-                    <tr>
+                          </td>
+                          <td>
+                            <Link
+                              to="/payment-management/invoice-list"
+                              className="btn btn-dark btn-sm waves-effect waves-light"
+                            >
+                              Create Invoice
+                            </Link>
+                          </td>
+                        </tr>
+                      );
+                    })}
+
+                    {/* <tr>
                       <td>
                         <div className="ms-4">2</div>
                       </td>
@@ -513,14 +533,14 @@ export default function PO_Details() {
                       </td>
                       <td>
                         <a
-                          href="invoice-list.html"
+                          href="invoice-list"
                           className="btn btn-dark btn-sm waves-effect waves-light"
                         >
                           Create Invoice
                         </a>
                       </td>
-                    </tr>
-                    <tr>
+                    </tr> */}
+                    {/* <tr>
                       <td>
                         <div className="ms-4">3</div>
                       </td>
@@ -564,7 +584,7 @@ export default function PO_Details() {
                           <i className="icon-base ti tabler-file-invoice text-success  icon-20px" />
                         </Link>
                       </td>
-                    </tr>
+                    </tr> */}
                   </tbody>
                 </table>
               </div>
