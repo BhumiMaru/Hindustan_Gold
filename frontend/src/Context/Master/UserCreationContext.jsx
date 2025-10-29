@@ -207,7 +207,7 @@ export const UserCreationProvider = ({ children }) => {
   const fetchUserById = async (id) => {
     try {
       const res = await postData(ENDPOINTS.USER_CREATION.DETAILS, { id });
-      console.log("res", res.data);
+      // console.log("res", res.data);
       const user = res.data;
       setUserCreationData({
         name: user?.name || "",
@@ -381,8 +381,8 @@ export const UserCreationProvider = ({ children }) => {
         payload
       );
 
-      console.log("payload", payload);
-      console.log("res", res);
+      // console.log("payload", payload);
+      // console.log("res", res);
 
       // Handle "User permission already exists" message
       if (res.message === "User permission already exists.") {

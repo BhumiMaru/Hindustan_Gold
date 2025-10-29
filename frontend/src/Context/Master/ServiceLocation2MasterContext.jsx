@@ -38,7 +38,7 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
       //   params.service_location_1_id = serviceLocation1Id;
       // }
       if (serviceLocation1Id) params.service_location_1_id = serviceLocation1Id;
-      console.log("serviceLocation1Id", serviceLocation1Id);
+      // console.log("serviceLocation1Id", serviceLocation1Id);
 
       const res = await getData(
         ENDPOINTS.SERVICES_LOCATION_2_MASTER.LIST,

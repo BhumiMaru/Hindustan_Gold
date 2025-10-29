@@ -590,7 +590,7 @@ export const ItemRequestProvider = ({ children }) => {
         workflowId: itemRequestId,
       });
 
-      console.log("API Response:", res);
+      // console.log("API Response:", res);
       setWholeItemRequestData(res.data);
 
       if (res.status && res.data) {
@@ -709,14 +709,14 @@ export const ItemRequestProvider = ({ children }) => {
   // Approve request
   const approveRequest = async (workflow_id) => {
     try {
-      console.log("workflow_id", workflow_id);
+      // console.log("workflow_id", workflow_id);
       const res = await postData(ENDPOINTS.ITEM_REQUEST.APPROVE, {
         workflow_id: workflow_id,
       });
 
       if (res.status) {
         toast.success(res.message);
-        console.log("res".res);
+        // console.log("res".res);
         getItemRequestData();
       }
     } catch (error) {

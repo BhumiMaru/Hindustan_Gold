@@ -140,7 +140,7 @@ export const RoleMasterProvider = ({ children }) => {
 
   const fetchRolePermission = async (role_id) => {
     try {
-      console.log("role_id", role_id);
+      // console.log("role_id", role_id);
       const res = await getData(
         `${ENDPOINTS.ROLE_MASTER.PERMISSION_LIST}?role_id=${role_id}`
       );

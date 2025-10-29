@@ -91,7 +91,7 @@ export const GRNProvider = ({ children }) => {
         }
       });
 
-      console.log("payload", payload);
+      // console.log("payload", payload);
 
       // Append items array properly
       // payload.items?.forEach((item, index) => {
@@ -190,7 +190,7 @@ export const GRNProvider = ({ children }) => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      console.log("res", res);
+      // console.log("res", res);
 
       if (res.status) {
         toast.success(res.message);
@@ -210,10 +210,10 @@ export const GRNProvider = ({ children }) => {
 
     // Find GRN from existing grnList
     const grn = grnList.find((g) => g.id === id);
-    console.log("Found GRN:", grn);
+    // console.log("Found GRN:", grn);
 
     if (grn) {
-      console.log("GRN items:", grn.items);
+      // console.log("GRN items:", grn.items);
       setGrnData({
         id: grn.id,
         grn_no: grn.grn_no || "",

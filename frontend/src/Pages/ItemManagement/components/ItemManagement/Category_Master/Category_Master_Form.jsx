@@ -33,7 +33,7 @@ export default function Category_Master_Form() {
         toast.error(error);
         return;
       }
-      console.log("category Data", categoryData);
+      // console.log("category Data", categoryData);
 
       if (categoryEditId) {
         // Update

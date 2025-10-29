@@ -136,7 +136,7 @@ export default function Item_Create_Material_Form() {
       if (id) {
         // 🔹 Update Item
         res = await EditItemMaster(id, payload);
-        console.log("res", res);
+        // console.log("res", res);
         // if (res?.status === true) {
         //   toast.success(res?.message || "Item Updated Successfully!");
         //   fetchItemMaster();
@@ -148,7 +148,7 @@ export default function Item_Create_Material_Form() {
       } else {
         // 🔹 Create Item
         res = await createItemMaster(payload);
-        console.log("res creaye", res);
+        // console.log("res creaye", res);
         // if (res?.status === true) {
         //   toast.success(res?.message || "Item Created Successfully!");
         //   fetchItemMaster();
@@ -166,7 +166,7 @@ export default function Item_Create_Material_Form() {
       } else {
         toast.error(res?.message || "Failed to update item");
       }
-      console.log("paylod", payload);
+      // console.log("paylod", payload);
     } catch (error) {
       console.error("item save error", error);
       toast.error("Failed to save item");

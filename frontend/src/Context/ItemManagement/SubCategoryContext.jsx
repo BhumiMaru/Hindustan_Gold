@@ -50,7 +50,7 @@ export const SubCategoryProvider = ({ children }) => {
         category_id,
         user_id,
       };
-      console.log("params", params);
+      // console.log("params", params);
       const res = await getData(ENDPOINTS.SUBCATEGORY_MASTER.LIST, params);
       const apiData = res.data;
       setSubCategory(apiData.data);
@@ -86,7 +86,7 @@ export const SubCategoryProvider = ({ children }) => {
         ENDPOINTS.SUBCATEGORY_MASTER.ADD_UPDATE,
         payload
       );
-      console.log("payload", payload);
+      // console.log("payload", payload);
       setSubCategoryData(res.data.data);
       toast.success("SubCategory Add Successfully!");
       fetchSubCategoryData();

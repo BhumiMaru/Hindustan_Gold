@@ -31,7 +31,7 @@ export default function SubCategory_Master_Form() {
       } else {
         createSubCategory(payload);
       }
-      console.log("payload", payload);
+      // console.log("payload", payload);
       handleClose("addNewSubCategory");
     } catch (error) {
       console.log("Sub Category Error", error);

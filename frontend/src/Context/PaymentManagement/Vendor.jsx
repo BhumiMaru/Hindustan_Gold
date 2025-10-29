@@ -129,10 +129,10 @@ export const VendorProvider = ({ children }) => {
       });
 
       if (res.success && res.data) {
-        console.log("res ", res.data);
+        // console.log("res ", res.data);
         const vendor = res.data; // ✅ Correct level
         setVendorDetail(vendor);
-        console.log("vendorr", vendor);
+        // console.log("vendorr", vendor);
         setVendorName(vendor?.vendor_name);
 
         // ✅ Prefill form fields
@@ -162,7 +162,7 @@ export const VendorProvider = ({ children }) => {
     }
   };
 
-  console.log("vvv", vendorData);
+  // console.log("vvv", vendorData);
 
   // Vendor Delete
   const vendorDelete = async (id) => {
@@ -190,7 +190,7 @@ export const VendorProvider = ({ children }) => {
   // Enhanced startEditing function
   const startEditing = async (vendorId) => {
     try {
-      console.log("Starting edit for vendor ID:", vendorId);
+      // console.log("Starting edit for vendor ID:", vendorId);
 
       // Fetch vendor details first
       await vendorDetails(vendorId);
@@ -247,7 +247,7 @@ export const VendorProvider = ({ children }) => {
       console.error("Vendor Approve error:", error);
     }
   };
-  console.log("vendorEditId vendorEditId", vendorEditId);
+  // console.log("vendorEditId vendorEditId", vendorEditId);
 
   return (
     <VendorContext.Provider

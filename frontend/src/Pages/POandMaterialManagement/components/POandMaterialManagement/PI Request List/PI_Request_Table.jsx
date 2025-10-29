@@ -779,7 +779,7 @@ export default function PI_Request_Table({ userPermission }) {
                       <tbody>
                         {pi?.piitems?.map((piItem) => (
                           <tr key={`piItem-${pi.id}-${piItem.id}`}>
-                            {console.log("piitem", piItem)}
+                            {/* {console.log("piitem", piItem)} */}
                             {/* {activeTab === "approval_request" ||
                               (activeTab === "all_request" && ( */}
                             {/* <td className="dt-select">
@@ -1028,7 +1028,7 @@ export default function PI_Request_Table({ userPermission }) {
                             {/* <td>
                               <span>{piItem?.status}</span>
                             </td> */}
-                            {console.log("Pi item", piItem)}
+                            {/* {console.log("Pi item", piItem)} */}
                             {/* ))} */}
 
                             <td>{piItem.item_name}</td>
@@ -1116,7 +1116,7 @@ export default function PI_Request_Table({ userPermission }) {
                                   : piItem.status}
                               </span>
 
-                              {console.log("pi", pi)}
+                              {/* {console.log("pi", pi)} */}
                             </td>
                             {/* <td>
                               <div
@@ -1189,7 +1189,7 @@ export default function PI_Request_Table({ userPermission }) {
                         ))}
                       </tbody>
                     </table>
-                    {console.log("pi", pi)}
+                    {/* {console.log("pi", pi)} */}
 
                     {selectedItemsMap[index]?.length > 0 && (
                       <div className="text-center w-100">
@@ -1208,10 +1208,10 @@ export default function PI_Request_Table({ userPermission }) {
                                     pi_request_id: pi.id,
                                     pi_request_item_id: selectedItemsMap[index],
                                   });
-                                  console.log("get quotation btn", {
-                                    pi_request_id: pi.id,
-                                    pi_request_item_id: selectedItemsMap[index],
-                                  });
+                                  // console.log("get quotation btn", {
+                                  //   pi_request_id: pi.id,
+                                  //   pi_request_item_id: selectedItemsMap[index],
+                                  // });
                                   if (res?.data?.id) {
                                     navigate(
                                       `/po-material/pi-request-get-quote/${res.data.id}`

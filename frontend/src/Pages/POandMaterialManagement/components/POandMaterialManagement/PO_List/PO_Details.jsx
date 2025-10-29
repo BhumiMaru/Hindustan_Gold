@@ -453,6 +453,7 @@ export default function PO_Details() {
                   </thead>
                   <tbody>
                     {grnList?.map((grn, index) => {
+                      // console.log("grnn", grn);
                       return (
                         <tr>
                           <td>
@@ -484,13 +485,45 @@ export default function PO_Details() {
                           <td>{grn.items?.length}</td>
 
                           <td>
-                            <span className="badge bg-label-warning">
+                            <span
+                              className={`badge ${
+                                grn?.status === "Complete"
+                                  ? "bg-label-success"
+                                  : grn?.status === "Pending"
+                                  ? "bg-label-warning"
+                                  : "bg-label-danger"
+                              }`}
+                            >
                               {grn?.status}
                             </span>
                           </td>
-                          <td>
+                          <td
+                            className={`${
+                              grn?.status === "Complete" ? "d-block" : "d-none"
+                            }`}
+                          >
                             <Link
                               to="/payment-management/invoice-list"
+                              type="button"
+                              className=""
+                              data-bs-toggle="tooltip"
+                              data-bs-placement="top"
+                              aria-label="View Invoice"
+                              data-bs-original-title="View Invoice"
+                            >
+                              <i className="icon-base ti tabler-file-invoice text-success  icon-20px" />
+                            </Link>
+                          </td>
+                          <td
+                            className={`${
+                              grn?.status === "Pending" ? "d-block" : "d-none"
+                            }`}
+                          >
+                            <Link
+                              // to="/payment-management/invoice-list"
+                              onClick={() => {
+                                handleOpen("addInvoice");
+                              }}
                               className="btn btn-dark btn-sm waves-effect waves-light"
                             >
                               Create Invoice

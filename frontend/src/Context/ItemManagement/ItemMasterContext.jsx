@@ -68,7 +68,7 @@ export const ItemMasterProvider = ({ children }) => {
         per_page: perPage,
       };
       const res = await getData(ENDPOINTS.ITEM_MASTER.LIST, params);
-      console.log("params", params);
+      // console.log("params", params);
 
       if (res.data && res.data.status === false) {
         toast.error(res.data.message);
@@ -115,7 +115,7 @@ export const ItemMasterProvider = ({ children }) => {
         ENDPOINTS.ITEM_MASTER.ADD_UPDATE,
         sanitizedPayload
       );
-      console.log("res", res);
+      // console.log("res", res);
       if (res?.status === true) {
         setItemMasterData(res.data.data);
         ResetItemMaster(null);

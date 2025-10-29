@@ -113,7 +113,7 @@ export const InvoiceProvider = ({ children }) => {
         },
       });
 
-      console.log("res.data", res);
+      // console.log("res.data", res);
       setInvoiceData(res);
       if (res?.status === true) {
         toast.success(res.message || "Invoice created successfully");
@@ -191,7 +191,7 @@ export const InvoiceProvider = ({ children }) => {
 
   // Start Editing
   const startEditing = ({ id, payload }) => {
-    console.log("id , payload", id, payload);
+    // console.log("id , payload", id, payload);
     setInvoiceId(id);
 
     // Prefill fields
@@ -302,7 +302,7 @@ export const InvoiceProvider = ({ children }) => {
       const res = await postData(ENDPOINTS.INVOICE.PAYMENT, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log("res", res);
+      // console.log("res", res);
 
       toast.success("Partial payment added successfully!");
       setPaymentData(res.data);

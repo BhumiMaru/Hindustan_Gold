@@ -52,7 +52,7 @@ export default function Role_Permission() {
   //   }
   // }, [permission]);
 
-  console.log("Permission", permission);
+  // console.log("Permission", permission);
 
   useEffect(() => {
     if (permission && permission.length > 0) {
@@ -608,7 +608,7 @@ export default function Role_Permission() {
       permission,
       status: isChecked ? 1 : 0,
     };
-    console.log("payload", payload);
+    // console.log("payload", payload);
 
     try {
       // 1️⃣ Update current permission

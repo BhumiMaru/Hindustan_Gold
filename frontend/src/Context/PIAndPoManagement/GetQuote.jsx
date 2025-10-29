@@ -107,7 +107,7 @@ export const GetQuoteProvider = ({ children }) => {
   const getQuoteCreate = async (payload) => {
     try {
       const res = await postData(ENDPOINTS.GETQUOTE.CREATE, payload);
-      console.log("payload", payload);
+      // console.log("payload", payload);
       if (res?.status) {
         const newId = res.data.id;
         // toast.success(res.message || "Get Quote Create successful!");
@@ -290,8 +290,8 @@ export const GetQuoteProvider = ({ children }) => {
     pi_get_quote_vendor_ids,
     // vendor_type, // Make vendor_type dynamic with default value
   }) => {
-    console.log("pi_get_quote_id", pi_get_quote_id);
-    console.log("pi_get_quote_vendor_ids", pi_get_quote_vendor_ids);
+    // console.log("pi_get_quote_id", pi_get_quote_id);
+    // console.log("pi_get_quote_vendor_ids", pi_get_quote_vendor_ids);
     try {
       // Ensure pi_get_quote_vendor_ids is always an array
       const vendorIds = Array.isArray(pi_get_quote_vendor_ids)

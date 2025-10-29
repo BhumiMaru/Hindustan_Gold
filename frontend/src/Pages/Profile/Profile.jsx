@@ -5,7 +5,7 @@ export default function Profile() {
   const getAuthData = sessionStorage.getItem("authData");
   const decryptAuthData = decryptData(getAuthData);
   const userData = decryptAuthData?.user;
-  console.log("userData", userData);
+  // console.log("userData", userData);
   return (
     <>
       {/* --------------------START PROFILE PAGE--------------------- */}
