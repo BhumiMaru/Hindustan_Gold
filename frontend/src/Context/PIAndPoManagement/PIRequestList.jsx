@@ -10,7 +10,7 @@ export const usePIRequest = () => useContext(PIRequestContext);
 export const PIRequestProvider = ({ children }) => {
   const itemMasterContext = useItemMaster();
   const itemMaster = itemMasterContext?.itemMaster || [];
-
+  const [loading, setLoading] = useState(false);
   // const [activeTab, setActiveTab] = useState("my_request");
   const [activeTab, setActiveTab] = useState(() => {
     // ✅ Initialize from sessionStorage if exists
@@ -235,6 +235,7 @@ export const PIRequestProvider = ({ children }) => {
       //   page,
       //   per_page: perPage,
       // };
+      setLoading(true);
       const payload = {
         type,
         pi_type: pi_type !== "all" ? pi_type : undefined,
@@ -259,6 +260,8 @@ export const PIRequestProvider = ({ children }) => {
       });
     } catch (error) {
       console.log("pi request error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -606,6 +609,8 @@ export const PIRequestProvider = ({ children }) => {
         setSelectedItemsMap,
         items,
         setItems,
+        loading,
+        setLoading,
       }}
     >
       {children}

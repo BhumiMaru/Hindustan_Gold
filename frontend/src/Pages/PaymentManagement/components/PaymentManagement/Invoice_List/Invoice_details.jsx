@@ -24,7 +24,8 @@ export default function Invoice_details() {
     InvoiceWorkflow,
     revertStatus,
   } = useInvoice();
-  console.log("userPermission", userPermission);
+  // console.log("userPermission", userPermission);
+  console.log("invoiceDetail", invoiceDetail);
 
   const getAuthData = sessionStorage.getItem("authData");
   const decryptAuthData = decryptData(getAuthData);
@@ -59,28 +60,32 @@ export default function Invoice_details() {
                       ? "bg-label-warning"
                       : invoiceDetail?.status === "Approve"
                       ? "bg-label-success"
+                      : invoiceDetail?.status === "Paid"
+                      ? "bg-label-info"
                       : "bg-label-danger"
                   }`}
                 >
                   {invoiceDetail?.status}
                 </span>
               </div>
-              <div className="ms-2">
-                <a
-                  href="#"
-                  type="button"
-                  className="btn btn-text-primary rounded-pill btn-icon waves-effect"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  aria-label="Revert to Unpaid"
-                  data-bs-original-title="Revert to Unpaid"
-                  onClick={() => {
-                    revertStatus(invoiceDetail?.id);
-                  }}
-                >
-                  <i className="icon-base ti tabler-restore text-primary  icon-20px" />
-                </a>
-              </div>
+              {invoiceDetail?.status === "Paid" && (
+                <div className="ms-2">
+                  <a
+                    href="#"
+                    type="button"
+                    className="btn btn-text-primary rounded-pill btn-icon waves-effect"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    aria-label="Revert to Unpaid"
+                    data-bs-original-title="Revert to Unpaid"
+                    onClick={() => {
+                      revertStatus(invoiceDetail?.id);
+                    }}
+                  >
+                    <i className="icon-base ti tabler-restore text-primary icon-20px" />
+                  </a>
+                </div>
+              )}
             </div>
           </div>
           <div className="d-flex align-content-center flex-wrap gap-4">
@@ -192,6 +197,7 @@ export default function Invoice_details() {
                     <Link
                       to="/payment-management/invoice-list"
                       className="badge bg-label-primary rounded p-1_5 mt-1"
+                      target="_blank"
                     >
                       <i className="icon-base ti tabler-eye icon-md" />
                     </Link>

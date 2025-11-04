@@ -1,6 +1,7 @@
 import React from "react";
 import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
 import { Link, useNavigate } from "react-router-dom";
+import Loader from "../../../../../components/Common/Loader/Loader";
 
 export default function Item_Master_Table({ search }) {
   const {
@@ -11,6 +12,7 @@ export default function Item_Master_Table({ search }) {
     setItemMasterData,
     fetchItemSubCategoryById,
     getCategoryGroupAndItemCodeBySubCategoryId,
+    loading,
   } = useItemMaster();
   const navigate = useNavigate();
 
@@ -69,32 +71,41 @@ export default function Item_Master_Table({ search }) {
           </tr>
         </thead>
         <tbody>
-          {filteredData.map((item, index) => {
-            // console.log("item", item);
-            return (
-              <tr key={item?.id}>
-                <td>
-                  <div className="ms-4">
-                    {(pagination?.currentPage - 1) * pagination?.perPage +
-                      (index + 1)}
-                  </div>
-                </td>
-                <td>{item?.type}</td>
-                <td>{item?.item_code}</td>
-                <td>{item?.item_name}</td>
-                <td>{item?.category?.category_name}</td>
-                <td>{item?.subcategory?.sub_category_name}</td>
-                <td>{item?.stock}</td>
-                <td>
-                  <span
-                    className={`badge ${
-                      item.status === 1 ? "bg-label-success" : "bg-label-danger"
-                    }`}
-                  >
-                    {item?.status === 1 ? "Active" : "Deactive"}
-                  </span>
-                </td>
-                {/* <td>
+          {loading ? (
+            <tr>
+              <td colSpan="11">
+                <Loader />
+              </td>
+            </tr>
+          ) : (
+            filteredData.map((item, index) => {
+              // console.log("item", item);
+              return (
+                <tr key={item?.id}>
+                  <td>
+                    <div className="ms-4">
+                      {(pagination?.currentPage - 1) * pagination?.perPage +
+                        (index + 1)}
+                    </div>
+                  </td>
+                  <td>{item?.type}</td>
+                  <td>{item?.item_code}</td>
+                  <td>{item?.item_name}</td>
+                  <td>{item?.category?.category_name}</td>
+                  <td>{item?.subcategory?.sub_category_name}</td>
+                  <td>{item?.stock}</td>
+                  <td>
+                    <span
+                      className={`badge ${
+                        item.status === 1
+                          ? "bg-label-success"
+                          : "bg-label-danger"
+                      }`}
+                    >
+                      {item?.status === 1 ? "Active" : "Deactive"}
+                    </span>
+                  </td>
+                  {/* <td>
                   <div className="d-inline-flex gap-2">
                     <Link
                       to={`/item/item-create/${item.type}/${item.id}`}
@@ -116,24 +127,24 @@ export default function Item_Master_Table({ search }) {
                     </a>
                   </div>
                 </td> */}
-                <td>
-                  <div className="d-inline-flex gap-2">
-                    <a
-                      className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
-                    </a>
-                    <div className="d-inline-block">
-                      <div className="dropdown-menu dropdown-menu-end m-0">
-                        <button
-                          className="dropdown-item waves-effect"
-                          onClick={() => handleEditClick(item)}
-                        >
-                          Edit
-                        </button>
-                        {/* <a
+                  <td>
+                    <div className="d-inline-flex gap-2">
+                      <a
+                        className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
+                      </a>
+                      <div className="d-inline-block">
+                        <div className="dropdown-menu dropdown-menu-end m-0">
+                          <button
+                            className="dropdown-item waves-effect"
+                            onClick={() => handleEditClick(item)}
+                          >
+                            Edit
+                          </button>
+                          {/* <a
                           href="#"
                           className="dropdown-item waves-effect"
                           data-bs-toggle="modal"
@@ -145,20 +156,21 @@ export default function Item_Master_Table({ search }) {
                         >
                           View
                         </a> */}
-                        {/* <div className="dropdown-divider"></div> */}
-                        <a
-                          className="dropdown-item text-danger delete-record waves-effect"
-                          onClick={() => deleteItemMaster(item.id)}
-                        >
-                          Delete
-                        </a>
+                          {/* <div className="dropdown-divider"></div> */}
+                          <a
+                            className="dropdown-item text-danger delete-record waves-effect"
+                            onClick={() => deleteItemMaster(item.id)}
+                          >
+                            Delete
+                          </a>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
+                  </td>
+                </tr>
+              );
+            })
+          )}
         </tbody>
       </table>
       {/* -----------------END ITEM MASTER TABLE----------------- */}

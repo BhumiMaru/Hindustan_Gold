@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useUIContext } from "../../../../../Context/UIContext";
 import { useGRN } from "../../../../../Context/PIAndPoManagement/GRN";
 import RejectGRN from "./RejectGRN";
@@ -28,6 +28,7 @@ export default function GRN_Details() {
     grnWorkflow,
   } = useGRN();
   console.log("grnDetails", grnDetails);
+  const [grnIdInvoice, setGrnIdInvoice] = useState(null);
 
   // useEffect(() => {
   //   GRNDetails(id);
@@ -77,7 +78,8 @@ export default function GRN_Details() {
                 className={`badge ${
                   grnDetails.status === "Pending"
                     ? "bg-label-warning"
-                    : grnDetails.status === "Approve"
+                    : grnDetails.status === "Approve" ||
+                      grnDetails.status === "Complete"
                     ? "bg-label-success"
                     : "bg-label-danger"
                 } `}
@@ -164,6 +166,7 @@ export default function GRN_Details() {
                 data-bs-target="#InvoiceModel"
                 onClick={() => {
                   handleOpen("addInvoice");
+                  setGrnIdInvoice(grnDetails?.po_id);
                 }}
               >
                 Add Invoice
@@ -577,7 +580,11 @@ export default function GRN_Details() {
           <VendorProvider>
             <SubCategoryProvider>
               <ItemRequestProvider>
-                <Invoice_List_Form id={id} type={1} />
+                <Invoice_List_Form
+                  id={id}
+                  type={1}
+                  grnIdInvoice={grnIdInvoice}
+                />
               </ItemRequestProvider>
             </SubCategoryProvider>
           </VendorProvider>

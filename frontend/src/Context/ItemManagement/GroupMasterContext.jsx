@@ -16,6 +16,7 @@ export const GroupMasterProvider = ({ children }) => {
   const [groupName, setGroupName] = useState("");
   const [groupEditId, setgroupEditId] = useState(null);
   const [filterGroup, setFilterGroup] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     perPage: 10,
@@ -25,6 +26,7 @@ export const GroupMasterProvider = ({ children }) => {
   //   Fetch Company
   const fetchGroupData = async (search = "", page = 1, perPage = 10) => {
     try {
+      setLoading(true);
       const res = await getData(ENDPOINTS.GROUP_MASTER.LIST, {
         search,
         page,
@@ -40,6 +42,8 @@ export const GroupMasterProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
       // toast.error("Failed to fetch Group");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -113,6 +117,8 @@ export const GroupMasterProvider = ({ children }) => {
         setgroupEditId,
         filterGroup,
         pagination,
+        loading,
+        setLoading,
       }}
     >
       {children}

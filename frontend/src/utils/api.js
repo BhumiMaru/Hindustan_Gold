@@ -75,6 +75,8 @@ const api = axios.create({
     "Content-Type": "application/json",
     Accept: "application/json",
     "Access-Control-Allow-Origin": "*",
+    // Connection: "keep-alive",
+    // Connection: "close",
   },
   withCredentials: true, // ✅ needed if backend supports cookies
 });

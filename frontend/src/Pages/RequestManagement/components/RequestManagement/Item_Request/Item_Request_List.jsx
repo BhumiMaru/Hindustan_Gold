@@ -190,16 +190,34 @@ export default function Item_Request_List() {
                 />
               </div>
               <div className=" d-sm-block d-lg-flex gap-2">
+                {console.log("userPermission", userPermission)}
                 <Link
                   to="/user/request/request-create/material"
-                  className="btn btn-primary text-white waves-effect waves-light text-decoration-none"
+                  className={`btn btn-primary text-white waves-effect waves-light text-decoration-none ${
+                    userPermission?.some(
+                      (perm) =>
+                        perm.type === "Item Request" &&
+                        perm.permission === "add"
+                    )
+                      ? "d-block"
+                      : "d-none"
+                  }`}
                 >
                   <span className="icon-xs icon-base ti tabler-plus me-2"></span>
                   Material Request
                 </Link>
+
                 <Link
                   to="/user/request/request-create/service"
-                  className="btn btn-info waves-effect waves-light text-decoration-none"
+                  className={`btn btn-info waves-effect waves-light text-decoration-none ${
+                    userPermission?.some(
+                      (perm) =>
+                        perm.type === "Item Request" &&
+                        perm.permission === "add"
+                    )
+                      ? "d-block"
+                      : "d-none"
+                  }`}
                 >
                   <span className="icon-xs icon-base ti tabler-plus me-2"></span>
                   Service Request
@@ -285,7 +303,7 @@ export default function Item_Request_List() {
                   // onChange={setItemNameId}
                   placeholder="Select Item"
                 /> */}
-
+                {console.log("itemList", itemList)}
                 <CustomSelect
                   id="selectItemName"
                   options={itemList?.map((item) => ({

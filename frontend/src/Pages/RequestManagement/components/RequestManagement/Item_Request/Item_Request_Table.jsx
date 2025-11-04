@@ -89,7 +89,6 @@ export default function Item_Request_Table({ search }) {
                 <tr key={index}>
                   <td>
                     <div className="ms-4">
-                      {" "}
                       {(pagination.currentPage - 1) * pagination.perPage +
                         (index + 1)}
                     </div>
@@ -104,7 +103,7 @@ export default function Item_Request_Table({ search }) {
                   </td>
 
                   <td>{item?.item_request?.item_type}</td>
-                  <td>{item?.item_request?.item_master?.item_name}</td>
+                  <td>{item?.item_request?.item?.item_name}</td>
                   {activeTab === "approval_request" && (
                     <td>
                       <div className="d-flex justify-content-start align-items-center user-name">

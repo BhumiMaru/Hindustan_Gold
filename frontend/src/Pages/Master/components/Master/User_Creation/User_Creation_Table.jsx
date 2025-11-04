@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 import { useUIContext } from "../../../../../Context/UIContext";
+import Loader from "../../../../../components/Common/Loader/Loader";
 
 export default function User_Creation_Table() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function User_Creation_Table() {
     startEditing,
     pagination,
     setUserCreationData,
+    loading,
   } = useUserCreation();
   // console.log("userCreations", userCreations);
   // console.log("userCreations", userCreations);
@@ -81,70 +83,79 @@ export default function User_Creation_Table() {
           </tr>
         </thead>
         <tbody>
-          {userCreations?.map((user, index) => {
-            return (
-              <tr key={user.id}>
-                {/* {console.log(user.status)} */}
-                <td>
-                  <div className="ms-4">
-                    {(pagination.currentPage - 1) * pagination.perPage +
-                      (index + 1)}
-                  </div>
-                </td>
-                <td>
-                  <div className="d-flex justify-content-start align-items-center user-name">
-                    <div className="avatar-wrapper">
-                      <div className="avatar me-2">
-                        <img
-                          src="https://www.citypng.com/public/uploads/preview/hd-man-user-illustration-icon-transparent-png-701751694974843ybexneueic.png"
-                          alt={user.name}
-                          className="rounded-circle"
-                        />
+          {loading ? (
+            <tr>
+              <td colSpan="11">
+                <Loader />
+              </td>
+            </tr>
+          ) : (
+            userCreations?.map((user, index) => {
+              return (
+                <tr key={user.id}>
+                  {/* {console.log(user.status)} */}
+                  <td>
+                    <div className="ms-4">
+                      {(pagination.currentPage - 1) * pagination.perPage +
+                        (index + 1)}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="d-flex justify-content-start align-items-center user-name">
+                      <div className="avatar-wrapper">
+                        <div className="avatar me-2">
+                          <img
+                            src="https://www.citypng.com/public/uploads/preview/hd-man-user-illustration-icon-transparent-png-701751694974843ybexneueic.png"
+                            alt={user.name}
+                            className="rounded-circle"
+                          />
+                        </div>
+                      </div>
+                      <div className="d-flex flex-column">
+                        <span className="emp_name text-truncate text-heading fw-medium">
+                          {user.name}
+                        </span>
+                        <small className="emp_post text-truncate">
+                          {user?.role?.role_name}
+                        </small>
                       </div>
                     </div>
-                    <div className="d-flex flex-column">
-                      <span className="emp_name text-truncate text-heading fw-medium">
-                        {user.name}
-                      </span>
-                      <small className="emp_post text-truncate">
-                        {user?.role?.role_name}
-                      </small>
+                  </td>
+                  <td>{user.employee_id}</td>
+                  <td>{user.email}</td>
+                  <td>
+                    <div
+                      className="d-flex align-items-center"
+                      style={{ marginRight: "10px" }}
+                    >
+                      <div>
+                        <div
+                          style={{
+                            borderRadius: "100%",
+                            backgroundColor: user?.zone?.color_code,
+                            padding: "6px",
+                            width: "2px",
+                          }}
+                        ></div>
+                      </div>
+                      &nbsp;{user?.department?.department_name}
                     </div>
-                  </div>
-                </td>
-                <td>{user.employee_id}</td>
-                <td>{user.email}</td>
-                <td>
-                  <div
-                    className="d-flex align-items-center"
-                    style={{ marginRight: "10px" }}
-                  >
-                    <div>
-                      <div
-                        style={{
-                          borderRadius: "100%",
-                          backgroundColor: user?.zone?.color_code,
-                          padding: "6px",
-                          width: "2px",
-                        }}
-                      ></div>
-                    </div>
-                    &nbsp;{user?.department?.department_name}
-                  </div>
-                </td>
-                <td>{user.register_date}</td>
-                <td>
-                  <span
-                    className={`badge ${
-                      user.status === 1 ? "bg-label-success" : "bg-label-danger"
-                    }`}
-                  >
-                    {/* {console.log(typeof user.status)} */}
-                    {user.status === 1 ? "Active" : "Deactive"}
-                  </span>
-                </td>
-                <td>
-                  {/* <div className="d-inline-flex gap-2">
+                  </td>
+                  <td>{user.register_date}</td>
+                  <td>
+                    <span
+                      className={`badge ${
+                        user.status === 1
+                          ? "bg-label-success"
+                          : "bg-label-danger"
+                      }`}
+                    >
+                      {/* {console.log(typeof user.status)} */}
+                      {user.status === 1 ? "Active" : "Deactive"}
+                    </span>
+                  </td>
+                  <td>
+                    {/* <div className="d-inline-flex gap-2">
                     <a
                       href="user-create.html"
                       className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
@@ -166,55 +177,56 @@ export default function User_Creation_Table() {
                       <i className="icon-base ti tabler-article text-info icon-22px"></i>
                     </Link>
                   </div> */}
-                  <div className="d-inline-flex gap-2">
-                    <a
-                      className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
-                    </a>
-                    <div className="d-inline-block">
-                      <div
-                        className="dropdown-menu dropdown-menu-end m-0"
-                        style={{}}
+                    <div className="d-inline-flex gap-2">
+                      <a
+                        className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
                       >
-                        <button
-                          key={user.id}
-                          className="dropdown-item waves-effect"
-                          onClick={() => {
-                            handleEditClick(user); // set context
-                          }}
+                        <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
+                      </a>
+                      <div className="d-inline-block">
+                        <div
+                          className="dropdown-menu dropdown-menu-end m-0"
+                          style={{}}
                         >
-                          Edit
-                        </button>
+                          <button
+                            key={user.id}
+                            className="dropdown-item waves-effect"
+                            onClick={() => {
+                              handleEditClick(user); // set context
+                            }}
+                          >
+                            Edit
+                          </button>
 
-                        <a
-                          href="#"
-                          className="dropdown-item waves-effect"
-                          data-bs-toggle="modal"
-                          data-bs-target="#grnCreateModel"
-                          onClick={() => {
-                            handleOpen("viewUserDetails");
-                            setUserCreationData(user);
-                          }}
-                        >
-                          View
-                        </a>
-                        <div className="dropdown-divider"></div>
-                        <a
-                          className="dropdown-item text-danger delete-record waves-effect"
-                          onClick={() => deleteUser(user.id)}
-                        >
-                          Delete
-                        </a>
+                          <a
+                            href="#"
+                            className="dropdown-item waves-effect"
+                            data-bs-toggle="modal"
+                            data-bs-target="#grnCreateModel"
+                            onClick={() => {
+                              handleOpen("viewUserDetails");
+                              setUserCreationData(user);
+                            }}
+                          >
+                            View
+                          </a>
+                          <div className="dropdown-divider"></div>
+                          <a
+                            className="dropdown-item text-danger delete-record waves-effect"
+                            onClick={() => deleteUser(user.id)}
+                          >
+                            Delete
+                          </a>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
+                  </td>
+                </tr>
+              );
+            })
+          )}
 
           {/* <tr>
             <td>

@@ -11,6 +11,7 @@ export const useUserCreation = () => useContext(UserCreationContext);
 
 // USER CREATION PROVIDER
 export const UserCreationProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [userCreations, setUserCreations] = useState([]);
   const [filterUser, setFilterUser] = useState([]);
   // const { fetchRolePermission } = useRoleMaster();
@@ -74,6 +75,7 @@ export const UserCreationProvider = ({ children }) => {
     perPage = 10,
   } = {}) => {
     try {
+      setLoading(true);
       const params = { search, page, per_page: perPage };
 
       if (role_id) {
@@ -99,6 +101,8 @@ export const UserCreationProvider = ({ children }) => {
     } catch (error) {
       // console.error(error);
       toast.error("Failed to fetch users");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -485,6 +489,8 @@ export const UserCreationProvider = ({ children }) => {
         startEditing,
         fetchUserPermission,
         createUserPermission,
+        loading,
+        setLoading,
       }}
     >
       {children}

@@ -12,6 +12,7 @@ export const useServiceLocation2Master = () => {
 
 // [SERVICE LOCATION 2 MASTER] Provider
 export const ServiceLocation2MasterProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [serviceLocation2, setServiceLocation2] = useState([]);
   const [serviceL2, setServiceL2] = useState([]);
   const [serviceLocation2Name, setServiceLocation2Name] = useState("");
@@ -32,6 +33,7 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
     perPage = 10,
   } = {}) => {
     try {
+      setLoading(true);
       // If serviceLocation1Id is null, don't include it in the request
       const params = { search, page, per_page: perPage };
       // if (serviceLocation1Id !== null) {
@@ -55,6 +57,8 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
       }));
     } catch (error) {
       toast.error(`Service Location 2 Master Fetch Error: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -153,6 +157,8 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
         updateServiceLocation2,
         deleteServiceLocation2,
         startEditing,
+        loading,
+        setLoading,
       }}
     >
       {children}

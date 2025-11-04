@@ -12,6 +12,7 @@ export const useRoleMaster = () => {
 
 // ROLE MASTER PROVIDER
 export const RoleMasterProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [roles, setRoles] = useState([]);
   const [filterRole, setFilterRole] = useState([]);
   const [roleName, setRoleName] = useState("");
@@ -35,6 +36,7 @@ export const RoleMasterProvider = ({ children }) => {
   // Fetch Role Data with pagination
   const fetchRoleData = async (search = "", page = 1, perPage = 10) => {
     try {
+      setLoading(true);
       const res = await getData(ENDPOINTS.ROLE_MASTER.LIST, {
         search,
         page,
@@ -52,6 +54,8 @@ export const RoleMasterProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
       toast.error("Failed to fetch Roles");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -202,6 +206,8 @@ export const RoleMasterProvider = ({ children }) => {
 
         fetchRolePermission,
         createRolePermission,
+        loading,
+        setLoading,
       }}
     >
       {children}

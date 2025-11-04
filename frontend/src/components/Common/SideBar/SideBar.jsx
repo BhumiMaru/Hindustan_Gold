@@ -81,9 +81,21 @@ export default function SideBar() {
     // "Item Create": "/item/item-create-material",
   };
 
-  const requestManagementRoutes = {
-    "Item Request": "/user/request/request-list",
+  const requestManagementRoutesBase = {
+    // "Item Request": "/user/request/request-list",
   };
+
+  let requestManagementRoutes = {};
+
+  if (
+    userPermission?.some(
+      (perm) =>
+        (perm.type === "Item Request" || perm.type === "Material Approval") &&
+        perm.permission === "view"
+    )
+  ) {
+    requestManagementRoutes["Item Request"] = "/user/request/request-list";
+  }
 
   // const piAndMaterialManagementRoutes = {
   //   "PI Request List": "/po-material/pi-request-list",
@@ -94,25 +106,40 @@ export default function SideBar() {
 
   // Conditionally add "PO List" based on userPermission
   const piAndMaterialManagementRoutesBase = {
-    "PI Request List": "/po-material/pi-request-list",
-    "Get Quote": "/po-material/get-quote-list",
-    "GRN List": "/po-material/grn-list",
+    // "PI Request List": "/po-material/pi-request-list",
+    // "Get Quote": "/po-material/get-quote-list",
+    // "GRN List": "/po-material/grn-list",
   };
 
   let piAndMaterialManagementRoutes = {};
 
   // 1. PI Request List
-  piAndMaterialManagementRoutes["PI Request List"] =
-    piAndMaterialManagementRoutesBase["PI Request List"];
+  if (
+    userPermission?.some(
+      (perm) => perm.type == "PI Request" && perm.permission === "view"
+    )
+  ) {
+    piAndMaterialManagementRoutes["PI Request List"] =
+      "/po-material/pi-request-list";
+  }
+  // piAndMaterialManagementRoutes["PI Request List"] =
+  //   piAndMaterialManagementRoutesBase["PI Request List"];
 
   // 2. Get Quote
-  piAndMaterialManagementRoutes["Get Quote"] =
-    piAndMaterialManagementRoutesBase["Get Quote"];
+  if (
+    userPermission?.some(
+      (perm) => perm.type == "Get Quotation" && perm.permission === "view"
+    )
+  ) {
+    piAndMaterialManagementRoutes["Get Quot"] = "/po-material/get-quote-list";
+  }
+  // piAndMaterialManagementRoutes["Get Quote"] =
+  //   piAndMaterialManagementRoutesBase["Get Quote"];
 
   // 3. Conditionally add PO List
   if (
     userPermission?.some(
-      (perm) => perm.type === "PO Generation" && perm.permission === "view"
+      (perm) => perm.type == "PO Generation" && perm.permission === "view"
     )
   ) {
     piAndMaterialManagementRoutes["PO List"] = "/po-material/po-list";
@@ -121,13 +148,52 @@ export default function SideBar() {
   // console.log("user", userPermission);
 
   // 4. GRN List
-  piAndMaterialManagementRoutes["GRN List"] =
-    piAndMaterialManagementRoutesBase["GRN List"];
+  if (
+    userPermission?.some(
+      (perm) => perm.type == "GRN" && perm.permission === "view"
+    )
+  ) {
+    piAndMaterialManagementRoutes["GRN List"] = "/po-material/grn-list";
+  }
+  // if (
+  //   userPermission?.some(
+  //     (perm) => perm.type == "GRN" && perm.permission === "view"
+  //   )
+  // ) {
+  //   piAndMaterialManagementRoutes["GRN List"] = "/po-material/grn-list";
+  // }
+  // piAndMaterialManagementRoutes["GRN List"] =
+  //   piAndMaterialManagementRoutesBase["GRN List"];
 
-  const paymentManagementRoutes = {
-    "Payment List": "/payment-management/invoice-list",
-    "Vendor List": "/payment-management/vendor-list",
-  };
+  // Payment Management
+  const paymentManagementRoutesBase = {};
+
+  let paymentManagementRoutes = {};
+
+  // Payment
+  if (
+    userPermission?.some(
+      (perm) => perm.type == "Payment Request" && perm.permission === "view"
+    )
+  ) {
+    paymentManagementRoutes["Payment List"] =
+      "/payment-management/invoice-list";
+  }
+
+  // Vendor
+  if (
+    userPermission?.some(
+      (perm) =>
+        perm.type == "Vendor Payment History" && perm.permission === "view"
+    )
+  ) {
+    paymentManagementRoutes["Vendor List"] = "/payment-management/vendor-list";
+  }
+
+  // const paymentManagementRoutes = {
+  //   "Payment List": "/payment-management/invoice-list",
+  //   "Vendor List": "/payment-management/vendor-list",
+  // };
 
   return (
     <>
@@ -294,86 +360,100 @@ export default function SideBar() {
             )}
 
           {/* Request Management */}
-          {!isAdmin && (
-            <li
-              className={`menu-item ${
-                activeMenu === "Request" ? "open active" : ""
-              } cursor-pointer`}
-              onClick={() => toggleMenu("Request")}
-            >
-              <a className="menu-link menu-toggle">
-                <i className="menu-icon icon-base ti tabler-forms"></i>
-                <div data-i="Request Management">Request Management</div>
-              </a>
-              <ul
-                className={`menu-sub dropdown ${
-                  activeMenu === "Request" ? "open" : ""
-                }`}
+          {!isAdmin &&
+            userPermission?.some(
+              (perm) =>
+                (perm.type === "Item Request" ||
+                  perm.type === "Material Approval") &&
+                perm.permission === "view"
+            ) && (
+              <li
+                className={`menu-item ${
+                  activeMenu === "Request" ? "open active" : ""
+                } cursor-pointer`}
+                onClick={() => toggleMenu("Request")}
               >
-                {Object.keys(requestManagementRoutes).map((item) => (
-                  <li
-                    key={item}
-                    className={`menu-item ${
-                      activeSubMenu === item ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSubMenuClick("Request", item);
-                    }}
-                  >
-                    <Link
-                      to={requestManagementRoutes[item]}
-                      className="menu-link cursor-pointer text-decoration-none"
+                <a className="menu-link menu-toggle">
+                  <i className="menu-icon icon-base ti tabler-forms"></i>
+                  <div data-i="Request Management">Request Management</div>
+                </a>
+                <ul
+                  className={`menu-sub dropdown ${
+                    activeMenu === "Request" ? "open" : ""
+                  }`}
+                >
+                  {Object.keys(requestManagementRoutes).map((item) => (
+                    <li
+                      key={item}
+                      className={`menu-item ${
+                        activeSubMenu === item ? "active" : ""
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSubMenuClick("Request", item);
+                      }}
                     >
-                      <div data-i={item}>{item}</div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          )}
+                      <Link
+                        to={requestManagementRoutes[item]}
+                        className="menu-link cursor-pointer text-decoration-none"
+                      >
+                        <div data-i={item}>{item}</div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            )}
 
           {/* PO & Material Management */}
-          {!isAdmin && (
-            <li
-              className={`menu-item ${
-                activeMenu === "PO" ? "open active" : ""
-              } cursor-pointer`}
-              onClick={() => toggleMenu("PO")}
-            >
-              <a className="menu-link menu-toggle">
-                <i className="menu-icon icon-base ti tabler-truck"></i>
-                <div data-i="PO & Material Management">
-                  PO & Material Management
-                </div>
-              </a>
-              <ul
-                className={`menu-sub dropdown ${
-                  activeMenu === "PO" ? "open" : ""
-                }`}
+          {!isAdmin &&
+            userPermission?.some(
+              (perm) =>
+                (perm.type === "PI Request" ||
+                  perm.type === "Get Quotation" ||
+                  perm.type === "PO Generation" ||
+                  perm.type === "GRN") &&
+                (perm.permission === "view" || perm.permission === "add")
+            ) && (
+              <li
+                className={`menu-item ${
+                  activeMenu === "PO" ? "open active" : ""
+                } cursor-pointer`}
+                onClick={() => toggleMenu("PO")}
               >
-                {Object.keys(piAndMaterialManagementRoutes).map((item) => (
-                  <li
-                    key={item}
-                    className={`menu-item ${
-                      activeSubMenu === item ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSubMenuClick("PO", item);
-                    }}
-                  >
-                    <Link
-                      to={piAndMaterialManagementRoutes[item]}
-                      className="menu-link cursor-pointer text-decoration-none"
+                <a className="menu-link menu-toggle">
+                  <i className="menu-icon icon-base ti tabler-truck"></i>
+                  <div data-i="PO & Material Management">
+                    PO & Material Management
+                  </div>
+                </a>
+                <ul
+                  className={`menu-sub dropdown ${
+                    activeMenu === "PO" ? "open" : ""
+                  }`}
+                >
+                  {Object.keys(piAndMaterialManagementRoutes).map((item) => (
+                    <li
+                      key={item}
+                      className={`menu-item ${
+                        activeSubMenu === item ? "active" : ""
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSubMenuClick("PO", item);
+                      }}
                     >
-                      <div data-i={item}>{item}</div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          )}
+                      <Link
+                        to={piAndMaterialManagementRoutes[item]}
+                        className="menu-link cursor-pointer text-decoration-none"
+                      >
+                        <div data-i={item}>{item}</div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            )}
 
           {/* Payment Management */}
           {!isAdmin && (

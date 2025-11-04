@@ -14,6 +14,7 @@ export const useGetQuote = () => {
 
 // Get Quote Provider
 export const GetQuoteProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [quote, setQuote] = useState([]);
   const [quoteData, setQuoteData] = useState(null); // create get quote
@@ -59,6 +60,7 @@ export const GetQuoteProvider = ({ children }) => {
     perPage = pagination.perPage || 10, // ✅ single default
   } = {}) => {
     try {
+      setLoading(true);
       const params = {
         search,
         pi_type: pi_type !== "all" ? pi_type : undefined,
@@ -83,6 +85,8 @@ export const GetQuoteProvider = ({ children }) => {
     } catch (error) {
       toast.error("Error during Get Quote List");
       console.error("Get Quote List PIRequest error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -454,6 +458,8 @@ export const GetQuoteProvider = ({ children }) => {
         setQuoteDataForEmail,
         vendorEmailData,
         setVendorEmailData,
+        loading,
+        setLoading,
       }}
     >
       {children}

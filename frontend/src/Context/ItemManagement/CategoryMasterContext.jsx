@@ -12,6 +12,7 @@ export const useCategoryMaster = () => {
 
 // CATEGORY MASTER PROVIDER
 export const CategoryMasterProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [categoryData, setCategoryData] = useState({
     category_name: "",
@@ -38,6 +39,7 @@ export const CategoryMasterProvider = ({ children }) => {
     perPage = 10,
   } = {}) => {
     try {
+      setLoading(true);
       const res = await getData(ENDPOINTS.CATEGORY_MASTER.LIST, {
         search,
         group_id,
@@ -56,6 +58,8 @@ export const CategoryMasterProvider = ({ children }) => {
         console.error(error.response.data.message);
       }
       // toast.error(`Category Fetch Error: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -155,6 +159,8 @@ export const CategoryMasterProvider = ({ children }) => {
         updateCategory,
         deleteCategory,
         startEditing,
+        loading,
+        setLoading,
       }}
     >
       {children}

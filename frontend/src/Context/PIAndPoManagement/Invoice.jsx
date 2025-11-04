@@ -12,6 +12,7 @@ export const useInvoice = () => {
 
 // Invoice Provider
 export const InvoiceProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [invoice, setInvoice] = useState([]);
   const [invoiceData, setInvoiceData] = useState({
     grn_id: "",
@@ -27,6 +28,7 @@ export const InvoiceProvider = ({ children }) => {
     invoice_type: "",
     item_id: null,
     invoice_file: null,
+    po_id: null,
   });
   const [invoiceDetail, setInvoiceDetail] = useState(null);
   const [type, setType] = useState(null);
@@ -49,6 +51,10 @@ export const InvoiceProvider = ({ children }) => {
   const [invoiceWorkflowDetails, setInvoiceWorkflowDetails] = useState();
   // Revert Invoice Status
   const [revertStatusData, setRevertStatusData] = useState();
+  // sub category id , vendor id and grn id set via po and grn
+  // const [subcategoryIdInvoice, setSubcategoryIdInvoice] = useState(null);
+  // const [vendorIdInvoice, setVendorIdInvoice] = useState(null);
+  // const [itemIdInvoice, setItemIdInvoice] = useState(null);
 
   // payment
   const [paymentData, setPaymentData] = useState({
@@ -73,6 +79,7 @@ export const InvoiceProvider = ({ children }) => {
     perPage = pagination.perPage,
   } = {}) => {
     try {
+      setLoading(true);
       const params = {
         status: status !== "all" ? status : undefined,
         search: search || undefined,
@@ -101,6 +108,8 @@ export const InvoiceProvider = ({ children }) => {
       //   toast.error(error.response.data.message);
       // }
       console.error("Invoice List error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -114,6 +123,7 @@ export const InvoiceProvider = ({ children }) => {
       });
 
       // console.log("res.data", res);
+      console.log("formData", formData);
       setInvoiceData(res);
       if (res?.status === true) {
         toast.success(res.message || "Invoice created successfully");
@@ -323,6 +333,7 @@ export const InvoiceProvider = ({ children }) => {
       type_of_payment: "",
       paymentslip: null,
     });
+    setType(null);
   };
 
   // Invoice Workflow
@@ -421,6 +432,16 @@ export const InvoiceProvider = ({ children }) => {
         revertStatusData,
         setRevertStatusData,
         revertStatus,
+        loading,
+        setLoading,
+
+        ////sub category id , vendor id and grn id set via po and grn
+        // subcategoryIdInvoice,
+        // setSubcategoryIdInvoice,
+        // vendorIdInvoice,
+        // setVendorIdInvoice,
+        // itemIdInvoice,
+        // setItemIdInvoice,
       }}
     >
       {children}

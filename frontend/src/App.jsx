@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LayoutPage from "./routes/LayoutPage";
 import { AuthProvider } from "./Context/Authentication/LoginContext";
+import "./App.css";
 
 function App() {
   return (

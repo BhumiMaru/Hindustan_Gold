@@ -14,6 +14,7 @@ export const useDepartment = () => {
 
 // DEPARTMENT PROVIDER
 export const DepartmentProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const { handleClose } = useUIContext();
   const [departments, setDepartments] = useState([]);
   const [deptFilter, setDeptFilter] = useState([]);
@@ -28,6 +29,7 @@ export const DepartmentProvider = ({ children }) => {
   // Fetch departments
   const fetchDepartments = async (search = "", page = 1, perPage = 10) => {
     try {
+      setLoading(true);
       const res = await getData(ENDPOINTS.DEPARTMENTS.LIST, {
         search,
         page,
@@ -46,6 +48,8 @@ export const DepartmentProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
       toast.error("Failed to fetch departments");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -113,6 +117,8 @@ export const DepartmentProvider = ({ children }) => {
         deleteDepartment,
         setDeptEditId,
         // handleSave,
+        loading,
+        setLoading,
       }}
     >
       {children}

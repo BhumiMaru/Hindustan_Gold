@@ -7,7 +7,14 @@ import { useSubCategory } from "../../../../../Context/ItemManagement/SubCategor
 import { useGRN } from "../../../../../Context/PIAndPoManagement/GRN";
 import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
 
-export default function Invoice_List_Form({ id, type }) {
+export default function Invoice_List_Form({
+  id,
+  type,
+  // vendorIdInvoice,
+  // itemIdInvoice,
+  poIdInvoice,
+  grnIdInvoice,
+}) {
   const { handleClose } = useUIContext();
   const {
     createInvoice,
@@ -23,6 +30,9 @@ export default function Invoice_List_Form({ id, type }) {
     vendor,
     setVendor,
     resetPaymentData,
+    setType,
+    // vendorIdInvoice,
+    // itemIdInvoice,
   } = useInvoice();
   const { vendorFilter, setVendorFilter, getVendorFilter } = useVendor();
   const { filterSubCategory, fetchSubCategoryFilter } = useSubCategory();
@@ -32,11 +42,27 @@ export default function Invoice_List_Form({ id, type }) {
   const { fetchItemFilter, filterItem } = useItemRequest();
   // console.log("grnId grnId", id);
   console.log("type", type);
+  // console.log("vendorIdInvoice", vendorIdInvoice);
+  // console.log("itemIdInvoice", itemIdInvoice);
+  // console.log("poIdInvoice", poIdInvoice);
 
   useEffect(() => {
     console.log("Current vendor state:", vendor);
     console.log("Current invoiceData:", invoiceData);
   }, [vendor, invoiceData]);
+
+  // useEffect(() => {
+  //   if (type == 1 || type == 2) {
+  //     setInvoiceData({
+  //       sub_cat_id: "",
+  //       vendor_id: "",
+  //       item_id: "",
+  //     });
+  //   }
+  // }, []);
+
+  // auto fill sub category , vendor and item id when type is 1 or 2
+
   // In your Invoice_List_Form component, add this useEffect to debug the select
   useEffect(() => {
     console.log("Vendor dropdown debug:", {
@@ -77,6 +103,15 @@ export default function Invoice_List_Form({ id, type }) {
         invoice_type: String(type), // convert number to string
       }));
     }
+
+    // if (type == 2 || type == 1) {
+    //   setInvoiceData((prev) => ({
+    //     ...prev,
+    //     item_id: 0,
+    //     sub_cat_id: 0,
+    //     vendor_id: 0,
+    //   }));
+    // }
   }, [type]);
 
   useEffect(() => {
@@ -108,14 +143,14 @@ export default function Invoice_List_Form({ id, type }) {
         ? Number(invoiceData.invoice_type)
         : null
     );
-    formData.append("vendor_id", vendor ? Number(vendor) : null);
+    formData.append("vendor_id", vendor ? Number(vendor) : "");
     formData.append(
       "sub_cat_id",
       subCategoryId
         ? Number(subCategoryId)
         : invoiceData.sub_cat_id
         ? Number(invoiceData.sub_cat_id)
-        : null
+        : ""
     );
     formData.append(
       "item_id",
@@ -123,7 +158,7 @@ export default function Invoice_List_Form({ id, type }) {
         ? Number(itemName)
         : Number(invoiceData.item_id)
         ? Number(invoiceData.item_id)
-        : null
+        : ""
     );
     formData.append("invoice_date", invoiceData.invoice_date || "");
     formData.append(
@@ -139,8 +174,13 @@ export default function Invoice_List_Form({ id, type }) {
         : 0
     );
     formData.append("remarks", invoiceData.remarks || "");
+    formData.append("po_id", poIdInvoice || grnIdInvoice);
 
     if (file) formData.append("invoice_file", file);
+
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
 
     if (invoiceId) {
       await editInvoice({ id: invoiceId, formData }); // send FormData directly
@@ -186,76 +226,82 @@ export default function Invoice_List_Form({ id, type }) {
                 aria-label="Close"
                 onClick={() => {
                   handleClose("addInvoice");
+                  setType(null);
                   // resetPaymentData();
                 }}
               />
             </div>
             <div className="modal-body">
               <div className="row">
-                <div className="col-lg-4">
-                  <label className="form-label">Sub Category</label>
-                  <div className="select2-info">
-                    <div className="position-relative">
-                      <CustomSelect
-                        id="selectSubCategory"
-                        options={filterSubCategory?.map((subcat) => ({
-                          value: subcat.id,
-                          label: subcat.sub_category_name,
-                        }))}
-                        name="sub_cat_id"
-                        value={subCategoryId}
-                        onChange={setSubCategoryId}
-                        placeholder="Select SubCategory"
-                      />
+                {type == 0 && (
+                  <>
+                    <div className="col-lg-4">
+                      <label className="form-label">Sub Category</label>
+                      <div className="select2-info">
+                        <div className="position-relative">
+                          <CustomSelect
+                            id="selectSubCategory"
+                            options={filterSubCategory?.map((subcat) => ({
+                              value: subcat.id,
+                              label: subcat.sub_category_name,
+                            }))}
+                            name="sub_cat_id"
+                            value={subCategoryId}
+                            onChange={setSubCategoryId}
+                            placeholder="Select SubCategory"
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className="col-lg-4">
-                  <label className="form-label">Item</label>
-                  <div className="select2-info">
-                    <div className="position-relative">
-                      <CustomSelect
-                        id="selectItemName"
-                        options={filterItem?.map((item) => ({
-                          value: item.item_id,
-                          label: item.item_name,
-                        }))}
-                        name="item_id"
-                        value={itemName}
-                        onChange={setItemName}
-                        placeholder="Select Item"
-                        disabled={!subCategoryId}
-                      />
+                    <div className="col-lg-4">
+                      <label className="form-label">Item</label>
+                      <div className="select2-info">
+                        <div className="position-relative">
+                          <CustomSelect
+                            id="selectItemName"
+                            options={filterItem?.map((item) => ({
+                              value: item.item_id,
+                              label: item.item_name,
+                            }))}
+                            name="item_id"
+                            value={itemName}
+                            onChange={setItemName}
+                            placeholder="Select Item"
+                            disabled={!subCategoryId}
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className="col-lg-4">
-                  <label className="form-label">Vendor</label>
-                  <div className="select2-info">
-                    <div className="position-relative">
-                      <CustomSelect
-                        key={`vendor-select-${vendor}`}
-                        options={vendorFilter?.map((item) => ({
-                          value: item.id,
-                          label: item.vendor_name,
-                        }))}
-                        name="vendor_id"
-                        value={vendor}
-                        onChange={setVendor}
-                        placeholder="Select Vendor"
-                      />
+                    <div className="col-lg-4">
+                      <label className="form-label">Vendor</label>
+                      <div className="select2-info">
+                        <div className="position-relative">
+                          <CustomSelect
+                            key={`vendor-select-${vendor}`}
+                            options={vendorFilter?.map((item) => ({
+                              value: item.id,
+                              label: item.vendor_name,
+                            }))}
+                            name="vendor_id"
+                            value={vendor}
+                            onChange={setVendor}
+                            placeholder="Select Vendor"
+                          />
+                        </div>
+                        {console.log("CustomSelect Debug:", {
+                          vendorValue: vendor,
+                          vendorType: typeof vendor,
+                          options: vendorFilter?.map((item) => ({
+                            value: item.id,
+                            valueType: typeof item.id,
+                            label: item.vendor_name,
+                          })),
+                        })}
+                      </div>
                     </div>
-                    {console.log("CustomSelect Debug:", {
-                      vendorValue: vendor,
-                      vendorType: typeof vendor,
-                      options: vendorFilter?.map((item) => ({
-                        value: item.id,
-                        valueType: typeof item.id,
-                        label: item.vendor_name,
-                      })),
-                    })}
-                  </div>
-                </div>
+                  </>
+                )}
+
                 <div className="col-lg-4">
                   <label className="form-label">Invoice Date</label>
                   <input
@@ -314,6 +360,7 @@ export default function Invoice_List_Form({ id, type }) {
                     onClick={() => {
                       handleClose("addInvoice");
                       resetPaymentData();
+                      setType(null);
                     }}
                   >
                     Cancel

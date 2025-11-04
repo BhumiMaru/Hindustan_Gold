@@ -12,6 +12,7 @@ export const useGRN = () => {
 
 // GRN PRovider
 export const GRNProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [grnList, setGrnList] = useState([]); //List
   const [grnData, setGrnData] = useState({
     grn_no: "",
@@ -48,6 +49,7 @@ export const GRNProvider = ({ children }) => {
     po_id,
   } = {}) => {
     try {
+      setLoading(true);
       const params = {
         status: status !== "all" ? status : undefined,
         search: search !== "" ? search : undefined,
@@ -71,6 +73,8 @@ export const GRNProvider = ({ children }) => {
     } catch (error) {
       // toast.error("Error during Get GRN List");
       console.error("Get GRN List error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -338,6 +342,8 @@ export const GRNProvider = ({ children }) => {
         GRNWorkflowdetails,
         setGRNWorkflowdetails,
         grnWorkflow,
+        loading,
+        setLoading,
       }}
     >
       {children}

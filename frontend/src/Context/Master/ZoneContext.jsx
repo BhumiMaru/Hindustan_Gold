@@ -12,6 +12,7 @@ export const useZone = () => {
 
 // PROVIDER
 export const ZoneProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [zones, setZones] = useState([]);
   const [zoneFilter, setZoneFilter] = useState([]);
   const [zoneName, setZoneName] = useState("");
@@ -26,6 +27,7 @@ export const ZoneProvider = ({ children }) => {
   // ✅ Fetch Zones (GET)
   const fetchZones = async (search = "", page = 1, perPage = 10) => {
     try {
+      setLoading(true);
       const res = await getData(ENDPOINTS.ZONES.LIST, {
         search,
         page,
@@ -42,6 +44,8 @@ export const ZoneProvider = ({ children }) => {
     } catch (err) {
       toast.error("Failed to fetch zones");
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -142,6 +146,8 @@ export const ZoneProvider = ({ children }) => {
         deleteZone,
         startEdit,
         resetForm,
+        loading,
+        setLoading,
       }}
     >
       {children}

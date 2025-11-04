@@ -652,19 +652,29 @@ export default function User_Creation_Permission() {
           await ensurePermission(type, "view");
           await ensurePermission("PO Generation", "add");
           await ensurePermission("PO Generation", "view");
+          await ensurePermission("PI Request", "view");
         }
-        if (normalizedType === "grn") await ensurePermission(type, "view");
-        if (normalizedType === "po generation")
+        if (normalizedType === "GRN") {
           await ensurePermission(type, "view");
+          await ensurePermission("PO Generation", "view");
+        }
+        if (normalizedType === "po generation") {
+          await ensurePermission(type, "  view");
+          await ensurePermission("get quotation", "view");
+          await ensurePermission("get quotation", "add");
+        }
         if (normalizedType === "pi request")
           await ensurePermission(type, "view");
+        await ensurePermission("GRN", "view");
         // ----------- Payment Management Module -------------- //
         if (normalizedType === "pending payment vendor list")
           await ensurePermission(type, "view");
         if (normalizedType === "payment request")
           await ensurePermission(type, "view");
-        if (normalizedType === "vendor payment history")
+        if (normalizedType === "vendor payment history") {
           await ensurePermission(type, "view");
+          // await ensurePermission(type, "download");
+        }
         // ----------- Item Request Module -------------- //
         if (normalizedType === "item request")
           await ensurePermission(type, "view");
@@ -679,6 +689,20 @@ export default function User_Creation_Permission() {
         const dependentPerms = ["add", "generate"];
         for (const dep of dependentPerms) {
           await removeDependentPermission(type, dep);
+        }
+      }
+
+      // --- Auto-check 'view' when 'download' is checked ---
+      if (isChecked && normalizedPerm === "download") {
+        if (normalizedType === "vendor payment history") {
+          await ensurePermission(type, "view");
+        }
+      }
+
+      // --- Auto-check 'view' when 'Approve' is checked ---
+      if (isChecked && normalizedPerm === "approve") {
+        if (normalizedType === "PO Generation") {
+          await ensurePermission(type, "view");
         }
       }
 

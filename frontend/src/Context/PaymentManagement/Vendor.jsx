@@ -12,6 +12,7 @@ export const useVendor = () => {
 
 // Vendor Provider
 export const VendorProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     perPage: 10,
@@ -51,6 +52,7 @@ export const VendorProvider = ({ children }) => {
     status,
   } = {}) => {
     try {
+      setLoading(true);
       const params = { search, page, per_page: perPage, status };
       const res = await getData(ENDPOINTS.VENDOR.LIST, params);
 
@@ -65,6 +67,8 @@ export const VendorProvider = ({ children }) => {
     } catch (error) {
       toast.error("Error during Vendor List");
       console.error("Vendor List error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -276,6 +280,8 @@ export const VendorProvider = ({ children }) => {
         vendorDetail,
         setVendorDetail,
         vendorDelete,
+        loading,
+        setLoading,
       }}
     >
       {children}

@@ -12,6 +12,7 @@ export const useServiceLocation3Master = () => {
 
 // PROVIDER
 export const ServiceLocation3MasterProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [serviceLocation3, setServiceLocation3] = useState([]);
   const [serviceL3, setServiceL3] = useState([]);
   const [serviceLocation3Data, setServiceLocation3Data] = useState({
@@ -75,6 +76,7 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
     perPage = 10
   ) => {
     try {
+      setLoading(true);
       const params = { search, page, per_page: perPage };
 
       // Only include if it's a single numeric value
@@ -104,6 +106,8 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
       console.error(
         `Something went wrong while fetching Service Location 3 list. ${error.message}`
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -235,6 +239,8 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
         updateServiceLocation3,
         deleteServiceLocation3,
         startEditing,
+        loading,
+        setLoading,
       }}
     >
       {children}

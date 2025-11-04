@@ -12,6 +12,7 @@ export const usePOCreate = () => {
 
 // PO PROVIDER
 export const POProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [PoList, setPoList] = useState([]); //List
   const [poDetails, setPoDetails] = useState({}); // Details
   const [PoId, setPoId] = useState(null);
@@ -127,6 +128,7 @@ export const POProvider = ({ children }) => {
     perPage = 10,
   }) => {
     try {
+      setLoading(true);
       const params = {
         search: searchText || undefined,
         status: filterStatus || undefined,
@@ -150,6 +152,8 @@ export const POProvider = ({ children }) => {
       });
     } catch (error) {
       console.error("PO List failed:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -271,6 +275,8 @@ export const POProvider = ({ children }) => {
         poWorkflowDetails,
         setPoWorkflowDetails,
         poWorkflow,
+        loading,
+        setLoading,
       }}
     >
       {children}

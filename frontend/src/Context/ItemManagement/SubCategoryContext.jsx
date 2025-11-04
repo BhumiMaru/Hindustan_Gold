@@ -12,6 +12,7 @@ export const useSubCategory = () => {
 
 // SUB CATEGORY PROVIDER
 export const SubCategoryProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [subCategory, setSubCategory] = useState([]);
   const [subCategoryData, setSubCategoryData] = useState({
     sub_category_name: "",
@@ -41,6 +42,7 @@ export const SubCategoryProvider = ({ children }) => {
     user_id = "",
   } = {}) => {
     try {
+      setLoading(true);
       const params = {
         search,
         page,
@@ -65,6 +67,8 @@ export const SubCategoryProvider = ({ children }) => {
         console.error(error.response.data.message);
       }
       // toast.error("Failed to fetch Sub Category");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -179,6 +183,8 @@ export const SubCategoryProvider = ({ children }) => {
         StartEditing,
         deleteSubCategory,
         fetchSubCategoryFilter,
+        loading,
+        setLoading,
       }}
     >
       {children}

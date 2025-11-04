@@ -12,6 +12,7 @@ export const useUOM = () => {
 
 // uom provider
 export const UOMProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState(""); //search
   const [uom, setUom] = useState([]); // List
   const [filterUom, setFilterUom] = useState([]); // Filter List
@@ -28,6 +29,7 @@ export const UOMProvider = ({ children }) => {
   // Get UOM List
   const getUOMList = async ({ search = "", page = 1, perPage = 10 } = {}) => {
     try {
+      setLoading(true);
       const res = await getData(ENDPOINTS.UOM.LIST, {
         search,
         page,
@@ -43,6 +45,8 @@ export const UOMProvider = ({ children }) => {
     } catch (error) {
       toast.error(error.message);
       console.log("get uom list error", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -137,6 +141,8 @@ export const UOMProvider = ({ children }) => {
         DestroyUom,
         EditUOM,
         startEditing,
+        loading,
+        setLoading,
       }}
     >
       {children}

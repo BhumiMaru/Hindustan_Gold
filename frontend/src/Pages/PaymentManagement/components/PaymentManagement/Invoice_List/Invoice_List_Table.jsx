@@ -2,6 +2,7 @@ import React from "react";
 import { useInvoice } from "../../../../../Context/PIAndPoManagement/Invoice";
 import { Link } from "react-router-dom";
 import { useUIContext } from "../../../../../Context/UIContext";
+import Loader from "../../../../../components/Common/Loader/Loader";
 
 export default function Invoice_List_Table() {
   const { handleOpen } = useUIContext();
@@ -13,6 +14,7 @@ export default function Invoice_List_Table() {
     invoiceId,
     setInvoiceId,
     startEditing,
+    loading,
   } = useInvoice();
   console.log("type", type);
   console.log("invoice", invoice);
@@ -50,10 +52,17 @@ export default function Invoice_List_Table() {
           </tr>
         </thead>
         <tbody>
-          {invoice?.map((invoice, index) => {
-            return (
-              <tr>
-                {/* <td className="dt-select">
+          {loading ? (
+            <tr>
+              <td colSpan="11">
+                <Loader />
+              </td>
+            </tr>
+          ) : (
+            invoice?.map((invoice, index) => {
+              return (
+                <tr>
+                  {/* <td className="dt-select">
                   <div className="ms-4">
                     <input
                       aria-label="Select row"
@@ -62,90 +71,91 @@ export default function Invoice_List_Table() {
                     />
                   </div>
                 </td> */}
-                <td className="pe-1">
-                  {" "}
-                  {(pagination?.currentPage - 1) * pagination?.perPage +
-                    (index + 1)}
-                </td>
-                <td>{invoice?.id}</td>
-                <td>{invoice?.created_at?.split("T")?.shift()}</td>
-                <td>{invoice?.invoice_date}</td>
-                <td>{invoice?.vendor?.vendor_name}</td>
-                <td>{invoice?.type}</td>
-                {/* <td>{invoice?.created_at}</td> */}
-                <td>{invoice?.taxable_amount}/-</td>
-                <td>{invoice?.paid_amount}/-</td>
-                <td>
-                  <span
-                    className={`badge ${
-                      invoice?.status === "Pending"
-                        ? "bg-label-warning"
-                        : invoice.status === "Approve"
-                        ? "bg-label-success"
-                        : invoice.status === "Paid"
-                        ? "bg-label-info"
-                        : "bg-label-danger"
-                    } `}
-                  >
-                    {invoice?.status}
-                  </span>
-                </td>
-                <td>
-                  <div className="d-inline-flex gap-2">
-                    <Link
-                      to={`/payment-management/invoice-detail/${invoice.id}`}
-                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
+                  <td className="pe-1">
+                    {" "}
+                    {(pagination?.currentPage - 1) * pagination?.perPage +
+                      (index + 1)}
+                  </td>
+                  <td>{invoice?.id}</td>
+                  <td>{invoice?.created_at?.split("T")?.shift()}</td>
+                  <td>{invoice?.invoice_date}</td>
+                  <td>{invoice?.vendor?.vendor_name}</td>
+                  <td>{invoice?.type}</td>
+                  {/* <td>{invoice?.created_at}</td> */}
+                  <td>{invoice?.taxable_amount}/-</td>
+                  <td>{invoice?.paid_amount}/-</td>
+                  <td>
+                    <span
+                      className={`badge ${
+                        invoice?.status === "Pending"
+                          ? "bg-label-warning"
+                          : invoice.status === "Approve"
+                          ? "bg-label-success"
+                          : invoice.status === "Paid"
+                          ? "bg-label-info"
+                          : "bg-label-danger"
+                      } `}
                     >
-                      <i className="icon-base ti tabler-eye icon-22px" />
-                    </Link>
+                      {invoice?.status}
+                    </span>
+                  </td>
+                  <td>
                     <div className="d-inline-flex gap-2">
-                      <div className="d-inline-block">
-                        <a
-                          className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
-                        >
-                          <i className="icon-base ti tabler-dots-vertical icon-20px" />
-                        </a>
-                        <div
-                          className="dropdown-menu dropdown-menu-end m-0"
-                          style={{}}
-                        >
+                      <Link
+                        to={`/payment-management/invoice-detail/${invoice.id}`}
+                        className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
+                      >
+                        <i className="icon-base ti tabler-eye icon-22px" />
+                      </Link>
+                      <div className="d-inline-flex gap-2">
+                        <div className="d-inline-block">
                           <a
-                            className="dropdown-item waves-effect"
-                            data-bs-toggle="modal"
-                            data-bs-target="#grnCreateModel"
+                            className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
                           >
-                            Download Invoice
+                            <i className="icon-base ti tabler-dots-vertical icon-20px" />
                           </a>
-                          <a
-                            className="dropdown-item waves-effect"
-                            data-bs-toggle="modal"
-                            data-bs-target="#grnCreateModel"
-                            onClick={() => {
-                              console.log("invoice?.id", invoice?.id);
-                              startEditing({
-                                id: invoice?.id,
-                                payload: invoice,
-                              });
-                              setType(0); // editing mode
-                              setTimeout(() => handleOpen("addInvoice"), 100);
-                            }}
+                          <div
+                            className="dropdown-menu dropdown-menu-end m-0"
+                            style={{}}
                           >
-                            Edit
-                          </a>
-                          <div className="dropdown-divider" />
-                          <a className="dropdown-item text-danger delete-record waves-effect">
-                            Delete
-                          </a>
+                            <a
+                              className="dropdown-item waves-effect"
+                              data-bs-toggle="modal"
+                              data-bs-target="#grnCreateModel"
+                            >
+                              Download Invoice
+                            </a>
+                            <a
+                              className="dropdown-item waves-effect"
+                              data-bs-toggle="modal"
+                              data-bs-target="#grnCreateModel"
+                              onClick={() => {
+                                console.log("invoice?.id", invoice?.id);
+                                startEditing({
+                                  id: invoice?.id,
+                                  payload: invoice,
+                                });
+                                setType(0); // editing mode
+                                setTimeout(() => handleOpen("addInvoice"), 100);
+                              }}
+                            >
+                              Edit
+                            </a>
+                            <div className="dropdown-divider" />
+                            <a className="dropdown-item text-danger delete-record waves-effect">
+                              Delete
+                            </a>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
+                  </td>
+                </tr>
+              );
+            })
+          )}
         </tbody>
       </table>
       {/* -------------------END INVOICE LIST TABLE------------------- */}

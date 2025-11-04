@@ -12,6 +12,7 @@ export const useItemMaster = () => {
 
 // Item Category Provider
 export const ItemMasterProvider = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [itemMaster, setItemMaster] = useState([]);
   const [isItemEditId, setItemEditId] = useState(null);
   const [itemMasterData, setItemMasterData] = useState({
@@ -58,6 +59,8 @@ export const ItemMasterProvider = ({ children }) => {
     perPage = 10,
   } = {}) => {
     try {
+      setLoading(true);
+
       const params = {
         search,
         type,
@@ -94,6 +97,8 @@ export const ItemMasterProvider = ({ children }) => {
         console.error(error.response.data.message);
       }
       // toast.error("Failed to fetch item master");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -618,6 +623,8 @@ export const ItemMasterProvider = ({ children }) => {
         EditItemMaster,
         StartEditing,
         fetchItemSubCategoryById,
+        loading,
+        setLoading,
       }}
     >
       {children}

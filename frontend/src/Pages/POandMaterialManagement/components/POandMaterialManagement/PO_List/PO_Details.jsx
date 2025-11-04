@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   POProvider,
   usePOCreate,
@@ -37,9 +37,22 @@ export default function PO_Details() {
     poWorkflow,
   } = usePOCreate();
   const printRef = useRef();
-  const { setType } = useInvoice();
+  const {
+    setType,
+    // setItemIdInvoice,
+    // setVendorIdInvoice,
+    // setSubcategoryIdInvoice,
+  } = useInvoice();
   const { userPermission, fetchUserPermission } = useUserCreation();
   const { GRNList, grnList } = useGRN();
+
+  // sub category id , vendor id and grn id set via po and grn
+  // const [subcategoryIdInvoice, setSubcategoryIdInvoice] = useState(null);
+  const [poIdInvoice, setPoIdInvoice] = useState(null);
+  // const [vendorIdInvoice, setVendorIdInvoice] = useState(null);
+  // const [itemIdInvoice, setItemIdInvoice] = useState(null);
+
+  // console.log("vendorIdInvoice", vendorIdInvoice);
 
   useEffect(() => {
     GRNList({
@@ -453,7 +466,7 @@ export default function PO_Details() {
                   </thead>
                   <tbody>
                     {grnList?.map((grn, index) => {
-                      // console.log("grnn", grn);
+                      console.log("grnn", grn);
                       return (
                         <tr>
                           <td>
@@ -497,10 +510,12 @@ export default function PO_Details() {
                               {grn?.status}
                             </span>
                           </td>
-                          <td
+                          {/* <td
                             className={`${
                               grn?.status === "Complete" ? "d-block" : "d-none"
                             }`}
+                            // className={`
+                            //   ${grn?.invoice_file ? "d-block" : "d-none"}`}
                           >
                             <Link
                               to="/payment-management/invoice-list"
@@ -515,20 +530,89 @@ export default function PO_Details() {
                             </Link>
                           </td>
                           <td
-                            className={`${
-                              grn?.status === "Pending" ? "d-block" : "d-none"
-                            }`}
+                          // className={`${
+                          //   grn?.status === "Pending" &&
+                          //   userPermission?.some(
+                          //     (perm) =>
+                          //       [
+                          //         "Get Quotation",
+                          //         "PO Generation",
+                          //         "GRN",
+                          //       ].includes(perm.type) &&
+                          //       perm.permission === "add"
+                          //   )
+                          //     ? "d-block"
+                          //     : "d-none"
+                          // }`}
                           >
-                            <Link
-                              // to="/payment-management/invoice-list"
-                              onClick={() => {
-                                handleOpen("addInvoice");
-                              }}
-                              className="btn btn-dark btn-sm waves-effect waves-light"
-                            >
-                              Create Invoice
-                            </Link>
-                          </td>
+                            {grn?.status === "Pending" &&
+                            userPermission?.some(
+                              (perm) =>
+                                [
+                                  "Get Quotation",
+                                  "PO Generation",
+                                  "GRN",
+                                ].includes(perm.type) &&
+                                perm.permission === "add"
+                            ) ? (
+                              <Link
+                                // to="/payment-management/invoice-list"
+                                onClick={() => {
+                                  handleOpen("addInvoice");
+                                  setType(2);
+                                  setSubcategoryIdInvoice();
+                                  setVendorIdInvoice(grn?.vendor_id);
+                                  setItemIdInvoice(grn?.items[0]?.item_id);
+                                }}
+                                className="btn btn-dark btn-sm waves-effect waves-light"
+                              >
+                                Create Invoice
+                              </Link>
+                            ) : null}
+                          </td> */}
+                          {/* ✅ Show View Invoice Icon when GRN is Complete */}
+                          {grn?.status === "Complete" && (
+                            <td>
+                              <Link
+                                to="/payment-management/invoice-list"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                aria-label="View Invoice"
+                                data-bs-original-title="View Invoice"
+                              >
+                                <i className="icon-base ti tabler-file-invoice text-success icon-20px" />
+                              </Link>
+                            </td>
+                          )}
+
+                          {/* ✅ Show Create Invoice Button when GRN is Pending & user has permission */}
+
+                          {grn?.status === "Pending" &&
+                            userPermission?.some(
+                              (perm) =>
+                                [
+                                  "Get Quotation",
+                                  "PO Generation",
+                                  "GRN",
+                                ].includes(perm.type) &&
+                                perm.permission === "add"
+                            ) && (
+                              <td>
+                                <Link
+                                  onClick={() => {
+                                    handleOpen("addInvoice");
+                                    setType(2);
+                                    // setSubcategoryIdInvoice();
+                                    // setVendorIdInvoice(grn?.vendor_id);
+                                    // setItemIdInvoice(grn?.items[0]?.item_id);
+                                    setPoIdInvoice(grn?.po_id);
+                                  }}
+                                  className="btn btn-dark btn-sm waves-effect waves-light"
+                                >
+                                  Create Invoice
+                                </Link>
+                              </td>
+                            )}
                         </tr>
                       );
                     })}
@@ -888,7 +972,12 @@ export default function PO_Details() {
         <VendorProvider>
           <SubCategoryProvider>
             <ItemRequestProvider>
-              <Invoice_List_Form type={0} />
+              <Invoice_List_Form
+                type={2}
+                // vendorIdInvoice={vendorIdInvoice}
+                // itemIdInvoice={itemIdInvoice}
+                poIdInvoice={poIdInvoice}
+              />
             </ItemRequestProvider>
           </SubCategoryProvider>
         </VendorProvider>
