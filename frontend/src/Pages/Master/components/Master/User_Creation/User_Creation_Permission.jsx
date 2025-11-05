@@ -671,17 +671,17 @@ export default function User_Creation_Permission() {
           await ensurePermission(type, "view");
         if (normalizedType === "payment request")
           await ensurePermission(type, "view");
-        if (normalizedType === "vendor payment history") {
-          await ensurePermission(type, "view");
-          // await ensurePermission(type, "download");
-        }
+        // if (normalizedType === "vendor payment history") {
+        //   await ensurePermission(type, "view");
+        //   // await ensurePermission(type, "download");
+        // }
         // ----------- Item Request Module -------------- //
         if (normalizedType === "item request")
           await ensurePermission(type, "view");
         if (normalizedType === "material approval")
           await ensurePermission(type, "view");
-        if (normalizedType === "request history report")
-          await ensurePermission(type, "view");
+        // if (normalizedType === "request history report")
+        //   await ensurePermission(type, "view");
       }
 
       // --- Auto-uncheck logic ---
@@ -694,7 +694,7 @@ export default function User_Creation_Permission() {
 
       // --- Auto-check 'view' when 'download' is checked ---
       if (isChecked && normalizedPerm === "download") {
-        if (normalizedType === "vendor payment history") {
+        if (normalizedType === "payment request") {
           await ensurePermission(type, "view");
         }
       }
@@ -1295,12 +1295,12 @@ export default function User_Creation_Permission() {
                           Approve
                         </th>
                         <th className="text-nowrap text-center w-px-50">
-                          Download
+                          Download Report
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      {/* <tr>
                         <td className="text-nowrap text-heading">
                           Pending Payment Vendor List
                         </td>
@@ -1315,7 +1315,7 @@ export default function User_Creation_Permission() {
                         <td></td>
                         <td></td>
                         <td></td>
-                      </tr>
+                      </tr> */}
                       <tr>
                         <td className="text-nowrap text-heading">
                           Payment Request
@@ -1345,7 +1345,12 @@ export default function User_Creation_Permission() {
                             id="defaultCheck_cust_28"
                           />
                         </td>
-                        <td></td>
+                        <PermissionCheckbox
+                          module="Payment Management Module"
+                          type="Payment Request"
+                          permission="download"
+                          id="defaultCheck_cust_30"
+                        />
                       </tr>
                       {/* <tr>
                         <td className="text-nowrap text-heading">
@@ -1363,7 +1368,7 @@ export default function User_Creation_Permission() {
                         </td>
                         <td></td>
                       </tr> */}
-                      <tr>
+                      {/* <tr>
                         <td className="text-nowrap text-heading">
                           Vendor Payment History
                         </td>
@@ -1385,7 +1390,7 @@ export default function User_Creation_Permission() {
                             id="defaultCheck_cust_30"
                           />
                         </td>
-                      </tr>
+                      </tr> */}
                     </tbody>
                   </table>
                 </div>

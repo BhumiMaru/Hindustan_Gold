@@ -1,5 +1,9 @@
 export const ENDPOINTS = {
   // MASTER
+  DASBOARD: {
+    LIST: "/dashboard/count",
+  },
+
   DEPARTMENTS: {
     LIST: "/departments/list",
     ADD_UPDATE: "/departments/add/update",

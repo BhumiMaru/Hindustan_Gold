@@ -140,17 +140,23 @@ export default function Invoice_List_List() {
                 <span className="icon-xs icon-base ti tabler-plus me-2" />
                 Payment Request
               </a>
-              <button
-                className="btn buttons-collection btn-label-secondary  waves-effect"
-                type="button"
-              >
-                <span>
-                  <span className=" d-sm-block d-lg-flex align-items-center gap-1">
-                    <i className="icon-base ti tabler-upload icon-xs" />
-                    <span className="d-sm-inline-block">Export</span>
+              {userPermission.some(
+                (perm) =>
+                  perm.type === "Payment Request" &&
+                  perm.permission === "download"
+              ) && (
+                <button
+                  className="btn buttons-collection btn-label-secondary  waves-effect"
+                  type="button"
+                >
+                  <span>
+                    <span className=" d-sm-block d-lg-flex align-items-center gap-1">
+                      <i className="icon-base ti tabler-upload icon-xs" />
+                      <span className="d-sm-inline-block">Export</span>
+                    </span>
                   </span>
-                </span>
-              </button>
+                </button>
+              )}
             </div>
           </div>
           <div className="row px-3 pb-2">

@@ -165,6 +165,18 @@ export default function SideBar() {
   // piAndMaterialManagementRoutes["GRN List"] =
   //   piAndMaterialManagementRoutesBase["GRN List"];
 
+  // 5. Vendor List
+  // piAndMaterialManagementRoutes["Vendor List"] =
+  //   piAndMaterialManagementRoutesBase["Vendor List"];
+  if (
+    userPermission?.some(
+      (perm) => perm.type == "Get Quotation" && perm.permission === "add"
+    )
+  ) {
+    piAndMaterialManagementRoutes["Vendor List"] =
+      "/payment-management/vendor-list";
+  }
+
   // Payment Management
   const paymentManagementRoutesBase = {};
 
@@ -181,14 +193,14 @@ export default function SideBar() {
   }
 
   // Vendor
-  if (
-    userPermission?.some(
-      (perm) =>
-        perm.type == "Vendor Payment History" && perm.permission === "view"
-    )
-  ) {
-    paymentManagementRoutes["Vendor List"] = "/payment-management/vendor-list";
-  }
+  // if (
+  //   userPermission?.some(
+  //     (perm) =>
+  //       perm.type == "Vendor Payment History" && perm.permission === "view"
+  //   )
+  // ) {
+  //   paymentManagementRoutes["Vendor List"] = "/payment-management/vendor-list";
+  // }
 
   // const paymentManagementRoutes = {
   //   "Payment List": "/payment-management/invoice-list",

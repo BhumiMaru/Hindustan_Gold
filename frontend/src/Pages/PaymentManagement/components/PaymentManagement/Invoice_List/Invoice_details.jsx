@@ -184,23 +184,29 @@ export default function Invoice_details() {
                   <h4 className="">Invoice Detail</h4>
                   <div>
                     <div className="badge bg-label-info rounded-3">
-                      <img
-                        src={`${publicUrl}assets/img/icons/misc/doc.png`}
-                        alt="img"
-                        width={15}
-                        className="me-2"
-                      />
-                      <span className="h6 mb-0 text-info">
-                        {invoiceDetail?.invoice_file}
-                      </span>
+                      <Link
+                        to="/payment-management/invoice-list"
+                        // className="badge bg-label-primary rounded p-1_5 mt-1"
+                        target="_blank"
+                      >
+                        <img
+                          src={`${publicUrl}assets/img/icons/misc/doc.png`}
+                          alt="img"
+                          width={15}
+                          className="me-2"
+                        />
+                        <span className="h6 mb-0 text-info">
+                          {invoiceDetail?.invoice_file}
+                        </span>
+                      </Link>
                     </div>
-                    <Link
+                    {/* <Link
                       to="/payment-management/invoice-list"
                       className="badge bg-label-primary rounded p-1_5 mt-1"
                       target="_blank"
                     >
                       <i className="icon-base ti tabler-eye icon-md" />
-                    </Link>
+                    </Link> */}
                   </div>
                 </div>
                 <div className="row ms-2">
