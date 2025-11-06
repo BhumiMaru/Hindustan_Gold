@@ -31,6 +31,12 @@ export default function Role_Master_Table() {
                 <Loader />
               </td>
             </tr>
+          ) : roles.length === 0 ? (
+            <tr>
+              <td colSpan="11" className="text-center py-5">
+                <p className="mt-2 text-muted fw-semibold">No items found</p>
+              </td>
+            </tr>
           ) : (
             roles?.map((role, index) => {
               return (

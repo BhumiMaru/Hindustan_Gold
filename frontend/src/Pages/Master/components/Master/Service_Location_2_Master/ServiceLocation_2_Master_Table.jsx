@@ -30,6 +30,12 @@ export default function ServiceLocation_2_Master_Table() {
                 <Loader />
               </td>
             </tr>
+          ) : serviceLocation2.length === 0 ? (
+            <tr>
+              <td colSpan="11" className="text-center py-5">
+                <p className="mt-2 text-muted fw-semibold">No items found</p>
+              </td>
+            </tr>
           ) : (
             serviceLocation2.map((serviceLocation2, index) => {
               return (

@@ -412,411 +412,150 @@ export default function Dashboard() {
             )}
 
           {/* Po Generate */}
-          {!isAdmin && (
-            <div className="pt-5">
-              <h5
-                className="mb-3 fw-semibold text-uppercase"
-                style={{ color: "#6d6b77" }}
-              >
-                PO Generate
-              </h5>
+          {!isAdmin &&
+            userPermission.some(
+              (perm) =>
+                [
+                  "PI Request",
+                  "Get Quotation",
+                  "PO Generation",
+                  "GRN",
+                ].includes(perm.type) &&
+                ["view", "add", "approve"].includes(perm.permission)
+            ) && (
+              <div className="pt-5">
+                <h5
+                  className="mb-3 fw-semibold text-uppercase"
+                  style={{ color: "#6d6b77" }}
+                >
+                  PO & Material Management
+                </h5>
 
-              {/* <div className="row g-6">
-                Total PO Pending
-                <div className="col-lg-3 col-sm-6">
-                  <div className="card card-border-shadow-primary h-100">
-                    <div className="card-body">
-                      <div className="d-flex align-items-center mb-2">
-                        <div className="avatar me-4">
-                          <span className="avatar-initial rounded bg-label-primary">
-                            <i className="icon-base ti tabler-clipboard icon-28px"></i>
-                          </span>
+                <div className="row g-6">
+                  {[
+                    {
+                      title: "Total MY PI Request",
+                      value: dashboardList?.po_generate?.po_pending,
+                      type: "PI Request",
+                      permission: "add",
+                      icon: "tabler-clipboard",
+                      color: "warning",
+                    },
+                    {
+                      title: "Total Pending PI Request",
+                      value: dashboardList?.po_generate?.po_pending,
+                      type: "PI Request",
+                      permission: "add",
+                      icon: "tabler-hourglass",
+                      color: "primary",
+                    },
+                    {
+                      title: "Total Pending GRN Approvals",
+                      value: dashboardList?.po_generate?.po_pending,
+                      type: "PI Request",
+                      permission: "add",
+                      icon: "tabler-file-check",
+                      color: "success",
+                    },
+                    {
+                      title: "Total Pending Get Quote",
+                      value: dashboardList?.po_generate?.po_pending,
+                      type: "Get Quotation",
+                      permission: "add",
+                      icon: "tabler-quote",
+                      color: "primary",
+                    },
+                    {
+                      title: "Total Pending PO Generate",
+                      value: dashboardList?.po_generate?.po_pending,
+                      type: "Get Quotation",
+                      permission: "add",
+                      icon: "tabler-file-plus",
+                      color: "primary",
+                    },
+                    {
+                      title: "Total Vendor",
+                      value: dashboardList?.po_generate?.po_pending,
+                      type: "Get Quotation",
+                      permission: "add",
+                      icon: "tabler-users",
+                      color: "warning",
+                    },
+                    {
+                      title: "Total Pending PI Approval",
+                      value: dashboardList?.po_generate?.po_pending,
+                      type: "PI Request",
+                      permission: "approve",
+                      icon: "tabler-checklist",
+                      color: "success",
+                    },
+                    {
+                      title: "Total Pending PO Approval",
+                      value: dashboardList?.po_generate?.po_pending,
+                      type: "PO Generation",
+                      permission: "approve",
+                      icon: "tabler-clipboard-check",
+                      color: "primary",
+                    },
+                    {
+                      title: "Total GRN",
+                      value: dashboardList?.po_generate?.po_pending,
+                      type: "GRN",
+                      permission: "add",
+                      icon: "tabler-truck",
+                      color: "warning",
+                    },
+                    {
+                      title: "Total In-Progress PO",
+                      value: dashboardList?.po_generate?.po_pending,
+                      type: "GRN",
+                      permission: "add",
+                      icon: "tabler-progress",
+                      color: "info",
+                    },
+                    {
+                      title: "Total Pending GRN Approval",
+                      value: dashboardList?.po_generate?.po_pending,
+                      type: "GRN",
+                      permission: "add",
+                      icon: "tabler-clipboard-x",
+                      color: "success",
+                    },
+                  ]
+                    .filter((card) =>
+                      userPermission.some(
+                        (perm) =>
+                          perm.type === card.type &&
+                          perm.permission === card.permission
+                      )
+                    )
+                    .map((card, idx) => (
+                      <div key={idx} className="col-lg-3 col-sm-6">
+                        <div
+                          className={`card card-border-shadow-${card.color} h-100`}
+                        >
+                          <div className="card-body">
+                            <div className="d-flex align-items-center mb-2">
+                              <div className="avatar me-4">
+                                <span
+                                  className={`avatar-initial rounded bg-label-${card.color}`}
+                                  // style={{ color: card.color }}
+                                >
+                                  <i
+                                    className={`icon-base ti ${card.icon} icon-28px`}
+                                  ></i>
+                                </span>
+                              </div>
+                              <h4 className="mb-0">{card.value}</h4>
+                            </div>
+                            <p className="mb-1">{card.title}</p>
+                          </div>
                         </div>
-                        <h4 className="mb-0">
-                          {dashboardList?.po_generate?.po_pending}
-                        </h4>
                       </div>
-                      <p className="mb-1">Total PO Pending</p>
-                    </div>
-                  </div>
+                    ))}
                 </div>
-
-                Total Pending GRN Generate
-                <div className="col-lg-3 col-sm-6">
-                  <div className="card card-border-shadow-warning h-100">
-                    <div className="card-body">
-                      <div className="d-flex align-items-center mb-2">
-                        <div className="avatar me-4">
-                          <span className="avatar-initial rounded bg-label-warning">
-                            <i className="icon-base ti tabler-hourglass icon-28px"></i>
-                          </span>
-                        </div>
-                        <h4 className="mb-0">
-                          {dashboardList?.po_generate?.pending_grn_generate}
-                        </h4>
-                      </div>
-                      <p className="mb-1">Total Pending GRN Generate</p>
-                    </div>
-                  </div>
-                </div>
-
-                Total PO Generate Pending
-                <div className="col-lg-3 col-sm-6">
-                  <div className="card card-border-shadow-success h-100">
-                    <div className="card-body">
-                      <div className="d-flex align-items-center mb-2">
-                        <div className="avatar me-4">
-                          <span className="avatar-initial rounded bg-label-success">
-                            <i className="icon-base ti tabler-circle-check icon-28px"></i>
-                          </span>
-                        </div>
-                        <h4 className="mb-0">
-                          {dashboardList?.po_generate?.po_generate_pending}
-                        </h4>
-                      </div>
-                      <p className="mb-1">Total PO Generate Pending</p>
-                    </div>
-                  </div>
-                </div>
-
-                Total Po GRN
-                <div className="col-lg-3 col-sm-6">
-                  <div className="card card-border-shadow-success h-100">
-                    <div className="card-body">
-                      <div className="d-flex align-items-center mb-2">
-                        <div className="avatar me-4">
-                          <span className="avatar-initial rounded bg-label-success">
-                            <i className="icon-base ti tabler-circle-check icon-28px"></i>
-                          </span>
-                        </div>
-                        <h4 className="mb-0">{dashboardList?.po_grn_total}</h4>
-                      </div>
-                      <p className="mb-1">Total PO GRN</p>
-                    </div>
-                  </div>
-                </div>
-              </div> */}
-              <div className="row g-6">
-                {/* Total MY PI Request */}
-
-                {userPermission.some(
-                  (perm) =>
-                    perm.type === "PI Request" && perm.permission === "add"
-                ) && (
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card card-border-shadow-primary h-100">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center mb-2">
-                          <div className="avatar me-4">
-                            <span
-                              className="avatar-initial rounded"
-                              style={{
-                                color: "#4e73df",
-                              }}
-                            >
-                              <i className="icon-base ti tabler-clipboard icon-28px"></i>
-                            </span>
-                          </div>
-                          <h4 className="mb-0">
-                            {dashboardList?.po_generate?.po_pending}
-                          </h4>
-                        </div>
-                        <p className="mb-1">Total MY PI Request</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Total Pending PI Request */}
-                {userPermission.some(
-                  (perm) =>
-                    perm.type === "PI Request" && perm.permission === "add"
-                ) && (
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card card-border-shadow-primary h-100">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center mb-2">
-                          <div className="avatar me-4">
-                            <span
-                              className="avatar-initial rounded"
-                              style={{
-                                color: "#36b9cc",
-                              }}
-                            >
-                              <i className="icon-base ti tabler-hourglass icon-28px"></i>
-                            </span>
-                          </div>
-                          <h4 className="mb-0">
-                            {dashboardList?.po_generate?.po_pending}
-                          </h4>
-                        </div>
-                        <p className="mb-1">Total Pending PI Request</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Total Pending GRN Approvals */}
-                {userPermission.some(
-                  (perm) =>
-                    perm.type === "PI Request" && perm.permission === "add"
-                ) && (
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card card-border-shadow-primary h-100">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center mb-2">
-                          <div className="avatar me-4">
-                            <span
-                              className="avatar-initial rounded"
-                              style={{
-                                color: "#f6c23e",
-                              }}
-                            >
-                              <i className="icon-base ti tabler-file-check icon-28px"></i>
-                            </span>
-                          </div>
-                          <h4 className="mb-0">
-                            {dashboardList?.po_generate?.po_pending}
-                          </h4>
-                        </div>
-                        <p className="mb-1">Total Pending GRN Approvals</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Total Pending Get Quote */}
-                {userPermission.some(
-                  (perm) =>
-                    perm.type === "Get Quotation" && perm.permission === "add"
-                ) && (
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card card-border-shadow-primary h-100">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center mb-2">
-                          <div className="avatar me-4">
-                            <span
-                              className="avatar-initial rounded"
-                              style={{
-                                color: "#1cc88a",
-                              }}
-                            >
-                              <i className="icon-base ti tabler-quote icon-28px"></i>
-                            </span>
-                          </div>
-                          <h4 className="mb-0">
-                            {dashboardList?.po_generate?.po_pending}
-                          </h4>
-                        </div>
-                        <p className="mb-1">Total Pending Get Quote</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Total Pending PO Generate */}
-                {userPermission.some(
-                  (perm) =>
-                    perm.type === "Get Quotation" && perm.permission === "add"
-                ) && (
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card card-border-shadow-primary h-100">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center mb-2">
-                          <div className="avatar me-4">
-                            <span
-                              className="avatar-initial rounded"
-                              style={{
-                                color: "#fd7e14",
-                              }}
-                            >
-                              <i className="icon-base ti tabler-file-plus icon-28px"></i>
-                            </span>
-                          </div>
-                          <h4 className="mb-0">
-                            {dashboardList?.po_generate?.po_pending}
-                          </h4>
-                        </div>
-                        <p className="mb-1">Total Pending PO Generate</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Total Vendor */}
-                {userPermission.some(
-                  (perm) =>
-                    perm.type === "Get Quotation" && perm.permission === "add"
-                ) && (
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card card-border-shadow-primary h-100">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center mb-2">
-                          <div className="avatar me-4">
-                            <span
-                              className="avatar-initial rounded"
-                              style={{
-                                color: "#6610f2",
-                              }}
-                            >
-                              <i className="icon-base ti tabler-users icon-28px"></i>
-                            </span>
-                          </div>
-                          <h4 className="mb-0">
-                            {dashboardList?.po_generate?.po_pending}
-                          </h4>
-                        </div>
-                        <p className="mb-1">Total Vendor</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Total Pending PI Approval */}
-                {userPermission.some(
-                  (perm) =>
-                    perm.type === "PI Request" && perm.permission === "approve"
-                ) && (
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card card-border-shadow-primary h-100">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center mb-2">
-                          <div className="avatar me-4">
-                            <span
-                              className="avatar-initial rounded"
-                              style={{
-                                color: "#20c997",
-                              }}
-                            >
-                              <i className="icon-base ti tabler-checklist icon-28px"></i>
-                            </span>
-                          </div>
-                          <h4 className="mb-0">
-                            {dashboardList?.po_generate?.po_pending}
-                          </h4>
-                        </div>
-                        <p className="mb-1">Total Pending PI Approval</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Total Pending PO Approval */}
-                {userPermission.some(
-                  (perm) =>
-                    perm.type === "PO Generation" &&
-                    perm.permission === "approve"
-                ) && (
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card card-border-shadow-primary h-100">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center mb-2">
-                          <div className="avatar me-4">
-                            <span
-                              className="avatar-initial rounded"
-                              style={{
-                                color: "#dc3545",
-                              }}
-                            >
-                              <i className="icon-base ti tabler-clipboard-check icon-28px"></i>
-                            </span>
-                          </div>
-                          <h4 className="mb-0">
-                            {dashboardList?.po_generate?.po_pending}
-                          </h4>
-                        </div>
-                        <p className="mb-1">Total Pending PO Approval</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Total GRN */}
-                {userPermission.some(
-                  (perm) => perm.type === "GRN" && perm.permission === "add"
-                ) && (
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card card-border-shadow-primary h-100">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center mb-2">
-                          <div className="avatar me-4">
-                            <span
-                              className="avatar-initial rounded"
-                              style={{
-                                color: "#198754",
-                              }}
-                            >
-                              <i className="icon-base ti tabler-truck icon-28px"></i>
-                            </span>
-                          </div>
-                          <h4 className="mb-0">
-                            {dashboardList?.po_generate?.po_pending}
-                          </h4>
-                        </div>
-                        <p className="mb-1">Total GRN</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Total Running/continue InProgress PO */}
-                {userPermission.some(
-                  (perm) => perm.type === "GRN" && perm.permission === "add"
-                ) && (
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card card-border-shadow-primary h-100">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center mb-2">
-                          <div className="avatar me-4">
-                            <span
-                              className="avatar-initial rounded"
-                              style={{
-                                color: "#0dcaf0",
-                              }}
-                            >
-                              <i className="icon-base ti tabler-progress icon-28px"></i>
-                            </span>
-                          </div>
-                          <h4 className="mb-0">
-                            {dashboardList?.po_generate?.po_pending}
-                          </h4>
-                        </div>
-                        <p className="mb-1">Total In-Progress PO</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Total Pending GRN Approval */}
-                {userPermission.some(
-                  (perm) => perm.type === "GRN" && perm.permission === "add"
-                ) && (
-                  <div className="col-lg-3 col-sm-6">
-                    <div className="card card-border-shadow-primary h-100">
-                      <div className="card-body">
-                        <div className="d-flex align-items-center mb-2">
-                          <div className="avatar me-4">
-                            <span
-                              className="avatar-initial rounded"
-                              style={{
-                                color: "#6f42c1",
-                              }}
-                            >
-                              <i className="icon-base ti tabler-clipboard-x icon-28px"></i>
-                            </span>
-                          </div>
-                          <h4 className="mb-0">
-                            {dashboardList?.po_generate?.po_pending}
-                          </h4>
-                        </div>
-                        <p className="mb-1">Total Pending GRN Approval</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
-            </div>
-          )}
+            )}
 
           {/* Po Generate */}
           {/* {!isAdmin && (

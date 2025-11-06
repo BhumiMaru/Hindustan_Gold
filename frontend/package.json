@@ -16,6 +16,7 @@
     "crypto-js": "^4.2.0",
     "cryptojs": "^2.5.3",
     "daterangepicker": "^3.1.0",
+    "file-saver": "^2.0.5",
     "html2canvas": "^1.4.1",
     "jquery": "^3.7.1",
     "jspdf": "^3.0.3",
@@ -30,7 +31,8 @@
     "react-select": "^5.10.2",
     "react-select2": "^4.0.3",
     "react-toastify": "^11.0.5",
-    "rsuite": "^5.83.3"
+    "rsuite": "^5.83.3",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",

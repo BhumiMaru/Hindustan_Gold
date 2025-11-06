@@ -207,6 +207,8 @@ export default function SideBar() {
   //   "Vendor List": "/payment-management/vendor-list",
   // };
 
+  console.log("userpermission", userPermission);
+
   return (
     <>
       {/* Sidebar Menu */}
@@ -468,44 +470,48 @@ export default function SideBar() {
             )}
 
           {/* Payment Management */}
-          {!isAdmin && (
-            <li
-              className={`menu-item ${
-                activeMenu === "Payment" ? "open active" : ""
-              } cursor-pointer`}
-              onClick={() => toggleMenu("Payment")}
-            >
-              <a className="menu-link menu-toggle">
-                <i className="menu-icon icon-base ti tabler-file-dollar"></i>
-                <div data-i="Payment Management">Payment Management</div>
-              </a>
-              <ul
-                className={`menu-sub dropdown ${
-                  activeMenu === "Payment" ? "open" : ""
-                }`}
+          {!isAdmin &&
+            userPermission?.some(
+              (perm) =>
+                perm.type == "Payment Request" && perm.permission === "view"
+            ) && (
+              <li
+                className={`menu-item ${
+                  activeMenu === "Payment" ? "open active" : ""
+                } cursor-pointer`}
+                onClick={() => toggleMenu("Payment")}
               >
-                {Object.keys(paymentManagementRoutes).map((item) => (
-                  <li
-                    key={item}
-                    className={`menu-item ${
-                      activeSubMenu === item ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSubMenuClick("Payment", item);
-                    }}
-                  >
-                    <Link
-                      to={paymentManagementRoutes[item]}
-                      className="menu-link cursor-pointer text-decoration-none"
+                <a className="menu-link menu-toggle">
+                  <i className="menu-icon icon-base ti tabler-file-dollar"></i>
+                  <div data-i="Payment Management">Payment Management</div>
+                </a>
+                <ul
+                  className={`menu-sub dropdown ${
+                    activeMenu === "Payment" ? "open" : ""
+                  }`}
+                >
+                  {Object.keys(paymentManagementRoutes).map((item) => (
+                    <li
+                      key={item}
+                      className={`menu-item ${
+                        activeSubMenu === item ? "active" : ""
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSubMenuClick("Payment", item);
+                      }}
                     >
-                      <div data-i={item}>{item}</div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          )}
+                      <Link
+                        to={paymentManagementRoutes[item]}
+                        className="menu-link cursor-pointer text-decoration-none"
+                      >
+                        <div data-i={item}>{item}</div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            )}
 
           {/* UOM
           <li

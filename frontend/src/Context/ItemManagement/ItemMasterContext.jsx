@@ -70,33 +70,51 @@ export const ItemMasterProvider = ({ children }) => {
         page: page,
         per_page: perPage,
       };
-      const res = await getData(ENDPOINTS.ITEM_MASTER.LIST, params);
-      // console.log("params", params);
 
-      if (res.data && res.data.status === false) {
-        toast.error(res.data.message);
-        setItemMaster([]);
-        setPagination({
-          currentPage: 1,
-          perPage,
-          total: 0,
-        });
+      const res = await getData(ENDPOINTS.ITEM_MASTER.LIST, params);
+
+      //  Normalize backend response
+      const apiData = res?.data || {};
+
+      //  Case 1: “No items found” response
+      if (
+        apiData.status === false &&
+        (apiData.message?.toLowerCase().includes("no items found") ||
+          apiData.data?.length === 0)
+      ) {
+        setItemMaster([]); // clear old data
+        setPagination({ currentPage: 1, perPage, total: 0 });
         return;
-      } else {
-        const apiData = res.data;
-        setItemMaster(apiData.data || []);
-        setPagination({
-          currentPage: apiData.current_page,
-          perPage: apiData.per_page,
-          total: apiData.total,
-        });
       }
+
+      //  Case 2: Generic error
+      if (apiData.status === false) {
+        toast.error(apiData.message || "Failed to fetch items");
+        setItemMaster([]); // clear data in any failure
+        setPagination({ currentPage: 1, perPage, total: 0 });
+        return;
+      }
+
+      //  Case 3: Success
+      setItemMaster(apiData.data || []);
+      setPagination({
+        currentPage: apiData.current_page || page,
+        perPage: apiData.per_page || perPage,
+        total: apiData.total || apiData.data?.length || 0,
+      });
     } catch (error) {
       console.error("item master fetch error:", error);
-      if (error.response && error.response.data) {
-        console.error(error.response.data.message);
+
+      //  Always clear data on any fetch error
+      setItemMaster([]);
+      setPagination({ currentPage: 1, perPage, total: 0 });
+
+      // Optional toast (suppress for “No items found” only)
+      if (
+        !error.response?.data?.message?.toLowerCase().includes("no items found")
+      ) {
+        toast.error("Failed to fetch item master");
       }
-      // toast.error("Failed to fetch item master");
     } finally {
       setLoading(false);
     }

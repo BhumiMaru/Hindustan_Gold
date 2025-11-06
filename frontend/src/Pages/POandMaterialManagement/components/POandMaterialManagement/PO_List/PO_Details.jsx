@@ -103,6 +103,7 @@ export default function PO_Details() {
   };
 
   console.log("poDetails", poDetails);
+  console.log("po id", poIdInvoice);
   return (
     <>
       {/* ------------------------START PO DETAILS--------------------------- */}
@@ -186,6 +187,7 @@ export default function PO_Details() {
                 onClick={() => {
                   handleOpen("addInvoice");
                   setType(2);
+                  setPoIdInvoice(Number(poDetails?.id));
                 }}
               >
                 Add Invoice
@@ -605,7 +607,7 @@ export default function PO_Details() {
                                     // setSubcategoryIdInvoice();
                                     // setVendorIdInvoice(grn?.vendor_id);
                                     // setItemIdInvoice(grn?.items[0]?.item_id);
-                                    setPoIdInvoice(grn?.po_id);
+                                    setPoIdInvoice(Number(grn?.po_id));
                                   }}
                                   className="btn btn-dark btn-sm waves-effect waves-light"
                                 >

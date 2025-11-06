@@ -80,10 +80,16 @@ export const POProvider = ({ children }) => {
   });
   const [status, setStatus] = useState("");
   const [itemName, setItemName] = useState(null);
-  const [selectedType, setSelectedType] = useState(null);
+  const [selectedType, setSelectedType] = useState("all");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [vendor, setVendor] = useState(null);
+  // const [status, setStatus] = useState("all");
+  // const [itemName, setItemName] = useState("all");
+  // const [selectedType, setSelectedType] = useState("all");
+  // const [startDate, setStartDate] = useState("");
+  // const [endDate, setEndDate] = useState("");
+  // const [vendor, setVendor] = useState("all");
 
   // PO Details Workflow
   const [poWorkflowDetails, setPoWorkflowDetails] = useState();
@@ -116,6 +122,50 @@ export const POProvider = ({ children }) => {
   // };
 
   // Po List
+  // const getPoList = async ({
+  //   search: searchText = search,
+  //   status: filterStatus = status,
+  //   poType = selectedType,
+  //   item = itemName,
+  //   vendor: vendorFilter = vendor,
+  //   start_date = startDate,
+  //   end_date = endDate,
+  //   page = 1,
+  //   perPage = 10,
+  // } = {}) => {
+  //   try {
+  //     setLoading(true);
+
+  //     const params = {
+  //       search: searchText || undefined,
+  //       status:
+  //         filterStatus && filterStatus !== "all" ? filterStatus : undefined,
+  //       po_type: poType && poType !== "all" ? poType : undefined,
+  //       item: item && item !== "all" ? item : undefined,
+  //       vendor:
+  //         vendorFilter && vendorFilter !== "all" ? vendorFilter : undefined,
+  //       start_date: start_date && start_date !== "all" ? start_date : undefined,
+  //       end_date: end_date && end_date !== "all" ? end_date : undefined,
+  //       page,
+  //       per_page: perPage,
+  //     };
+
+  //     const res = await getData(ENDPOINTS.POCREATE.LIST, params);
+  //     const apiData = res.data;
+
+  //     setPoList(apiData.data || []);
+  //     setPagination({
+  //       currentPage: apiData.current_page || 1,
+  //       perPage: apiData.per_page || perPage,
+  //       total: apiData.total || 0,
+  //     });
+  //   } catch (error) {
+  //     console.error("PO List failed:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const getPoList = async ({
     search: searchText = search,
     status: filterStatus = status,
@@ -126,13 +176,14 @@ export const POProvider = ({ children }) => {
     end_date = endDate,
     page = 1,
     perPage = 10,
-  }) => {
+  } = {}) => {
     try {
       setLoading(true);
+
       const params = {
         search: searchText || undefined,
         status: filterStatus || undefined,
-        po_type: poType || undefined,
+        po_type: poType && poType !== "all" ? poType : undefined, // ✅ FIXED
         item: item || undefined,
         vendor: vendor || undefined,
         start_date: start_date || undefined,

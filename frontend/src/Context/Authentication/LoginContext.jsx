@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (payload) => {
     try {
-      // console.log("📤 Raw login form:", payload);
+      console.log("📤 Raw login form:", payload);
 
       // 🔐 Use reusable encrypt function
       const encrypted = encryptData(payload);
@@ -70,11 +70,11 @@ export const AuthProvider = ({ children }) => {
       // console.log("encrypted", encrypted);
 
       const res = await postData(ENDPOINTS.AUTH.LOGIN, { data: encrypted });
-      // console.log("📥 Raw login response:", res);
+      console.log("📥 Raw login response:", res);
 
       if (res.status) {
         const decrypted = decryptData(res.data);
-        // console.log("decrypted", decrypted);
+        console.log("decrypted", decrypted);
         if (!decrypted) {
           toast.error("Invalid server response");
           return null;

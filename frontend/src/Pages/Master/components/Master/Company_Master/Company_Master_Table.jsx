@@ -29,6 +29,12 @@ export default function Company_Master_Table() {
                 <Loader />
               </td>
             </tr>
+          ) : companies.length === 0 ? (
+            <tr>
+              <td colSpan="11" className="text-center py-5">
+                <p className="mt-2 text-muted fw-semibold">No items found</p>
+              </td>
+            </tr>
           ) : (
             companies.map((company, index) => {
               return (

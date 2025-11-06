@@ -20,7 +20,8 @@ export default function Item_Master_List() {
   const [status, setStatus] = useState(null);
 
   const { userPermission, fetchUserPermission } = useUserCreation();
-  const { fetchItemMaster, setPagination, pagination } = useItemMaster();
+  const { fetchItemMaster, setPagination, pagination, itemMaster } =
+    useItemMaster();
   const { filterCategory, fetchCategoryFilter } = useCategoryMaster();
   const { filterSubCategory, fetchSubCategoryFilter } = useSubCategory();
 
@@ -247,6 +248,7 @@ export default function Item_Master_List() {
           {/* ---------- Table ---------- */}
           <div className="card-datatable table-responsive pt-0">
             <Item_Master_Table search={search} />
+            {/* {itemMaster.length > 0 && ( */}
             <Pagination
               currentPage={pagination.currentPage}
               totalItems={pagination.total}
@@ -254,6 +256,7 @@ export default function Item_Master_List() {
               onPageChange={handlePageChange}
               onItemsPerPageChange={handleItemsPerPageChange}
             />
+            {/* )} */}
           </div>
         </div>
       </div>

@@ -65,7 +65,7 @@ export const VendorProvider = ({ children }) => {
       });
       return res.data.data;
     } catch (error) {
-      toast.error("Error during Vendor List");
+      // toast.error("Error during Vendor List");
       console.error("Vendor List error:", error);
     } finally {
       setLoading(false);

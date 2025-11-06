@@ -28,6 +28,8 @@ export default function Item_Master_Table({ search }) {
     );
   });
 
+  console.log("itemMaster", itemMaster);
+
   const handleEditClick = async (item) => {
     // Fetch only subcategory
     navigate(`/item/item-create/${item.type}/${item.id}`);
@@ -48,6 +50,8 @@ export default function Item_Master_Table({ search }) {
       );
     }
   };
+
+  console.log("filteredData", filteredData);
 
   return (
     <>
@@ -73,103 +77,67 @@ export default function Item_Master_Table({ search }) {
         <tbody>
           {loading ? (
             <tr>
-              <td colSpan="11">
+              <td colSpan="11" className="text-center py-5">
                 <Loader />
               </td>
             </tr>
+          ) : filteredData.length === 0 ? (
+            <tr>
+              <td colSpan="11" className="text-center py-5">
+                <p className="mt-2 text-muted fw-semibold">No items found</p>
+              </td>
+            </tr>
           ) : (
-            filteredData.map((item, index) => {
-              // console.log("item", item);
-              return (
-                <tr key={item?.id}>
-                  <td>
-                    <div className="ms-4">
-                      {(pagination?.currentPage - 1) * pagination?.perPage +
-                        (index + 1)}
-                    </div>
-                  </td>
-                  <td>{item?.type}</td>
-                  <td>{item?.item_code}</td>
-                  <td>{item?.item_name}</td>
-                  <td>{item?.category?.category_name}</td>
-                  <td>{item?.subcategory?.sub_category_name}</td>
-                  <td>{item?.stock}</td>
-                  <td>
-                    <span
-                      className={`badge ${
-                        item.status === 1
-                          ? "bg-label-success"
-                          : "bg-label-danger"
-                      }`}
-                    >
-                      {item?.status === 1 ? "Active" : "Deactive"}
-                    </span>
-                  </td>
-                  {/* <td>
-                  <div className="d-inline-flex gap-2">
-                    <Link
-                      to={`/item/item-create/${item.type}/${item.id}`}
-                      onClick={() => {
-                        StartEditing(item.id);
-                        // console.log("id", item.id);
-                      }}
-                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                    >
-                      <i className="icon-base ti tabler-edit icon-22px" />
-                    </Link>
-                    <a
-                      href="#"
-                      type="button"
-                      className="btn btn-text-secondary rounded-pill btn-icon waves-effect"
-                      onClick={() => deleteItemMaster(item.id)}
-                    >
-                      <i className="icon-base ti tabler-trash text-danger icon-22px" />
-                    </a>
+            filteredData.map((item, index) => (
+              <tr key={item?.id}>
+                <td>
+                  <div className="ms-4">
+                    {(pagination?.currentPage - 1) * pagination?.perPage +
+                      (index + 1)}
                   </div>
-                </td> */}
-                  <td>
-                    <div className="d-inline-flex gap-2">
-                      <a
-                        className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
+                </td>
+                <td>{item?.type}</td>
+                <td>{item?.item_code}</td>
+                <td>{item?.item_name}</td>
+                <td>{item?.category?.category_name}</td>
+                <td>{item?.subcategory?.sub_category_name}</td>
+                <td>{item?.stock}</td>
+                <td>
+                  <span
+                    className={`badge ${
+                      item.status === 1 ? "bg-label-success" : "bg-label-danger"
+                    }`}
+                  >
+                    {item?.status === 1 ? "Active" : "Deactive"}
+                  </span>
+                </td>
+                <td>
+                  <div className="d-inline-flex gap-2">
+                    <a
+                      className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
+                    </a>
+                    <div className="dropdown-menu dropdown-menu-end m-0">
+                      <button
+                        className="dropdown-item waves-effect"
+                        onClick={() => handleEditClick(item)}
                       >
-                        <i className="icon-base ti tabler-dots-vertical icon-20px"></i>
+                        Edit
+                      </button>
+                      <a
+                        className="dropdown-item text-danger delete-record waves-effect"
+                        onClick={() => deleteItemMaster(item.id)}
+                      >
+                        Delete
                       </a>
-                      <div className="d-inline-block">
-                        <div className="dropdown-menu dropdown-menu-end m-0">
-                          <button
-                            className="dropdown-item waves-effect"
-                            onClick={() => handleEditClick(item)}
-                          >
-                            Edit
-                          </button>
-                          {/* <a
-                          href="#"
-                          className="dropdown-item waves-effect"
-                          data-bs-toggle="modal"
-                          data-bs-target="#grnCreateModel"
-                          onClick={() => {
-                            handleOpen("viewSubCategory");
-                            setSubCategoryData(subCat);
-                          }}
-                        >
-                          View
-                        </a> */}
-                          {/* <div className="dropdown-divider"></div> */}
-                          <a
-                            className="dropdown-item text-danger delete-record waves-effect"
-                            onClick={() => deleteItemMaster(item.id)}
-                          >
-                            Delete
-                          </a>
-                        </div>
-                      </div>
                     </div>
-                  </td>
-                </tr>
-              );
-            })
+                  </div>
+                </td>
+              </tr>
+            ))
           )}
         </tbody>
       </table>

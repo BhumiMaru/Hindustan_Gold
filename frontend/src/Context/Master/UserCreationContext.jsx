@@ -76,7 +76,7 @@ export const UserCreationProvider = ({ children }) => {
   } = {}) => {
     try {
       setLoading(true);
-      const params = { search, page, per_page: perPage };
+      const params = { search, status, page, per_page: perPage };
 
       if (role_id) {
         params.role_id = role_id;

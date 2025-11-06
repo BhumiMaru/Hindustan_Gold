@@ -156,6 +156,8 @@ export const InvoiceProvider = ({ children }) => {
   const editInvoice = async ({ id, formData }) => {
     try {
       // Append ID to FormData
+      console.log("id id", id);
+      console.log("id id typeof", typeof id);
       formData.append("id", id);
 
       const res = await postData(

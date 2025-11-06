@@ -8,6 +8,7 @@ import Payment_Paritals from "./Payment_Paritals";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 import { decryptData } from "../../../../../utils/decryptData";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
+const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export default function Invoice_details() {
   const { id } = useParams();
@@ -184,21 +185,33 @@ export default function Invoice_details() {
                   <h4 className="">Invoice Detail</h4>
                   <div>
                     <div className="badge bg-label-info rounded-3">
-                      <Link
-                        to="/payment-management/invoice-list"
-                        // className="badge bg-label-primary rounded p-1_5 mt-1"
-                        target="_blank"
-                      >
-                        <img
-                          src={`${publicUrl}assets/img/icons/misc/doc.png`}
-                          alt="img"
-                          width={15}
-                          className="me-2"
-                        />
-                        <span className="h6 mb-0 text-info">
-                          {invoiceDetail?.invoice_file}
-                        </span>
-                      </Link>
+                      {invoiceDetail?.invoice_file ? (
+                        <Link
+                          to={`${fileUrl}/storage/uploads/invoices/${invoiceDetail.invoice_file}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <img
+                            src={`${publicUrl}assets/img/icons/misc/doc.png`}
+                            alt="Document"
+                            width={15}
+                            className="me-2"
+                          />
+                          <span className="h6 mb-0 text-info">
+                            {invoiceDetail.invoice_file}
+                          </span>
+                        </Link>
+                      ) : (
+                        <div className="d-flex align-items-center text-muted">
+                          <img
+                            src={`${publicUrl}assets/img/icons/misc/no-file.png`}
+                            alt="No file"
+                            width={15}
+                            className="me-2 opacity-75"
+                          />
+                          <span className="h6 mb-0">No file uploaded</span>
+                        </div>
+                      )}
                     </div>
                     {/* <Link
                       to="/payment-management/invoice-list"

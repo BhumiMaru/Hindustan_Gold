@@ -83,7 +83,7 @@ export const GetQuoteProvider = ({ children }) => {
         total: apiData.total || 0,
       });
     } catch (error) {
-      toast.error("Error during Get Quote List");
+      // toast.error("Error during Get Quote List");
       console.error("Get Quote List PIRequest error:", error);
     } finally {
       setLoading(false);
@@ -110,8 +110,8 @@ export const GetQuoteProvider = ({ children }) => {
   // ---------------- GET QUOTE CREATE ----------------
   const getQuoteCreate = async (payload) => {
     try {
+      console.log("payload", payload);
       const res = await postData(ENDPOINTS.GETQUOTE.CREATE, payload);
-      // console.log("payload", payload);
       if (res?.status) {
         const newId = res.data.id;
         // toast.success(res.message || "Get Quote Create successful!");

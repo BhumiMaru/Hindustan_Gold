@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import Invoice_List_Table from "./Invoice_List_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
-import {
-  InvoiceProvider,
-  useInvoice,
-} from "../../../../../Context/PIAndPoManagement/Invoice";
+import { useInvoice } from "../../../../../Context/PIAndPoManagement/Invoice";
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 import Date_Range_Model from "../../../../../components/Date Range/Date_Range_Model";
 import {
@@ -19,6 +18,8 @@ import { SubCategoryProvider } from "../../../../../Context/ItemManagement/SubCa
 import { ItemRequestProvider } from "../../../../../Context/Request Management/Item_Request";
 import { decryptData } from "../../../../../utils/decryptData";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
+import { getData } from "../../../../../utils/api";
+import { ENDPOINTS } from "../../../../../constants/endpoints";
 
 export default function Invoice_List_List() {
   const { modal, handleOpen } = useUIContext();
@@ -38,10 +39,13 @@ export default function Invoice_List_List() {
     setPagination,
     setType,
   } = useInvoice();
+
   const { fetchUserPermission, userPermission } = useUserCreation();
-  const { vendorFilter, setVendorFilter, getVendorFilter } = useVendor();
+  const { vendorFilter, getVendorFilter } = useVendor();
+
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDateRange, setSelectedDateRange] = useState("");
+  const [exporting, setExporting] = useState(false); // ✅ for loader on Export
 
   const getAuthData = sessionStorage.getItem("authData");
   const decryptAuthData = decryptData(getAuthData);
@@ -87,25 +91,92 @@ export default function Invoice_List_List() {
 
   const handleDateSelect = (range) => {
     setSelectedDateRange(range);
-
     const [start, end] = range.split(" - ");
     setDateRange({
       start: start ? moment(start, "DD/MM/YYYY").format("YYYY-MM-DD") : "",
       end: end ? moment(end, "DD/MM/YYYY").format("YYYY-MM-DD") : "",
     });
-
     setShowDatePicker(false);
+  };
+
+  // ✅ Step 3: Excel Export Function
+  const handleExportExcel = async () => {
+    try {
+      setExporting(true);
+
+      const perPageLimit = 100;
+      let allInvoices = [];
+      let currentPage = 1;
+      let totalPages = 1;
+
+      // ✅ Loop until all pages fetched
+      do {
+        const res = await getData(ENDPOINTS.INVOICE.LIST, {
+          status: status !== "all" ? status : undefined,
+          search: search || undefined,
+          type: selectedType !== "all" ? selectedType : undefined,
+          vendor_id: vendorName !== "all" ? vendorName : undefined,
+          start_date: dateRange.start || undefined,
+          end_date: dateRange.end || undefined,
+          page: currentPage,
+          per_page: perPageLimit,
+        });
+
+        const apiData = res?.data?.data || res?.data || [];
+        const total = res?.data?.total || apiData?.length || 0;
+        totalPages = Math.ceil(total / perPageLimit);
+
+        allInvoices = [...allInvoices, ...apiData];
+        currentPage++;
+      } while (currentPage <= totalPages);
+
+      if (!allInvoices.length) {
+        alert("No data available for export.");
+        return;
+      }
+
+      // ✅ Format data for Excel
+      const exportData = allInvoices.map((item, i) => ({
+        "S.No": i + 1,
+        "Invoice No": item.invoice_no || "",
+        "Vendor Name": item.vendor_name || "",
+        Type: item.invoice_type || "",
+        "Invoice Date": item.invoice_date
+          ? moment(item.invoice_date).format("DD-MM-YYYY")
+          : "",
+        "Taxable Amount": item.taxable_amount || "",
+        "TDS Amount": item.tds_amount || "",
+        "Paid Amount": item.paid_amount || "",
+        Status: item.status || "",
+      }));
+
+      // ✅ Generate Excel file
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Invoice List");
+
+      const excelBuffer = XLSX.write(workbook, {
+        bookType: "xlsx",
+        type: "array",
+      });
+      const blob = new Blob([excelBuffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      saveAs(blob, `Invoice_List_${moment().format("YYYYMMDD_HHmmss")}.xlsx`);
+    } catch (err) {
+      console.error("Export Error:", err);
+      alert("Export failed. Please try again.");
+    } finally {
+      setExporting(false);
+    }
   };
 
   return (
     <>
-      {/* ------------START INVOICE LIST----------- */}
       <div className="container-xxl flex-grow-1 container-p-y">
-        {/* DataTable with Buttons */}
         <div className="card">
           <div className="d-flex justify-content-between p-3">
-            <div className="d-flex align-items-center ">
-              {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
+            <div className="d-flex align-items-center">
               <SearchBar
                 placeholder="Search Invoice..."
                 value={search}
@@ -113,16 +184,14 @@ export default function Invoice_List_List() {
                 onSubmit={(val) => setSearch(val)}
               />
             </div>
+
             <div className="d-flex gap-2">
-              {/* <button className="btn btn-info  waves-effect waves-light">
-                Payment Request
-              </button> */}
               <a
                 className={`btn btn-primary waves-effect waves-light ${
                   userPermission.some(
-                    (prem) =>
-                      prem.type == "Payment Request" &&
-                      (prem.permission == "add" || prem.permission == "view")
+                    (perm) =>
+                      perm.type === "Payment Request" &&
+                      (perm.permission === "add" || perm.permission === "view")
                   )
                     ? "d-block"
                     : "d-none"
@@ -133,140 +202,113 @@ export default function Invoice_List_List() {
                   handleOpen("addInvoice");
                   setType(0);
                 }}
-                style={{
-                  color: "black",
-                }}
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2" />
                 Payment Request
               </a>
+
               {userPermission.some(
                 (perm) =>
                   perm.type === "Payment Request" &&
                   perm.permission === "download"
               ) && (
                 <button
-                  className="btn buttons-collection btn-label-secondary  waves-effect"
+                  className="btn buttons-collection btn-label-secondary waves-effect"
                   type="button"
+                  onClick={handleExportExcel}
+                  disabled={exporting}
                 >
-                  <span>
-                    <span className=" d-sm-block d-lg-flex align-items-center gap-1">
-                      <i className="icon-base ti tabler-upload icon-xs" />
-                      <span className="d-sm-inline-block">Export</span>
+                  {exporting ? (
+                    <>
+                      <div
+                        className="spinner-border spinner-white me-2"
+                        role="status"
+                      ></div>
+                      Exporting...
+                    </>
+                  ) : (
+                    <span>
+                      <i className="icon-base ti tabler-upload icon-xs me-1" />
+                      Export
                     </span>
-                  </span>
+                  )}
                 </button>
               )}
             </div>
           </div>
+
+          {/* Filters and table remain same */}
           <div className="row px-3 pb-2">
+            {/* Type Filter */}
             <div className="col-lg-3">
-              <div className="position-relative">
-                <CustomSelect
-                  id="selectType"
-                  options={[
-                    { value: "all", label: "Select Type" },
-                    { value: "material", label: "Material" },
-                    { value: "service", label: "Services" },
-                    { value: "asset", label: "Asset" },
-                  ]}
-                  value={selectedType}
-                  onChange={setSelectedType}
-                  placeholder="Select Type"
-                />
-              </div>
+              <CustomSelect
+                id="selectType"
+                options={[
+                  { value: "all", label: "Select Type" },
+                  { value: "material", label: "Material" },
+                  { value: "service", label: "Services" },
+                  { value: "asset", label: "Asset" },
+                ]}
+                value={selectedType}
+                onChange={setSelectedType}
+              />
             </div>
+
+            {/* Vendor Filter */}
             <div className="col-lg-3">
-              <div className="position-relative">
-                <CustomSelect
-                  id="Vendor_Name"
-                  options={[
-                    { value: "all", label: "All Vendors" }, // ✅ All option first
-                    ...(vendorFilter?.map((item) => ({
-                      value: item.id,
-                      label: item.vendor_name,
-                    })) || []),
-                  ]}
-                  value={vendorName}
-                  onChange={setVendorName}
-                  placeholder="Select Vendor"
-                />
-              </div>
-              {console.log("vendorName", vendorName)}
+              <CustomSelect
+                id="Vendor_Name"
+                options={[
+                  { value: "all", label: "All Vendors" },
+                  ...(vendorFilter?.map((item) => ({
+                    value: item.id,
+                    label: item.vendor_name,
+                  })) || []),
+                ]}
+                value={vendorName}
+                onChange={setVendorName}
+              />
             </div>
+
+            {/* Status Filter */}
             <div className="col-lg-3">
-              <div className="position-relative">
-                <CustomSelect
-                  id="selectItemStatus"
-                  options={[
-                    {
-                      value: "all",
-                      label: "Select Status",
-                    },
-                    {
-                      value: "Pending",
-                      label: "Pending",
-                    },
-                    {
-                      value: "Approve",
-                      label: "Approve",
-                    },
-                    {
-                      value: "Reject",
-                      label: "Reject",
-                    },
-                    {
-                      value: "InProgress",
-                      label: "InProgress",
-                    },
-                    {
-                      value: "Paid",
-                      label: "Paid",
-                    },
-                  ]}
-                  value={status}
-                  onChange={setStatus}
-                  placeholder="Select Item Status"
-                />
-              </div>
+              <CustomSelect
+                id="selectItemStatus"
+                options={[
+                  { value: "all", label: "Select Status" },
+                  { value: "Pending", label: "Pending" },
+                  { value: "Approve", label: "Approve" },
+                  { value: "Reject", label: "Reject" },
+                  { value: "InProgress", label: "In Progress" },
+                  { value: "Paid", label: "Paid" },
+                ]}
+                value={status}
+                onChange={setStatus}
+              />
             </div>
+
+            {/* Date Range Filter */}
             <div className="col-lg-3">
-              <div className="d-flex items-center">
+              <div className="d-flex align-items-center">
                 <input
                   type="text"
-                  id="filterFilesByDate"
                   placeholder="Filter by Date"
                   className="form-control cursor-pointer"
-                  autoComplete="off"
                   readOnly
                   value={selectedDateRange}
                   onClick={() => setShowDatePicker(!showDatePicker)}
                 />
                 {showDatePicker && (
                   <Date_Range_Model
-                    style={{
-                      top: "137px",
-                    }}
+                    style={{ top: "137px" }}
                     onDateSelect={handleDateSelect}
                     onClose={() => setShowDatePicker(false)}
                   />
                 )}
-                {selectedDateRange && (
-                  <button
-                    onClick={() => {
-                      setSelectedDateRange("");
-                      setStartDate("");
-                      setEndDate("");
-                      setShowDatePicker(false);
-                    }}
-                    className="btn btn-sm text-danger ms-2"
-                  >
-                    ✕
-                  </button>
-                )}
               </div>
             </div>
           </div>
+
           <div className="card-datatable table-responsive pt-0">
             <Invoice_List_Table />
             <Pagination
@@ -279,16 +321,6 @@ export default function Invoice_List_List() {
           </div>
         </div>
       </div>
-      {modal.addInvoice && (
-        <VendorProvider>
-          <SubCategoryProvider>
-            <ItemRequestProvider>
-              <Invoice_List_Form type={0} />
-            </ItemRequestProvider>
-          </SubCategoryProvider>
-        </VendorProvider>
-      )}
-      {/* ------------END INVOICE LIST----------- */}
     </>
   );
 }

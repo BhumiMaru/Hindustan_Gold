@@ -191,26 +191,31 @@ export default function UpdateGRN({ id }) {
                       <td>
                         <div className="ms-4">{item?.item_name}</div>
                       </td>
-                      <td>{item?.quantity || 0}</td>
+                      <td>{item?.quantity}</td>
                       <td>{item?.uom}</td>
-                      <td>{item?.pending_qty || 0}</td>
+                      <td>{item?.pending_qty}</td>
                       <td>
-                        <input
-                          type="number"
-                          className="form-control"
-                          value={item.grn_qty || ""}
-                          onChange={(e) =>
-                            handleItemChange(index, e.target.value)
-                          }
-                          min="0"
-                          max={item?.pending_qty}
-                        />
+                        {item?.pending_qty > 0 ? (
+                          <input
+                            type="number"
+                            className="form-control"
+                            value={item.grn_qty}
+                            onChange={(e) =>
+                              handleItemChange(index, e.target.value)
+                            }
+                            min="0"
+                            max={item?.pending_qty}
+                          />
+                        ) : (
+                          <span>No pending quantity</span>
+                        )}
+
                         {/* Debug info - remove in production */}
-                        {process.env.NODE_ENV === "development" && (
+                        {/* {process.env.NODE_ENV === "development" && (
                           <small className="text-muted">
                             GRN Item ID: {item.grn_item_id || "new"}
                           </small>
-                        )}
+                        )} */}
                       </td>
                     </tr>
                   ))}

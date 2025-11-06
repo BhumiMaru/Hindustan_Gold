@@ -38,6 +38,12 @@ export default function GRN_List_Table() {
                 <Loader />
               </td>
             </tr>
+          ) : grnList.length === 0 ? (
+            <tr>
+              <td colSpan="11" className="text-center py-5">
+                <p className="mt-2 text-muted fw-semibold">No items found</p>
+              </td>
+            </tr>
           ) : (
             grnList.map((grn, index) => {
               return (
@@ -52,11 +58,11 @@ export default function GRN_List_Table() {
                   <td>{grn.grn_no}</td>
                   <td>{grn.grn_date}</td>
                   <td>{grn.po_id}</td>
-                  <td>Material</td>
+                  <td>{grn.grn_type}</td>
                   {/* <td>{grn.pi_request_person}</td> */}
-                  <td>Evangelina Carnock</td>
+                  <td>{grn?.pirequestperson?.name}</td>
                   <td>{grn?.vendor?.vendor_name}</td>
-                  <td>10</td>
+                  <td>{grn?.items?.length}</td>
                   <td>
                     <span
                       className={`badge ${

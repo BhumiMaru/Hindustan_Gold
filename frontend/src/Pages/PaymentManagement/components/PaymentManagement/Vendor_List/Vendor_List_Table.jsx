@@ -42,6 +42,12 @@ export default function Vendor_List_Table() {
                 <Loader />
               </td>
             </tr>
+          ) : vendorList.length === 0 ? (
+            <tr>
+              <td colSpan="11" className="text-center py-5">
+                <p className="mt-2 text-muted fw-semibold">No items found</p>
+              </td>
+            </tr>
           ) : (
             vendorList.map((vendor, index) => {
               console.log("vendor", vendor);

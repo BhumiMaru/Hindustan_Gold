@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
 import { Link } from "react-router-dom";
 import Item_Request_Table from "./Item_Request_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
@@ -14,6 +15,9 @@ import Date_Range_Model from "../../../../../components/Date Range/Date_Range_Mo
 import moment from "moment";
 import { decryptData } from "../../../../../utils/decryptData";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
+import { postData } from "../../../../../utils/api";
+import { ENDPOINTS } from "../../../../../constants/endpoints";
+import { toast } from "react-toastify";
 
 export default function Item_Request_List() {
   const {
@@ -35,6 +39,7 @@ export default function Item_Request_List() {
     endDate,
     setEndDate,
   } = useItemRequest();
+  const [exporting, setExporting] = useState(false);
   const [search, setSearch] = useState("");
   const { modal } = useUIContext();
   // const [selectedType, setSelectedType] = useState("all"); // item type filter
@@ -109,6 +114,69 @@ export default function Item_Request_List() {
     setEndDate(end ? moment(end, "DD/MM/YYYY").format("YYYY-MM-DD") : "");
 
     setShowDatePicker(false);
+  };
+
+  //  Export to Excel
+  const handleExportItemRequestExcel = async () => {
+    try {
+      setExporting(true);
+
+      // ✅ use same params as getItemRequestData
+      const params = {
+        type: activeTab,
+        search: search || undefined,
+        item_type: selectedType !== "all" ? selectedType : undefined,
+        status: statusFilter !== "all" ? statusFilter : undefined,
+        from_date: startDate || undefined,
+        to_date: endDate || undefined,
+        page: 1,
+        per_page: 100, // backend limit
+      };
+
+      const res = await postData(ENDPOINTS.ITEM_REQUEST.LIST, params);
+      const data = res?.data?.data || [];
+
+      if (!data.length) {
+        toast.info("No records found to export.");
+        return;
+      }
+
+      // ✅ Map the export data based on Item Request table
+      const exportData = data.map((item, i) => ({
+        "Sr No": i + 1,
+        "Request ID": item?.item_request?.item_request_id || "",
+        Date: item?.item_request?.created_at
+          ? moment(item.item_request.created_at).format("YYYY-MM-DD")
+          : "",
+        "Item Type": item?.item_request?.item_type || "",
+        "Item Name": item?.item_request?.item?.item_name || "",
+        "Request Person":
+          item?.item_request?.workflows?.[0]?.request_user?.name || "",
+        Quantity: item?.item_request?.quantity || "",
+        UOM: item?.item_request?.uom || "",
+        "Total Amount": item?.item_request?.total_amount
+          ? `₹${item.item_request.total_amount}`
+          : "",
+        Status: item?.final_approve_status || "",
+      }));
+
+      // ✅ Generate Excel
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Item Request List");
+
+      XLSX.writeFile(
+        workbook,
+        `ItemRequest_List_${moment().format("YYYYMMDD_HHmmss")}.xlsx`
+      );
+
+      toast.success("Item Request list exported successfully!");
+    } catch (error) {
+      console.error("Export Error:", error);
+      toast.error("Failed to export Item Request list.");
+    } finally {
+      setExporting(false);
+    }
   };
 
   return (
@@ -233,13 +301,23 @@ export default function Item_Request_List() {
                       : "d-none"
                   }`}
                   type="button"
+                  onClick={handleExportItemRequestExcel}
+                  disabled={exporting}
                 >
-                  <span>
-                    <span className=" d-sm-block d-lg-flex align-items-center gap-1">
-                      <i className="icon-base ti tabler-upload icon-xs"></i>
-                      <span className="d-sm-inline-block">Export</span>
+                  {exporting ? (
+                    <>
+                      <div
+                        className="spinner-border spinner-white me-2"
+                        role="status"
+                      ></div>
+                      Exporting...
+                    </>
+                  ) : (
+                    <span>
+                      <i className="icon-base ti tabler-upload icon-xs me-1" />
+                      Export
                     </span>
-                  </span>
+                  )}
                 </button>
               </div>
             </div>
@@ -276,10 +354,10 @@ export default function Item_Request_List() {
                       value: "service",
                       label: "Service",
                     },
-                    {
-                      value: "asset",
-                      label: "Asset",
-                    },
+                    // {
+                    //   value: "asset",
+                    //   label: "Asset",
+                    // },
                   ]}
                   value={selectedType}
                   onChange={setSelectedType}

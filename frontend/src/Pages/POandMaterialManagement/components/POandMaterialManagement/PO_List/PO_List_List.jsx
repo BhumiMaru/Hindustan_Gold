@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import PO_List_Table from "./PO_List_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
@@ -9,8 +10,12 @@ import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSe
 import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
 import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
 import Date_Range_Model from "../../../../../components/Date Range/Date_Range_Model";
+import { getData } from "../../../../../utils/api";
+import { ENDPOINTS } from "../../../../../constants/endpoints";
+import { toast } from "react-toastify";
 
 export default function PO_List_List() {
+  const [exporting, setExporting] = useState(false);
   const {
     PoList,
     getPoList,
@@ -83,6 +88,63 @@ export default function PO_List_List() {
     setShowDatePicker(false);
   };
 
+  //  Export to Excel
+  const handleExportPOExcel = async () => {
+    try {
+      setExporting(true);
+
+      const params = {
+        search: search || undefined,
+        status: status !== "all" ? status : undefined,
+        po_type: selectedType !== "all" ? selectedType : undefined,
+        item: itemName !== "all" ? itemName : undefined,
+        vendor: vendor !== "all" ? vendor : undefined,
+        start_date: startDate || undefined,
+        end_date: endDate || undefined,
+        page: 1,
+        per_page: 100, // ✅ as per backend limit
+      };
+
+      const res = await getData(ENDPOINTS.POCREATE.LIST, params);
+      const data = res?.data?.data || [];
+
+      if (!data.length) {
+        toast.info("No records found to export.");
+        return;
+      }
+
+      // ✅ Map data for Excel export
+      const exportData = data.map((po, index) => ({
+        "Sr No": index + 1,
+        "PO ID": po.po_number || "",
+        "PO Date": po.po_date || "",
+        "PI ID": po.pi_request_id || "",
+        Type: po.po_type || "",
+        Vendor: po?.venderdetail?.vendor_name || "",
+        "Total Items": po.total_item || "",
+        "Total Amount": po.final_total ? `₹${po.final_total}` : "",
+        Status: po.status || "",
+      }));
+
+      // ✅ Generate and download Excel
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "PO List");
+
+      XLSX.writeFile(
+        workbook,
+        `PO_List_${moment().format("YYYYMMDD_HHmmss")}.xlsx`
+      );
+
+      toast.success("PO list exported successfully!");
+    } catch (error) {
+      console.error("Export Error:", error);
+      toast.error("Failed to export PO list.");
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <>
       {/* -----------------START PO LIST ------------------- */}
@@ -148,15 +210,25 @@ export default function PO_List_List() {
             </div>
             <div>
               <button
-                className="btn buttons-collection btn-label-secondary  waves-effect"
+                className="btn buttons-collection btn-label-secondary waves-effect"
                 type="button"
+                onClick={handleExportPOExcel}
+                disabled={exporting}
               >
-                <span>
-                  <span className=" d-sm-block d-lg-flex align-items-center gap-1">
-                    <i className="icon-base ti tabler-upload icon-xs" />
-                    <span className="d-sm-inline-block">Export</span>
+                {exporting ? (
+                  <>
+                    <div
+                      className="spinner-border spinner-white me-2"
+                      role="status"
+                    ></div>
+                    Exporting...
+                  </>
+                ) : (
+                  <span>
+                    <i className="icon-base ti tabler-upload icon-xs me-1" />
+                    Export
                   </span>
-                </span>
+                )}
               </button>
               {/*  <a href="request-list.html" className="btn btn-primary waves-effect waves-light"
                             >

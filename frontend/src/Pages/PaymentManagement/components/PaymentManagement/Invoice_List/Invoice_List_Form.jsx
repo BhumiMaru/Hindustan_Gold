@@ -34,6 +34,8 @@ export default function Invoice_List_Form({
     // vendorIdInvoice,
     // itemIdInvoice,
   } = useInvoice();
+  console.log("poIdInvoice", poIdInvoice);
+  console.log("poIdInvoice typeof", typeof poIdInvoice);
   const { vendorFilter, setVendorFilter, getVendorFilter } = useVendor();
   const { filterSubCategory, fetchSubCategoryFilter } = useSubCategory();
   // const [subCategoryId, setSubCategoryId] = useState(null);
@@ -174,7 +176,15 @@ export default function Invoice_List_Form({
         : 0
     );
     formData.append("remarks", invoiceData.remarks || "");
-    formData.append("po_id", poIdInvoice || grnIdInvoice);
+    // formData.append("po_id", poIdInvoice || grnIdInvoice);
+    formData.append(
+      "po_id",
+      poIdInvoice
+        ? Number(poIdInvoice)
+        : grnIdInvoice
+        ? Number(grnIdInvoice)
+        : ""
+    );
 
     if (file) formData.append("invoice_file", file);
 

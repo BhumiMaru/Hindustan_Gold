@@ -69,6 +69,12 @@ export default function Get_Quote_Table() {
                 <Loader />
               </td>
             </tr>
+          ) : quote.length === 0 ? (
+            <tr>
+              <td colSpan="11" className="text-center py-5">
+                <p className="mt-2 text-muted fw-semibold">No items found</p>
+              </td>
+            </tr>
           ) : (
             quote.map((item, index) => (
               <React.Fragment key={`quote-${item.id}`}>

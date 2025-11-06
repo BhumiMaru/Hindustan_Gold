@@ -56,6 +56,7 @@ export default function PO_List_Table() {
     fetchUserPermission(user.id);
   }, [user.id]);
   console.log("userPermission", userPermission);
+  console.log("PoList", PoList);
 
   return (
     <>
@@ -85,6 +86,12 @@ export default function PO_List_Table() {
             <tr>
               <td colSpan="11">
                 <Loader />
+              </td>
+            </tr>
+          ) : PoList.length === 0 ? (
+            <tr>
+              <td colSpan="11" className="text-center py-5">
+                <p className="mt-2 text-muted fw-semibold">No items found</p>
               </td>
             </tr>
           ) : (

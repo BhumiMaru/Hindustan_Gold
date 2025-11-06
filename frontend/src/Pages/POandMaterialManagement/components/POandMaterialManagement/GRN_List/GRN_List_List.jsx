@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import GRN_List_Table from "./GRN_List_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
@@ -10,6 +11,9 @@ import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSe
 import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
 import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
 import moment from "moment";
+import { toast } from "react-toastify";
+import { getData } from "../../../../../utils/api";
+import { ENDPOINTS } from "../../../../../constants/endpoints";
 
 export default function GRN_List_List() {
   const {
@@ -28,6 +32,7 @@ export default function GRN_List_List() {
     setPagination,
   } = useGRN();
   const { modal } = useUIContext();
+  const [exporting, setExporting] = useState(false);
   const { vendorFilter, setVendorFilter, getVendorFilter } = useVendor();
   const { fetchItemFilter, filterItem } = useItemRequest();
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -81,6 +86,59 @@ export default function GRN_List_List() {
     setShowDatePicker(false);
   };
 
+  //  Export to Excel
+  const handleExportGRNExcel = async () => {
+    try {
+      setExporting(true);
+      const params = {
+        status: status !== "all" ? status : undefined,
+        search: search || undefined,
+        item_id: itemName !== "all" ? itemName : undefined,
+        vendor: vendorName !== "all" ? vendorName : undefined,
+        start_date: dateRange.start || undefined,
+        end_date: dateRange.end || undefined,
+        per_page: 100, // ✅ must not exceed 100
+        page: 1,
+      };
+
+      const res = await getData(ENDPOINTS.GRN.LIST, params);
+      const data = res?.data?.data || [];
+
+      if (!data.length) {
+        toast.info("No records found to export.");
+        return;
+      }
+
+      // ✅ Map data for Excel export
+      const exportData = data.map((item, i) => ({
+        "Sr No": i + 1,
+        "GRN No": item.grn_no || "",
+        "GRN Date": item.grn_date || "",
+        "PO ID": item.po_id || "",
+        Type: item.grn_type || "",
+        "PI Request Person": item?.pirequestperson?.name || "",
+        Vendor: item?.vendor?.vendor_name || "",
+        "Total Items": item?.items?.length || 0,
+        Status: item.status || "",
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "GRN List");
+
+      XLSX.writeFile(
+        workbook,
+        `GRN_List_${moment().format("YYYYMMDD_HHmmss")}.xlsx`
+      );
+      toast.success("GRN list exported successfully!");
+    } catch (error) {
+      console.error("Export Error:", error);
+      toast.error("Failed to export GRN list.");
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <>
       {/* -------------START GRN LIST --------------- */}
@@ -99,15 +157,25 @@ export default function GRN_List_List() {
             </div>
             <div>
               <button
-                className="btn buttons-collection btn-label-secondary  waves-effect"
+                className="btn buttons-collection btn-label-secondary waves-effect"
                 type="button"
+                onClick={handleExportGRNExcel}
+                disabled={exporting}
               >
-                <span>
-                  <span className=" d-sm-block d-lg-flex align-items-center gap-1">
-                    <i className="icon-base ti tabler-upload icon-xs" />
-                    <span className="d-sm-inline-block">Export</span>
+                {exporting ? (
+                  <>
+                    <div
+                      className="spinner-border spinner-white me-2"
+                      role="status"
+                    ></div>
+                    Exporting...
+                  </>
+                ) : (
+                  <span>
+                    <i className="icon-base ti tabler-upload icon-xs me-1" />
+                    Export
                   </span>
-                </span>
+                )}
               </button>
             </div>
           </div>

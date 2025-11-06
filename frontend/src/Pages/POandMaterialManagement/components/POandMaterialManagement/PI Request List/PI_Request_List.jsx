@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
 import { Link } from "react-router-dom";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import PI_Request_Table from "./PI_Request_Table";
@@ -11,8 +12,12 @@ import { useUserCreation } from "../../../../../Context/Master/UserCreationConte
 import { decryptData } from "../../../../../utils/decryptData";
 import Date_Range_Model from "../../../../../components/Date Range/Date_Range_Model";
 import moment from "moment";
+import { ENDPOINTS } from "../../../../../constants/endpoints";
+import { getData, postData } from "../../../../../utils/api";
+import { toast } from "react-toastify";
 
 export default function PI_Request_List() {
+  const [exporting, setExporting] = useState(false);
   const {
     search,
     setSearch,
@@ -156,6 +161,68 @@ export default function PI_Request_List() {
     setShowDatePicker(false);
   };
 
+  //  Export to Excel
+  const handleExportPIExcel = async () => {
+    try {
+      setExporting(true);
+
+      // ✅ Match all filters used in getPIRequest
+      const payload = {
+        type: activeTab,
+        pi_type: selectedType !== "all" ? selectedType : undefined,
+        item_id: itemName !== "all" ? itemName : undefined,
+        departmant_id: department !== "all" ? department : undefined,
+        order_by: orderBy !== "all" ? orderBy : undefined,
+        status: status !== "all" ? status : undefined,
+        search: search || undefined,
+        start_date: startDate || undefined,
+        end_date: endDate || undefined,
+        per_page: 100, // as per your API limit
+        page: 1,
+      };
+
+      // ✅ Fetch filtered data directly from backend
+      const res = await postData(ENDPOINTS.PI_REQUEST.LIST, payload);
+      const data = res?.data?.data || [];
+
+      if (!data.length) {
+        toast.info("No records found to export.");
+        return;
+      }
+
+      // ✅ Map data properly from PI request table
+      const exportData = data.map((pi, i) => ({
+        "Sr No": i + 1,
+        "PI Date": pi?.pi_date || "",
+        "PI Type": pi?.pi_type || "",
+        "Order By": pi?.order_by?.name || "",
+        Department: pi?.department_by?.department_name || "",
+        "Total Items": pi?.total_item || 0,
+        "Total Quotes": pi?.totalquate_count || 0,
+        "Total POs": pi?.totalpo_count || 0,
+        Status: pi?.final_approve_status || "",
+      }));
+
+      // ✅ Create Excel workbook
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "PI List");
+
+      // ✅ Save file
+      XLSX.writeFile(
+        workbook,
+        `PI_List_${moment().format("YYYYMMDD_HHmmss")}.xlsx`
+      );
+
+      toast.success("PI list exported successfully!");
+    } catch (error) {
+      console.error("Export Error:", error);
+      toast.error("Failed to export PI list.");
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <>
       {/* ------------------START PI REUEST LIST-------------------- */}
@@ -270,15 +337,25 @@ export default function PI_Request_List() {
                 Services PI
               </Link>
               <button
-                className="btn buttons-collection btn-label-secondary  waves-effect"
+                className="btn buttons-collection btn-label-secondary waves-effect"
                 type="button"
+                onClick={handleExportPIExcel}
+                disabled={exporting}
               >
-                <span>
-                  <span className=" d-sm-block d-lg-flex align-items-center gap-1">
-                    <i className="icon-base ti tabler-upload icon-xs" />
-                    <span className="d-sm-inline-block">Export</span>
+                {exporting ? (
+                  <>
+                    <div
+                      className="spinner-border spinner-white me-2"
+                      role="status"
+                    ></div>
+                    Exporting...
+                  </>
+                ) : (
+                  <span>
+                    <i className="icon-base ti tabler-upload icon-xs me-1" />
+                    Export
                   </span>
-                </span>
+                )}
               </button>
             </div>
           </div>
@@ -378,6 +455,10 @@ export default function PI_Request_List() {
                     {
                       value: "approved",
                       label: "Approved",
+                    },
+                    {
+                      value: "InProgress",
+                      label: "InProgress",
                     },
                     {
                       value: "completed",

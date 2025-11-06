@@ -89,6 +89,12 @@ export default function User_Creation_Table() {
                 <Loader />
               </td>
             </tr>
+          ) : userCreations.length === 0 ? (
+            <tr>
+              <td colSpan="11" className="text-center py-5">
+                <p className="mt-2 text-muted fw-semibold">No items found</p>
+              </td>
+            </tr>
           ) : (
             userCreations?.map((user, index) => {
               return (
