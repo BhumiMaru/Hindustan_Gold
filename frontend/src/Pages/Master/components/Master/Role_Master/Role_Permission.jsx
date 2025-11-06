@@ -608,7 +608,7 @@ export default function Role_Permission() {
       permission,
       status: isChecked ? 1 : 0,
     };
-    // console.log("payload", payload);
+    console.log("payload", payload);
 
     try {
       // 1️⃣ Update current permission
@@ -669,23 +669,23 @@ export default function Role_Permission() {
       // --- Auto-check logic ---
       if (isChecked && ["add", "generate"].includes(normalizedPerm)) {
         // ----------- PO and Material Management Module ------ //
-        if (normalizedType === "get quotation") {
+        if (normalizedType === "Get Quotation") {
           await ensurePermission(type, "view");
           await ensurePermission("PO Generation", "add");
           await ensurePermission("PO Generation", "view");
         }
-        if (normalizedType === "grn") await ensurePermission(type, "view");
-        if (normalizedType === "po generation")
+        if (normalizedType === "GRN") await ensurePermission(type, "view");
+        if (normalizedType === "PO Generation")
           await ensurePermission(type, "view");
-        if (normalizedType === "pi request")
+        if (normalizedType === "PI Request")
           await ensurePermission(type, "view");
         // ----------- Payment Management Module -------------- //
         if (normalizedType === "pending payment vendor list")
           await ensurePermission(type, "view");
-        if (normalizedType === "payment request")
+        if (normalizedType === "Payment Request")
           await ensurePermission(type, "view");
-        if (normalizedType === "vendor payment history")
-          await ensurePermission(type, "view");
+        // if (normalizedType === "vendor payment history")
+        //   await ensurePermission(type, "view");
         // ----------- Item Request Module -------------- //
         if (normalizedType === "item request")
           await ensurePermission(type, "view");
@@ -702,6 +702,117 @@ export default function Role_Permission() {
           await removeDependentPermission(type, dep);
         }
       }
+
+      // --- Helper function for auto-check ---
+      // const ensurePermission = async (targetType, targetPerm) => {
+      //   const targetKey = makePermissionKey(
+      //     module_name,
+      //     targetType,
+      //     targetPerm
+      //   );
+      //   if (!localPermissions[targetKey]) {
+      //     const newPayload = {
+      //       user_id: Number(id),
+      //       role_id: useCreationData?.role_id || null,
+      //       module_name,
+      //       type: targetType,
+      //       permission: targetPerm,
+      //       status: 1,
+      //     };
+      //     console.log("auto-check payload", newPayload);
+      //     setOptimisticUpdates((prev) => ({ ...prev, [targetKey]: true }));
+      //     setLoadingStates((prev) => ({ ...prev, [targetKey]: true }));
+      //     await createUserPermission(newPayload);
+      //     setLocalPermissions((prev) => ({ ...prev, [targetKey]: true }));
+      //     setLoadingStates((prev) => ({ ...prev, [targetKey]: false }));
+      //   }
+      // };
+
+      // --- Helper function for auto-uncheck ---
+      // const removeDependentPermission = async (targetType, targetPerm) => {
+      //   const targetKey = makePermissionKey(
+      //     module_name,
+      //     targetType,
+      //     targetPerm
+      //   );
+      //   if (localPermissions[targetKey]) {
+      //     const newPayload = {
+      //       user_id: Number(id),
+      //       role_id: useCreationData?.role_id || null,
+      //       module_name,
+      //       type: targetType,
+      //       permission: targetPerm,
+      //       status: 0,
+      //     };
+      //     console.log("auto-uncheck payload", newPayload);
+      //     setOptimisticUpdates((prev) => ({ ...prev, [targetKey]: false }));
+      //     setLoadingStates((prev) => ({ ...prev, [targetKey]: true }));
+      //     await createUserPermission(newPayload);
+      //     setLocalPermissions((prev) => ({ ...prev, [targetKey]: false }));
+      //     setLoadingStates((prev) => ({ ...prev, [targetKey]: false }));
+      //   }
+      // };
+
+      // --- Auto-check logic ---
+      // if (isChecked && ["add", "generate"].includes(normalizedPerm)) {
+      //   // ----------- PO and Material Management Module ------ //
+      //   if (normalizedType === "Get Quotation") {
+      //     await ensurePermission(type, "view");
+      //     await ensurePermission("PO Generation", "add");
+      //     await ensurePermission("PO Generation", "view");
+      //     await ensurePermission("PI Request", "view");
+      //   }
+      //   if (normalizedType === "GRN") {
+      //     await ensurePermission(type, "view");
+      //     await ensurePermission("PO Generation", "view");
+      //   }
+      //   if (normalizedType === "PO Generation") {
+      //     await ensurePermission(type, "  view");
+      //     await ensurePermission("Get Quotation", "view");
+      //     await ensurePermission("Get Quotation", "add");
+      //   }
+      //   if (normalizedType === "PI Request")
+      //     await ensurePermission(type, "view");
+      //   await ensurePermission("GRN", "view");
+      //   // ----------- Payment Management Module -------------- //
+      //   if (normalizedType === "pending payment vendor list")
+      //     await ensurePermission(type, "view");
+      //   if (normalizedType === "Payment Request")
+      //     await ensurePermission(type, "view");
+      //   // if (normalizedType === "vendor payment history") {
+      //   //   await ensurePermission(type, "view");
+      //   //   // await ensurePermission(type, "download");
+      //   // }
+      //   // ----------- Item Request Module -------------- //
+      //   if (normalizedType === "Item Request")
+      //     await ensurePermission(type, "view");
+      //   if (normalizedType === "Material Approval")
+      //     await ensurePermission(type, "view");
+      //   // if (normalizedType === "request history report")
+      //   //   await ensurePermission(type, "view");
+      // }
+
+      // --- Auto-uncheck logic ---
+      // if (!isChecked && normalizedPerm === "view") {
+      //   const dependentPerms = ["add", "generate"];
+      //   for (const dep of dependentPerms) {
+      //     await removeDependentPermission(type, dep);
+      //   }
+      // }
+
+      // --- Auto-check 'view' when 'download' is checked ---
+      if (isChecked && normalizedPerm === "download") {
+        if (normalizedType === "Payment Request") {
+          await ensurePermission(type, "view");
+        }
+      }
+
+      // --- Auto-check 'view' when 'Approve' is checked ---
+      // if (isChecked && normalizedPerm === "approve") {
+      //   if (normalizedType === "PO Generation") {
+      //     await ensurePermission(type, "view");
+      //   }
+      // }
 
       // Refresh backend after all changes
       fetchRolePermission(id);
@@ -1066,7 +1177,7 @@ export default function Role_Permission() {
                       </tr>
                       <tr>
                         <td className="text-nowrap text-heading">
-                          Store Head Approval
+                          Material Approval
                         </td>
                         <td>
                           <PermissionCheckbox
@@ -1343,7 +1454,7 @@ export default function Role_Permission() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      {/* <tr>
                         <td className="text-nowrap text-heading">
                           Pending Payment Vendor List
                         </td>
@@ -1358,7 +1469,7 @@ export default function Role_Permission() {
                         <td></td>
                         <td></td>
                         <td></td>
-                      </tr>
+                      </tr> */}
                       <tr>
                         <td className="text-nowrap text-heading">
                           Payment Request
@@ -1388,7 +1499,14 @@ export default function Role_Permission() {
                             id="defaultCheck_cust_28"
                           />
                         </td>
-                        <td></td>
+                        <td>
+                          <PermissionCheckbox
+                            module="Payment Management Module"
+                            type="Payment Request"
+                            permission="download"
+                            id="defaultCheck_cust_30"
+                          />
+                        </td>
                       </tr>
                       {/* <tr>
                         <td className="text-nowrap text-heading">
@@ -1406,7 +1524,7 @@ export default function Role_Permission() {
                         </td>
                         <td></td>
                       </tr> */}
-                      <tr>
+                      {/* <tr>
                         <td className="text-nowrap text-heading">
                           Vendor Payment History
                         </td>
@@ -1428,7 +1546,7 @@ export default function Role_Permission() {
                             id="defaultCheck_cust_30"
                           />
                         </td>
-                      </tr>
+                      </tr> */}
                     </tbody>
                   </table>
                 </div>

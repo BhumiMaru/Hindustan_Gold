@@ -658,27 +658,27 @@ export default function User_Creation_Permission() {
           await ensurePermission(type, "view");
           await ensurePermission("PO Generation", "view");
         }
-        if (normalizedType === "po generation") {
+        if (normalizedType === "PO Generation") {
           await ensurePermission(type, "  view");
           await ensurePermission("Get Quotation", "view");
           await ensurePermission("Get Quotation", "add");
         }
-        if (normalizedType === "pi request")
+        if (normalizedType === "PI Request")
           await ensurePermission(type, "view");
         await ensurePermission("GRN", "view");
         // ----------- Payment Management Module -------------- //
         if (normalizedType === "pending payment vendor list")
           await ensurePermission(type, "view");
-        if (normalizedType === "payment request")
+        if (normalizedType === "Payment Request")
           await ensurePermission(type, "view");
         // if (normalizedType === "vendor payment history") {
         //   await ensurePermission(type, "view");
         //   // await ensurePermission(type, "download");
         // }
         // ----------- Item Request Module -------------- //
-        if (normalizedType === "item request")
+        if (normalizedType === "Item Request")
           await ensurePermission(type, "view");
-        if (normalizedType === "material approval")
+        if (normalizedType === "Material Approval")
           await ensurePermission(type, "view");
         // if (normalizedType === "request history report")
         //   await ensurePermission(type, "view");
@@ -694,7 +694,7 @@ export default function User_Creation_Permission() {
 
       // --- Auto-check 'view' when 'download' is checked ---
       if (isChecked && normalizedPerm === "download") {
-        if (normalizedType === "payment request") {
+        if (normalizedType === "Payment Request") {
           await ensurePermission(type, "view");
         }
       }
