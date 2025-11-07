@@ -246,6 +246,7 @@ export const POProvider = ({ children }) => {
       });
       if (res.status) {
         toast.success(res.message);
+        getPoDetails(po_id);
       }
       getPoList();
     } catch (error) {

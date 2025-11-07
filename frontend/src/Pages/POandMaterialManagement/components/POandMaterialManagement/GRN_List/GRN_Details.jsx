@@ -8,7 +8,10 @@ import { useUserCreation } from "../../../../../Context/Master/UserCreationConte
 import Invoice_List_Form from "../../../../PaymentManagement/components/PaymentManagement/Invoice_List/Invoice_List_Form";
 import { VendorProvider } from "../../../../../Context/PaymentManagement/Vendor";
 import { SubCategoryProvider } from "../../../../../Context/ItemManagement/SubCategoryContext";
-import { InvoiceProvider } from "../../../../../Context/PIAndPoManagement/Invoice";
+import {
+  InvoiceProvider,
+  useInvoice,
+} from "../../../../../Context/PIAndPoManagement/Invoice";
 import { ItemRequestProvider } from "../../../../../Context/Request Management/Item_Request";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 const fileUrl = import.meta.env.VITE_FILE_URL;
@@ -28,6 +31,7 @@ export default function GRN_Details() {
     setGRNWorkflowdetails,
     grnWorkflow,
   } = useGRN();
+  const { invoiceList, invoice } = useInvoice();
   console.log("grnDetails", grnDetails);
   const [grnIdInvoice, setGrnIdInvoice] = useState(null);
 
@@ -41,9 +45,11 @@ export default function GRN_Details() {
       if (!id) return;
       await GRNDetails(id);
       await grnWorkflow(id);
+      await invoiceList({ grn_id: id });
     };
     loadData();
   }, [id]);
+  console.log("invoice", invoice);
 
   console.log("GRNWorkflowdetails", GRNWorkflowdetails);
 
@@ -304,19 +310,19 @@ export default function GRN_Details() {
                 <div className="row ms-2">
                   <div className="col-lg-3">
                     <label className="form-label">Invoice No</label>
-                    <p>INV-0000001</p>
+                    <p>{invoice[0].id}</p>
                   </div>
                   <div className="col-lg-3">
                     <label className="form-label">Invoice Date</label>
-                    <p>25-08-2025</p>
+                    <p>{invoice[0].invoice_date}</p>
                   </div>
                   <div className="col-lg-3">
                     <label className="form-label">Invoice Amount</label>
-                    <p>1000</p>
+                    <p>{invoice[0].taxable_amount}</p>
                   </div>
                   <div className="col-lg-3">
                     <label className="form-label">TDS Amount</label>
-                    <p>2500</p>
+                    <p>{invoice[0].tds_amount}</p>
                   </div>
                 </div>
               </div>

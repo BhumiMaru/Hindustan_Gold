@@ -359,7 +359,9 @@ export default function AppRoutes() {
             <>
               <GRNProvider>
                 <UserCreationProvider>
-                  <GRN_Details />
+                  <InvoiceProvider>
+                    <GRN_Details />
+                  </InvoiceProvider>
                 </UserCreationProvider>
               </GRNProvider>
             </>

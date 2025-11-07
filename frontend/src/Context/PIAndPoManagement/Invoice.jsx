@@ -75,6 +75,7 @@ export const InvoiceProvider = ({ children }) => {
     vendorName,
     startDate,
     endDate,
+    grn_id,
     page = pagination.currentPage,
     perPage = pagination.perPage,
   } = {}) => {
@@ -87,6 +88,7 @@ export const InvoiceProvider = ({ children }) => {
         vendor_id: vendorName !== "all" ? vendorName : undefined,
         start_date: startDate || dateRange.start || undefined,
         end_date: endDate || dateRange.end || undefined,
+        grn_id,
         page,
         per_page: perPage,
       };
