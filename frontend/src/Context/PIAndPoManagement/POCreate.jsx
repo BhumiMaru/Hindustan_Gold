@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { getData, postData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export const POCreateContext = createContext();
 
@@ -12,6 +13,7 @@ export const usePOCreate = () => {
 
 // PO PROVIDER
 export const POProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [PoList, setPoList] = useState([]); //List
   const [poDetails, setPoDetails] = useState({}); // Details
@@ -223,6 +225,10 @@ export const POProvider = ({ children }) => {
     try {
       const res = await postData(ENDPOINTS.POCREATE.ADD_UPDATE, payload);
       setFormData(res.data.data);
+      if (res.status === true) {
+        navigate(`/po-material/po-detail/${poDetails?.id}`);
+      }
+      return res;
     } catch (error) {
       if (error.response) {
         const errorMessage = error.response.data?.message;

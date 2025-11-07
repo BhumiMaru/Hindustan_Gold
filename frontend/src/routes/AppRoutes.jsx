@@ -43,7 +43,6 @@ import { useUIContext } from "../Context/UIContext";
 import { ItemRequestProvider } from "../Context/Request Management/Item_Request";
 import UOMPage from "../Pages/UOM/UOMPage";
 import { VendorProvider } from "../Context/PaymentManagement/Vendor";
-import Vendor_fill_quote from "../Pages/POandMaterialManagement/components/POandMaterialManagement/Get_Quote/vendor_fill_quote";
 import { GetQuoteProvider } from "../Context/PIAndPoManagement/GetQuote";
 import Vendor_List_Form from "../Pages/PaymentManagement/components/PaymentManagement/Vendor_List/Vendor_List_Form";
 import PO_Details from "../Pages/POandMaterialManagement/components/POandMaterialManagement/PO_List/PO_Details";

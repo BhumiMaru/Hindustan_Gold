@@ -47,6 +47,7 @@ export default function Vendor_fill_quote() {
       const cleaned = decodeURIComponent(data).replace(/ /g, "+"); // 🔥 Fix spaces turned from +
       // console.log("cleaned", cleaned);
       decryptEmailData = decryptData(cleaned);
+      console.log("decryptEmailData", decryptEmailData);
     } catch (error) {
       console.log("decrypt error", error);
     }
@@ -363,17 +364,25 @@ export default function Vendor_fill_quote() {
       quoteVendorListForEmail({
         pi_get_quote_id: decryptEmailData?.getquoteid,
         vendor_id: decryptEmailData?.vendorid,
-        token:
-          decryptEmailData?.token ||
-          "441|NCUKDm9rHVVDMwN5JswzPWS7j30BwtpEpxRRklzP6feb1058",
+        // token:
+        //   decryptEmailData?.token ||
+        //   "441|NCUKDm9rHVVDMwN5JswzPWS7j30BwtpEpxRRklzP6feb1058",
+        token: decryptEmailData?.token,
       });
     }
   }, [decryptEmailData]);
+
+  console.log("quoteDataForEmail?.vendor_item", quoteDataForEmail);
 
   return (
     <div data-bs-spy="scroll" className="scrollspy-example">
       <div className="container">
         <div className="row mb-6">
+          <div>
+            <div>get Guote Id : {decryptEmailData?.getquoteid}</div>
+            <div>vendor Id : {decryptEmailData?.vendorid}</div>
+            <div>token :{decryptEmailData?.token}</div>
+          </div>
           <div className="col-12 text-center mt-10">
             <img src="assets/img/logo_vertical.png" style={{ height: 100 }} />
           </div>

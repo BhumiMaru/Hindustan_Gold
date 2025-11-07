@@ -31,6 +31,12 @@ export default function Category_Master_Table() {
                 <Loader />
               </td>
             </tr>
+          ) : categories.length === 0 ? (
+            <tr>
+              <td colSpan="11" className="text-center py-5">
+                <p className="mt-2 text-muted fw-semibold">No result found</p>
+              </td>
+            </tr>
           ) : (
             categories.map((category, index) => {
               return (

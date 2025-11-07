@@ -198,7 +198,8 @@ export default function Invoice_details() {
                             className="me-2"
                           />
                           <span className="h6 mb-0 text-info">
-                            {invoiceDetail.invoice_file}
+                            {/* {invoiceDetail.invoice_file} */}
+                            View Invoice File
                           </span>
                         </Link>
                       ) : (
@@ -269,102 +270,63 @@ export default function Invoice_details() {
                       <th>Payment Date</th>
                       <th>Remark</th>
                       <th>Attachment </th>
-                      <th>Action </th>
+                      {invoiceDetail?.is_payment_advance_or_partial ===
+                        "Yes" && <th>Action </th>}
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>
-                        <div className="ms-4">10000/-</div>
-                      </td>
-                      <td>13-08-2025</td>
-                      <td>Remark</td>
-                      <td>
-                        <a href="#" className="">
-                          <i className="icon-base ti tabler-paperclip icon-20px " />
-                        </a>
-                      </td>
-                      <td>
-                        <div className="d-inline-flex gap-2">
-                          <div className="d-inline-block">
-                            <a
-                              href="javascript:;"
-                              className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
-                              data-bs-toggle="dropdown"
-                              aria-expanded="false"
-                            >
-                              <i className="icon-base ti tabler-dots-vertical icon-20px" />
-                            </a>
-                            <div
-                              className="dropdown-menu dropdown-menu-end m-0"
-                              style={{}}
-                            >
-                              <a
-                                href="javascript:;"
-                                className="dropdown-item waves-effect"
-                                data-bs-toggle="modal"
-                                data-bs-target="#grnCreateModel"
-                              >
-                                Edit
-                              </a>
-                              <div className="dropdown-divider" />
-                              <a
-                                href="javascript:;"
-                                className="dropdown-item text-danger delete-record waves-effect"
-                              >
-                                Delete
-                              </a>
+                    {invoiceDetail?.invoice_payment?.map((payment, index) => {
+                      return (
+                        <tr>
+                          <td>
+                            <div className="ms-4">
+                              {payment?.amount ? `${payment?.amount}/-` : ""}
                             </div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div className="ms-4">10000/-</div>
-                      </td>
-                      <td>13-08-2025</td>
-                      <td>Remark</td>
-                      <td>
-                        <a href="#" className="">
-                          <i className="icon-base ti tabler-paperclip icon-20px" />
-                        </a>
-                      </td>
-                      <td>
-                        <div className="d-inline-flex gap-2">
-                          <div className="d-inline-block">
-                            <a
-                              href="javascript:;"
-                              className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
-                              data-bs-toggle="dropdown"
-                              aria-expanded="false"
+                          </td>
+                          <td>{payment?.payment_date}</td>
+                          <td>{payment?.remark}</td>
+                          <td>
+                            <Link
+                              to={`${fileUrl}/storage/uploads/payments/${payment.invoice_file}`}
+                              target="_blank"
+                              className=""
                             >
-                              <i className="icon-base ti tabler-dots-vertical icon-20px" />
-                            </a>
-                            <div
-                              className="dropdown-menu dropdown-menu-end m-0"
-                              style={{}}
-                            >
-                              <a
-                                href="javascript:;"
-                                className="dropdown-item waves-effect"
-                                data-bs-toggle="modal"
-                                data-bs-target="#grnCreateModel"
-                              >
-                                Edit
-                              </a>
-                              <div className="dropdown-divider" />
-                              <a
-                                href="javascript:;"
-                                className="dropdown-item text-danger delete-record waves-effect"
-                              >
-                                Delete
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
+                              <i className="icon-base ti tabler-paperclip icon-20px " />
+                            </Link>
+                          </td>
+                          {invoiceDetail?.is_payment_advance_or_partial ===
+                            "Yes" && (
+                            <td>
+                              <div className="d-inline-flex gap-2">
+                                <div className="d-inline-block">
+                                  <a
+                                    className="btn btn-icon btn-text-secondary waves-effect rounded-pill dropdown-toggle hide-arrow"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                  >
+                                    <i className="icon-base ti tabler-dots-vertical icon-20px" />
+                                  </a>
+                                  <div className="dropdown-menu dropdown-menu-end m-0">
+                                    {/* <a
+                                    href="javascript:;"
+                                    className="dropdown-item waves-effect"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#grnCreateModel"
+                                  >
+                                    Edit
+                                  </a>
+                                  <div className="dropdown-divider" /> */}
+                                    <a className="dropdown-item text-danger delete-record waves-effect">
+                                      Delete
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          )}
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

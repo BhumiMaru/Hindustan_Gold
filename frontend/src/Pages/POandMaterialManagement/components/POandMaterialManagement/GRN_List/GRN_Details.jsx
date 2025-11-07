@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useUIContext } from "../../../../../Context/UIContext";
 import { useGRN } from "../../../../../Context/PIAndPoManagement/GRN";
 import RejectGRN from "./RejectGRN";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { decryptData } from "../../../../../utils/decryptData";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 import Invoice_List_Form from "../../../../PaymentManagement/components/PaymentManagement/Invoice_List/Invoice_List_Form";
@@ -11,6 +11,7 @@ import { SubCategoryProvider } from "../../../../../Context/ItemManagement/SubCa
 import { InvoiceProvider } from "../../../../../Context/PIAndPoManagement/Invoice";
 import { ItemRequestProvider } from "../../../../../Context/Request Management/Item_Request";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
+const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export default function GRN_Details() {
   const { id } = useParams();
@@ -133,7 +134,7 @@ export default function GRN_Details() {
                           : ""
                       }`}
                     >
-                      Approve
+                      Material Approve
                     </button>
 
                     <button
@@ -149,7 +150,7 @@ export default function GRN_Details() {
                         handleOpen("viewRejectGRN");
                       }}
                     >
-                      Reject
+                      Material Reject
                     </button>
                   </>
                 )
@@ -259,20 +260,45 @@ export default function GRN_Details() {
                   <h5 className="">Invoice Detail</h5>
                   <div>
                     <div className="badge bg-label-info rounded-3">
-                      <img
+                      {/* <img
                         src="assets/img/icons/misc/doc.png"
                         alt="img"
                         width={15}
                         className="me-2"
                       />
-                      <span className="h6 mb-0 text-info">invoices.pdf</span>
+                      <span className="h6 mb-0 text-info">
+                        {grnDetails?.invoice_file}
+                      </span> */}
+                      {console.log("grnDetails", grnDetails)}
+                      {grnDetails?.invoice_file ? (
+                        <Link
+                          to={`${fileUrl}/storage/uploads/invoices/${grnDetails.invoice_file}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <img
+                            src={`${publicUrl}assets/img/icons/misc/doc.png`}
+                            alt="Document"
+                            width={15}
+                            className="me-2"
+                          />
+                          <span className="h6 mb-0 text-info">
+                            View Invoice File
+                            {/* {grnDetails.invoice_file} */}
+                          </span>
+                        </Link>
+                      ) : (
+                        <div className="d-flex align-items-center text-muted">
+                          <img
+                            src={`${publicUrl}assets/img/icons/misc/no-file.png`}
+                            alt="No file"
+                            width={15}
+                            className="me-2 opacity-75"
+                          />
+                          <span className="h6 mb-0">No file uploaded</span>
+                        </div>
+                      )}
                     </div>
-                    <a
-                      href="invoice-list"
-                      className="badge bg-label-primary rounded p-1_5 mt-1"
-                    >
-                      <i className="icon-base ti tabler-eye icon-md" />
-                    </a>
                   </div>
                 </div>
                 <div className="row ms-2">

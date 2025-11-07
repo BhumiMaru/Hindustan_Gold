@@ -44,7 +44,7 @@ export default function Item_Request_List() {
   const { modal } = useUIContext();
   // const [selectedType, setSelectedType] = useState("all"); // item type filter
   const [statusFilter, setStatusFilter] = useState("all"); // status filter
-  const [itemNameId, setItemNameId] = useState(null);
+  const [itemNameId, setItemNameId] = useState("all");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDateRange, setSelectedDateRange] = useState("");
   const { userPermission, fetchUserPermission } = useUserCreation();
@@ -248,15 +248,36 @@ export default function Item_Request_List() {
               </div>
             </div>
             <div className="d-sm-block d-lg-flex justify-content-between px-3 pt-1">
-              <div className="d-flex align-items-center ">
-                {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
-                <SearchBar
-                  placeholder="Search Request..."
-                  value={search}
-                  onChange={setSearch}
-                  onSubmit={(val) => setSearch(val)}
-                />
+              <div className="d-flex align-items-center flex-wrap">
+                <div className="d-flex align-items-center">
+                  {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
+                  <SearchBar
+                    placeholder="Search Request..."
+                    value={search}
+                    onChange={setSearch}
+                    onSubmit={(val) => setSearch(val)}
+                  />
+                </div>
+
+                {/* Clear Filter */}
+                {/* {selectedGroup != "all" && ( */}
+                <div className="d-flex align-items-center">
+                  <div>
+                    <button
+                      className="btn waves-effect btn-sm text-danger"
+                      // onClick={handleClearFilters}
+                      // onClick={() => {
+                      //   // setSearch("");
+                      //   setSelectedGroup("all");
+                      // }}
+                    >
+                      {/* <i className="ti ti-refresh me-1"></i> */}✕ Clear All
+                    </button>
+                  </div>
+                </div>
+                {/* )} */}
               </div>
+
               <div className=" d-sm-block d-lg-flex gap-2">
                 {console.log("userPermission", userPermission)}
                 <Link

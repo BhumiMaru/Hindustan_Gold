@@ -29,6 +29,12 @@ export default function Group_Master_Table() {
                 <Loader />
               </td>
             </tr>
+          ) : groups.length === 0 ? (
+            <tr>
+              <td colSpan="11" className="text-center py-5">
+                <p className="mt-2 text-muted fw-semibold">No result found</p>
+              </td>
+            </tr>
           ) : (
             groups.map((group, index) => {
               return (

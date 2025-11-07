@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useUIContext } from "../../../../../Context/UIContext";
 import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
+import { Link } from "react-router-dom";
+const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export default function Add_Quote_Modal() {
   const { handleClose } = useUIContext();
@@ -14,14 +16,17 @@ export default function Add_Quote_Modal() {
     quoteData,
   } = useGetQuote();
   console.log("newVendorList", newVendorList);
+  console.log("newVendorData", newVendorData);
 
   const [file, setFile] = useState(null);
+
+  const vendorData = newVendorData?.vendor_item;
 
   // Handle rate input change
   const handleRateChange = (index, value) => {
     console.log("index", index);
     console.log("value", value);
-    const updatedData = [...newVendorData];
+    const updatedData = [...vendorData];
     console.log("update data", updatedData);
     console.log("newVendorData", newVendorData);
     updatedData[index].rate = value;
@@ -32,9 +37,9 @@ export default function Add_Quote_Modal() {
   const handleSave = async () => {
     try {
       await vendorRateUpdate({
-        pi_get_quote_id: newVendorData[0]?.pi_get_quote_id,
+        pi_get_quote_id: vendorData[0]?.pi_get_quote_id,
         pi_get_quote_vendor_id: newVendorId,
-        items: newVendorData.map((item) => ({
+        items: vendorData.map((item) => ({
           id: item.id,
           rate: item.rate,
         })),
@@ -42,6 +47,15 @@ export default function Add_Quote_Modal() {
       });
 
       console.log("vendor data", newVendorData);
+      console.log("payload", {
+        pi_get_quote_id: vendorData[0]?.pi_get_quote_id,
+        pi_get_quote_vendor_id: newVendorId,
+        items: vendorData.map((item) => ({
+          id: item.id,
+          rate: item.rate,
+        })),
+        vendor_quote_file: file,
+      });
       handleClose("addQuote");
 
       // Add this separate useEffect to call quoteVendorList when quoteData is available
@@ -100,7 +114,7 @@ export default function Add_Quote_Modal() {
                   </tr>
                 </thead>
                 <tbody>
-                  {newVendorData?.map((vendor, index) => (
+                  {vendorData?.map((vendor, index) => (
                     <tr key={index}>
                       {console.log("vendor", vendor)}
                       <td>{vendor?.pirequestitem?.item_name}</td>
@@ -130,6 +144,18 @@ export default function Add_Quote_Modal() {
                     className="form-control"
                     onChange={(e) => setFile(e.target.files[0])}
                   />
+                  {newVendorData?.vendor_quote_file && (
+                    <Link
+                      to={`${fileUrl}/storage/uploads/vendor_quotes/${newVendorData.vendor_quote_file}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span className="text-gray"> File Name :</span>
+                      <span className="text-primary">
+                        &nbsp; {newVendorData?.vendor_quote_file}
+                      </span>
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>

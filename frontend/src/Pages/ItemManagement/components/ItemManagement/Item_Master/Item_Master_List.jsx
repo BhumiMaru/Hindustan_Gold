@@ -11,13 +11,12 @@ import { decryptData } from "../../../../../utils/decryptData";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 
 export default function Item_Master_List() {
-  const [selectedType, setSelectedType] = useState(""); // default from URL
-
   const [search, setSearch] = useState(""); // what user types
   // const [type, setType] = useState("");
-  const [categoryId, setCategoryId] = useState(null);
-  const [subCategoryId, setSubCategoryId] = useState(null);
-  const [status, setStatus] = useState(null);
+  const [selectedType, setSelectedType] = useState("all"); // default from URL
+  const [categoryId, setCategoryId] = useState("all");
+  const [subCategoryId, setSubCategoryId] = useState("all");
+  const [status, setStatus] = useState("all");
 
   const { userPermission, fetchUserPermission } = useUserCreation();
   const { fetchItemMaster, setPagination, pagination, itemMaster } =
@@ -65,11 +64,11 @@ export default function Item_Master_List() {
 
   // ✅ CLEAR FILTER FUNCTIONALITY
   const handleClearFilters = () => {
-    setSelectedType("");
+    setSelectedType("all");
     setSearch("");
-    setCategoryId(null);
-    setSubCategoryId(null);
-    setStatus(null);
+    setCategoryId("all");
+    setSubCategoryId("all");
+    setStatus("all");
     setPagination((prev) => ({ ...prev, currentPage: 1 }));
 
     // Re-fetch full list
@@ -84,6 +83,8 @@ export default function Item_Master_List() {
     });
   };
 
+  console.log("selectedType", selectedType);
+
   return (
     <>
       {/* -----------------START ITEM MASTER LIST----------------- */}
@@ -95,10 +96,7 @@ export default function Item_Master_List() {
               <CustomSelect
                 id="selectType"
                 options={[
-                  {
-                    value: "all",
-                    label: "Select Type",
-                  },
+                  { value: "all", label: "Select Type" },
                   { value: "material", label: "Material" },
                   { value: "service", label: "Services" },
                   { value: "asset", label: "Asset" },
@@ -183,17 +181,21 @@ export default function Item_Master_List() {
                   onSubmit={(val) => setQuery(val)} // trigger API only on submit
                 />
               </div>
-              <div className="d-flex align-items-center">
-                <div>
-                  <button
-                    className="btn btn-danger waves-effect btn-sm"
-                    onClick={handleClearFilters}
-                  >
-                    {/* <i className="ti ti-refresh me-1"></i> */}
-                    Clear
-                  </button>
+              {(selectedType != "all" ||
+                categoryId != "all" ||
+                subCategoryId != "all" ||
+                status != "all") && (
+                <div className="d-flex align-items-center">
+                  <div>
+                    <button
+                      className="btn text-danger waves-effect btn-sm"
+                      onClick={handleClearFilters}
+                    >
+                      {/* <i className="ti ti-refresh me-1"></i> */}✕ Clear All
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <div className="d-flex flex-wrap gap-1">
               {userPermission?.some(

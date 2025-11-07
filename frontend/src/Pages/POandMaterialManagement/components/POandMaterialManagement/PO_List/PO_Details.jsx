@@ -357,11 +357,30 @@ export default function PO_Details() {
                       <td>
                         <div className="ms-4">{poDetails?.pirequest?.id}</div>
                       </td>
-                      <td>05-08-2025</td>
-                      <td>Ronak Patel</td>
-                      <td>Electrical</td>
+                      <td>{poDetails?.pirequest?.created_at.split("T")[0]}</td>
+                      <td>{poDetails?.pirequest?.order_by?.name}</td>
                       <td>
-                        <span className="badge bg-label-success">Complete</span>
+                        {poDetails?.pirequest?.department_by?.department_name}
+                      </td>
+                      <td>
+                        <span
+                          className={`badge ${
+                            poDetails?.pirequest?.final_approve_status ==
+                              "Approve" ||
+                            poDetails?.pirequest?.final_approve_status ==
+                              "Complete"
+                              ? "bg-label-success"
+                              : poDetails?.pirequest?.final_approve_status ==
+                                "Pending"
+                              ? "bg-label-primary"
+                              : poDetails?.pirequest?.final_approve_status ==
+                                "InProgress"
+                              ? "bg-label-info"
+                              : "bg-label-danger"
+                          }`}
+                        >
+                          {poDetails?.pirequest?.final_approve_status}
+                        </span>
                       </td>
                     </tr>
                     <tr>
@@ -502,7 +521,8 @@ export default function PO_Details() {
                           <td>
                             <span
                               className={`badge ${
-                                grn?.status === "Complete"
+                                grn?.status === "Complete" ||
+                                grn?.status === "Approve"
                                   ? "bg-label-success"
                                   : grn?.status === "Pending"
                                   ? "bg-label-warning"

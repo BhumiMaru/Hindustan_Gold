@@ -863,13 +863,15 @@ export default function PO_Create() {
   //   setCharges(updatedCharges);
   // };
 
+  console.log("poDe", poDetails?.items);
+
   useEffect(() => {
     if (poDetails?.items) {
       // Initialize items with PO details and calculate initial totals
       const initializedItems = poDetails.items.map((item) => {
         console.log("itemmmm", item);
         return {
-          id: item?.pirequestitem?.id,
+          id: item?.id,
           item_name: item?.pirequestitem?.item_name,
           description: item?.pirequestitem?.remark,
           qty: item?.pirequestitem?.qty,
@@ -878,7 +880,7 @@ export default function PO_Create() {
           disc_pr: "",
           disc_number: "0",
           gst_pr: "",
-          taxable_value: "0",
+          taxable_value: item?.Taxable_value,
           base_amount: (
             item?.pirequestitem?.unit_price * item?.pirequestitem?.qty
           ).toFixed(2),
@@ -927,6 +929,7 @@ export default function PO_Create() {
       const amountAfterDiscount = baseAmount - discountAmount;
       const gstAmount = (amountAfterDiscount * gstPercent) / 100;
       const taxableValue = amountAfterDiscount + gstAmount;
+      console.log("taxableValue", taxableValue);
 
       return {
         ...item,
@@ -1130,8 +1133,8 @@ export default function PO_Create() {
     if (field === "disc_pr" || field === "gst_pr") {
       const unitPrice = parseFloat(item?.unit_price) || 0;
       const quantity = parseFloat(item?.qty) || 0;
-      const discountPercent = parseFloat(item?.disc_pr) || 0;
-      const gstPercent = parseFloat(item?.gst_pr) || 0;
+      const discountPercent = parseFloat(item?.disc_pr) || 0.0;
+      const gstPercent = parseFloat(item?.gst_pr) || 0.0;
 
       // Calculate base amount
       const baseAmount = unitPrice * quantity;
@@ -1204,7 +1207,7 @@ export default function PO_Create() {
       console.log("PO Create Payload:", payload);
       PoCreate(payload);
 
-      navigate(`/po-material/po-detail/${poDetails?.id}`);
+      // navigate(`/po-material/po-detail/${poDetails?.id}`);
     } catch (error) {
       console.log("Po Create Error:", error);
     }
@@ -1370,7 +1373,8 @@ export default function PO_Create() {
                           {console.log("item", item)}
                           <td>{index + 1}</td>
                           <td>{item?.item_name}</td>
-                          <td>{item?.item_name}</td>
+                          {/* <td>{item?.item_name}</td> */}
+                          <td>No</td>
                           <td>{item?.description}</td>
                           <td>{item?.qty}</td>
                           <td>{item?.uom}</td>

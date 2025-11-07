@@ -129,12 +129,15 @@ export const GRNProvider = ({ children }) => {
       const res = await postData(ENDPOINTS.GRN.ADD_UPDATE, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+      console.log("rr", res);
 
       if (res.status) {
         toast.success(res.message);
         setGrnData(res.data.data);
         GRNList();
       }
+
+      return res;
     } catch (error) {
       toast.error("Error during Create GRN");
       console.error("Create GRN error:", error);

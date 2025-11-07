@@ -15,10 +15,10 @@ import ForgotPassword from "../Pages/Authentication/ForgotPassword/ForgotPasswor
 import { decryptData } from "../utils/decryptData";
 import { useUIContext } from "../Context/UIContext";
 import Small_Screen_Sidebar from "../components/Common/SideBar/Small_Screen_Sidebar";
-import Vendor_fill_quote from "../Pages/POandMaterialManagement/components/POandMaterialManagement/Get_Quote/vendor_fill_quote";
 import { UserCreationProvider } from "../Context/Master/UserCreationContext";
 import ResetPasswordMasterPage from "../Pages/Authentication/ResetPassword/ResetPasswordMasterPage";
 import { GetQuoteProvider } from "../Context/PIAndPoManagement/GetQuote";
+import Vendor_fill_quote from "../Pages/POandMaterialManagement/components/POandMaterialManagement/Get_Quote/Vendor_fill_quote";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function LayoutPage() {

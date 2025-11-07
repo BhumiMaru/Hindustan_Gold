@@ -293,6 +293,7 @@ export default function PO_List_List() {
                 placeholder="Select Vendor"
               />
             </div>
+            {console.log("vendor", vendor)}
             <div className="col-lg-3">
               <CustomSelect
                 id="selectItemStatus"

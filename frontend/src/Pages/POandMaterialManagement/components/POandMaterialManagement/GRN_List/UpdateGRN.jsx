@@ -31,8 +31,8 @@ export default function UpdateGRN({ id }) {
           item_name: item?.pirequestitem?.item_name,
           quantity: item?.qty,
           uom: item.uom,
-          pending_qty: item.pending_quantity || item.quantity,
-          grn_qty: 0, // Start with 0 for new GRN
+          pending_qty: item.pending_qty,
+          grn_qty: null, // Start with 0 for new GRN
         };
       });
 
@@ -68,7 +68,7 @@ export default function UpdateGRN({ id }) {
       const updatedItems = [...(prev.items || [])];
       updatedItems[index] = {
         ...updatedItems[index],
-        grn_qty: parseInt(value) || 0,
+        grn_qty: parseInt(value),
       };
       return {
         ...prev,
@@ -81,7 +81,7 @@ export default function UpdateGRN({ id }) {
     // Calculate total GRN quantity
     const totalGrnQty =
       grnData?.items?.reduce((total, item) => {
-        return total + (Number(item.grn_qty) || 0);
+        return total + Number(item.grn_qty);
       }, 0) || 0;
 
     const grnPayload = {
@@ -95,18 +95,20 @@ export default function UpdateGRN({ id }) {
       items: grnData.items?.map((item) => ({
         grn_item_id: item.grn_item_id, // ✅ Use grn_item_id from the item object
         po_item_id: Number(item.po_item_id),
-        grn_qty: Number(item.grn_qty || 0),
+        grn_qty: Number(item.grn_qty),
       })),
     };
 
     console.log("Sending GRN data:", grnPayload);
     console.log("GRN items being sent:", grnData.items);
-
+    let res;
     if (editId) {
-      EditGRN({ id: editId, payload: grnPayload });
+      res = EditGRN({ id: editId, payload: grnPayload });
     } else {
-      CreateGRN(grnPayload);
+      res = CreateGRN(grnPayload);
     }
+
+    console.log("resresres", res);
     handleClose("editGRN");
   };
 
@@ -203,11 +205,18 @@ export default function UpdateGRN({ id }) {
                             onChange={(e) =>
                               handleItemChange(index, e.target.value)
                             }
+                            placeholder="0"
                             min="0"
                             max={item?.pending_qty}
                           />
                         ) : (
                           <span>No pending quantity</span>
+                        )}
+                        {item?.grn_qty > item?.pending_qty && (
+                          <span className="text-danger">
+                            Received quantity cannot be more than pending
+                            quantity.
+                          </span>
                         )}
 
                         {/* Debug info - remove in production */}
@@ -223,7 +232,7 @@ export default function UpdateGRN({ id }) {
               </table>
 
               <div className="row">
-                <div className="col-lg-4">
+                {/* <div className="col-lg-4">
                   <label className="form-label">PO ID</label>
                   <input
                     type="number"
@@ -233,7 +242,7 @@ export default function UpdateGRN({ id }) {
                     onChange={handleChange}
                     disabled={!!editId} // Disable when editing existing GRN
                   />
-                </div>
+                </div> */}
                 <div className="col-lg-4 d-none">
                   <label className="form-label">GRN Date</label>
                   <input
@@ -256,7 +265,7 @@ export default function UpdateGRN({ id }) {
                     onChange={handleChange}
                   />
                 </div>
-                <div className="col-lg-6">
+                {/* <div className="col-lg-6">
                   <label className="form-label">Invoice Attachment File</label>
                   <input
                     type="file"
@@ -266,7 +275,7 @@ export default function UpdateGRN({ id }) {
                   {editId && grnData?.invoice_file && (
                     <span>Current File: {grnData.invoice_file}</span>
                   )}
-                </div>
+                </div> */}
                 <div className="col-lg-12 mt-4">
                   <label className="form-label">Remarks</label>
                   <textarea

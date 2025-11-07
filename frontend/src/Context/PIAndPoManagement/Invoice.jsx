@@ -64,7 +64,7 @@ export const InvoiceProvider = ({ children }) => {
     payment_date: "",
     remark: "",
     type_of_payment: "",
-    paymentslip: null,
+    invoice_file: null,
   });
 
   // Invoice List

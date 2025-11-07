@@ -14,10 +14,10 @@ import View_Sub_Cat_Owners_Name from "./View_Sub_Cat_Owners_Name";
 
 export default function SubCategory_Master_List() {
   const { modal, handleOpen } = useUIContext();
-  const [type, setType] = useState("");
-  const [group, setGroup] = useState("");
-  const [category, setCategory] = useState("");
-  const [owner, setOwner] = useState("");
+  const [type, setType] = useState("all");
+  const [group, setGroup] = useState("all");
+  const [category, setCategory] = useState("all");
+  const [owner, setOwner] = useState("all");
   const [search, setSearch] = useState("");
 
   const { filterCategory, fetchCategoryFilter } = useCategoryMaster();
@@ -80,18 +80,25 @@ export default function SubCategory_Master_List() {
                   onSubmit={(val) => setSearch(val)} // ✅ handle Enter key
                 />
               </div>
+
               <div className="d-flex gap-1 align-items-center">
-                <div className="d-flex align-items-center">
-                  <div>
-                    <button
-                      className="btn btn-danger waves-effect btn-sm"
-                      onClick={handleClearFilters}
-                    >
-                      {/* <i className="ti ti-refresh me-1"></i> */}
-                      Clear
-                    </button>
+                {(type != "all" ||
+                  group != "all" ||
+                  category != "all" ||
+                  owner != "all") && (
+                  <div className="d-flex align-items-center">
+                    <div>
+                      <button
+                        className="btn text-danger waves-effect btn-sm"
+                        onClick={handleClearFilters}
+                      >
+                        {/* <i className="ti ti-refresh me-1"></i> */}✕ Clear
+                        All
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
+
                 <div>
                   <button
                     type="button"

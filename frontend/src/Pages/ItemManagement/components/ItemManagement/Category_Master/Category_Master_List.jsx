@@ -59,6 +59,25 @@ export default function Category_Master_List() {
                   onChange={setSearch} // ✅ update state
                   onSubmit={(val) => setSearch(val)} // ✅ handle Enter key
                 />
+
+                {/* clear filter */}
+                {selectedGroup != "all" && (
+                  <div className="d-flex align-items-center">
+                    <div>
+                      <button
+                        className="btn waves-effect btn-sm text-danger"
+                        // onClick={handleClearFilters}
+                        onClick={() => {
+                          // setSearch("");
+                          setSelectedGroup("all");
+                        }}
+                      >
+                        {/* <i className="ti ti-refresh me-1"></i> */}✕ Clear
+                        All
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="d-flex gap-1 align-items-center">
                 <div className="position-relative">
@@ -80,22 +99,6 @@ export default function Category_Master_List() {
                       }),
                     }}
                   />
-                </div>
-
-                <div className="d-flex align-items-center">
-                  <div>
-                    <button
-                      className="btn btn-danger waves-effect btn-sm"
-                      // onClick={handleClearFilters}
-                      onClick={() => {
-                        // setSearch("");
-                        setSelectedGroup("all");
-                      }}
-                    >
-                      {/* <i className="ti ti-refresh me-1"></i> */}
-                      Clear
-                    </button>
-                  </div>
                 </div>
 
                 <div>

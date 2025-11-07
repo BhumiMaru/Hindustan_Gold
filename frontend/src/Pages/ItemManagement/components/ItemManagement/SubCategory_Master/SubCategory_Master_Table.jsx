@@ -41,6 +41,12 @@ export default function SubCategory_Master_Table() {
                 <Loader />
               </td>
             </tr>
+          ) : subCategory.length === 0 ? (
+            <tr>
+              <td colSpan="11" className="text-center py-5">
+                <p className="mt-2 text-muted fw-semibold">No result found</p>
+              </td>
+            </tr>
           ) : (
             subCategory.map((subCat, index) => {
               return (

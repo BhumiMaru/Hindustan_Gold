@@ -37,14 +37,14 @@ export default function Mark_as_Paid({ id }) {
         // payment_date: "",
         remark: "Payment Done",
         type_of_payment: 2,
-        paymentslip: null,
+        invoice_file: null,
       });
       setPaymentData({
         amount: invoiceDetail.taxable_amount,
         // payment_date: "",
         remark: "Payment Done",
         type_of_payment: 2,
-        paymentslip: null,
+        invoice_file: null,
       });
     } else {
       console.log("paymentData", paymentData);
@@ -138,12 +138,12 @@ export default function Mark_as_Paid({ id }) {
                       <input
                         type="file"
                         className="form-control"
-                        name="paymentslip"
+                        name="invoice_file"
                         // value={paymentData.paymentslip}
                         onChange={(e) =>
                           setPaymentData((prev) => ({
                             ...prev,
-                            paymentslip: e.target.files[0],
+                            invoice_file: e.target.files[0],
                           }))
                         }
                       />

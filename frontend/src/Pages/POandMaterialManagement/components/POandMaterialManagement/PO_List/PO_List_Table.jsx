@@ -261,20 +261,20 @@ export default function PO_List_Table() {
                           </tr>
                         </thead>
                         <tbody>
-                          {po.items.map((poItem, index) => (
+                          {po?.items?.map((poItem, index) => (
                             <tr key={index}>
                               {console.log("poitem", poItem)}
                               <td>
                                 {" "}
                                 <div className="ms-4">
-                                  {poItem.pirequestitem.item_name}
+                                  {poItem?.pirequestitem?.item_name}
                                 </div>
                               </td>
-                              <td>{poItem.pirequestitem.qty}</td>
-                              <td>{poItem.pirequestitem.uom}</td>
-                              <td>{poItem.pirequestitem.received_qty}</td>
-                              <td>{poItem.pirequestitem.pending_qty}</td>
-                              <td>{poItem.unit_price}/-</td>
+                              <td>{poItem?.pirequestitem?.qty}</td>
+                              <td>{poItem?.pirequestitem?.uom}</td>
+                              <td>{poItem?.pirequestitem?.received_qty}</td>
+                              <td>{poItem?.pirequestitem?.pending_qty}</td>
+                              <td>{poItem?.unit_price}/-</td>
                             </tr>
                           ))}
                         </tbody>

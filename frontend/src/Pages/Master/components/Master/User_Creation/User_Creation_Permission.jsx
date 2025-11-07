@@ -648,7 +648,7 @@ export default function User_Creation_Permission() {
       // --- Auto-check logic ---
       if (isChecked && ["add", "generate"].includes(normalizedPerm)) {
         // ----------- PO and Material Management Module ------ //
-        if (normalizedType === "Get Quotation") {
+        if (normalizedType === "get quotation") {
           await ensurePermission(type, "view");
           await ensurePermission("PO Generation", "add");
           await ensurePermission("PO Generation", "view");
@@ -658,27 +658,27 @@ export default function User_Creation_Permission() {
           await ensurePermission(type, "view");
           await ensurePermission("PO Generation", "view");
         }
-        if (normalizedType === "PO Generation") {
+        if (normalizedType === "po generation") {
           await ensurePermission(type, "  view");
-          await ensurePermission("Get Quotation", "view");
-          await ensurePermission("Get Quotation", "add");
+          await ensurePermission("get quotation", "view");
+          await ensurePermission("get quotation", "add");
         }
-        if (normalizedType === "PI Request")
+        if (normalizedType === "pi request")
           await ensurePermission(type, "view");
         await ensurePermission("GRN", "view");
         // ----------- Payment Management Module -------------- //
         if (normalizedType === "pending payment vendor list")
           await ensurePermission(type, "view");
-        if (normalizedType === "Payment Request")
+        if (normalizedType === "payment request")
           await ensurePermission(type, "view");
         // if (normalizedType === "vendor payment history") {
         //   await ensurePermission(type, "view");
         //   // await ensurePermission(type, "download");
         // }
         // ----------- Item Request Module -------------- //
-        if (normalizedType === "Item Request")
+        if (normalizedType === "item request")
           await ensurePermission(type, "view");
-        if (normalizedType === "Material Approval")
+        if (normalizedType === "material approval")
           await ensurePermission(type, "view");
         // if (normalizedType === "request history report")
         //   await ensurePermission(type, "view");
@@ -694,7 +694,7 @@ export default function User_Creation_Permission() {
 
       // --- Auto-check 'view' when 'download' is checked ---
       if (isChecked && normalizedPerm === "download") {
-        if (normalizedType === "Payment Request") {
+        if (normalizedType === "payment request") {
           await ensurePermission(type, "view");
         }
       }
