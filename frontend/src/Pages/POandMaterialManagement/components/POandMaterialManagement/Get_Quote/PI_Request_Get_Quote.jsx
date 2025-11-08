@@ -13,6 +13,7 @@ import Add_Quote_Modal from "./Add_Quote_Modal";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 import { decryptData } from "../../../../../utils/decryptData";
 import Vendor_List_Form from "../../../../PaymentManagement/components/PaymentManagement/Vendor_List/Vendor_List_Form";
+import Vendor_Approve_Confirmation_Modal from "./Vendor_Approve_Confirmation_Modal";
 
 export default function PI_Request_Get_Quote() {
   const { handleOpen, modal } = useUIContext();
@@ -66,7 +67,11 @@ export default function PI_Request_Get_Quote() {
   // console.log("quoteData", quoteData);
   const navigate = useNavigate();
   // Per-vendor loading state
-  const [loadingVendors, setLoadingVendors] = useState({});
+  const [loadingVendors, setLoadingVendors] = useState(false);
+  const [oldVendorLoading, setOldVendorLoading] = useState({});
+  const [newVendorLoading, setNewVendorLoading] = useState({});
+  // Vendor Approve Data
+  const [vendorApproveData, setVendorApproveData] = useState();
 
   // console.log("quoteData", quoteData);
   const vendor_type = "new";
@@ -216,46 +221,46 @@ export default function PI_Request_Get_Quote() {
   // };
 
   // Send Request for OLD vendors
-  const handleSendOldVendorRequest = async () => {
-    if (selectedOldVendors.length === 0) {
-      toast.error("Please select at least one past vendor");
-      return;
-    }
+  // const handleSendOldVendorRequest = async () => {
+  //   if (selectedOldVendors.length === 0) {
+  //     toast.error("Please select at least one past vendor");
+  //     return;
+  //   }
 
-    try {
-      // Mark all selected old vendors as loading
-      const loadingState = Object.fromEntries(
-        selectedOldVendors.map((id) => [id, true])
-      );
-      setLoadingVendors((prev) => ({ ...prev, ...loadingState }));
+  //   try {
+  //     // Mark all selected old vendors as loading
+  //     const loadingState = Object.fromEntries(
+  //       selectedOldVendors.map((id) => [id, true])
+  //     );
+  //     setLoadingVendors((prev) => ({ ...prev, ...loadingState }));
 
-      // Send request
-      await sendRequest({
-        pi_get_quote_id: parseInt(id),
-        pi_get_quote_vendor_ids: selectedOldVendors,
-      });
+  //     // Send request
+  //     await sendRequest({
+  //       pi_get_quote_id: parseInt(id),
+  //       pi_get_quote_vendor_ids: selectedOldVendors,
+  //     });
 
-      toast.success("Request sent successfully!");
+  //     toast.success("Request sent successfully!");
 
-      // Clear selections
-      setSelectedOldVendors([]);
-      setSelectAllOld(false);
+  //     // Clear selections
+  //     setSelectedOldVendors([]);
+  //     setSelectAllOld(false);
 
-      // Refresh old vendor list
-      await quoteVendorList({
-        pi_get_quote_id: quoteData.id,
-        vendor_type: "old",
-      });
-    } catch (error) {
-      console.error("Error sending request to past vendors:", error);
-    } finally {
-      // Reset loading for all selected old vendors
-      const resetState = Object.fromEntries(
-        selectedOldVendors.map((id) => [id, false])
-      );
-      setLoadingVendors((prev) => ({ ...prev, ...resetState }));
-    }
-  };
+  //     // Refresh old vendor list
+  //     await quoteVendorList({
+  //       pi_get_quote_id: quoteData.id,
+  //       vendor_type: "old",
+  //     });
+  //   } catch (error) {
+  //     console.error("Error sending request to past vendors:", error);
+  //   } finally {
+  //     // Reset loading for all selected old vendors
+  //     const resetState = Object.fromEntries(
+  //       selectedOldVendors.map((id) => [id, false])
+  //     );
+  //     setLoadingVendors((prev) => ({ ...prev, ...resetState }));
+  //   }
+  // };
 
   // Send Request for NEW vendors
   // const handleSendNewVendorRequest = async () => {
@@ -285,46 +290,139 @@ export default function PI_Request_Get_Quote() {
   //   }
   // };
 
-  const handleSendNewVendorRequest = async () => {
-    if (selectedNewVendors.length === 0) {
-      toast.error("Please select at least one new vendor");
-      return;
-    }
+  // const handleSendNewVendorRequest = async () => {
+  //   if (selectedNewVendors.length === 0) {
+  //     toast.error("Please select at least one new vendor");
+  //     return;
+  //   }
 
+  //   try {
+  //     // Mark all selected vendors as loading
+  //     const loadingState = Object.fromEntries(
+  //       selectedNewVendors.map((id) => [id, true])
+  //     );
+  //     setLoadingVendors((prev) => ({ ...prev, ...loadingState }));
+
+  //     // Send request
+  //     await sendRequest({
+  //       pi_get_quote_id: parseInt(id),
+  //       pi_get_quote_vendor_ids: selectedNewVendors,
+  //     });
+
+  //     toast.success("Request sent successfully!");
+
+  //     // Clear selections
+  //     setSelectedNewVendors([]);
+  //     setSelectAllNew(false);
+
+  //     // Refresh vendor list
+  //     await quoteVendorList({
+  //       pi_get_quote_id: quoteData.id,
+  //       vendor_type: "new",
+  //     });
+  //   } catch (error) {
+  //     console.error("Error sending request to new vendors:", error);
+  //   } finally {
+  //     // Reset loading for all selected vendors
+  //     const resetState = Object.fromEntries(
+  //       selectedNewVendors.map((id) => [id, false])
+  //     );
+  //     setLoadingVendors((prev) => ({ ...prev, ...resetState }));
+  //   }
+  // };
+
+  // ✅ Send Request for OLD vendors
+  const handleSendOldVendorRequest = async (
+    vendorId = null,
+    isBulk = false,
+    vendor_type
+  ) => {
     try {
-      // Mark all selected vendors as loading
-      const loadingState = Object.fromEntries(
-        selectedNewVendors.map((id) => [id, true])
-      );
-      setLoadingVendors((prev) => ({ ...prev, ...loadingState }));
+      if (!isBulk && vendorId) {
+        setOldVendorLoading((prev) => ({ ...prev, [vendorId]: true }));
+      }
+      let vendorIds = [];
 
-      // Send request
+      // If bulk mail → must select checkboxes
+      if (isBulk) {
+        if (selectedOldVendors.length === 0) {
+          toast.error("Please select at least one old vendor for bulk mail");
+          return;
+        }
+        vendorIds = selectedOldVendors;
+      }
+      // If single vendor → send only that vendor
+      else if (vendorId) {
+        vendorIds = [vendorId];
+      }
+
       await sendRequest({
         pi_get_quote_id: parseInt(id),
-        pi_get_quote_vendor_ids: selectedNewVendors,
+        pi_get_quote_vendor_ids: vendorIds,
+        vendor_type,
       });
 
-      toast.success("Request sent successfully!");
-
-      // Clear selections
-      setSelectedNewVendors([]);
-      setSelectAllNew(false);
-
-      // Refresh vendor list
-      await quoteVendorList({
-        pi_get_quote_id: quoteData.id,
-        vendor_type: "new",
-      });
-    } catch (error) {
-      console.error("Error sending request to new vendors:", error);
-    } finally {
-      // Reset loading for all selected vendors
-      const resetState = Object.fromEntries(
-        selectedNewVendors.map((id) => [id, false])
+      toast.success(
+        isBulk && "Bulk request sent successfully to selected old vendors!"
       );
-      setLoadingVendors((prev) => ({ ...prev, ...resetState }));
+
+      setSelectedOldVendors([]);
+    } catch (error) {
+      toast.error("Failed to send request");
+      console.error(error);
+    } finally {
+      if (!isBulk && vendorId) {
+        setOldVendorLoading((prev) => ({ ...prev, [vendorId]: false }));
+      }
     }
   };
+
+  // ✅ Send Request for NEW vendors
+  const handleSendNewVendorRequest = async (
+    vendorId = null,
+    isBulk = false,
+    vendor_type
+  ) => {
+    try {
+      if (!isBulk && vendorId) {
+        setNewVendorLoading((prev) => ({ ...prev, [vendorId]: true }));
+      }
+      let vendorIds = [];
+
+      if (isBulk) {
+        if (selectedNewVendors.length === 0) {
+          toast.error("Please select at least one new vendor for bulk mail");
+          return;
+        }
+        vendorIds = selectedNewVendors;
+      } else if (vendorId) {
+        vendorIds = [vendorId];
+      }
+
+      await sendRequest({
+        pi_get_quote_id: parseInt(id),
+        pi_get_quote_vendor_ids: vendorIds,
+        vendor_type,
+      });
+
+      toast.success(
+        isBulk && "Bulk request sent successfully to selected new vendors!"
+      );
+
+      setSelectedNewVendors([]);
+    } catch (error) {
+      toast.error("Failed to send request");
+      console.error(error);
+    } finally {
+      if (!isBulk && vendorId) {
+        setNewVendorLoading((prev) => ({ ...prev, [vendorId]: false }));
+      }
+    }
+  };
+
+  {
+    "newVendorLoading", newVendorLoading;
+  }
 
   useEffect(() => {
     // Initialize all tooltips after render
@@ -517,7 +615,7 @@ export default function PI_Request_Get_Quote() {
             <div className="me-4">
               <button
                 className="btn btn-success btn-sm waves-effect waves-light"
-                onClick={handleSendOldVendorRequest}
+                onClick={() => handleSendOldVendorRequest(null, true)}
               >
                 Bulk Mail Request
               </button>
@@ -575,10 +673,10 @@ export default function PI_Request_Get_Quote() {
                       <td>
                         <div className="ms-4">{pastVendor.vendor_id}</div>
                       </td>
-                      <td>{pastVendor.vendor.vendor_name}</td>
-                      <td>{pastVendor.vendor.contact_person_name}</td>
-                      <td>{pastVendor.vendor.email}</td>
-                      <td>{pastVendor.vendor.mobile}</td>
+                      <td>{pastVendor?.vendor?.vendor_name}</td>
+                      <td>{pastVendor?.vendor?.contact_person_name}</td>
+                      <td>{pastVendor?.vendor?.email}</td>
+                      <td>{pastVendor?.vendor?.mobile}</td>
                       <td>
                         <span
                           className={`badge ${
@@ -686,7 +784,8 @@ export default function PI_Request_Get_Quote() {
                             Vendor Approve
                           </button>
                         ) : null} */}
-                        {pastVendor.quote_status === "Pending" ? (
+                        {quoteData.po_status === 0 &&
+                        pastVendor.quote_status === "Pending" ? (
                           // <button
                           //   className="btn btn-info btn-sm waves-effect waves-light"
                           //   onClick={handleSendNewVendorRequest}
@@ -699,16 +798,30 @@ export default function PI_Request_Get_Quote() {
                           // </button>
                           <button
                             className="btn btn-info btn-sm waves-effect waves-light d-flex align-items-center justify-content-center"
+                            // onClick={() =>
+                            //   handleSendOldVendorRequest(selectedOldVendors)
+                            // }
                             onClick={() =>
-                              handleSendOldVendorRequest(selectedNewVendors)
+                              handleSendOldVendorRequest(
+                                pastVendor.vendor_id,
+                                false,
+                                "old"
+                              )
                             }
-                            disabled={selectedOldVendors.some(
-                              (id) => loadingVendors[id]
-                            )}
+                            // disabled={selectedOldVendors.some(
+                            //   (id) => oldVendorLoading[id]
+                            // )}
+                            disabled={oldVendorLoading[pastVendor.vendor_id]}
                           >
-                            {selectedOldVendors.some(
-                              (id) => loadingVendors[id]
+                            {/* {selectedOldVendors.some(
+                              (id) => oldVendorLoading[id]
                             ) && (
+                              <div
+                                className="spinner-border spinner-white me-2"
+                                role="status"
+                              ></div>
+                            )} */}
+                            {oldVendorLoading[pastVendor.vendor_id] && (
                               <div
                                 className="spinner-border spinner-white me-2"
                                 role="status"
@@ -737,19 +850,40 @@ export default function PI_Request_Get_Quote() {
                               className={`btn btn-success btn-sm waves-effect waves-light ${
                                 quoteData?.po_status == 1 ? "d-none" : ""
                               }`}
-                              onClick={() =>
-                                vendorApprove({
-                                  vendor_id: pastVendor.vendor_id,
-                                  pi_get_quate: pastVendor.pi_get_quote_id,
-                                })
-                              }
-                              disabled={selectedOldVendors.some(
-                                (id) => loadingVendors[id]
-                              )}
+                              // onClick={async () => {
+                              //   try {
+                              //     setOldVendorLoading((prev) => ({
+                              //       ...prev,
+                              //       [pastVendor.vendor_id]: true,
+                              //     }));
+
+                              //     vendorApprove({
+                              //       vendor_id: pastVendor.vendor_id,
+                              //       pi_get_quate: pastVendor.pi_get_quote_id,
+                              //     });
+                              //     if (pastVendor.pi_get_quote_id) {
+                              //       await quoteVendorList({
+                              //         pi_get_quote_id:
+                              //           pastVendor.pi_get_quote_id,
+                              //         vendor_type: pastVendor.vendor_type,
+                              //       });
+                              //     }
+                              //   } catch (error) {
+                              //     console.log("vendor approve error", error);
+                              //   } finally {
+                              //     setOldVendorLoading((prev) => ({
+                              //       ...prev,
+                              //       [pastVendor.vendor_id]: false,
+                              //     }));
+                              //   }
+                              // }}
+                              onClick={() => {
+                                handleOpen("vendorApprove");
+                                setVendorApproveData(pastVendor);
+                              }}
+                              disabled={oldVendorLoading[pastVendor.vendor_id]}
                             >
-                              {selectedOldVendors.some(
-                                (id) => loadingVendors[id]
-                              ) && (
+                              {oldVendorLoading[pastVendor.vendor_id] && (
                                 <div
                                   className="spinner-border spinner-white me-2"
                                   role="status"
@@ -836,6 +970,7 @@ export default function PI_Request_Get_Quote() {
                   <th>Action</th>
                 </tr>
               </thead>
+              {console.log("newVendorData", newVendorData)}
               <tbody>
                 {/* {console.log("newVendorList", newVendorList)} */}
                 {newVendorList.map((quotation, index) => {
@@ -844,6 +979,7 @@ export default function PI_Request_Get_Quote() {
                   const isSelected = selectedVendors.includes(vendorId);
                   // console.log("vendorId", vendorId);
                   // console.log("isSelected", isSelected);
+                  console.log("quotation ", quotation);
                   return (
                     <tr key={index}>
                       <td>
@@ -921,7 +1057,6 @@ export default function PI_Request_Get_Quote() {
                         >
                           <i className="icon-base ti tabler-eye icon-md" />
                         </a>
-
                         <a
                           href="#"
                           // className={`btn btn-icon waves-effect waves-light ${
@@ -961,7 +1096,11 @@ export default function PI_Request_Get_Quote() {
                           <i className="icon-base ti tabler-receipt-rupee icon-md" />
                         </a>
                         {/* {console.log("quotation", quotation)} */}
-                        {quotation.quote_status === "Pending" ? (
+                        {/* <span>po status = {quotation.po_status}</span>
+                        &nbsp;
+                        <span> status = {quotation.quote_status}</span> */}
+                        {quoteData.po_status === 0 &&
+                        quotation.quote_status === "Pending" ? (
                           // <button
                           //   className="btn btn-info btn-sm waves-effect waves-light"
                           //   onClick={handleSendNewVendorRequest}
@@ -974,16 +1113,30 @@ export default function PI_Request_Get_Quote() {
                           // </button>
                           <button
                             className="btn btn-info btn-sm waves-effect waves-light d-flex align-items-center justify-content-center"
+                            // onClick={() =>
+                            //   handleSendNewVendorRequest(selectedNewVendors)
+                            // }
                             onClick={() =>
-                              handleSendNewVendorRequest(selectedNewVendors)
+                              handleSendNewVendorRequest(
+                                quotation.vendor_id,
+                                false,
+                                "new"
+                              )
                             }
-                            disabled={selectedNewVendors.some(
-                              (id) => loadingVendors[id]
-                            )}
+                            // disabled={selectedNewVendors.some(
+                            //   (id) => newVendorLoading[id]
+                            // )}
+                            disabled={newVendorLoading[quotation.vendor_id]}
                           >
-                            {selectedNewVendors.some(
-                              (id) => loadingVendors[id]
+                            {/* {selectedNewVendors.some(
+                              (id) => newVendorLoading[id]
                             ) && (
+                              <div
+                                className="spinner-border spinner-white me-2"
+                                role="status"
+                              ></div>
+                            )} */}
+                            {newVendorLoading[quotation.vendor_id] && (
                               <div
                                 className="spinner-border spinner-white me-2"
                                 role="status"
@@ -1012,19 +1165,40 @@ export default function PI_Request_Get_Quote() {
                               className={`btn btn-success btn-sm waves-effect waves-light ${
                                 quoteData?.po_status == 1 ? "d-none" : ""
                               }`}
-                              onClick={() =>
-                                vendorApprove({
-                                  vendor_id: quotation.vendor_id,
-                                  pi_get_quate: quotation.pi_get_quote_id,
-                                })
-                              }
-                              disabled={selectedNewVendors.some(
-                                (id) => loadingVendors[id]
-                              )}
+                              onClick={async () => {
+                                handleOpen("vendorApprove");
+                                setVendorApproveData(quotation);
+                                // try {
+                                //   setNewVendorLoading((prev) => ({
+                                //     ...prev,
+                                //     [quotation.vendor_id]: true,
+                                //   }));
+                                //   vendorApprove({
+                                //     vendor_id: quotation.vendor_id,
+                                //     pi_get_quate: quotation.pi_get_quote_id,
+                                //   });
+                                //   if (quotation.pi_get_quote_id) {
+                                //     await quoteVendorList({
+                                //       pi_get_quote_id:
+                                //         quotation.pi_get_quote_id,
+                                //       vendor_type: quotation.vendor_type,
+                                //     });
+                                //   }
+                                // } catch (error) {
+                                //   console.log("vendor approve error", error);
+                                // } finally {
+                                //   setNewVendorLoading((prev) => ({
+                                //     ...prev,
+                                //     [quotation.vendor_id]: false,
+                                //   }));
+                                // }
+                              }}
+                              // disabled={selectedNewVendors.some(
+                              //   (id) => loadingVendors[id]
+                              // )}
+                              disabled={newVendorLoading[quotation.vendor_id]}
                             >
-                              {selectedNewVendors.some(
-                                (id) => loadingVendors[id]
-                              ) && (
+                              {newVendorLoading[quotation.vendor_id] && (
                                 <div
                                   className="spinner-border spinner-white me-2"
                                   role="status"
@@ -1056,6 +1230,13 @@ export default function PI_Request_Get_Quote() {
             <Vendor_List_Form />
           </VendorProvider>
         </>
+      )}
+      {/* Vendor Approve */}
+      {modal.vendorApprove && (
+        <Vendor_Approve_Confirmation_Modal
+          vendorApproveData={vendorApproveData}
+          setNewVendorLoading={setNewVendorLoading}
+        />
       )}
       {/* ---------------END PI REQUEST GET QUOTE-------------------- */}
     </>

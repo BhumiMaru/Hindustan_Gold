@@ -237,11 +237,12 @@ export const VendorProvider = ({ children }) => {
       });
 
       if (res.success) {
+        // handleClose("vendorApprove");
         toast.success(res.message);
       }
       getVendorList(); // Refresh vendor list after approval
 
-      return res.data;
+      return res;
     } catch (error) {
       const backendMessage =
         error.response?.data?.message ||

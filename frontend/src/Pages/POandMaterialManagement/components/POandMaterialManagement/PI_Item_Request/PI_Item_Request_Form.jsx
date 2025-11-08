@@ -740,6 +740,7 @@ export default function PI_Item_Request_Form() {
   // Add state to track quantity errors
   const [quantityError, setQuantityError] = useState({});
   const navigate = useNavigate();
+  const [duplicateError, setDuplicateError] = useState({});
 
   useEffect(() => {
     fetchItemMaster();
@@ -865,6 +866,29 @@ export default function PI_Item_Request_Form() {
 
   const handleSave = async () => {
     try {
+      //  Step 1: Check for empty requested items
+      const emptyItem = items.find(
+        (itm) => !itm.requestedItem || itm.requestedItem === ""
+      );
+      if (emptyItem) {
+        toast.warning("Please select all Requested Items before saving.");
+        return;
+      }
+
+      const requestedItems = items
+        .map((itm) => itm.requestedItem)
+        .filter(Boolean);
+      const hasDuplicate = requestedItems.some(
+        (itemId, index) => requestedItems.indexOf(itemId) !== index
+      );
+
+      if (hasDuplicate) {
+        toast.warning(
+          "Duplicate requested items found. Please fix before saving."
+        );
+        return;
+      }
+
       // Check if any item qty exceeds stock
       const invalidItems = items.filter(
         (item) => isStock && Number(item.qty) > Number(isStock)
@@ -890,7 +914,7 @@ export default function PI_Item_Request_Form() {
           Number(item.requestedItem) || 0
         );
         formData.append(`items[${index}][item_name]`, item.item_name || "");
-        formData.append(`items[${index}][qty]`, Number(item.qty) || 1);
+        formData.append(`items[${index}][qty]`, Number(item.qty));
         formData.append(`items[${index}][uom]`, item.uom || "KG");
         formData.append(`items[${index}][priority]`, item.priority || "");
         formData.append(`items[${index}][purpose]`, item.purpose || "");
@@ -959,13 +983,38 @@ export default function PI_Item_Request_Form() {
     const selectedItem = itemMaster.find(
       (itm) => itm.id === Number(selectedId)
     );
-    console.log("selectedItem", selectedItem);
 
+    // ✅ Check if same item is already selected in another row
+    const alreadySelected = items.some(
+      (itm) => itm.requestedItem === selectedId && itm.id !== itemId
+    );
+
+    if (alreadySelected) {
+      // Set error for this specific row
+      setDuplicateError((prev) => ({
+        ...prev,
+        [itemId]: "This item is already selected in another row.",
+      }));
+      // Reset requested item to blank
+      setItems((prev) =>
+        prev.map((item) =>
+          item.id === itemId ? { ...item, requestedItem: "" } : item
+        )
+      );
+      return;
+    } else {
+      // Clear duplicate error if user fixes it
+      setDuplicateError((prev) => ({
+        ...prev,
+        [itemId]: "",
+      }));
+    }
+
+    // ✅ Update stock and purpose per selected item
     if (selectedItem) {
       const storage = selectedItem?.storage_locations?.[0];
       const zone = selectedItem?.zones?.[0]?.zone;
-      // console.log("storage", storage);
-      // console.log("zone", zone);
+      const stockQty = selectedItem?.stock || 0;
 
       setItems((prev) =>
         prev.map((item) =>
@@ -980,6 +1029,7 @@ export default function PI_Item_Request_Form() {
                 serviceLocation:
                   storage?.service_location3?.service_location_3_name || "",
                 zone: zone?.zone_name || "",
+                stock: stockQty,
               }
             : item
         )
@@ -1032,6 +1082,11 @@ export default function PI_Item_Request_Form() {
                       placeholder="Select Item"
                       required
                     />
+                    {duplicateError[item.id] && (
+                      <small className="text-danger">
+                        {duplicateError[item.id]}
+                      </small>
+                    )}
                   </div>
 
                   <div className="col-sm-3 mb-3">

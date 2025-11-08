@@ -24,7 +24,7 @@ export const PIRequestProvider = ({ children }) => {
       requestedItem: "",
       category: "",
       subcategory: "",
-      qty: "0",
+      qty: "",
       uom: "KG",
       serviceLocation1: "",
       serviceLocation2: "",
@@ -443,125 +443,252 @@ export const PIRequestProvider = ({ children }) => {
   // --------------------Request ----------------------- //
 
   // Single Approve
+  // In your PIRequest context
   const singleApprove = async (pi_request_item_id) => {
     try {
-      const payload = { pi_request_item_id }; // ✅ send pi_request_id
+      const payload = { pi_request_item_id };
       const res = await postData(ENDPOINTS.PI_REQUEST.SINGLEAPPROVE, payload);
 
       if (res?.status) {
         toast.success(res.message || "PI Request approved successfully!");
+
+        // ✅ Update local state instead of refetching everything
+        setPiRequest((prev) =>
+          prev.map((pi) => ({
+            ...pi,
+            piitems: pi.piitems.map((item) =>
+              item.id === pi_request_item_id
+                ? { ...item, status: "Approve" }
+                : item
+            ),
+          }))
+        );
       } else {
         toast.error(res.message || "Failed to approve PI Request");
       }
-      getPIRequest(); // ✅ refresh after approve
       return res;
     } catch (error) {
-      // if (error.response && error.response.data && error.response.data.errors) {
-      //   const errors = error.response.data.errors;
-
-      //   // Flatten all error messages into a single array
-      //   const messages = Object.values(errors).flat();
-
-      //   // Show each message in toast
-      //   messages.forEach((msg) => toast.error(msg));
-      // }
       if (error.response && error.response.data) {
         toast.error(error.response.data.message);
       }
       console.error("Single Approve PIRequest error:", error);
     }
   };
+  // const singleApprove = async (pi_request_item_id) => {
+  //   try {
+  //     const payload = { pi_request_item_id }; // ✅ send pi_request_id
+  //     const res = await postData(ENDPOINTS.PI_REQUEST.SINGLEAPPROVE, payload);
+
+  //     if (res?.status) {
+  //       toast.success(res.message || "PI Request approved successfully!");
+  //     } else {
+  //       toast.error(res.message || "Failed to approve PI Request");
+  //     }
+  //     getPIRequest(); // ✅ refresh after approve
+  //     return res;
+  //   } catch (error) {
+  //     // if (error.response && error.response.data && error.response.data.errors) {
+  //     //   const errors = error.response.data.errors;
+
+  //     //   // Flatten all error messages into a single array
+  //     //   const messages = Object.values(errors).flat();
+
+  //     //   // Show each message in toast
+  //     //   messages.forEach((msg) => toast.error(msg));
+  //     // }
+  //     if (error.response && error.response.data) {
+  //       toast.error(error.response.data.message);
+  //     }
+  //     console.error("Single Approve PIRequest error:", error);
+  //   }
+  // };
 
   // Bulk Approve
-  const bulkApprove = async (payload) => {
+  const bulkApprove = async ({ pi_request_item_id, pi_request_id }) => {
     try {
-      // const payload = {
-      //   pi_request_item_ids,
-      //   pi_request_id,
-      // }; // ✅ usually backend expects array of ids
+      const payload = { pi_request_item_id, pi_request_id };
       const res = await postData(ENDPOINTS.PI_REQUEST.BULKAPPROVE, payload);
 
       if (res?.status) {
-        toast.success(res.message || "Bulk approval successful!");
+        toast.success(res.message || "PI Requests approved successfully!");
+
+        // ✅ Update local state
+        setPiRequest((prev) =>
+          prev.map((pi) => ({
+            ...pi,
+            piitems: pi.piitems.map((item) =>
+              pi_request_item_id.includes(item.id)
+                ? { ...item, status: "Approve" }
+                : item
+            ),
+          }))
+        );
+
+        // ✅ Clear selection after bulk operation
+        setSelectedItemsMap({});
       } else {
-        toast.error(res.message || "Bulk approval failed");
+        toast.error(res.message || "Failed to approve PI Requests");
       }
-      getPIRequest();
       return res;
     } catch (error) {
-      // if (error.response && error.response.data && error.response.data.errors) {
-      //   const errors = error.response.data.errors;
-
-      //   // Flatten all error messages into a single array
-      //   const messages = Object.values(errors).flat();
-
-      //   // Show each message in toast
-      //   messages.forEach((msg) => toast.error(msg));
-      // }
       if (error.response && error.response.data) {
         toast.error(error.response.data.message);
       }
       console.error("Bulk Approve PIRequest error:", error);
     }
   };
+  // const bulkApprove = async (payload) => {
+  //   try {
+  //     // const payload = {
+  //     //   pi_request_item_ids,
+  //     //   pi_request_id,
+  //     // }; // ✅ usually backend expects array of ids
+  //     const res = await postData(ENDPOINTS.PI_REQUEST.BULKAPPROVE, payload);
+
+  //     if (res?.status) {
+  //       toast.success(res.message || "Bulk approval successful!");
+  //     } else {
+  //       toast.error(res.message || "Bulk approval failed");
+  //     }
+  //     getPIRequest();
+  //     return res;
+  //   } catch (error) {
+  //     // if (error.response && error.response.data && error.response.data.errors) {
+  //     //   const errors = error.response.data.errors;
+
+  //     //   // Flatten all error messages into a single array
+  //     //   const messages = Object.values(errors).flat();
+
+  //     //   // Show each message in toast
+  //     //   messages.forEach((msg) => toast.error(msg));
+  //     // }
+  //     if (error.response && error.response.data) {
+  //       toast.error(error.response.data.message);
+  //     }
+  //     console.error("Bulk Approve PIRequest error:", error);
+  //   }
+  // };
 
   //  Single Reject
-  const singleReject = async (payload) => {
+  const singleReject = async ({ pi_request_item_id, pi_request_id }) => {
     try {
-      // const payload = { pi_request_item_id, pi_request_id };
+      const payload = { pi_request_item_id, pi_request_id };
       const res = await postData(ENDPOINTS.PI_REQUEST.SINGLEREJECT, payload);
+
       if (res?.status) {
-        toast.success(res.message || "Single Reject successful!");
+        toast.success(res.message || "PI Request rejected successfully!");
+
+        // ✅ Update local state instead of refetching
+        setPiRequest((prev) =>
+          prev.map((pi) => ({
+            ...pi,
+            piitems: pi.piitems.map((item) =>
+              item.id === pi_request_item_id
+                ? { ...item, status: "Reject" }
+                : item
+            ),
+          }))
+        );
       } else {
-        toast.error(res.message || "Single Reject failed");
+        toast.error(res.message || "Failed to reject PI Request");
       }
-      getPIRequest();
       return res;
     } catch (error) {
-      // if (error.response && error.response.data && error.response.data.errors) {
-      //   const errors = error.response.data.errors;
-
-      //   // Flatten all error messages into a single array
-      //   const messages = Object.values(errors).flat();
-
-      //   // Show each message in toast
-      //   messages.forEach((msg) => toast.error(msg));
-      // }
       if (error.response && error.response.data) {
         toast.error(error.response.data.message);
       }
       console.error("Single Reject PIRequest error:", error);
     }
   };
+  // const singleReject = async (payload) => {
+  //   try {
+  //     // const payload = { pi_request_item_id, pi_request_id };
+  //     const res = await postData(ENDPOINTS.PI_REQUEST.SINGLEREJECT, payload);
+  //     if (res?.status) {
+  //       toast.success(res.message || "Single Reject successful!");
+  //     } else {
+  //       toast.error(res.message || "Single Reject failed");
+  //     }
+  //     getPIRequest();
+  //     return res;
+  //   } catch (error) {
+  //     // if (error.response && error.response.data && error.response.data.errors) {
+  //     //   const errors = error.response.data.errors;
+
+  //     //   // Flatten all error messages into a single array
+  //     //   const messages = Object.values(errors).flat();
+
+  //     //   // Show each message in toast
+  //     //   messages.forEach((msg) => toast.error(msg));
+  //     // }
+  //     if (error.response && error.response.data) {
+  //       toast.error(error.response.data.message);
+  //     }
+  //     console.error("Single Reject PIRequest error:", error);
+  //   }
+  // };
 
   // Bulk Reject
-  const bulkReject = async (payload) => {
+  const bulkReject = async ({ pi_request_item_id, pi_request_id }) => {
     try {
+      const payload = { pi_request_item_id, pi_request_id };
       const res = await postData(ENDPOINTS.PI_REQUEST.BULKREJECT, payload);
 
       if (res?.status) {
-        toast.success(res.message || "Bulk Reject successful!");
+        toast.success(res.message || "PI Requests rejected successfully!");
+
+        // ✅ Update local state
+        setPiRequest((prev) =>
+          prev.map((pi) => ({
+            ...pi,
+            piitems: pi.piitems.map((item) =>
+              pi_request_item_id.includes(item.id)
+                ? { ...item, status: "Reject" }
+                : item
+            ),
+          }))
+        );
+
+        // ✅ Clear selection
+        setSelectedItemsMap({});
       } else {
-        toast.error(res.message || "Bulk Reject failed");
+        toast.error(res.message || "Failed to reject PI Requests");
       }
-      getPIRequest();
       return res;
     } catch (error) {
-      // if (error.response && error.response.data && error.response.data.errors) {
-      //   const errors = error.response.data.errors;
-
-      //   // Flatten all error messages into a single array
-      //   const messages = Object.values(errors).flat();
-
-      //   // Show each message in toast
-      //   messages.forEach((msg) => toast.error(msg));
-      // }
       if (error.response && error.response.data) {
         toast.error(error.response.data.message);
       }
       console.error("Bulk Reject PIRequest error:", error);
     }
   };
+  // const bulkReject = async (payload) => {
+  //   try {
+  //     const res = await postData(ENDPOINTS.PI_REQUEST.BULKREJECT, payload);
+
+  //     if (res?.status) {
+  //       toast.success(res.message || "Bulk Reject successful!");
+  //     } else {
+  //       toast.error(res.message || "Bulk Reject failed");
+  //     }
+  //     getPIRequest();
+  //     return res;
+  //   } catch (error) {
+  //     // if (error.response && error.response.data && error.response.data.errors) {
+  //     //   const errors = error.response.data.errors;
+
+  //     //   // Flatten all error messages into a single array
+  //     //   const messages = Object.values(errors).flat();
+
+  //     //   // Show each message in toast
+  //     //   messages.forEach((msg) => toast.error(msg));
+  //     // }
+  //     if (error.response && error.response.data) {
+  //       toast.error(error.response.data.message);
+  //     }
+  //     console.error("Bulk Reject PIRequest error:", error);
+  //   }
+  // };
 
   return (
     // <ItemMasterProvider>

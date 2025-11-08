@@ -230,6 +230,7 @@ export const UIProvider = ({ children }) => {
     addQuote: false,
     editGRN: false,
     viewRejectGRN: false,
+    vendorApprove: false,
     // INVOICE
     addInvoice: false,
     rejectInvoice: false,

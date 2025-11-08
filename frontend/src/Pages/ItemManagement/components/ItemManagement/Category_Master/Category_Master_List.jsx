@@ -62,21 +62,13 @@ export default function Category_Master_List() {
 
                 {/* clear filter */}
                 {selectedGroup != "all" && (
-                  <div className="d-flex align-items-center">
-                    <div>
-                      <button
-                        className="btn waves-effect btn-sm text-danger"
-                        // onClick={handleClearFilters}
-                        onClick={() => {
-                          // setSearch("");
-                          setSelectedGroup("all");
-                        }}
-                      >
-                        {/* <i className="ti ti-refresh me-1"></i> */}✕ Clear
-                        All
-                      </button>
-                    </div>
-                  </div>
+                  <button
+                    className="btn text-danger btn-sm d-flex align-items-center gap-1"
+                    onClick={() => setSelectedGroup("all")}
+                    style={{ whiteSpace: "nowrap" }}
+                  >
+                    ✕ Clear All
+                  </button>
                 )}
               </div>
               <div className="d-flex gap-1 align-items-center">

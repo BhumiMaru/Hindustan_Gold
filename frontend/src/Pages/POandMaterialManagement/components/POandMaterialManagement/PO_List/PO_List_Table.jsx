@@ -70,7 +70,7 @@ export default function PO_List_Table() {
             <th scope="col" style={{ width: 80 }}>
               Sr.No.
             </th>
-            <th scope="col">PO ID</th>
+            <th scope="col">PO No.</th>
             <th scope="col">Date</th>
             <th scope="col">PI ID</th>
             <th scope="col">Type</th>

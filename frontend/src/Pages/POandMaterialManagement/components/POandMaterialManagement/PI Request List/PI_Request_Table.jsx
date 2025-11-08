@@ -670,7 +670,7 @@ export default function PI_Request_Table({ userPermission }) {
                                     const hasApprovedItemWithoutQuote =
                                       pi?.piitems?.some(
                                         (item) =>
-                                          item?.quote_status !== 1 &&
+                                          item?.quote_status != 1 &&
                                           item?.status
                                             ?.toLowerCase()
                                             ?.trim() === "approve"

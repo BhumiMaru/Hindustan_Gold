@@ -38,7 +38,9 @@ export default function Item_Request_List() {
     setStartDate,
     endDate,
     setEndDate,
+    setFilterItem,
   } = useItemRequest();
+  const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [search, setSearch] = useState("");
   const { modal } = useUIContext();
@@ -64,6 +66,8 @@ export default function Item_Request_List() {
   //   }
   // }, [itemNameId]);
 
+  console.log("fff", filterItem);
+
   useEffect(() => {
     getItemRequestData({
       search,
@@ -72,10 +76,10 @@ export default function Item_Request_List() {
       status: statusFilter === "all" ? "" : statusFilter,
       page: pagination.currentPage,
       perPage: pagination.perPage,
-      from_date: startDate || undefined,
-      to_date: endDate || undefined,
+      start_date: startDate || undefined,
+      end_date: endDate || undefined,
+      item_id: itemNameId,
     });
-    // fetchItemFilter();
   }, [
     search,
     activeTab,
@@ -86,6 +90,21 @@ export default function Item_Request_List() {
     startDate,
     endDate,
   ]);
+
+  // When type changes, fetch new filter + clear old data
+  useEffect(() => {
+    if (selectedType) {
+      // Clear previous filter items before loading new ones
+      setFilterItem([]);
+
+      // Fetch new item filter
+      fetchItemFilter(null, selectedType);
+
+      // Also update itemRequestData for context if needed
+      getItemNameAndId(selectedType);
+      setItemRequestData((prev) => ({ ...prev, item_type: selectedType }));
+    }
+  }, [selectedType]);
 
   const getAuthData = sessionStorage.getItem("authData");
   const decryptAuthData = decryptData(getAuthData);
@@ -261,20 +280,20 @@ export default function Item_Request_List() {
 
                 {/* Clear Filter */}
                 {/* {selectedGroup != "all" && ( */}
-                <div className="d-flex align-items-center">
+                {/* <div className="d-flex align-items-center">
                   <div>
                     <button
-                      className="btn waves-effect btn-sm text-danger"
-                      // onClick={handleClearFilters}
-                      // onClick={() => {
-                      //   // setSearch("");
+                      className="btn waves-effect btn-sm text-danger" */}
+                {/* // onClick={handleClearFilters}
+                      // onClick={() => { */}
+                {/* //   // setSearch("");
                       //   setSelectedGroup("all");
                       // }}
-                    >
-                      {/* <i className="ti ti-refresh me-1"></i> */}✕ Clear All
+                    > */}
+                {/* <i className="ti ti-refresh me-1"></i>✕ Clear All
                     </button>
                   </div>
-                </div>
+                </div> */}
                 {/* )} */}
               </div>
 
@@ -402,11 +421,11 @@ export default function Item_Request_List() {
                   // onChange={setItemNameId}
                   placeholder="Select Item"
                 /> */}
-                {console.log("itemList", itemList)}
+                {/* {console.log("itemList", itemList)} */}
                 <CustomSelect
                   id="selectItemName"
-                  options={itemList?.map((item) => ({
-                    value: item.id,
+                  options={filterItem?.map((item) => ({
+                    value: item.item_id,
                     label: item.item_name,
                   }))}
                   value={itemNameId}

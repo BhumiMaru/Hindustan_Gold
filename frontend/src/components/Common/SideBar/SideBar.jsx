@@ -81,21 +81,21 @@ export default function SideBar() {
     // "Item Create": "/item/item-create-material",
   };
 
-  const requestManagementRoutesBase = {
-    // "Item Request": "/user/request/request-list",
-  };
+  // const requestManagementRoutesBase = {
+  //   // "Item Request": "/user/request/request-list",
+  // };
 
-  let requestManagementRoutes = {};
+  // let requestManagementRoutes = {};
 
-  if (
-    userPermission?.some(
-      (perm) =>
-        (perm.type === "Item Request" || perm.type === "Material Approval") &&
-        perm.permission === "view"
-    )
-  ) {
-    requestManagementRoutes["Item Request"] = "/user/request/request-list";
-  }
+  // if (
+  //   userPermission?.some(
+  //     (perm) =>
+  //       (perm.type === "Item Request" || perm.type === "Material Approval") &&
+  //       perm.permission === "view"
+  //   )
+  // ) {
+  //   requestManagementRoutes["Item Request"] = "/user/request/request-list";
+  // }
 
   // const piAndMaterialManagementRoutes = {
   //   "PI Request List": "/po-material/pi-request-list",
@@ -178,19 +178,19 @@ export default function SideBar() {
   }
 
   // Payment Management
-  const paymentManagementRoutesBase = {};
+  // const paymentManagementRoutesBase = {};
 
-  let paymentManagementRoutes = {};
+  // let paymentManagementRoutes = {};
 
-  // Payment
-  if (
-    userPermission?.some(
-      (perm) => perm.type == "Payment Request" && perm.permission === "view"
-    )
-  ) {
-    paymentManagementRoutes["Payment List"] =
-      "/payment-management/invoice-list";
-  }
+  // // Payment
+  // if (
+  //   userPermission?.some(
+  //     (perm) => perm.type == "Payment Request" && perm.permission === "view"
+  //   )
+  // ) {
+  //   paymentManagementRoutes["Payment List"] =
+  //     "/payment-management/invoice-list";
+  // }
 
   // Vendor
   // if (
@@ -383,39 +383,20 @@ export default function SideBar() {
             ) && (
               <li
                 className={`menu-item ${
-                  activeMenu === "Request" ? "open active" : ""
+                  activeSubMenu === "Item Request" ? "active" : ""
                 } cursor-pointer`}
-                onClick={() => toggleMenu("Request")}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSubMenuClick(null, "Item Request");
+                }}
               >
-                <a className="menu-link menu-toggle">
-                  <i className="menu-icon icon-base ti tabler-forms"></i>
-                  <div data-i="Request Management">Request Management</div>
-                </a>
-                <ul
-                  className={`menu-sub dropdown ${
-                    activeMenu === "Request" ? "open" : ""
-                  }`}
+                <Link
+                  to="/user/request/request-list"
+                  className="menu-link cursor-pointer text-decoration-none d-flex align-items-center gap-2"
                 >
-                  {Object.keys(requestManagementRoutes).map((item) => (
-                    <li
-                      key={item}
-                      className={`menu-item ${
-                        activeSubMenu === item ? "active" : ""
-                      }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSubMenuClick("Request", item);
-                      }}
-                    >
-                      <Link
-                        to={requestManagementRoutes[item]}
-                        className="menu-link cursor-pointer text-decoration-none"
-                      >
-                        <div data-i={item}>{item}</div>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                  <i className="menu-icon icon-base ti tabler-forms"></i>
+                  <div data-i="Item Request">Item Request</div>
+                </Link>
               </li>
             )}
 
@@ -470,7 +451,32 @@ export default function SideBar() {
             )}
 
           {/* Payment Management */}
+          {/* Payment List (direct link) */}
           {!isAdmin &&
+            userPermission?.some(
+              (perm) =>
+                perm.type === "Payment Request" && perm.permission === "view"
+            ) && (
+              <li
+                className={`menu-item ${
+                  activeSubMenu === "Payment List" ? "active" : ""
+                } cursor-pointer`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSubMenuClick(null, "Payment List");
+                }}
+              >
+                <Link
+                  to="/payment-management/invoice-list"
+                  className="menu-link cursor-pointer text-decoration-none d-flex align-items-center gap-2"
+                >
+                  <i className="menu-icon icon-base ti tabler-file-dollar"></i>
+                  <div data-i="Payment List">Payment List</div>
+                </Link>
+              </li>
+            )}
+
+          {/* {!isAdmin &&
             userPermission?.some(
               (perm) =>
                 perm.type == "Payment Request" && perm.permission === "view"
@@ -511,7 +517,7 @@ export default function SideBar() {
                   ))}
                 </ul>
               </li>
-            )}
+            )} */}
 
           {/* UOM
           <li

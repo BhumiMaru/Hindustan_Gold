@@ -86,7 +86,7 @@ export default function Vendor_Quote_Detail() {
                         <td>{vendor?.pirequestitem?.item_name}</td>
                         <td>{vendor?.pirequestitem?.qty}</td>
                         <td>{vendor?.pirequestitem?.uom}</td>
-                        <td>₹ {vendor?.rate}/-</td>
+                        <td>{vendor?.rate && `₹${vendor?.rate}/-`}</td>
                       </tr>
                     );
                   })}

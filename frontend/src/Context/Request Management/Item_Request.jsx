@@ -469,8 +469,9 @@ export const ItemRequestProvider = ({ children }) => {
     page = 1,
     perPage = 10,
     type = activeTab,
-    from_date = "",
-    to_date = "",
+    start_date = "",
+    end_date = "",
+    item_id,
   } = {}) => {
     try {
       setItemRequest([]);
@@ -483,8 +484,9 @@ export const ItemRequestProvider = ({ children }) => {
         status,
         page,
         per_page: perPage,
-        from_date: from_date || undefined, // only send if exists
-        to_date: to_date || undefined,
+        start_date: start_date || undefined, // only send if exists
+        end_date: end_date || undefined,
+        // item_id,
       };
 
       const res = await postData(ENDPOINTS.ITEM_REQUEST.LIST, payload);
@@ -801,9 +803,12 @@ export const ItemRequestProvider = ({ children }) => {
   };
 
   //   // Fetch item request Filter
-  const fetchItemFilter = async (sub_c_id = null) => {
+  const fetchItemFilter = async (sub_c_id = null, type) => {
     try {
-      const payload = sub_c_id ? { sub_c_id } : {}; // only send if provided
+      const payload = {
+        ...(sub_c_id ? { sub_c_id } : {}),
+        type,
+      }; // only send if provided
       const res = await postData(ENDPOINTS.ITEM_REQUEST.FILTER, payload);
       setFilterItem(res.data || []);
     } catch (error) {

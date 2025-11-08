@@ -51,7 +51,7 @@ export default function PO_List_List() {
       search,
       status,
       poType: selectedType,
-      item: itemName,
+      item_id: itemName,
       vendor,
       start_date: startDate,
       end_date: endDate,
@@ -311,8 +311,8 @@ export default function PO_List_List() {
                     label: "InProgress",
                   },
                   {
-                    value: "Completed",
-                    label: "Completed",
+                    value: "Complete",
+                    label: "Complete",
                   },
                   {
                     value: "Reject",

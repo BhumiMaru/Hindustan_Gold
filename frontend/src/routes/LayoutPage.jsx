@@ -19,6 +19,7 @@ import { UserCreationProvider } from "../Context/Master/UserCreationContext";
 import ResetPasswordMasterPage from "../Pages/Authentication/ResetPassword/ResetPasswordMasterPage";
 import { GetQuoteProvider } from "../Context/PIAndPoManagement/GetQuote";
 import Vendor_fill_quote from "../Pages/POandMaterialManagement/components/POandMaterialManagement/Get_Quote/Vendor_fill_quote";
+import Thank_You_Quote_Fill from "../Pages/POandMaterialManagement/components/POandMaterialManagement/Get_Quote/Thank_You_Quote_Fill";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function LayoutPage() {
@@ -145,6 +146,8 @@ export default function LayoutPage() {
 
   // inside your LayoutPage
   const sendRequestMatch = matchPath("/send-request", location.pathname);
+  // Thank You Page for Fill Quote
+  const thankyouMatch = matchPath("/thank-you", location.pathname);
   // console.log("sendRequestMatch", sendRequestMatch);
 
   const isPublicRoute =
@@ -152,7 +155,8 @@ export default function LayoutPage() {
     location.pathname === "/auth-forgot-password" ||
     location.pathname === "/auth-reset-password" ||
     location.pathname === "/pages-profile-user" ||
-    sendRequestMatch; // ✅ include dynamic send-request route
+    sendRequestMatch ||
+    thankyouMatch;
 
   console.log(isPublicRoute);
 
@@ -218,6 +222,14 @@ export default function LayoutPage() {
             </GetQuoteProvider>
           }
         />
+      </Routes>
+    );
+  }
+
+  if (thankyouMatch) {
+    return (
+      <Routes>
+        <Route path="/thank-you" element={<Thank_You_Quote_Fill />} />
       </Routes>
     );
   }

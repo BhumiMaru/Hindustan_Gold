@@ -36,6 +36,7 @@ export const GetQuoteProvider = ({ children }) => {
   const [newVendorId, setNewVendorId] = useState(null);
   const [newVendorData, setNewVendorData] = useState(null);
   const [oldVendorList, setOldVendorList] = useState([]);
+  const [loadingSendRequest, setLoadingSendRequest] = useState(false);
 
   const [quotationVendorData, setQuotationVendorData] = useState({
     pi_get_quote_id: null,
@@ -156,6 +157,8 @@ export const GetQuoteProvider = ({ children }) => {
   // Get Quote Vendors List
   const quoteVendorList = async ({ pi_get_quote_id, vendor_type }) => {
     try {
+      console.log(" pi_get_quote_id pi_get_quote_id", pi_get_quote_id);
+      console.log(" vendor_type vendor_type", vendor_type);
       const res = await getData(ENDPOINTS.QUOTATIONDETAILS.LIST, {
         pi_get_quote_id,
         vendor_type,
@@ -292,11 +295,13 @@ export const GetQuoteProvider = ({ children }) => {
   const sendRequest = async ({
     pi_get_quote_id,
     pi_get_quote_vendor_ids,
-    // vendor_type, // Make vendor_type dynamic with default value
+    vendor_type, // Make vendor_type dynamic with default value
   }) => {
-    // console.log("pi_get_quote_id", pi_get_quote_id);
+    console.log("pi_get_quote_id", pi_get_quote_id);
+    console.log("vendor_type", vendor_type);
     // console.log("pi_get_quote_vendor_ids", pi_get_quote_vendor_ids);
     try {
+      setLoadingSendRequest(true);
       // Ensure pi_get_quote_vendor_ids is always an array
       const vendorIds = Array.isArray(pi_get_quote_vendor_ids)
         ? pi_get_quote_vendor_ids
@@ -323,14 +328,17 @@ export const GetQuoteProvider = ({ children }) => {
         payload
       );
 
-      // console.log("Sending request with response:", res);
+      console.log("Sending request with response:", res);
 
       if (res.status) {
-        toast.success(res.message || "Request sent successfully!");
+        toast.success(res.message);
         // Refresh vendor list after successful send with dynamic vendor_type
-        // if (pi_get_quote_id) {
-        //   await quoteVendorList(pi_get_quote_id, vendor_type);
-        // }
+        if (pi_get_quote_id) {
+          await quoteVendorList({
+            pi_get_quote_id: pi_get_quote_id,
+            vendor_type: vendor_type,
+          });
+        }
         return res.data;
       } else {
         toast.error(res.message || "Failed to send request");
@@ -338,14 +346,13 @@ export const GetQuoteProvider = ({ children }) => {
     } catch (error) {
       // Handle network errors or other exceptions
       if (error.response) {
-        const errorMessage =
-          error.response.data?.message || "Error sending request";
+        const errorMessage = error.response.data?.message;
         toast.error(errorMessage);
-      } else {
-        toast.error("Network error: Failed to send request");
       }
       console.error("Send Request error:", error);
       throw error;
+    } finally {
+      setLoadingSendRequest(false);
     }
   };
 
@@ -357,6 +364,13 @@ export const GetQuoteProvider = ({ children }) => {
     file = null,
   }) => {
     try {
+      console.log("hh", {
+        pi_get_quote_id: pi_get_quote_id,
+        pi_get_quote_vendor_id: pi_get_quote_vendor_id,
+        items: items, // Expect an array of objects [{ id, rate }]
+        vendor_quote_file: file,
+      });
+
       if (!pi_get_quote_id || !pi_get_quote_vendor_id || items.length === 0) {
         toast.error("Missing required fields for rate update");
         return;
@@ -379,13 +393,24 @@ export const GetQuoteProvider = ({ children }) => {
         formData.append("vendor_quote_file", file);
       }
 
+      for (let [key, value] of formData.entries()) {
+        console.log("key:", key, "value:", value);
+      }
+
       const res = await postData(
         ENDPOINTS.QUOTATIONDETAILS.RATEUPDATE,
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
+      console.log("res", res);
+
       if (res.status) {
-        toast.success(res.message || "Vendor rate updated successfully!");
+        toast.success(res.message);
         // quoteVendorList({
         //   pi_get_quote_id,
         //   vendor_type,
@@ -402,7 +427,7 @@ export const GetQuoteProvider = ({ children }) => {
       } else {
         toast.error("Network error: Failed to update vendor rate");
       }
-      console.error("Vendor Rate Update error:", error);
+      console.log("Vendor Rate Update error:", error);
       throw error;
     }
   };

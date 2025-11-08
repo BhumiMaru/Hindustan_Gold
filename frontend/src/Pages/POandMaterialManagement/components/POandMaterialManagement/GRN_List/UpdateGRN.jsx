@@ -104,12 +104,17 @@ export default function UpdateGRN({ id }) {
     let res;
     if (editId) {
       res = EditGRN({ id: editId, payload: grnPayload });
+      if (res.status) {
+        handleClose("editGRN");
+      }
     } else {
       res = CreateGRN(grnPayload);
+      if (res.status) {
+        handleClose("editGRN");
+      }
     }
 
     console.log("resresres", res);
-    handleClose("editGRN");
   };
 
   return (

@@ -1,0 +1,104 @@
+import React from "react";
+import { useUIContext } from "../../../../../Context/UIContext";
+import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
+import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
+
+export default function Vendor_Approve_Confirmation_Modal({
+  vendorApproveData,
+  setNewVendorLoading,
+}) {
+  const { handleClose } = useUIContext();
+  const { vendorApprove, getVendorList } = useVendor();
+  const { quoteVendorList } = useGetQuote();
+
+  console.log("vendorApproveData", vendorApproveData);
+
+  const handleApprove = async () => {
+    try {
+      setNewVendorLoading((prev) => ({
+        ...prev,
+        [vendorApproveData.vendor_id]: true,
+      }));
+
+      // ✅ Wait for vendor approval API to finish
+      const res = await vendorApprove({
+        vendor_id: vendorApproveData.vendor_id,
+        pi_get_quate: vendorApproveData.pi_get_quote_id,
+      });
+
+      console.log("Vendor Approve Response:", res);
+
+      // ✅ If success, refresh vendor list
+      if (res?.status && vendorApproveData?.pi_get_quote_id) {
+        handleClose("vendorApprove");
+      }
+      quoteVendorList({
+        pi_get_quote_id: vendorApproveData.pi_get_quote_id,
+        vendor_type: vendorApproveData.vendor_type,
+      });
+      getVendorList();
+      window.location.reload();
+      // ✅ Close modal only after success
+    } catch (error) {
+      console.error("Vendor approve error:", error);
+    } finally {
+      setNewVendorLoading((prev) => ({
+        ...prev,
+        [vendorApproveData.vendor_id]: false,
+      }));
+    }
+  };
+
+  return (
+    <>
+      <div
+        className="modal fade show"
+        id="smallModal"
+        tabIndex={-1}
+        aria-modal="true"
+        role="dialog"
+        style={{ display: "block" }}
+      >
+        <div
+          className="modal-dialog modal-sm modal-dialog-centered"
+          role="document"
+        >
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel2">
+                Approve Vendor
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={() => handleClose("vendorApprove")}
+              />
+            </div>
+            <div className="modal-body">
+              <p className="mb-2">
+                Are you sure you want to <strong>approve</strong> this vendor?
+              </p>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-label-secondary waves-effect"
+                onClick={() => handleClose("vendorApprove")}
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary waves-effect waves-light"
+                onClick={handleApprove}
+              >
+                Approve
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="modal-backdrop fade show"></div>
+    </>
+  );
+}

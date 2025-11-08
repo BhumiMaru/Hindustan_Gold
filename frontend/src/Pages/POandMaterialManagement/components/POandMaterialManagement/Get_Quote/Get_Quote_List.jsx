@@ -167,7 +167,7 @@ export default function Get_Quote_List() {
                 placeholder="Select Department"
               />
             </div>
-            <div className="col-lg-2">
+            {/* <div className="col-lg-2">
               <CustomSelect
                 id="selectUser"
                 options={[
@@ -181,8 +181,8 @@ export default function Get_Quote_List() {
                 onChange={setCreatedBy}
                 placeholder="Select Created By"
               />
-            </div>
-            <div className="col-lg-2">
+            </div> */}
+            <div className="col-lg-3">
               <CustomSelect
                 id="selectItemStatus"
                 options={[
@@ -236,7 +236,7 @@ export default function Get_Quote_List() {
                 /> */}
             {/* </div> */}
 
-            <div className="col-lg-2">
+            <div className="col-lg-3">
               <div className="d-flex items-center">
                 <input
                   type="text"

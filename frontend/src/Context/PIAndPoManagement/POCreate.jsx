@@ -172,7 +172,7 @@ export const POProvider = ({ children }) => {
     search: searchText = search,
     status: filterStatus = status,
     poType = selectedType,
-    item = itemName,
+    item_id = itemName,
     vendor = null,
     start_date = startDate,
     end_date = endDate,
@@ -186,7 +186,7 @@ export const POProvider = ({ children }) => {
         search: searchText || undefined,
         status: filterStatus || undefined,
         po_type: poType && poType !== "all" ? poType : undefined, // ✅ FIXED
-        item: item || undefined,
+        item_id: item_id || undefined,
         vendor: vendor || undefined,
         start_date: start_date || undefined,
         end_date: end_date || undefined,

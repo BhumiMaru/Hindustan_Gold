@@ -1392,6 +1392,7 @@ export default function PO_Create() {
                                   e.target.value
                                 )
                               }
+                              min="0"
                             />
                           </td>
                           <td>
@@ -1401,6 +1402,7 @@ export default function PO_Create() {
                               style={{ width: 120 }}
                               value={item?.disc_number}
                               readOnly
+                              min="0"
                             />
                           </td>
                           <td>
@@ -1416,6 +1418,7 @@ export default function PO_Create() {
                                   e.target.value
                                 )
                               }
+                              min="0"
                             />
                           </td>
                           <td>
@@ -1425,6 +1428,7 @@ export default function PO_Create() {
                               style={{ width: 120 }}
                               value={item?.gst_amount}
                               readOnly
+                              min="0"
                             />
                           </td>
                           <td>{item?.taxable_value}</td>
@@ -1860,7 +1864,7 @@ export default function PO_Create() {
                       )
                     }
                   >
-                    <option value="">Select</option>
+                    {/* <option value="">Select</option> */}
                     <option value="Applicable">Applicable</option>
                     <option value="Not Applicable">Not Applicable</option>
                   </select>
@@ -1874,7 +1878,7 @@ export default function PO_Create() {
                       handleInputChange("installation_at_site", e.target.value)
                     }
                   >
-                    <option value="">Select</option>
+                    {/* <option value="">Select</option> */}
                     <option value="Applicable">Applicable</option>
                     <option value="Not Applicable">Not Applicable</option>
                   </select>

@@ -202,6 +202,9 @@ export default function Invoice_List_List() {
                   handleOpen("addInvoice");
                   setType(0);
                 }}
+                style={{
+                  color: "black",
+                }}
               >
                 <span className="icon-xs icon-base ti tabler-plus me-2" />
                 Payment Request

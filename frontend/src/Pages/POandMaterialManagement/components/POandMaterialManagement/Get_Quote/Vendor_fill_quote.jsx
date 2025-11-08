@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { ENDPOINTS } from "../../../../../constants/endpoints";
 import { postData } from "../../../../../utils/api";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { decryptData } from "../../../../../utils/decryptData";
 import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
 import axios from "axios";
@@ -27,8 +27,9 @@ export default function Vendor_fill_quote() {
     vendorRateUpdate,
     newVendorList,
   } = useGetQuote();
+  const navigate = useNavigate();
 
-  // console.log("quoteDataForEmail", quoteDataForEmail);
+  console.log("quoteDataForEmail", quoteDataForEmail);
 
   const [newVendorData, setNewVendorData] = useState([]);
 
@@ -47,7 +48,7 @@ export default function Vendor_fill_quote() {
       const cleaned = decodeURIComponent(data).replace(/ /g, "+"); // 🔥 Fix spaces turned from +
       // console.log("cleaned", cleaned);
       decryptEmailData = decryptData(cleaned);
-      console.log("decryptEmailData", decryptEmailData);
+      // console.log("decryptEmailData", decryptEmailData);
     } catch (error) {
       console.log("decrypt error", error);
     }
@@ -264,8 +265,6 @@ export default function Vendor_fill_quote() {
         formData.append("vendor_quote_file", file);
       }
 
-      // console.log("res", res);
-
       // for (let [key, value] of formData.entries()) {
       //   console.log("key:", key);
       //   console.log("value:", value);
@@ -286,7 +285,8 @@ export default function Vendor_fill_quote() {
 
       // Check backend response (assuming backend sends { status: true/false, message: "" })
       if (res?.status) {
-        toast.success(res?.data?.message || "Add Quotation Successfully");
+        toast.success(res?.data?.message);
+        navigate("/thank-you");
         return res.data;
         // Refresh vendor lists if needed
         // if (quoteDataForEmail?.id) {
@@ -372,7 +372,7 @@ export default function Vendor_fill_quote() {
     }
   }, [decryptEmailData]);
 
-  console.log("quoteDataForEmail?.vendor_item", quoteDataForEmail);
+  // console.log("quoteDataForEmail?.vendor_item", quoteDataForEmail);
 
   return (
     <div data-bs-spy="scroll" className="scrollspy-example">
@@ -459,10 +459,23 @@ export default function Vendor_fill_quote() {
               className="form-control"
               // onChange={handleFileChange}
               onChange={(e) => setFile(e.target.files[0])}
+              disabled={quoteDataForEmail.vendor_quote_file}
               // disabled={item?.rate > 0}
             />
+            {quoteDataForEmail.vendor_quote_file && (
+              <span>File : {quoteDataForEmail.vendor_quote_file}</span>
+            )}
           </div>
-          <div className="col-lg-6 text-end">
+
+          <div
+            className={`col-lg-6 text-end ${
+              quoteDataForEmail?.vendor_item?.every(
+                (vendor) => vendor.rate != null
+              ) && quoteDataForEmail.vendor_quote_file != null
+                ? "d-none"
+                : "d-block"
+            }`}
+          >
             <button
               className="btn btn-success mt-6 waves-effect waves-light"
               onClick={handleSubmit}

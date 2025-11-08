@@ -300,11 +300,11 @@ export default function PI_Request_List() {
                       <i className="icon-base ti tabler-user icon-sm me-1_5" />
                       Approval Request
                     </span>
-                    {activeTab === "approval_request" && (
-                      <span className="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1_5">
-                        {loading ? 0 : piRequest.length}
-                      </span>
-                    )}
+                    {/* {activeTab === "approval_request" && ( */}
+                    <span className="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger ms-1_5">
+                      {loading ? "" : piRequest.length}
+                    </span>
+                    {/* )} */}
                     <i className="icon-base ti tabler-user icon-sm d-sm-none" />
                   </button>
                 </li>
