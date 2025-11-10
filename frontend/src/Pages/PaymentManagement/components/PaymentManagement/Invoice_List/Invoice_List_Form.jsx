@@ -246,10 +246,11 @@ export default function Invoice_List_Form({
                 {type == 0 && (
                   <>
                     <div className="col-lg-4">
-                      <label className="form-label">Sub Category</label>
+                      {/* <label className="form-label">Sub Category</label> */}
                       <div className="select2-info">
                         <div className="position-relative">
                           <CustomSelect
+                            label="Sub Category"
                             id="selectSubCategory"
                             options={filterSubCategory?.map((subcat) => ({
                               value: subcat.id,
@@ -259,6 +260,7 @@ export default function Invoice_List_Form({
                             value={subCategoryId}
                             onChange={setSubCategoryId}
                             placeholder="Select SubCategory"
+                            isTextRequired
                           />
                         </div>
                       </div>
@@ -268,6 +270,7 @@ export default function Invoice_List_Form({
                       <div className="select2-info">
                         <div className="position-relative">
                           <CustomSelect
+                            label="Item"
                             id="selectItemName"
                             options={filterItem?.map((item) => ({
                               value: item.item_id,
@@ -278,15 +281,17 @@ export default function Invoice_List_Form({
                             onChange={setItemName}
                             placeholder="Select Item"
                             disabled={!subCategoryId}
+                            isTextRequired
                           />
                         </div>
                       </div>
                     </div>
                     <div className="col-lg-4">
-                      <label className="form-label">Vendor</label>
+                      {/* <label className="form-label">Vendor</label> */}
                       <div className="select2-info">
                         <div className="position-relative">
                           <CustomSelect
+                            label="Vendor"
                             key={`vendor-select-${vendor}`}
                             options={vendorFilter?.map((item) => ({
                               value: item.id,
@@ -296,6 +301,7 @@ export default function Invoice_List_Form({
                             value={vendor}
                             onChange={setVendor}
                             placeholder="Select Vendor"
+                            isTextRequired
                           />
                         </div>
                         {console.log("CustomSelect Debug:", {
@@ -313,33 +319,42 @@ export default function Invoice_List_Form({
                 )}
 
                 <div className="col-lg-4">
-                  <label className="form-label">Invoice Date</label>
+                  <label className="form-label">
+                    Invoice Date <span className="text-danger">*</span>
+                  </label>
                   <input
                     type="date"
                     name="invoice_date"
                     className="form-control"
                     value={invoiceData.invoice_date || ""}
                     onChange={handleChange}
+                    required
                   />
                 </div>
                 <div className="col-lg-4 mt-2">
-                  <label className="form-label">Taxable Amount</label>
+                  <label className="form-label">
+                    Taxable Amount <span className="text-danger">*</span>
+                  </label>
                   <input
                     type="number"
                     name="taxable_amount"
                     className="form-control"
                     value={invoiceData.taxable_amount || ""}
                     onChange={handleChange}
+                    required
                   />
                 </div>
                 <div className="col-lg-4 mt-2">
-                  <label className="form-label">TDS Amount</label>
+                  <label className="form-label">
+                    TDS Amount <span className="text-danger">*</span>
+                  </label>
                   <input
                     type="number"
                     name="tds_amount"
                     className="form-control"
                     value={invoiceData.tds_amount || ""}
                     onChange={handleChange}
+                    required
                   />
                 </div>
                 <div className="col-lg-12 mt-2">
@@ -352,11 +367,15 @@ export default function Invoice_List_Form({
                   />
                 </div>
                 <div className="col-lg-6 mt-2">
-                  <label className="form-label">Invoice Attachment File</label>
+                  <label className="form-label">
+                    Invoice Attachment File{" "}
+                    <span className="text-danger">*</span>
+                  </label>
                   <input
                     type="file"
                     className="form-control"
                     onChange={(e) => setFile(e.target.files[0])}
+                    required
                   />
                   {invoiceData.invoice_file && (
                     <span>Invoice FileName: {invoiceData.invoice_file}</span>

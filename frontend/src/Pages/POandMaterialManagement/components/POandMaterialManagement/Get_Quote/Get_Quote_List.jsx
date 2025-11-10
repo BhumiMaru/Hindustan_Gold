@@ -90,6 +90,7 @@ export default function Get_Quote_List() {
     setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
   };
 
+  // Date Select
   const handleDateSelect = (range) => {
     setSelectedDateRange(range);
 
@@ -102,6 +103,25 @@ export default function Get_Quote_List() {
     setShowDatePicker(false);
   };
 
+  //  Clear all filters
+  const handleClearFilters = () => {
+    setSearch("");
+    setItemType("all");
+    setDepartment("all");
+    setCreatedBy("all");
+    setStatus("all");
+    setDateRange({ start: "", end: "" });
+    setSelectedDateRange("");
+    setPagination((prev) => ({ ...prev, currentPage: 1 }));
+
+    //  Refetch unfiltered data
+    getQuoteList({
+      search: "",
+      page: 1,
+      perPage: pagination.perPage,
+    });
+  };
+
   return (
     <>
       {/* ---------------START GET QUOTE LIST------------------ */}
@@ -109,15 +129,35 @@ export default function Get_Quote_List() {
         {/* DataTable with Buttons */}
         <div className="card">
           <div className="d-flex justify-content-between p-3">
-            <div className="d-flex align-items-center ">
-              {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
-              <SearchBar
-                placeholder="Search Request..."
-                value={search}
-                onChange={setSearch}
-                onSubmit={(val) => setSearch(val)}
-              />
+            <div className="d-flex align-items-center flex-wrap">
+              <div className="d-flex align-items-center ">
+                {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
+                <SearchBar
+                  placeholder="Search Request..."
+                  value={search}
+                  onChange={setSearch}
+                  onSubmit={(val) => setSearch(val)}
+                />
+              </div>
+
+              {(itemType !== "all" ||
+                department !== "all" ||
+                createdBy !== "all" ||
+                status !== "all" ||
+                (dateRange.start && dateRange.start !== "") ||
+                (dateRange.end && dateRange.end !== "") ||
+                search !== "") && (
+                <div className="d-flex align-items-center">
+                  <button
+                    className="btn text-danger waves-effect btn-sm"
+                    onClick={handleClearFilters}
+                  >
+                    ✕ Clear All
+                  </button>
+                </div>
+              )}
             </div>
+
             <div>
               {/*<a href="request-list.html" className="btn btn-primary waves-effect waves-light"
                           >

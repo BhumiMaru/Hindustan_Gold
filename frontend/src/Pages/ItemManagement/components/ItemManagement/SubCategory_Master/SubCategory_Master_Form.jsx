@@ -32,7 +32,7 @@ export default function SubCategory_Master_Form() {
         createSubCategory(payload);
       }
       // console.log("payload", payload);
-      handleClose("addNewSubCategory");
+      // handleClose("addNewSubCategory");
     } catch (error) {
       console.log("Sub Category Error", error);
     }
@@ -73,12 +73,12 @@ export default function SubCategory_Master_Form() {
               <div className="modal-body">
                 <div className="row">
                   <div className="col-md-12 mb-2">
-                    <label htmlFor="typeSelect" className="form-label">
+                    {/* <label htmlFor="typeSelect" className="form-label">
                       Type
-                    </label>
+                    </label> */}
                     <CustomSelect
                       id="typeSelect"
-                      label=""
+                      label="Type"
                       options={[
                         { value: "service", label: "Service" },
                         { value: "material", label: "Material" },
@@ -92,17 +92,18 @@ export default function SubCategory_Master_Form() {
                       }
                       placeholder="Select Type"
                       required
+                      isTextRequired
                     />
                   </div>
 
                   <div className="col-md-12 mb-2">
-                    <label htmlFor="select2Basic" className="form-label">
+                    {/* <label htmlFor="select2Basic" className="form-label">
                       Group
-                    </label>
+                    </label> */}
                     <div className="position-relative">
                       <CustomSelect
                         id="selectGroup"
-                        label=""
+                        label="Group"
                         options={filterGroup.map((group) => ({
                           value: group.id,
                           label: group.group_name,
@@ -116,17 +117,18 @@ export default function SubCategory_Master_Form() {
                         }}
                         placeholder="Select Group"
                         required
+                        isTextRequired
                       />
                     </div>
                   </div>
                   <div className="col-md-12 mb-2">
-                    <label htmlFor="select3Basic" className="form-label">
+                    {/* <label htmlFor="select3Basic" className="form-label">
                       Category
-                    </label>
+                    </label> */}
                     <div className="position-relative">
                       <CustomSelect
                         id="selectCategory"
-                        label=""
+                        label="Category"
                         options={filterCategory.map((cat) => ({
                           value: cat.id,
                           label: cat.category_name,
@@ -140,12 +142,13 @@ export default function SubCategory_Master_Form() {
                         }
                         placeholder="Select Category"
                         required
+                        isTextRequired
                       />
                     </div>
                   </div>
                   <div className="col-md-12 mb-2">
                     <label htmlFor="nameSmall" className="form-label">
-                      Subcategory
+                      Subcategory <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
@@ -159,6 +162,7 @@ export default function SubCategory_Master_Form() {
                           sub_category_name: e.target.value,
                         });
                       }}
+                      required
                     />
                   </div>
                   {/* Primary */}
@@ -180,13 +184,14 @@ export default function SubCategory_Master_Form() {
                               owners: val,
                             });
                           }}
+                          isTextRequired
                         />
                       </div>
                     </div>
                   </div>
                   <div className="col-md-12 mb-2">
                     <label htmlFor="prefix" className="form-label">
-                      Prefix Code
+                      Prefix Code <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
@@ -201,6 +206,7 @@ export default function SubCategory_Master_Form() {
                           prefix_code: e.target.value,
                         });
                       }}
+                      required
                     />
                   </div>
                 </div>

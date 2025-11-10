@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { getData, postData, deleteData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
+import { useUIContext } from "../UIContext";
 
 const ServiceLocation3MasterContext = createContext();
 
@@ -12,6 +13,7 @@ export const useServiceLocation3Master = () => {
 
 // PROVIDER
 export const ServiceLocation3MasterProvider = ({ children }) => {
+  const { handleClose } = useUIContext();
   const [loading, setLoading] = useState(false);
   const [serviceLocation3, setServiceLocation3] = useState([]);
   const [serviceL3, setServiceL3] = useState([]);
@@ -137,7 +139,16 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
           service_location_2_id,
         }
       );
-      // console.log("res", res);
+      console.log("res", res);
+      if (res.success) {
+        handleClose("addNewServiceLocation3");
+        setServiceLocation3EditId(null);
+        setServiceLocation3Data({
+          service_location_3_name: "",
+          selectedSl1: null,
+          selectedSl2: null,
+        });
+      }
       toast.success("Service Location 3 Created Successfully");
       fetchServiceLocations3();
     } catch (error) {
@@ -228,6 +239,7 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
         setServiceLocation3EditId,
         serviceL3,
         pagination,
+        setPagination,
         filterSelectedSl1,
         setFilterSelectedSl1,
         filterSelectedSl2,

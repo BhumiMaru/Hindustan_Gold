@@ -54,6 +54,21 @@ export default function ServiceLocation_2_Master_List() {
       label: loc.service_location_name,
     })) || []),
   ];
+
+  // ✅ Clear Filter Function
+  const handleClearFilters = () => {
+    setSearch("");
+    setFilterSelectedOption(null);
+    setPagination((prev) => ({ ...prev, currentPage: 1 }));
+
+    fetchServiceLocations2({
+      search: "",
+      serviceLocation1Id: null,
+      page: 1,
+      perPage: pagination.perPage,
+    });
+  };
+
   return (
     <>
       {/* -----------------START SERVICE LOCATION 2 MASTER List-------------------- */}
@@ -61,15 +76,29 @@ export default function ServiceLocation_2_Master_List() {
         {/* DataTable with Buttons */}
         <div className="card">
           <div className="d-flex justify-content-between p-3">
-            <div className="d-flex align-items-center">
-              {/*  <input type="search" className="form-control" placeholder="Search Service Location 2s...">*/}
-              <SearchBar
-                placeholder="Search Service Location 2..."
-                value={search}
-                onChange={setSearch} // ✅ update state
-                onSubmit={(val) => setSearch(val)} // ✅ handle Enter key
-              />
+            <div className="d-flex align-items-center flex-wrap">
+              <div className="d-flex align-items-center">
+                {/*  <input type="search" className="form-control" placeholder="Search Service Location 2s...">*/}
+                <SearchBar
+                  placeholder="Search Service Location 2..."
+                  value={search}
+                  onChange={setSearch} // ✅ update state
+                  onSubmit={(val) => setSearch(val)} // ✅ handle Enter key
+                />
+              </div>
+              {/* Clear Filter */}
+              {filterSelectedOption !== null && (
+                <div className="d-flex align-items-center ms-2">
+                  <button
+                    className="btn text-danger waves-effect btn-sm"
+                    onClick={handleClearFilters}
+                  >
+                    ✕ Clear All
+                  </button>
+                </div>
+              )}
             </div>
+
             <div className="d-flex gap-1">
               <div className="position-relative">
                 <CustomSelect

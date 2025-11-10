@@ -54,6 +54,7 @@ export default function PO_Details() {
 
   // console.log("vendorIdInvoice", vendorIdInvoice);
 
+  // fetch grn after add
   useEffect(() => {
     GRNList({
       po_id: poDetails?.id,

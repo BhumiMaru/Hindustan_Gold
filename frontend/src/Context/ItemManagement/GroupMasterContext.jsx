@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { ENDPOINTS } from "../../constants/endpoints";
 import { getData, postData, deleteData } from "../../utils/api";
 import { toast } from "react-toastify";
+import { useUIContext } from "../UIContext";
 
 const GroupMasterContext = createContext();
 
@@ -12,6 +13,7 @@ export const useGroupMasterContext = () => {
 
 // Group Master Provider
 export const GroupMasterProvider = ({ children }) => {
+  const { handleClose } = useUIContext();
   const [groups, setGroups] = useState([]);
   const [groupName, setGroupName] = useState("");
   const [groupEditId, setgroupEditId] = useState(null);
@@ -61,13 +63,22 @@ export const GroupMasterProvider = ({ children }) => {
   //   Create Company
   const createGroup = async (group_name) => {
     try {
-      await postData(ENDPOINTS.GROUP_MASTER.ADD_UPDATE, {
+      const res = await postData(ENDPOINTS.GROUP_MASTER.ADD_UPDATE, {
         group_name,
       });
-      toast.success("Group Master Created Successfully");
+      console.log("res", res);
+      if (res.success) {
+        toast.success(res.message);
+        setgroupEditId(null);
+        setGroupName("");
+        handleClose("addNewGroup");
+      }
       fetchGroupData();
     } catch (error) {
-      toast.error(`Group Master Create Error: ${error.message}`);
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -81,7 +92,10 @@ export const GroupMasterProvider = ({ children }) => {
       toast.success("Group Master Updated Successfully");
       fetchGroupData();
     } catch (error) {
-      toast.error(`Group Master Update Error: ${error.message}`);
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -98,7 +112,10 @@ export const GroupMasterProvider = ({ children }) => {
       toast.success("Group Master Deleted Successfully");
       fetchGroupData();
     } catch (error) {
-      toast.error(`Group Master Delete Error: ${error.message}`);
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
   return (

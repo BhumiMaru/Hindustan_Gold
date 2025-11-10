@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { ENDPOINTS } from "../constants/endpoints";
 import { deleteData, getData, postData } from "../utils/api";
 import { toast } from "react-toastify";
+import { useUIContext } from "./UIContext";
 
 export const UomContext = createContext();
 
@@ -12,6 +13,7 @@ export const useUOM = () => {
 
 // uom provider
 export const UOMProvider = ({ children }) => {
+  const { handleClose } = useUIContext();
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState(""); //search
   const [uom, setUom] = useState([]); // List
@@ -54,6 +56,7 @@ export const UOMProvider = ({ children }) => {
   const filterUomList = async () => {
     try {
       const res = await getData(ENDPOINTS.UOM.FILTER);
+
       if (res.status) {
         setFilterUom(res.data);
       }
@@ -68,12 +71,19 @@ export const UOMProvider = ({ children }) => {
   const createUOM = async (name) => {
     try {
       const res = await postData(ENDPOINTS.UOM.ADD_UPDATE, { name });
+
+      console.log("rr", res);
+
       if (res.status) {
         toast.success(res.message);
         setUomData(res.data.data);
+        setEditId(null);
+        setUomData({
+          name: "",
+        });
+        handleClose("addNewUOM");
         getUOMList();
       }
-      setUomData({ name: "" });
 
       return res.data.data;
     } catch (error) {

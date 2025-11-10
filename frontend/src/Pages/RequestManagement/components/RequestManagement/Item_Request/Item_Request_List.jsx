@@ -89,6 +89,7 @@ export default function Item_Request_List() {
     pagination.perPage,
     startDate,
     endDate,
+    itemNameId,
   ]);
 
   // When type changes, fetch new filter + clear old data
@@ -133,6 +134,37 @@ export default function Item_Request_List() {
     setEndDate(end ? moment(end, "DD/MM/YYYY").format("YYYY-MM-DD") : "");
 
     setShowDatePicker(false);
+  };
+
+  const handleClearFilters = () => {
+    // Reset all filter-related states
+    setSearch("");
+    setSelectedType("all");
+    setStatusFilter("all");
+    setItemNameId("all");
+    setStartDate("");
+    setEndDate("");
+    setSelectedDateRange("");
+    setShowDatePicker(false);
+
+    // Reset pagination
+    setPagination((prev) => ({
+      ...prev,
+      currentPage: 1,
+    }));
+
+    // Fetch unfiltered data
+    getItemRequestData({
+      search: "",
+      type: activeTab,
+      item_type: "",
+      status: "",
+      page: 1,
+      perPage: pagination.perPage,
+    });
+
+    // Optional: Clear item filters if any
+    setFilterItem([]);
   };
 
   //  Export to Excel
@@ -277,6 +309,22 @@ export default function Item_Request_List() {
                     onSubmit={(val) => setSearch(val)}
                   />
                 </div>
+
+                {/* Clear Filter */}
+                {(selectedType !== "all" ||
+                  statusFilter !== "all" ||
+                  startDate !== "" ||
+                  endDate !== "" ||
+                  search !== "") && (
+                  <div className="d-flex align-items-center">
+                    <button
+                      className="btn text-danger waves-effect btn-sm"
+                      onClick={handleClearFilters}
+                    >
+                      ✕ Clear All
+                    </button>
+                  </div>
+                )}
 
                 {/* Clear Filter */}
                 {/* {selectedGroup != "all" && ( */}

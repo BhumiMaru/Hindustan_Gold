@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
 import { usePIRequest } from "../../../../../Context/PIAndPoManagement/PIRequestList";
 import Loader from "../../../../../components/Common/Loader/Loader";
+import ServiceReceived_Confirmation_Modal from "./ServiceReceived_Confirmation_Modal";
 
 export default function PI_Request_Table({ userPermission }) {
   const { type, id } = useParams();
@@ -26,11 +27,13 @@ export default function PI_Request_Table({ userPermission }) {
     selectedItemsMap,
     setSelectedItemsMap,
     loading,
+    serviceReceived,
   } = usePIRequest();
   const { getQuoteCreate } = useGetQuote();
   const { modal, handleOpen } = useUIContext();
   const [expandedRows, setExpandedRows] = useState({});
   const navigate = useNavigate();
+  const [piRequestId, setPiRequestId] = useState(null);
 
   const toggleRow = (id) => {
     setExpandedRows((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -90,6 +93,9 @@ export default function PI_Request_Table({ userPermission }) {
   // }
 
   // console.log("userrrrrrrrrrrrrrrrrrr", userPermission);
+  {
+    console.log("piRequest", piRequest);
+  }
   return (
     <>
       {/* ----------------START PI REQUEST TABLE------------------ */}
@@ -127,7 +133,7 @@ export default function PI_Request_Table({ userPermission }) {
           ) : (
             piRequest?.map((pi, index) => (
               <React.Fragment key={`pi-${pi.id}`}>
-                {/* {console.log("pi", pi)} */}
+                {console.log("pi", pi)}
                 <tr key={`row-${pi.id}`}>
                   <td
                     onClick={() => toggleRow(pi.id)}
@@ -691,8 +697,21 @@ export default function PI_Request_Table({ userPermission }) {
                                     }
 
                                     // 2️⃣ my_request tab — always hide checkbox
-                                    if (activeTab === "my_request") {
-                                      return "d-none";
+                                    // Check if any pi item has been approved and PO is done (for my_request)
+                                    const hasApprovedAndPOCompleted =
+                                      pi?.piitems?.some(
+                                        (item) =>
+                                          item?.status
+                                            ?.toLowerCase()
+                                            ?.trim() === "approve" &&
+                                          item?.quote_status == 1 &&
+                                          item?.po_status == 1
+                                      );
+                                    if (
+                                      activeTab === "my_request" &&
+                                      hasApprovedAndPOCompleted
+                                    ) {
+                                      return "d-block";
                                     }
 
                                     // 3️⃣ all_request tab — show if user can Add quotation & has an approved item without quote
@@ -796,6 +815,7 @@ export default function PI_Request_Table({ userPermission }) {
                         <tbody>
                           {pi?.piitems?.map((piItem) => (
                             <tr key={`piItem-${pi.id}-${piItem.id}`}>
+                              {console.log("pi items", piItem)}
                               {/* {console.log("piitem", piItem)} */}
                               {/* {activeTab === "approval_request" ||
                               (activeTab === "all_request" && ( */}
@@ -1013,8 +1033,21 @@ export default function PI_Request_Table({ userPermission }) {
                                       }
 
                                       // my_request tab hides checkbox
-                                      if (activeTab === "my_request")
-                                        return "d-none";
+                                      // Check if any pi item has been approved and PO is done (for my_request)
+                                      const hasApprovedAndPOCompleted =
+                                        pi?.piitems?.some(
+                                          (item) =>
+                                            item?.status
+                                              ?.toLowerCase()
+                                              ?.trim() === "approve" &&
+                                            item?.quote_status == 1 &&
+                                            item?.po_status == 1
+                                        );
+                                      if (
+                                        activeTab === "my_request" &&
+                                        hasApprovedAndPOCompleted
+                                      )
+                                        return "d-block";
 
                                       // all_request tab + user can Add quotation + approved item w/o quote
                                       if (
@@ -1331,15 +1364,16 @@ export default function PI_Request_Table({ userPermission }) {
                             )}
 
                             {/* 4️⃣ Service Received (My Request Tab) */}
-                            {activeTab === "my_request" &&
+                            {/* {activeTab === "my_request" &&
                               pi?.pi_type === "service" &&
-                              pi?.piitems?.every(
-                                (item) =>
-                                  item.status.toLowerCase() === "approve"
-                              ) && (
+                              pi?.final_approve_status === "InProgress" && (
                                 <button
                                   className="btn btn-info btn-sm waves-effect waves-light mt-2 mb-2"
                                   type="button"
+                                  onClick={() => {
+                                    handleOpen("serviceReceive");
+                                    setPiRequestId(pi?.id);
+                                  }}
                                 >
                                   <span>
                                     <i className="icon-base icon-18px ti tabler-circle-check me-md-2" />
@@ -1348,7 +1382,39 @@ export default function PI_Request_Table({ userPermission }) {
                                     </span>
                                   </span>
                                 </button>
-                              )}
+                              )} */}
+
+                            {activeTab === "my_request" && (
+                              <>
+                                {/* CASE 1: Show text when service is in progress */}
+                                {pi?.pi_type === "service" &&
+                                pi?.final_approve_status === "InProgress" &&
+                                pi?.service_recive_button_status == 1 ? (
+                                  <span className="badge bg-label-success p-2 m-2">
+                                    Service Received
+                                  </span>
+                                ) : null}
+
+                                {/* CASE 2: Show button when service can be received */}
+                                {pi?.service_recive_button_status == 1 &&
+                                pi?.is_service_recive === 0 &&
+                                pi?.final_approve_status !== "InProgress" ? (
+                                  <button
+                                    className="btn btn-info btn-sm waves-effect waves-light mt-2 mb-2"
+                                    type="button"
+                                    onClick={() => {
+                                      handleOpen("serviceReceive");
+                                      setPiRequestId(pi?.id);
+                                    }}
+                                  >
+                                    <i className="icon-base icon-18px ti tabler-circle-check me-md-2" />
+                                    <span className="d-md-inline-block d-none">
+                                      Service Received
+                                    </span>
+                                  </button>
+                                ) : null}
+                              </>
+                            )}
                           </div>
                         </div>
                       )}
@@ -1361,6 +1427,9 @@ export default function PI_Request_Table({ userPermission }) {
         </tbody>
       </table>
       {modal.viewRejectPi && <Reject_Pi_request />}
+      {modal.serviceReceive && (
+        <ServiceReceived_Confirmation_Modal piRequestId={piRequestId} />
+      )}
 
       {/* ----------------END PI REQUEST TABLE------------------ */}
     </>

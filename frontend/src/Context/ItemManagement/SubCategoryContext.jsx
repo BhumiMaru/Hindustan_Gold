@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { deleteData, getData, postData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
 import { toast } from "react-toastify";
+import { useUIContext } from "../UIContext";
 
 export const SubCategoryContext = createContext();
 
@@ -12,6 +13,7 @@ export const useSubCategory = () => {
 
 // SUB CATEGORY PROVIDER
 export const SubCategoryProvider = ({ children }) => {
+  const { handleClose } = useUIContext();
   const [loading, setLoading] = useState(false);
   const [subCategory, setSubCategory] = useState([]);
   const [subCategoryData, setSubCategoryData] = useState({
@@ -90,14 +92,20 @@ export const SubCategoryProvider = ({ children }) => {
         ENDPOINTS.SUBCATEGORY_MASTER.ADD_UPDATE,
         payload
       );
+      console.log("rr", res);
+      if (res.success) {
+        handleClose("addNewSubCategory");
+        toast.success(res.message);
+        setSubCategoryData(res.data.data);
+        ReserSubCategory();
+        fetchSubCategoryData();
+      }
       // console.log("payload", payload);
-      setSubCategoryData(res.data.data);
-      toast.success("SubCategory Add Successfully!");
-      fetchSubCategoryData();
-      ReserSubCategory();
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to Create Sub Category");
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -114,8 +122,10 @@ export const SubCategoryProvider = ({ children }) => {
       setIsSubEditId(null);
       ReserSubCategory();
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to Edit Sub Category");
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -147,8 +157,10 @@ export const SubCategoryProvider = ({ children }) => {
       toast.success("Delete SubCategory Successfully!");
       fetchSubCategoryData();
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to Delete Sub Category");
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 

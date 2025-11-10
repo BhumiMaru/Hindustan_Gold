@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 import { useCompanyMaster } from "../../../../../Context/Master/CompanyMasterContext";
 import { useRoleMaster } from "../../../../../Context/Master/RoleMasterContext";
@@ -10,6 +10,8 @@ import { useServiceLocation3Master } from "../../../../../Context/Master/Service
 import { useZone } from "../../../../../Context/Master/ZoneContext";
 import { useDepartment } from "../../../../../Context/Master/DepartmentContext";
 import User_Creation_Permission from "./User_Creation_Permission";
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
+const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export default function User_Creation_Form() {
   const { id } = useParams();
@@ -107,7 +109,7 @@ export default function User_Creation_Form() {
           <div className="row p-3">
             <div className="col-sm-3 mb-4">
               <label htmlFor="username" className="form-label">
-                User Name
+                User Name <span className="text-danger">*</span>
               </label>
               <input
                 type="text"
@@ -121,11 +123,12 @@ export default function User_Creation_Form() {
                     name: e.target.value,
                   })
                 }
+                required
               />
             </div>
             <div className="col-sm-3 mb-4">
               <label htmlFor="employid" className="form-label">
-                Employee ID
+                Employee ID <span className="text-danger">*</span>
               </label>
               <input
                 type="text"
@@ -139,12 +142,13 @@ export default function User_Creation_Form() {
                     employee_id: e.target.value,
                   })
                 }
+                required
               />
             </div>
 
             <div className="col-sm-3 mb-4">
               <label htmlFor="emailid" className="form-label">
-                Email ID
+                Email ID <span className="text-danger">*</span>
               </label>
               <input
                 type="email"
@@ -158,11 +162,12 @@ export default function User_Creation_Form() {
                     email: e.target.value,
                   })
                 }
+                required
               />
             </div>
             <div className="col-sm-3 mb-4">
               <label htmlFor="phoneid" className="form-label">
-                Phone Number
+                Phone Number <span className="text-danger">*</span>
               </label>
               <input
                 type="text"
@@ -176,11 +181,12 @@ export default function User_Creation_Form() {
                     mobileno: e.target.value,
                   })
                 }
+                required
               />
             </div>
             <div className="col-sm-3 mb-4">
               <label htmlFor="password" className="form-label">
-                Password
+                Password <span className="text-danger">*</span>
               </label>
               <input
                 type="text"
@@ -194,6 +200,7 @@ export default function User_Creation_Form() {
                     password: e.target.value,
                   })
                 }
+                required
               />
             </div>
             <div className="col-sm-3 mb-4">
@@ -217,6 +224,7 @@ export default function User_Creation_Form() {
                       role_id: Number(selected),
                     })
                   }
+                  isTextRequired
                 />
               </div>
             </div>
@@ -241,6 +249,7 @@ export default function User_Creation_Form() {
                   }
                   placeholder="Select Department"
                   required
+                  isTextRequired
                 />
               </div>
             </div>
@@ -265,6 +274,7 @@ export default function User_Creation_Form() {
                   }
                   placeholder="Select Zone"
                   required
+                  isTextRequired
                 />
               </div>
             </div>
@@ -290,6 +300,7 @@ export default function User_Creation_Form() {
                 }}
                 placeholder="Select Service Location 1"
                 required
+                isTextRequired
               />
             </div>
 
@@ -336,6 +347,7 @@ export default function User_Creation_Form() {
                 placeholder="Select Service Location 2"
                 required
                 disabled={!useCreationData?.service_location_1_id}
+                isTextRequired
               />
             </div>
 
@@ -378,6 +390,7 @@ export default function User_Creation_Form() {
                 placeholder="Select Service Location 3"
                 required
                 disabled={!useCreationData?.service_location_2_id}
+                isTextRequired
               />
             </div>
 
@@ -403,6 +416,7 @@ export default function User_Creation_Form() {
                   placeholder="Select Company"
                   // data-select2-id="10"
                   required
+                  isTextRequired
                 />
               </div>
             </div>
@@ -426,9 +440,10 @@ export default function User_Creation_Form() {
                       reporting_manager_1_id: selected,
                     })
                   }
-                  placeholder="Select User"
+                  placeholder="Select Reporting Manager 1"
                   // data-select2-id="10"
                   required
+                  isTextRequired
                 />
               </div>
             </div>
@@ -451,9 +466,8 @@ export default function User_Creation_Form() {
                       reporting_manager_2_id: selected,
                     })
                   }
-                  placeholder="Select User"
+                  placeholder="Select Reporting Manager 2"
                   // data-select2-id="10"
-                  required
                 />
               </div>
             </div>
@@ -482,6 +496,7 @@ export default function User_Creation_Form() {
                   placeholder="Select Status"
                   // data-select2-id="10"
                   required
+                  isTextRequired
                 />
               </div>
             </div>
@@ -498,11 +513,42 @@ export default function User_Creation_Form() {
                   if (e.target.files && e.target.files.length > 0) {
                     setUserCreationData({
                       ...useCreationData,
-                      profile_photo_url: e.target.files[0], // ✅ file object
+                      profile_photo: e.target.files[0], // ✅ file object
                     });
                   }
                 }}
               />
+              {/* {console.log("useCreationData", useCreationData)}
+              <span>File: {useCreationData?.profile_photo}</span> */}
+              {useCreationData?.profile_photo ? (
+                <Link
+                  to={`${fileUrl}/storage/uploads/users/${useCreationData?.profile_photo}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={`${publicUrl}assets/img/icons/misc/doc.png`}
+                    alt="Document"
+                    width={15}
+                    className="me-2"
+                  />
+                  <span className="h6 mb-0 text-info">
+                    {/* {invoiceDetail.invoice_file} */}
+                    View
+                  </span>
+                </Link>
+              ) : (
+                <div className="d-flex align-items-center text-muted">
+                  {/* <img
+                    src={`${publicUrl}assets/img/icons/misc/no-file.png`}
+                    alt="No file"
+                    width={15}
+                    className="me-2 opacity-75"
+                  /> */}
+
+                  <span className="h6 mb-0">No file uploaded</span>
+                </div>
+              )}
             </div>
             <div className="col-lg-12 text-end">
               <button

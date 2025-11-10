@@ -176,7 +176,7 @@ export default function CustomSelect({
   value,
   onChange,
   placeholder = "Select option",
-  required = false,
+  isTextRequired = false,
   id,
   multiple = false,
   disabled = false,
@@ -238,7 +238,7 @@ export default function CustomSelect({
         {label && (
           <label className="form-label" htmlFor={id}>
             {label}
-            {/* {required && <span className="text-danger">*</span>} */}
+            {isTextRequired && <span className="text-danger">*</span>}
           </label>
         )}
 

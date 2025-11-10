@@ -1081,6 +1081,7 @@ export default function PI_Item_Request_Form() {
                       }
                       placeholder="Select Item"
                       required
+                      isTextRequired
                     />
                     {duplicateError[item.id] && (
                       <small className="text-danger">
@@ -1131,7 +1132,8 @@ export default function PI_Item_Request_Form() {
                         htmlFor={`Quantity-${item.id}`}
                         className="form-label"
                       >
-                        Quantity {isStock ? ` (Stock Is : ${isStock})` : null}
+                        Quantity {isStock ? ` (Stock Is : ${isStock})` : null}{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="number"
@@ -1143,6 +1145,7 @@ export default function PI_Item_Request_Form() {
                         onChange={(e) =>
                           handleQuantityChange(item.id, e.target.value, isStock)
                         }
+                        required
                       />
                       {quantityError[item.id] && (
                         <small className="text-danger">
@@ -1248,6 +1251,7 @@ export default function PI_Item_Request_Form() {
                       }
                       placeholder="Select priority"
                       required
+                      isTextRequired
                     />
                   </div>
 
@@ -1256,7 +1260,8 @@ export default function PI_Item_Request_Form() {
                       htmlFor={`RequestDate-${item.id}`}
                       className="form-label"
                     >
-                      Tentative Consumption Day
+                      Tentative Consumption Day{" "}
+                      <span className="text-danger">*</span>
                     </label>
                     <input
                       type="number"
@@ -1271,6 +1276,7 @@ export default function PI_Item_Request_Form() {
                           e.target.value
                         )
                       }
+                      required
                     />
                   </div>
 

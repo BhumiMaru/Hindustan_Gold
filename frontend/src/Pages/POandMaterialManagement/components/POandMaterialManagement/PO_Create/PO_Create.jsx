@@ -743,6 +743,7 @@
 import React, { useEffect, useState } from "react";
 import { usePOCreate } from "../../../../../Context/PIAndPoManagement/POCreate";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function PO_Create() {
@@ -821,12 +822,42 @@ export default function PO_Create() {
   }, [id]);
 
   // Handle form input changes
-  const handleInputChange = (field, value) => {
+  // Enhanced input change handler with negative value prevention and toast
+  const handleInputChange = (field, value, fieldName = "") => {
+    // For numeric fields, prevent negative values
+    const numericFields = [
+      "total_discount",
+      "packing_charge",
+      "packing_gst",
+      "fright_charge",
+      "fright_gst",
+      "sub_total",
+      "gst_value",
+      "final_total",
+      "taxes_pr",
+      "taxes_number",
+    ];
+
+    let processedValue = value;
+
+    if (numericFields.includes(field)) {
+      processedValue = preventNegative(
+        value,
+        fieldName || field.replace(/_/g, " ")
+      );
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [field]: value,
+      [field]: processedValue,
     }));
   };
+  // const handleInputChange = (field, value) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [field]: value,
+  //   }));
+  // };
 
   // Handle item field changes (discount, GST, etc.)
   // const handleItemChange = (index, field, value) => {
@@ -914,6 +945,23 @@ export default function PO_Create() {
     formData?.fright_charge,
     formData?.fright_gst,
   ]);
+
+  // Prevent negative values in input fields and show toast
+  const preventNegative = (value, fieldName = "value") => {
+    if (value === "" || value === null || value === undefined) return "";
+
+    const numValue = parseFloat(value);
+
+    // Check if value is negative
+    if (!isNaN(numValue) && numValue < 0) {
+      toast.error(
+        `Negative values are not allowed for ${fieldName}. Value set to 0.`
+      );
+      return "0";
+    }
+
+    return value.toString();
+  };
 
   // Calculate item totals (no GST included in subtotal here)
   const calculateItemTotals = (items) => {
@@ -1126,6 +1174,19 @@ export default function PO_Create() {
     const updatedItems = [...formData.items];
     const item = { ...updatedItems[index] };
 
+    // Field names for toast messages
+    const fieldNames = {
+      disc_pr: "discount percentage",
+      gst_pr: "GST percentage",
+      unit_price: "unit price",
+      qty: "quantity",
+    };
+
+    // Prevent negative values for numeric fields
+    if (["disc_pr", "gst_pr", "unit_price", "qty"].includes(field)) {
+      value = preventNegative(value, fieldNames[field] || field);
+    }
+
     // Update the field
     item[field] = value;
 
@@ -1170,6 +1231,12 @@ export default function PO_Create() {
 
   const handleChargeChange = (index, field, value) => {
     const updatedCharges = [...charges];
+
+    // Prevent negative values for amount field
+    if (field === "amount") {
+      value = preventNegative(value, "charge amount");
+    }
+
     updatedCharges[index][field] = value;
     setCharges(updatedCharges);
   };

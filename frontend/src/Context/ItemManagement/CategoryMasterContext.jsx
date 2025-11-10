@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { deleteData, getData, postData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
 import { toast } from "react-toastify";
+import { useUIContext } from "../UIContext";
 
 export const CategoryMasterContext = createContext();
 
@@ -12,6 +13,7 @@ export const useCategoryMaster = () => {
 
 // CATEGORY MASTER PROVIDER
 export const CategoryMasterProvider = ({ children }) => {
+  const { handleClose } = useUIContext();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [categoryData, setCategoryData] = useState({
@@ -81,9 +83,20 @@ export const CategoryMasterProvider = ({ children }) => {
   const createCategory = async (payload) => {
     try {
       const res = await postData(ENDPOINTS.CATEGORY_MASTER.ADD_UPDATE, payload);
-      toast.success("Category Created Successfully");
-      // console.log("res", res);
-      setCategoryData(res.data.data);
+      // toast.success("Category Created Successfully");
+      console.log("res", res);
+      if (res.success) {
+        setCategoryData(res.data.data);
+        toast.success(res.message);
+        setCategoryEditId(null);
+        setCategoryData({
+          categoryName: "",
+          groupId: "",
+          prefixCode: "",
+          status: null,
+        });
+        handleClose("addNewCategory");
+      }
       fetchCategories(); // refresh
       return res;
     } catch (error) {

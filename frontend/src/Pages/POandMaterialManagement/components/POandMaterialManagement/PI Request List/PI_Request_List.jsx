@@ -223,6 +223,27 @@ export default function PI_Request_List() {
     }
   };
 
+  // ✅ Clear all filters
+  const handleClearFilters = () => {
+    setSelectedType("all");
+    setItemName("all");
+    setDepartment("all");
+    setOrderBy("all");
+    setStatus("all");
+    setSearch("");
+    setSelectedDateRange("");
+    setStartDate("");
+    setEndDate("");
+    setPagination((prev) => ({ ...prev, currentPage: 1 }));
+
+    // Refetch unfiltered data
+    getPIRequest({
+      type: activeTab,
+      page: 1,
+      perPage: pagination.perPage,
+    });
+  };
+
   return (
     <>
       {/* ------------------START PI REUEST LIST-------------------- */}
@@ -312,15 +333,36 @@ export default function PI_Request_List() {
             </div>
           </div>
           <div className="d-flex justify-content-between px-3 pb-2">
-            <div className="d-flex align-items-center ">
-              {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
-              <SearchBar
-                placeholder="Search Request..."
-                value={search}
-                onChange={setSearch}
-                onSubmit={(val) => setSearch(val)}
-              />
+            <div className="d-flex align-items-center flex-wrap">
+              <div className="d-flex align-items-center">
+                {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
+                <SearchBar
+                  placeholder="Search Request..."
+                  value={search}
+                  onChange={setSearch}
+                  onSubmit={(val) => setSearch(val)}
+                />
+              </div>
+              {/* clear Filter */}
+              {(selectedType !== "all" ||
+                itemName !== "all" ||
+                department !== "all" ||
+                orderBy !== "all" ||
+                status !== "all" ||
+                startDate !== "" ||
+                endDate !== "" ||
+                search !== "") && (
+                // <div className="d-flex align-items-center">
+                <button
+                  className="btn text-danger waves-effect btn-sm"
+                  onClick={handleClearFilters}
+                >
+                  ✕ Clear All
+                </button>
+                // </div>
+              )}
             </div>
+
             <div className="d-flex gap-2">
               <Link
                 to="/po-material/pi-request-create/material"

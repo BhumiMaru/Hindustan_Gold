@@ -32,7 +32,7 @@ export const UserCreationProvider = ({ children }) => {
     reporting_manager_2_id: null,
     status: null,
     register_date: "",
-    profile_photo_url: "",
+    profile_photo: "",
   });
   // const [isEditUserId, setIsEditUserIdState] = useState(
   //   localStorage.getItem("editUserId") || null
@@ -99,8 +99,8 @@ export const UserCreationProvider = ({ children }) => {
         total: apiData.total,
       });
     } catch (error) {
-      // console.error(error);
-      toast.error("Failed to fetch users");
+      console.error(error);
+      // toast.error("Failed to fetch users");
     } finally {
       setLoading(false);
     }
@@ -113,21 +113,51 @@ export const UserCreationProvider = ({ children }) => {
       setFilterUser(res.data);
     } catch (error) {
       console.log(error);
-      toast.error("Failed to fetch User Filter");
+      // toast.error("Failed to fetch User Filter");
     }
   };
 
   // Create User
   const createUser = async (payload) => {
     try {
-      const res = await postData(ENDPOINTS.USER_CREATION.ADD_UPDATE, payload);
+      const res = await postData(ENDPOINTS.USER_CREATION.ADD_UPDATE, payload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("usss", res);
       setUserCreationData(res.data);
       toast.success("User created successfully");
       return res.data;
       // fetchUserCreationData();
     } catch (error) {
-      console.log("create errors", error);
-      toast.error(error.response?.data?.message || "Failed to create user");
+      // console.log("Error:", error);
+      // if (error.response && error.response.data) {
+      //   toast.error(error.response.data.message);
+      // }
+      console.log("Error:", error);
+
+      if (error.response && error.response.data) {
+        const { message, errors } = error.response.data;
+
+        // Show main message (e.g. "Validation error")
+        if (message) {
+          toast.error(message);
+        }
+
+        // Show field-specific validation errors
+        if (errors && typeof errors === "object") {
+          Object.entries(errors).forEach(([field, msgs]) => {
+            if (Array.isArray(msgs)) {
+              msgs.forEach((msg) => toast.error(`${field}: ${msg}`));
+            } else {
+              toast.error(`${field}: ${msgs}`);
+            }
+          });
+        }
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
     }
   };
 
@@ -191,18 +221,9 @@ export const UserCreationProvider = ({ children }) => {
       toast.success("User updated successfully");
       fetchUserCreationData();
     } catch (error) {
-      if (error.response?.data?.errors) {
-        const errors = error.response.data.errors;
-        Object.values(errors).forEach((errItem) => {
-          if (Array.isArray(errItem)) {
-            errItem.forEach((msg) => toast.error(msg));
-          } else if (typeof errItem === "string") {
-            toast.error(errItem);
-          }
-        });
-        console.log("update errors", errors);
-      } else {
-        toast.error(error.response?.data?.message || "Failed to update user");
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
       }
     }
   };
@@ -211,7 +232,7 @@ export const UserCreationProvider = ({ children }) => {
   const fetchUserById = async (id) => {
     try {
       const res = await postData(ENDPOINTS.USER_CREATION.DETAILS, { id });
-      // console.log("res", res.data);
+      console.log("res", res);
       const user = res.data;
       setUserCreationData({
         name: user?.name || "",
@@ -230,10 +251,14 @@ export const UserCreationProvider = ({ children }) => {
         reporting_manager_2_id: user?.reporting_manager_2_id || null,
         status: user?.status ?? null,
         register_date: user?.register_date || "",
-        profile_photo_url: user?.profile_photo_url || "", // if backend gives a URL
+        profile_photo: user?.profile_photo || "", // if backend gives a URL
       });
     } catch (error) {
       // console.log(error);
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -259,7 +284,7 @@ export const UserCreationProvider = ({ children }) => {
     //   reporting_manager_2_id: user?.reporting_manager_2_id || null,
     //   status: user?.status ?? null,
     //   register_date: user?.register_date || "",
-    //   profile_photo_url: user?.profile_photo_url || "", // if backend gives a URL
+    //   profile_photo: user?.profile_photo || "", // if backend gives a URL
     // });
     setIsEditUserId(userId);
     fetchUserById(userId);
@@ -272,8 +297,10 @@ export const UserCreationProvider = ({ children }) => {
       toast.success("User deleted successfully");
       fetchUserCreationData();
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to delete user");
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -411,13 +438,9 @@ export const UserCreationProvider = ({ children }) => {
         await fetchUserPermission(payload.user_id);
       }
     } catch (error) {
-      if (error.response?.data?.errors) {
-        Object.values(error.response.data.errors).forEach((errArray) =>
-          errArray.forEach((msg) => toast.error(msg))
-        );
-      } else {
-        toast.error("Failed to update permission");
-        console.log("Failed to update permission", error);
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
       }
     }
   };
@@ -436,8 +459,10 @@ export const UserCreationProvider = ({ children }) => {
       // console.log("✅ Filtered permission data:", filtered);
       setUserPermission(filtered);
     } catch (error) {
-      console.error("❌ Error fetching permissions:", error);
-      setUserPermission([]);
+      console.log("Error:", error);
+      // if (error.response && error.response.data) {
+      //   toast.error(error.response.data.message);
+      // }
     }
   };
 
@@ -460,7 +485,7 @@ export const UserCreationProvider = ({ children }) => {
       reporting_manager_2_id: null,
       status: null,
       register_date: "",
-      profile_photo_url: "",
+      profile_photo: "",
     });
     setIsEditUserId(null);
   };

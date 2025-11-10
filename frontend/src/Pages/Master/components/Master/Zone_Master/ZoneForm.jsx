@@ -78,7 +78,7 @@ export default function ZoneForm() {
                 <div className="row">
                   <div className="col-12 mb-2">
                     <label htmlFor="nameSmall" className="form-label">
-                      Zone Name
+                      Zone Name <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
@@ -87,11 +87,12 @@ export default function ZoneForm() {
                       placeholder="Enter Zone Name"
                       value={zoneName}
                       onChange={(e) => setZoneName(e.target.value)}
+                      required
                     />
                   </div>
                   <div className="col-12 mb-2">
                     <label htmlFor="color" className="form-label">
-                      Select Color
+                      Select Color <span className="text-danger">*</span>
                     </label>
                     <input
                       type="color"
@@ -99,6 +100,7 @@ export default function ZoneForm() {
                       className="form-control"
                       value={colorCode}
                       onChange={(e) => setColorCode(e.target.value)}
+                      required
                     />
                   </div>
                 </div>

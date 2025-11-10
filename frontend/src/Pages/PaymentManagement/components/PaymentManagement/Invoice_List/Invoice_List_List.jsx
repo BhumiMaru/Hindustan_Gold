@@ -89,6 +89,7 @@ export default function Invoice_List_List() {
     setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
   };
 
+  // Date Filter
   const handleDateSelect = (range) => {
     setSelectedDateRange(range);
     const [start, end] = range.split(" - ");
@@ -97,6 +98,34 @@ export default function Invoice_List_List() {
       end: end ? moment(end, "DD/MM/YYYY").format("YYYY-MM-DD") : "",
     });
     setShowDatePicker(false);
+  };
+
+  // Clear Filter
+  // ✅ Clear Filter Function
+  const handleClearFilters = () => {
+    // Reset all filter states
+    setSearch("");
+    setSelectedType("all");
+    setStatus("all");
+    setVendorName("all");
+    setDateRange({ start: "", end: "" });
+    setSelectedDateRange(""); // also clears visible date input
+    setShowDatePicker(false);
+
+    // Reset pagination to first page
+    setPagination((prev) => ({ ...prev, currentPage: 1 }));
+
+    // ✅ Refresh list after clearing filters
+    invoiceList({
+      search: "",
+      status: "all",
+      selectedType: "all",
+      vendorName: "all",
+      startDate: "",
+      endDate: "",
+      page: 1,
+      perPage: pagination.perPage,
+    });
   };
 
   // ✅ Step 3: Excel Export Function
@@ -176,13 +205,32 @@ export default function Invoice_List_List() {
       <div className="container-xxl flex-grow-1 container-p-y">
         <div className="card">
           <div className="d-flex justify-content-between p-3">
-            <div className="d-flex align-items-center">
-              <SearchBar
-                placeholder="Search Invoice..."
-                value={search}
-                onChange={setSearch}
-                onSubmit={(val) => setSearch(val)}
-              />
+            <div className="d-flex align-items-center flex-wrap">
+              <div className="d-flex align-items-center">
+                <SearchBar
+                  placeholder="Search Invoice..."
+                  value={search}
+                  onChange={setSearch}
+                  onSubmit={(val) => setSearch(val)}
+                />
+              </div>
+
+              {/* Clear Filter */}
+              {/* ✅ Correct Clear Filter Button */}
+              {(selectedType !== "all" ||
+                status !== "all" ||
+                vendorName !== "all" ||
+                dateRange.start !== "" ||
+                dateRange.end !== "") && (
+                <div className="d-flex align-items-center ms-2">
+                  <button
+                    className="btn text-danger waves-effect btn-sm"
+                    onClick={handleClearFilters}
+                  >
+                    ✕ Clear All
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="d-flex gap-2">
@@ -301,6 +349,18 @@ export default function Invoice_List_List() {
                   value={selectedDateRange}
                   onClick={() => setShowDatePicker(!showDatePicker)}
                 />
+                {selectedDateRange && (
+                  <button
+                    onClick={() => {
+                      setSelectedDateRange("");
+                      setDateRange({ start: "", end: "" });
+                      setShowDatePicker(false);
+                    }}
+                    className="btn btn-sm text-danger ms-2"
+                  >
+                    ✕
+                  </button>
+                )}
                 {showDatePicker && (
                   <Date_Range_Model
                     style={{ top: "137px" }}
@@ -324,6 +384,16 @@ export default function Invoice_List_List() {
           </div>
         </div>
       </div>
+
+      {modal.addInvoice && (
+        <VendorProvider>
+          <SubCategoryProvider>
+            <ItemRequestProvider>
+              <Invoice_List_Form type={0} />
+            </ItemRequestProvider>
+          </SubCategoryProvider>
+        </VendorProvider>
+      )}
     </>
   );
 }

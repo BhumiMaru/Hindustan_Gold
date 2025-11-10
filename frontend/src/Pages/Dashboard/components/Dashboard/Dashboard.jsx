@@ -435,7 +435,7 @@ export default function Dashboard() {
                   {[
                     {
                       title: "Total MY PI Request",
-                      value: dashboardList?.po_generate?.po_pending,
+                      value: dashboardList?.pi_request?.my_pi_request,
                       type: "PI Request",
                       permission: "add",
                       icon: "tabler-clipboard",
@@ -443,23 +443,23 @@ export default function Dashboard() {
                     },
                     {
                       title: "Total Pending PI Request",
-                      value: dashboardList?.po_generate?.po_pending,
+                      value: dashboardList?.pi_request?.pending_pi_request,
                       type: "PI Request",
                       permission: "add",
                       icon: "tabler-hourglass",
                       color: "primary",
                     },
                     {
-                      title: "Total Pending GRN Approvals",
-                      value: dashboardList?.po_generate?.po_pending,
+                      title: "Total Pending PI Approval",
+                      value: dashboardList?.pi_request?.pending_pi_approvels,
                       type: "PI Request",
-                      permission: "add",
-                      icon: "tabler-file-check",
+                      permission: "approve",
+                      icon: "tabler-checklist",
                       color: "success",
                     },
                     {
                       title: "Total Pending Get Quote",
-                      value: dashboardList?.po_generate?.po_pending,
+                      value: dashboardList?.pi_request?.pending_get_approval,
                       type: "Get Quotation",
                       permission: "add",
                       icon: "tabler-quote",
@@ -467,31 +467,24 @@ export default function Dashboard() {
                     },
                     {
                       title: "Total Pending PO Generate",
-                      value: dashboardList?.po_generate?.po_pending,
+                      value: dashboardList?.po_generate?.pending_po_generate,
                       type: "Get Quotation",
                       permission: "add",
                       icon: "tabler-file-plus",
                       color: "primary",
                     },
                     {
-                      title: "Total Vendor",
-                      value: dashboardList?.po_generate?.po_pending,
-                      type: "Get Quotation",
+                      title: "Total In-Progress PO",
+                      value: dashboardList?.po_generate?.total_running_po,
+                      type: "GRN",
                       permission: "add",
-                      icon: "tabler-users",
-                      color: "warning",
+                      icon: "tabler-progress",
+                      color: "info",
                     },
-                    {
-                      title: "Total Pending PI Approval",
-                      value: dashboardList?.po_generate?.po_pending,
-                      type: "PI Request",
-                      permission: "approve",
-                      icon: "tabler-checklist",
-                      color: "success",
-                    },
+
                     {
                       title: "Total Pending PO Approval",
-                      value: dashboardList?.po_generate?.po_pending,
+                      value: dashboardList?.po_generate?.pending_po_approvel,
                       type: "PO Generation",
                       permission: "approve",
                       icon: "tabler-clipboard-check",
@@ -499,28 +492,45 @@ export default function Dashboard() {
                     },
                     {
                       title: "Total GRN",
-                      value: dashboardList?.po_generate?.po_pending,
+                      value: dashboardList?.po_generate?.pending_grn_generate,
                       type: "GRN",
                       permission: "add",
                       icon: "tabler-truck",
                       color: "warning",
                     },
                     {
-                      title: "Total In-Progress PO",
-                      value: dashboardList?.po_generate?.po_pending,
+                      title: "Total GRN Approvals",
+                      value: dashboardList?.grn_approvel_total,
                       type: "GRN",
                       permission: "add",
-                      icon: "tabler-progress",
-                      color: "info",
-                    },
-                    {
-                      title: "Total Pending GRN Approval",
-                      value: dashboardList?.po_generate?.po_pending,
-                      type: "GRN",
-                      permission: "add",
-                      icon: "tabler-clipboard-x",
+                      icon: "tabler-clipboard-check",
                       color: "success",
                     },
+                    {
+                      title: "Total Pending GRN Approvals",
+                      value: dashboardList?.po_generate?.pending_grn_approvel,
+                      type: "PI Request",
+                      permission: "add",
+                      icon: "tabler-file-check",
+                      color: "success",
+                    },
+                    {
+                      title: "Total Vendor",
+                      value: dashboardList?.po_generate?.total_active_vender,
+                      type: "Get Quotation",
+                      permission: "add",
+                      icon: "tabler-users",
+                      color: "warning",
+                    },
+
+                    // {
+                    //   title: "Total Pending GRN Generate",
+                    //   value: dashboardList?.po_generate?.pending_grn_generate,
+                    //   type: "GRN",
+                    //   permission: "add",
+                    //   icon: "tabler-clipboard-x",
+                    //   color: "success",
+                    // },
                   ]
                     .filter((card) =>
                       userPermission.some(
@@ -531,24 +541,25 @@ export default function Dashboard() {
                     )
                     .map((card, idx) => (
                       <div key={idx} className="col-lg-3 col-sm-6">
+                        {console.log("cc", card)}
                         <div
-                          className={`card card-border-shadow-${card.color} h-100`}
+                          className={`card card-border-shadow-${card?.color} h-100`}
                         >
                           <div className="card-body">
                             <div className="d-flex align-items-center mb-2">
                               <div className="avatar me-4">
                                 <span
-                                  className={`avatar-initial rounded bg-label-${card.color}`}
+                                  className={`avatar-initial rounded bg-label-${card?.color}`}
                                   // style={{ color: card.color }}
                                 >
                                   <i
-                                    className={`icon-base ti ${card.icon} icon-28px`}
+                                    className={`icon-base ti ${card?.icon} icon-28px`}
                                   ></i>
                                 </span>
                               </div>
-                              <h4 className="mb-0">{card.value}</h4>
+                              <h4 className="mb-0">{card?.value}</h4>
                             </div>
-                            <p className="mb-1">{card.title}</p>
+                            <p className="mb-1">{card?.title}</p>
                           </div>
                         </div>
                       </div>

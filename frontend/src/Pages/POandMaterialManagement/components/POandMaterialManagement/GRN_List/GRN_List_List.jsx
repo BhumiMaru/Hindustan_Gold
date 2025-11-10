@@ -74,6 +74,7 @@ export default function GRN_List_List() {
     // GRNList({ page: 1, perPage: size });
   };
 
+  // Date Filter
   const handleDateSelect = (range) => {
     setSelectedDateRange(range);
 
@@ -84,6 +85,29 @@ export default function GRN_List_List() {
     });
 
     setShowDatePicker(false);
+  };
+
+  // ✅ Clear All Filters
+  const handleClearFilters = () => {
+    setSearch("");
+    setStatus("all");
+    setItemName("all");
+    setVendorName("all");
+    setDateRange({ start: "", end: "" });
+    setSelectedDateRange("");
+    setPagination((prev) => ({ ...prev, currentPage: 1 }));
+
+    // ✅ Refresh list with default (unfiltered) data
+    GRNList({
+      search: "",
+      status: "all",
+      item_name: "all",
+      vendor_name: "all",
+      pi_date_start_date: "",
+      pi_date_end_date: "",
+      page: 1,
+      perPage: pagination.perPage,
+    });
   };
 
   //  Export to Excel
@@ -146,15 +170,35 @@ export default function GRN_List_List() {
         {/* DataTable with Buttons */}
         <div className="card">
           <div className="d-flex justify-content-between p-3">
-            <div className="d-flex align-items-center ">
-              {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
-              <SearchBar
-                placeholder="Search Request..."
-                value={search}
-                onChange={setSearch}
-                onSubmit={(val) => setSearch(val)}
-              />
+            <div className="d-flex align-items-center flex-wrap">
+              <div className="d-flex align-items-center">
+                {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
+                <SearchBar
+                  placeholder="Search Request..."
+                  value={search}
+                  onChange={setSearch}
+                  onSubmit={(val) => setSearch(val)}
+                />
+              </div>
+
+              {/* Clear Filter */}
+              {(status !== "all" ||
+                itemName !== "all" ||
+                vendorName !== "all" ||
+                dateRange.start !== "" ||
+                dateRange.end !== "" ||
+                search !== "") && (
+                <div className="d-flex align-items-center">
+                  <button
+                    className="btn text-danger waves-effect btn-sm"
+                    onClick={handleClearFilters}
+                  >
+                    ✕ Clear All
+                  </button>
+                </div>
+              )}
             </div>
+
             <div>
               <button
                 className="btn buttons-collection btn-label-secondary waves-effect"

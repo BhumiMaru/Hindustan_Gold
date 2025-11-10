@@ -16,7 +16,7 @@ export const ZoneProvider = ({ children }) => {
   const [zones, setZones] = useState([]);
   const [zoneFilter, setZoneFilter] = useState([]);
   const [zoneName, setZoneName] = useState("");
-  const [colorCode, setColorCode] = useState("");
+  const [colorCode, setColorCode] = useState("black");
   const [editId, setEditId] = useState(null);
   const [pagination, setPagination] = useState({
     currentPage: 1,

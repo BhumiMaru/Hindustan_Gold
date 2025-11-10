@@ -413,6 +413,7 @@ import { createContext, useContext, useState } from "react";
 import { ENDPOINTS } from "../../constants/endpoints";
 import { deleteData, getData, postData } from "../../utils/api";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export const ItemRequestContext = createContext();
 
@@ -421,6 +422,7 @@ export const useItemRequest = () => {
 };
 
 export const ItemRequestProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [itemList, setItemList] = useState([]);
   const [itemRequest, setItemRequest] = useState([]);
@@ -458,8 +460,8 @@ export const ItemRequestProvider = ({ children }) => {
     total: 0,
   });
 
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   // Get All Item Request Data
   const getItemRequestData = async ({
@@ -486,7 +488,7 @@ export const ItemRequestProvider = ({ children }) => {
         per_page: perPage,
         start_date: start_date || undefined, // only send if exists
         end_date: end_date || undefined,
-        // item_id,
+        item_id: item_id && item_id !== "all" ? item_id : undefined,
       };
 
       const res = await postData(ENDPOINTS.ITEM_REQUEST.LIST, payload);
@@ -532,9 +534,11 @@ export const ItemRequestProvider = ({ children }) => {
       if (res.data.success) {
         await getItemRequestData();
       }
+      console.log("res", res);
       if (res.data) {
         setItemRequestData(res.data);
         toast.success("Created Successfully");
+        navigate("/user/request/request-list");
       }
     } catch (error) {
       console.log("Create Item Request Error:", error);

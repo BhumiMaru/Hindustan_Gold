@@ -238,6 +238,8 @@ export const UIProvider = ({ children }) => {
     markaspaid: false,
     // Vendor
     viewVendorDetails: false,
+    // PI Request
+    serviceReceive: false,
   });
 
   return (

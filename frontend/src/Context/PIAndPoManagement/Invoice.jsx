@@ -35,9 +35,9 @@ export const InvoiceProvider = ({ children }) => {
   const [invoiceId, setInvoiceId] = useState(null);
   // Filteration
   const [search, setSearch] = useState("");
-  const [selectedType, setSelectedType] = useState("");
+  const [selectedType, setSelectedType] = useState("all");
   const [vendorName, setVendorName] = useState("all");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("all");
   const [dateRange, setDateRange] = useState({ start: "", end: "" });
   const [pagination, setPagination] = useState({
     currentPage: 1,

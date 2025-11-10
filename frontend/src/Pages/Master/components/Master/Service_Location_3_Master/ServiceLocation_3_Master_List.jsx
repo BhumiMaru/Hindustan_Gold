@@ -21,6 +21,7 @@ export default function ServiceLocation_3_Master_List() {
     setFilterSelectedSl1,
     filterSelectedSl2,
     setFilterSelectedSl2,
+    setPagination,
   } = useServiceLocation3Master();
   const { serviceLocation, fetchServiceLocations } =
     useServiceLocation1Master();
@@ -66,6 +67,16 @@ export default function ServiceLocation_3_Master_List() {
     })) || []),
   ];
 
+  // ✅ Clear Filter Function
+  const handleClearFilters = () => {
+    setSearch("");
+    setFilterSelectedSl1(null);
+    setFilterSelectedSl2(null);
+    setPagination((prev) => ({ ...prev, currentPage: 1 }));
+
+    fetchServiceLocations3("", null, null, 1, pagination.perPage);
+  };
+
   return (
     <>
       {/* -----------------START SERVICE LOCATION 3 MASTER List-------------------- */}
@@ -74,15 +85,30 @@ export default function ServiceLocation_3_Master_List() {
         {/* DataTable with Buttons */}
         <div className="card">
           <div className="d-flex justify-content-between p-3">
-            <div className="d-flex align-items-center ">
-              {/*  <input type="search" className="form-control" placeholder="Search Service Location 3s...">*/}
-              <SearchBar
-                placeholder="Search Service Location 3..."
-                value={search}
-                onChange={setSearch} // ✅ update state
-                onSubmit={(val) => setSearch(val)} // ✅ handle Enter key
-              />
+            <div className="d-flex align-items-center flex-wrap">
+              <div className="d-flex align-items-center ">
+                {/*  <input type="search" className="form-control" placeholder="Search Service Location 3s...">*/}
+                <SearchBar
+                  placeholder="Search Service Location 3..."
+                  value={search}
+                  onChange={setSearch} // ✅ update state
+                  onSubmit={(val) => setSearch(val)} // ✅ handle Enter key
+                />
+              </div>
+
+              {/* Clear Filter */}
+              {(filterSelectedSl1 !== null || filterSelectedSl2 !== null) && (
+                <div className="d-flex align-items-center ms-2">
+                  <button
+                    className="btn text-danger waves-effect btn-sm"
+                    onClick={handleClearFilters}
+                  >
+                    ✕ Clear All
+                  </button>
+                </div>
+              )}
             </div>
+
             <div className="d-flex gap-1">
               <div className="position-relative">
                 {/* ✅ Service Location 1 filter */}

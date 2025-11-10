@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { getData, postData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
+import { useUIContext } from "../UIContext";
 
 export const GRNContext = createContext();
 
@@ -12,6 +13,7 @@ export const useGRN = () => {
 
 // GRN PRovider
 export const GRNProvider = ({ children }) => {
+  const { handleClose } = useUIContext();
   const [loading, setLoading] = useState(false);
   const [grnList, setGrnList] = useState([]); //List
   const [grnData, setGrnData] = useState({
@@ -57,7 +59,7 @@ export const GRNProvider = ({ children }) => {
         vendor: vendorName !== "all" ? vendorName : undefined,
         start_date: dateRange.start || undefined,
         end_date: dateRange.end || undefined,
-        po_id,
+        po_id: po_id !== undefined ? po_id : grnData.po_id || undefined,
         page,
         per_page: perPage,
       };
@@ -133,8 +135,9 @@ export const GRNProvider = ({ children }) => {
 
       if (res.status) {
         toast.success(res.message);
+        // handleClose("editGRN");
         setGrnData(res.data.data);
-        GRNList();
+        // GRNList();
       }
 
       return res;

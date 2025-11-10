@@ -78,14 +78,48 @@ export default function PO_List_List() {
     setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
   };
 
+  // Date Filter
   const handleDateSelect = (range) => {
     setSelectedDateRange(range);
 
     // Split "DD/MM/YYYY - DD/MM/YYYY"
     const [start, end] = range.split(" - ");
-    setStartDate(start);
-    setEndDate(end);
+
+    // ✅ Convert to YYYY/MM/DD
+    const formattedStart = moment(start, "DD/MM/YYYY").format("YYYY/MM/DD");
+    const formattedEnd = moment(end, "DD/MM/YYYY").format("YYYY/MM/DD");
+
+    setStartDate(formattedStart);
+    setEndDate(formattedEnd);
     setShowDatePicker(false);
+  };
+
+  // ✅ Clear all filters
+  // ✅ Clear all filters
+  const handleClearFilters = () => {
+    // Reset all filter states
+    setSearch("");
+    setStatus("all");
+    setSelectedType("all");
+    setItemName("all");
+    setVendor("all");
+    setStartDate("");
+    setEndDate("");
+    setSelectedDateRange("");
+    setPagination((prev) => ({ ...prev, currentPage: 1 }));
+
+    // ✅ Refetch unfiltered PO list
+    getPoList({
+      search: "",
+      status: "all",
+      poType: "all",
+      item_id: "all",
+      vendor: "all",
+      start_date: "",
+      end_date: "",
+      page: 1,
+      perPage: pagination.perPage,
+    });
   };
 
   //  Export to Excel
@@ -97,7 +131,7 @@ export default function PO_List_List() {
         search: search || undefined,
         status: status !== "all" ? status : undefined,
         po_type: selectedType !== "all" ? selectedType : undefined,
-        item: itemName !== "all" ? itemName : undefined,
+        item_id: itemName && itemName !== "all" ? itemName : undefined,
         vendor: vendor !== "all" ? vendor : undefined,
         start_date: startDate || undefined,
         end_date: endDate || undefined,
@@ -199,15 +233,35 @@ export default function PO_List_List() {
             </div>
           </div> */}
           <div className="d-flex justify-content-between px-3 pt-1">
-            <div className="d-flex align-items-center ">
-              {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
-              <SearchBar
-                placeholder="Search PO..."
-                value={search}
-                onChange={setSearch}
-                onSubmit={(val) => setSearch(val)}
-              />
+            <div className="d-flex align-items-center flex-wrap">
+              <div className="d-flex align-items-center">
+                {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
+                <SearchBar
+                  placeholder="Search PO..."
+                  value={search}
+                  onChange={setSearch}
+                  onSubmit={(val) => setSearch(val)}
+                />
+              </div>
+
+              {(selectedType !== "all" ||
+                status !== "all" ||
+                itemName !== "all" ||
+                vendor !== "all" ||
+                startDate !== "" ||
+                endDate !== "" ||
+                search !== "") && (
+                <div className="d-flex align-items-center">
+                  <button
+                    className="btn text-danger waves-effect btn-sm"
+                    onClick={handleClearFilters}
+                  >
+                    ✕ Clear All
+                  </button>
+                </div>
+              )}
             </div>
+
             <div>
               <button
                 className="btn buttons-collection btn-label-secondary waves-effect"
@@ -277,6 +331,7 @@ export default function PO_List_List() {
                 onChange={setItemName}
                 placeholder="Select Item"
               />
+              {console.log("itemName", itemName)}
             </div>
             <div className="col-lg-3">
               <CustomSelect

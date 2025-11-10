@@ -27,9 +27,6 @@ export default function Role_Master_Form() {
     } else {
       createRole(roleName);
     }
-    setRoleEditId(null);
-    setRoleName("");
-    handleClose("addNewRole");
   };
 
   return (
@@ -68,7 +65,7 @@ export default function Role_Master_Form() {
                 <div className="row">
                   <div className="col mb-2">
                     <label htmlFor="nameSmall" className="form-label">
-                      Role Name
+                      Role Name <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
@@ -77,6 +74,7 @@ export default function Role_Master_Form() {
                       placeholder="Enter Role Name"
                       value={roleName}
                       onChange={(e) => setRoleName(e.target.value)}
+                      required
                     />
                   </div>
                 </div>

@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { getData, postData, deleteData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
 import { toast } from "react-toastify";
+import { useUIContext } from "../UIContext";
 
 export const RoleMasterContext = createContext();
 
@@ -12,6 +13,7 @@ export const useRoleMaster = () => {
 
 // ROLE MASTER PROVIDER
 export const RoleMasterProvider = ({ children }) => {
+  const { handleClose } = useUIContext();
   const [loading, setLoading] = useState(false);
   const [roles, setRoles] = useState([]);
   const [filterRole, setFilterRole] = useState([]);
@@ -74,10 +76,17 @@ export const RoleMasterProvider = ({ children }) => {
   //   Create Role
   const createRole = async (role_name) => {
     try {
-      await postData(ENDPOINTS.ROLE_MASTER.ADD_UPDATE, {
+      const res = await postData(ENDPOINTS.ROLE_MASTER.ADD_UPDATE, {
         role_name,
       });
-      toast.success("Role Master Created Successfully");
+
+      console.log("rr", res);
+      if (res.success) {
+        toast.success("Role Master Created Successfully");
+        handleClose("addNewRole");
+        setRoleEditId(null);
+        setRoleName("");
+      }
       fetchRoleData();
     } catch (error) {
       toast.error(`Role Master Create Error: ${error.message}`);

@@ -40,8 +40,12 @@ export const CompanyMasterProvider = ({ children }) => {
         total: apiData.total,
       });
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to fetch Company");
+      console.log("Failed to fetch Company", error);
+
+      // toast.error("Error updating item request");
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -53,8 +57,10 @@ export const CompanyMasterProvider = ({ children }) => {
       const res = await getData(ENDPOINTS.COMPANY_MASTER.FILTER);
       setCompanyFilter(res.data);
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to fetch Company Filter");
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -67,7 +73,10 @@ export const CompanyMasterProvider = ({ children }) => {
       toast.success("Company Master Created Successfully");
       fetchCompanyData();
     } catch (error) {
-      toast.error(`Company Master Create Error: ${error.message}`);
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -81,7 +90,10 @@ export const CompanyMasterProvider = ({ children }) => {
       toast.success("Company Master Updated Successfully");
       fetchCompanyData();
     } catch (error) {
-      toast.error(`Company Master Update Error: ${error.message}`);
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -98,7 +110,10 @@ export const CompanyMasterProvider = ({ children }) => {
       toast.success("Company Master Deleted Successfully");
       fetchCompanyData();
     } catch (error) {
-      toast.error(`Company Master Delete Error: ${error.message}`);
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 

@@ -44,14 +44,6 @@ export default function Category_Master_Form() {
       }
 
       // Reset after save
-      setCategoryEditId(null);
-      setCategoryData({
-        categoryName: "",
-        groupId: "",
-        prefixCode: "",
-        status: null,
-      });
-      handleClose("addNewCategory");
     } catch (error) {
       toast.error(error.message);
     }
@@ -96,11 +88,12 @@ export default function Category_Master_Form() {
               <div className="modal-body">
                 <div className="row">
                   <div className="col-md-12 mb-2">
-                    <label htmlFor="select2Basic" className="form-label">
+                    {/* <label htmlFor="select2Basic" className="form-label">
                       Group
-                    </label>
+                    </label> */}
                     <div className="position-relative">
                       <CustomSelect
+                        label="Group"
                         placeholder="Select Group"
                         options={groups.map((grp) => ({
                           value: grp.id,
@@ -113,12 +106,13 @@ export default function Category_Master_Form() {
                             group_id: opt,
                           })
                         }
+                        isTextRequired
                       />
                     </div>
                   </div>
                   <div className="col-md-12 mb-2">
                     <label htmlFor="nameSmall" className="form-label">
-                      Category Name
+                      Category Name <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
@@ -132,11 +126,12 @@ export default function Category_Master_Form() {
                           category_name: e.target.value,
                         })
                       }
+                      required
                     />
                   </div>
                   <div className="col-md-12 mb-2">
                     <label htmlFor="prefix" className="form-label">
-                      Prefix Code
+                      Prefix Code <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
@@ -151,6 +146,7 @@ export default function Category_Master_Form() {
                           prefix_code: e.target.value,
                         })
                       }
+                      required
                     />
                   </div>
                 </div>

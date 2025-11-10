@@ -2,6 +2,7 @@ import React from "react";
 import { useUIContext } from "../../../../../Context/UIContext";
 import { useGroupMasterContext } from "../../../../../Context/ItemManagement/GroupMasterContext";
 import { validateTextInput } from "../../../../../utils/validation";
+import { toast } from "react-toastify";
 
 export default function Group_Master_Form() {
   const { handleClose } = useUIContext();
@@ -26,9 +27,6 @@ export default function Group_Master_Form() {
     } else {
       createGroup(groupName);
     }
-    setgroupEditId(null);
-    setGroupName("");
-    handleClose("addNewGroup");
   };
   return (
     <>
@@ -65,7 +63,7 @@ export default function Group_Master_Form() {
               <div className="row">
                 <div className="col mb-2">
                   <label htmlFor="nameSmall" className="form-label">
-                    Group Name
+                    Group Name <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
@@ -74,6 +72,7 @@ export default function Group_Master_Form() {
                     placeholder="Enter Group Name"
                     value={groupName}
                     onChange={(e) => setGroupName(e.target.value)}
+                    required
                   />
                 </div>
               </div>

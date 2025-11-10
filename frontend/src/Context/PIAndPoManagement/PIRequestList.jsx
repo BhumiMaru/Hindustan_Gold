@@ -662,6 +662,7 @@ export const PIRequestProvider = ({ children }) => {
       console.error("Bulk Reject PIRequest error:", error);
     }
   };
+
   // const bulkReject = async (payload) => {
   //   try {
   //     const res = await postData(ENDPOINTS.PI_REQUEST.BULKREJECT, payload);
@@ -689,6 +690,25 @@ export const PIRequestProvider = ({ children }) => {
   //     console.error("Bulk Reject PIRequest error:", error);
   //   }
   // };
+
+  // Service Received
+  const serviceReceived = async ({ request_id }) => {
+    try {
+      const res = await postData(ENDPOINTS.PI_REQUEST.SERVICERECEIVED, {
+        request_id: Number(request_id),
+      });
+
+      if (res?.status) {
+        toast.success(res.message);
+      }
+      console.log("Service received response:", res);
+    } catch (error) {
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
+      console.error("Service Received in PIRequest error:", error);
+    }
+  };
 
   return (
     // <ItemMasterProvider>
@@ -738,6 +758,7 @@ export const PIRequestProvider = ({ children }) => {
         setItems,
         loading,
         setLoading,
+        serviceReceived,
       }}
     >
       {children}

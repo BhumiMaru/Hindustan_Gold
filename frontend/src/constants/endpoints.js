@@ -114,6 +114,7 @@ export const ENDPOINTS = {
     BULKAPPROVE: "/pi/request/bulkapprove",
     SINGLEREJECT: "/pi/request/singlereject",
     BULKREJECT: "/pi/request/bulkreject",
+    SERVICERECEIVED: "/pi/request/services/recives",
   },
 
   // UOM (unit of measure)

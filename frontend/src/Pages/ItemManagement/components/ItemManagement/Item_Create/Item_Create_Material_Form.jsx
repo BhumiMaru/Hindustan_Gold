@@ -26,6 +26,7 @@ export default function Item_Create_Material_Form() {
     fetchitemById,
     StartEditing,
     ResetItemMaster,
+    setItemEditId,
   } = useItemMaster();
 
   const navigate = useNavigate();
@@ -162,6 +163,7 @@ export default function Item_Create_Material_Form() {
         toast.success(res?.message);
         fetchItemMaster();
         ResetItemMaster();
+        setItemEditId(null);
         navigate("/item/item-master"); // ✅ navigate only on success
       } else {
         toast.error(res?.message || "Failed to update item");
@@ -249,6 +251,7 @@ export default function Item_Create_Material_Form() {
                             );
                           }}
                           placeholder="Select SubCategory"
+                          isTextRequired
                         />
                       </div>
                     </div>
@@ -257,7 +260,7 @@ export default function Item_Create_Material_Form() {
                     {type === "material" && (
                       <div className="col-sm-3 mb-4">
                         <label htmlFor="Itemname" className="form-label">
-                          Item
+                          Item <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -271,6 +274,7 @@ export default function Item_Create_Material_Form() {
                               item_name: e.target.value,
                             })
                           }
+                          required
                         />
                       </div>
                     )}
@@ -300,6 +304,7 @@ export default function Item_Create_Material_Form() {
                               })
                             }
                             placeholder="Select Unit of Measure"
+                            isTextRequired
                           />
                         </div>
                       </div>
@@ -309,7 +314,7 @@ export default function Item_Create_Material_Form() {
                     {type === "material" && (
                       <div className="col-sm-3 mb-4">
                         <label htmlFor="ItemCode" className="form-label">
-                          Item Code
+                          Item Code <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -319,6 +324,7 @@ export default function Item_Create_Material_Form() {
                           readOnly
                           disabled
                           value={itemMasterData?.item_code || ""}
+                          required
                         />
                       </div>
                     )}
@@ -327,7 +333,7 @@ export default function Item_Create_Material_Form() {
                     {type === "service" && (
                       <div className="col-sm-3 mb-4">
                         <label htmlFor="Servicename" className="form-label">
-                          Service
+                          Service <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -341,6 +347,7 @@ export default function Item_Create_Material_Form() {
                               item_name: e.target.value,
                             })
                           }
+                          required
                         />
                       </div>
                     )}
@@ -349,7 +356,7 @@ export default function Item_Create_Material_Form() {
                     {type === "service" && (
                       <div className="col-sm-3 mb-4">
                         <label htmlFor="ServiceCode" className="form-label">
-                          Service Code
+                          Service Code <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -358,6 +365,7 @@ export default function Item_Create_Material_Form() {
                           placeholder="Service Code"
                           readOnly
                           value={itemMasterData?.item_code || ""}
+                          required
                         />
                       </div>
                     )}
@@ -366,7 +374,7 @@ export default function Item_Create_Material_Form() {
                     {type === "asset" && (
                       <div className="col-sm-3 mb-4">
                         <label htmlFor="Assetname" className="form-label">
-                          Asset
+                          Asset <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -380,6 +388,7 @@ export default function Item_Create_Material_Form() {
                               item_name: e.target.value,
                             })
                           }
+                          required
                         />
                       </div>
                     )}
@@ -388,7 +397,7 @@ export default function Item_Create_Material_Form() {
                     {type === "asset" && (
                       <div className="col-sm-3 mb-4">
                         <label htmlFor="AssetCode" className="form-label">
-                          Asset Code
+                          Asset Code <span className="text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -397,6 +406,7 @@ export default function Item_Create_Material_Form() {
                           placeholder="Service Code"
                           readOnly
                           value={itemMasterData?.item_code || ""}
+                          required
                         />
                       </div>
                     )}
@@ -424,6 +434,7 @@ export default function Item_Create_Material_Form() {
                       <div className="col-sm-3 mb-4">
                         <label className="form-label">
                           Is Purpose Required?
+                          <span className="text-danger">*</span>
                         </label>
                         <div>
                           <div className="form-check form-check-inline mt-4">
@@ -442,6 +453,7 @@ export default function Item_Create_Material_Form() {
                                   is_purpose_required: Number(e.target.value),
                                 })
                               }
+                              required
                             />
                             <label
                               className="form-check-label"
@@ -467,6 +479,7 @@ export default function Item_Create_Material_Form() {
                                   is_purpose_required: Number(e.target.value),
                                 })
                               }
+                              required
                             />
                             <label
                               className="form-check-label"
@@ -483,7 +496,8 @@ export default function Item_Create_Material_Form() {
                     {type !== "asset" && (
                       <div className="col-sm-3 mb-4">
                         <label className="form-label">
-                          Is Approval Required?
+                          Is Approval Required?{" "}
+                          <span className="text-danger">*</span>
                         </label>
                         <div>
                           <div className="form-check form-check-inline mt-4">
@@ -502,6 +516,7 @@ export default function Item_Create_Material_Form() {
                                   is_approval_required: Number(e.target.value),
                                 })
                               }
+                              required
                             />
                             <label
                               className="form-check-label"
@@ -527,6 +542,7 @@ export default function Item_Create_Material_Form() {
                                   is_approval_required: Number(e.target.value),
                                 })
                               }
+                              required
                             />
                             <label
                               className="form-check-label"
@@ -542,7 +558,9 @@ export default function Item_Create_Material_Form() {
                     {/* Is Movable Required? */}
                     {type === "asset" && (
                       <div className="col-sm-3 mb-4">
-                        <label className="form-label">Is Movable?</label>
+                        <label className="form-label">
+                          Is Movable? <span className="text-danger">*</span>{" "}
+                        </label>
                         <div>
                           <div className="form-check form-check-inline mt-4">
                             <input
@@ -558,6 +576,7 @@ export default function Item_Create_Material_Form() {
                                   is_movable: Number(e.target.value),
                                 })
                               }
+                              required
                             />
                             <label
                               className="form-check-label"
@@ -676,6 +695,7 @@ export default function Item_Create_Material_Form() {
                             }
                             label="Storage Location"
                             placeholder="Select Storage Location"
+                            isTextRequired
                           />
                         </div>
                       </div>
@@ -683,9 +703,9 @@ export default function Item_Create_Material_Form() {
 
                     {/* Primary Zone */}
                     <div className="col-sm-3 mb-4">
-                      <label htmlFor="select2info" className="form-label">
+                      {/* <label htmlFor="select2info" className="form-label">
                         Zone
-                      </label>
+                      </label> */}
                       <div className="select2-info">
                         <div className="position-relative">
                           <CustomSelect
@@ -706,6 +726,8 @@ export default function Item_Create_Material_Form() {
                               })
                             }
                             placeholder="Select Zone"
+                            label="Zone"
+                            isTextRequired
                           />
                         </div>
                       </div>
@@ -715,7 +737,7 @@ export default function Item_Create_Material_Form() {
                     {type === "material" && (
                       <div className="col-sm-3 mb-4">
                         <label htmlFor="Stock" className="form-label">
-                          Stock
+                          Stock <span className="text-danger">*</span>
                         </label>
                         <input
                           type="number"
@@ -729,6 +751,7 @@ export default function Item_Create_Material_Form() {
                               stock: Number(e.target.value),
                             })
                           }
+                          required
                         />
                       </div>
                     )}
@@ -737,7 +760,7 @@ export default function Item_Create_Material_Form() {
                     {type === "material" && (
                       <div className="col-sm-3 mb-4">
                         <label htmlFor="StockValue" className="form-label">
-                          Stock Value
+                          Stock Value <span className="text-danger">*</span>
                         </label>
                         <input
                           type="number"
@@ -751,6 +774,7 @@ export default function Item_Create_Material_Form() {
                               stock_value: Number(e.target.value),
                             })
                           }
+                          required
                         />
                       </div>
                     )}
@@ -759,7 +783,7 @@ export default function Item_Create_Material_Form() {
                     {type === "material" && (
                       <div className="col-sm-3 mb-4">
                         <label htmlFor="MinimumStock" className="form-label">
-                          Minimum Stock
+                          Minimum Stock <span className="text-danger">*</span>
                         </label>
                         <input
                           type="number"
@@ -773,6 +797,7 @@ export default function Item_Create_Material_Form() {
                               minimum_stock: Number(e.target.value),
                             })
                           }
+                          required
                         />
                       </div>
                     )}
@@ -781,7 +806,7 @@ export default function Item_Create_Material_Form() {
                     {type === "asset" && (
                       <div className="col-sm-3 mb-4">
                         <label htmlFor="PurchaseDate" className="form-label">
-                          Purchase Date
+                          Purchase Date <span className="text-danger">*</span>
                         </label>
                         <input
                           type="date"
@@ -795,6 +820,7 @@ export default function Item_Create_Material_Form() {
                               purchase_date: e.target.value,
                             })
                           }
+                          required
                         />
                       </div>
                     )}
@@ -803,7 +829,7 @@ export default function Item_Create_Material_Form() {
                     {type === "asset" && (
                       <div className="col-sm-3 mb-4">
                         <label htmlFor="WarrantyExpiry" className="form-label">
-                          Warranty Expiry
+                          Warranty Expiry <span className="text-danger">*</span>
                         </label>
                         <input
                           type="date"
@@ -817,6 +843,7 @@ export default function Item_Create_Material_Form() {
                               warranty_expiry: e.target.value,
                             })
                           }
+                          required
                         />
                       </div>
                     )}
@@ -825,20 +852,21 @@ export default function Item_Create_Material_Form() {
                     {type === "asset" && (
                       <div className="col-sm-3 mb-4">
                         <label htmlFor="Quantity" className="form-label">
-                          Quantity
+                          Quantity <span className="text-danger">*</span>
                         </label>
                         <input
                           type="number"
                           className="form-control"
                           id="Quantity"
                           placeholder="Enter Quantity"
-                          value={itemMasterData?.stock || 0}
+                          value={itemMasterData?.stock}
                           onChange={(e) =>
                             setItemMasterData({
                               ...itemMasterData,
                               stock: Number(e.target.value),
                             })
                           }
+                          required
                         />
                       </div>
                     )}
@@ -861,6 +889,7 @@ export default function Item_Create_Material_Form() {
                             })
                           }
                           placeholder="Select Status"
+                          isTextRequired
                         />
                       </div>
                     </div>

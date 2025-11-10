@@ -97,19 +97,57 @@ export default function User_Creation_List() {
   //   })) || []),
   // ];
 
+  // Clear Filters
+  const handleClearFilters = () => {
+    setSearch("");
+    setRoleId(null);
+    setDeptId(null);
+    setZoneId(null);
+    setStatus(null);
+    setPagination((prev) => ({ ...prev, currentPage: 1 }));
+
+    // Re-fetch unfiltered data
+    fetchUserCreationData({
+      search: "",
+      role_id: null,
+      department_id: null,
+      zone_id: null,
+      status: null,
+      page: 1,
+      perPage: pagination.perPage,
+    });
+  };
+
   return (
     <>
       <div className="container-xxl flex-grow-1 container-p-y">
         <div className="card">
           <div className="d-flex justify-content-between p-3">
-            <div className="d-flex align-items-center">
-              <SearchBar
-                placeholder="Search Users..."
-                value={search}
-                onChange={setSearch}
-                onSubmit={(val) => setSearch(val)}
-              />
+            <div className="d-flex align-items-center flex-wrap">
+              <div className="d-flex align-items-center">
+                <SearchBar
+                  placeholder="Search Users..."
+                  value={search}
+                  onChange={setSearch}
+                  onSubmit={(val) => setSearch(val)}
+                />
+              </div>
+
+              {/* Show Clear All only if any filter/search is applied */}
+              {/* clear Filter */}
+              {(roleId !== null ||
+                deptId !== null ||
+                zoneId !== null ||
+                status !== null) && (
+                <button
+                  className="btn text-danger waves-effect btn-sm ms-2"
+                  onClick={handleClearFilters}
+                >
+                  ✕ Clear All
+                </button>
+              )}
             </div>
+
             <div className="d-flex gap-1">
               <Link
                 to="/super_admin/master/user-create"

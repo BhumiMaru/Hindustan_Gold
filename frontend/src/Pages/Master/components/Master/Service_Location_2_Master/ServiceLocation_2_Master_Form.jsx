@@ -105,6 +105,7 @@ export default function ServiceLocation_2_Master_Form() {
                   </label> */}
                   <div className="position-relative">
                     <CustomSelect
+                      isTextRequired
                       label="Service Location 1"
                       options={serviceLocation.map((loc) => ({
                         value: loc.id,
@@ -119,7 +120,8 @@ export default function ServiceLocation_2_Master_Form() {
                 </div>
                 <div className="col-md-12 mb-2">
                   <label htmlFor="nameSmall" className="form-label">
-                    Service Location 2 Name
+                    Service Location 2 Name{" "}
+                    <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
@@ -128,6 +130,7 @@ export default function ServiceLocation_2_Master_Form() {
                     placeholder="Enter Service Location 2 Name"
                     value={serviceLocation2Name}
                     onChange={(e) => setServiceLocation2Name(e.target.value)}
+                    required
                   />
                 </div>
               </div>

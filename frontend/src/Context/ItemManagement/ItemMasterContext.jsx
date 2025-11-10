@@ -142,6 +142,7 @@ export const ItemMasterProvider = ({ children }) => {
       if (res?.status === true) {
         setItemMasterData(res.data.data);
         ResetItemMaster(null);
+        setItemEditId(null);
       }
 
       return res;
@@ -488,7 +489,10 @@ export const ItemMasterProvider = ({ children }) => {
 
       return subCategoryData;
     } catch (error) {
-      console.log("fetch subcategory error:", error);
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
       return { sub_c_id: null, sub_c_name: "" };
     }
   };
@@ -508,18 +512,9 @@ export const ItemMasterProvider = ({ children }) => {
       fetchItemMaster();
       toast.success("Item Delete Successfully!");
     } catch (error) {
-      console.log("item master Delete error:", error);
-      // if (error.response && error.response.data) {
-      //   toast.error(error.response.data.message);
-      // }
-      if (error.response && error.response.data && error.response.data.errors) {
-        const errors = error.response.data.errors;
-
-        // Flatten all error messages into a single array
-        const messages = Object.values(errors).flat();
-
-        // Show each message in toast
-        messages.forEach((msg) => toast.error(msg));
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
       }
     }
   };
@@ -599,23 +594,10 @@ export const ItemMasterProvider = ({ children }) => {
         return null;
       }
     } catch (error) {
-      console.log(
-        "item master getCategoryGroupAndItemCodeBySubCategoryId error:",
-        error
-      );
-      // if (error.response && error.response.data) {
-      //   toast.error(error.response.data.message);
-      // }
-      if (error.response && error.response.data && error.response.data.errors) {
-        const errors = error.response.data.errors;
-
-        // Flatten all error messages into a single array
-        const messages = Object.values(errors).flat();
-
-        // Show each message in toast
-        messages.forEach((msg) => toast.error(msg));
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
       }
-      return null;
     }
   };
 
@@ -643,6 +625,7 @@ export const ItemMasterProvider = ({ children }) => {
         fetchItemSubCategoryById,
         loading,
         setLoading,
+        setItemEditId,
       }}
     >
       {children}

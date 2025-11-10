@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 import { useUIContext } from "../../../../../Context/UIContext";
 import Loader from "../../../../../components/Common/Loader/Loader";
+const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export default function User_Creation_Table() {
   const navigate = useNavigate();
@@ -99,7 +100,7 @@ export default function User_Creation_Table() {
             userCreations?.map((user, index) => {
               return (
                 <tr key={user.id}>
-                  {/* {console.log(user.status)} */}
+                  {console.log(user)}
                   <td>
                     <div className="ms-4">
                       {(pagination.currentPage - 1) * pagination.perPage +
@@ -111,10 +112,11 @@ export default function User_Creation_Table() {
                       <div className="avatar-wrapper">
                         <div className="avatar me-2">
                           <img
-                            src="https://www.citypng.com/public/uploads/preview/hd-man-user-illustration-icon-transparent-png-701751694974843ybexneueic.png"
+                            src={user.profile_photo_url}
                             alt={user.name}
                             className="rounded-circle"
                           />
+                          {/* to={`${fileUrl}/storage/uploads/invoices/${invoiceDetail.invoice_file}`} */}
                         </div>
                       </div>
                       <div className="d-flex flex-column">

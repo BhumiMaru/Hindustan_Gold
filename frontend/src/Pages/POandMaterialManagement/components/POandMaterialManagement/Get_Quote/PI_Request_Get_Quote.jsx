@@ -892,7 +892,13 @@ export default function PI_Request_Get_Quote() {
                               Vendor Approve
                             </button>
                           ) : (
-                            <button className="btn bg-label-success btn-sm waves-effect waves-light">
+                            <button
+                              className="btn bg-label-success btn-sm waves-effect waves-light"
+                              style={{
+                                paddingBottom: "0px !important",
+                                paddingTop: "0px !important",
+                              }}
+                            >
                               Vendor Selected
                             </button>
                           ))

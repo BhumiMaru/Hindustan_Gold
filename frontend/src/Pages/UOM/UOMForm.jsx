@@ -24,11 +24,6 @@ export default function UOMForm() {
     } else {
       createUOM(uomData.name);
     }
-    setEditId(null);
-    setUomData({
-      name: "",
-    });
-    handleClose("addNewUOM");
   };
 
   return (
@@ -68,7 +63,7 @@ export default function UOMForm() {
               <div className="row">
                 <div className="col mb-2">
                   <label htmlFor="nameSmall" className="form-label">
-                    UOM Name
+                    UOM Name <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
@@ -77,6 +72,7 @@ export default function UOMForm() {
                     placeholder="Enter UOM Name"
                     value={uomData?.name}
                     onChange={(e) => setUomData({ name: e.target.value })}
+                    required
                   />
                 </div>
               </div>

@@ -6,8 +6,16 @@ import { useParams } from "react-router-dom";
 
 export default function UpdateGRN({ id }) {
   const { handleClose } = useUIContext();
-  const { grnData, setGrnData, CreateGRN, EditGRN, editId, setEditId, grnId } =
-    useGRN();
+  const {
+    grnData,
+    setGrnData,
+    CreateGRN,
+    EditGRN,
+    editId,
+    setEditId,
+    grnId,
+    GRNList,
+  } = useGRN();
   const { PoId, getPoDetails, poDetails } = usePOCreate();
 
   const po_id = Number(id) || grnId;
@@ -77,7 +85,7 @@ export default function UpdateGRN({ id }) {
     });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // Calculate total GRN quantity
     const totalGrnQty =
       grnData?.items?.reduce((total, item) => {
@@ -93,28 +101,39 @@ export default function UpdateGRN({ id }) {
       invoice_file: grnData.invoice_file,
       remark: grnData.remark,
       items: grnData.items?.map((item) => ({
-        grn_item_id: item.grn_item_id, // ✅ Use grn_item_id from the item object
+        grn_item_id: item.grn_item_id,
         po_item_id: Number(item.po_item_id),
         grn_qty: Number(item.grn_qty),
       })),
     };
 
-    console.log("Sending GRN data:", grnPayload);
-    console.log("GRN items being sent:", grnData.items);
+    console.log("📦 Sending GRN Payload:", grnPayload);
+    console.log("🆔 Edit ID:", editId);
+    console.log("📋 PO ID for refresh:", Number(grnData.po_id));
+
     let res;
     if (editId) {
-      res = EditGRN({ id: editId, payload: grnPayload });
-      if (res.status) {
-        handleClose("editGRN");
-      }
+      console.log("✏️ Editing GRN...");
+      res = await EditGRN({ id: editId, payload: grnPayload });
     } else {
-      res = CreateGRN(grnPayload);
-      if (res.status) {
-        handleClose("editGRN");
-      }
+      console.log("🆕 Creating GRN...");
+      res = await CreateGRN(grnPayload);
     }
 
-    console.log("resresres", res);
+    console.log("✅ API Response:", res);
+
+    if (res?.status) {
+      console.log("🔄 Refreshing GRN List...");
+      // Try multiple approaches to refresh
+      await GRNList({ po_id: Number(grnData.po_id) });
+
+      // Also try to refresh the parent component's data
+      if (typeof getPoDetails === "function") {
+        await getPoDetails(Number(grnData.po_id));
+      }
+
+      handleClose("editGRN");
+    }
   };
 
   return (
@@ -255,7 +274,8 @@ export default function UpdateGRN({ id }) {
                     className="form-control"
                     name="grn_date"
                     value={
-                      grnData.grn_date || new Date().toISOString().split("T")[0]
+                      grnData?.grn_date ||
+                      new Date().toISOString().split("T")[0]
                     }
                     onChange={handleChange}
                   />

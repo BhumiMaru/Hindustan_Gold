@@ -80,15 +80,6 @@ export default function ServiceLocation_3_Master_Form() {
         serviceLocation3Data.selectedSl2
       );
     }
-
-    // reset form
-    handleClose("addNewServiceLocation3");
-    setServiceLocation3EditId(null);
-    setServiceLocation3Data({
-      service_location_3_name: "",
-      selectedSl1: null,
-      selectedSl2: null,
-    });
   };
 
   return (
@@ -139,6 +130,7 @@ export default function ServiceLocation_3_Master_Form() {
                       }
                       label="Service Location 1"
                       placeholder="Select Service Location 1"
+                      isTextRequired
                     />
                   </div>
                 </div>
@@ -158,12 +150,14 @@ export default function ServiceLocation_3_Master_Form() {
                       }
                       label="Service Location 2"
                       placeholder="Select Service Location 2"
+                      isTextRequired
                     />
                   </div>
                 </div>
                 <div className="col-md-12 mb-2">
                   <label htmlFor="nameSmall" className="form-label">
-                    Service Location 3 Name
+                    Service Location 3 Name{" "}
+                    <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
@@ -177,6 +171,7 @@ export default function ServiceLocation_3_Master_Form() {
                         service_location_3_name: e.target.value,
                       }))
                     }
+                    required
                   />
                 </div>
               </div>

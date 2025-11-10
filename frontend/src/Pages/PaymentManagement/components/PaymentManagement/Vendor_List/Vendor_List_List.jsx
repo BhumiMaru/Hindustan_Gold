@@ -31,22 +31,51 @@ export default function Vendor_List_List() {
     setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
   };
 
+  // ✅ Clear All Filters
+  const handleClearFilters = () => {
+    setSearch(""); // clear search input
+    setStatus(null); // clear status filter
+    setPagination((prev) => ({ ...prev, currentPage: 1 })); // reset pagination
+
+    // ✅ Refresh vendor list with cleared filters
+    getVendorList({
+      search: "",
+      status: null,
+      page: 1,
+      perPage: pagination.perPage,
+    });
+  };
+
   return (
     <>
       {/* ------------------START VENDOR LIST----------------------- */}
       <div className="container-xxl flex-grow-1 container-p-y">
         {/* DataTable with Buttons */}
-        <div className="card">  
+        <div className="card">
           <div className="d-flex justify-content-between p-3">
-            <div className="d-flex align-items-center ">
-              {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
-              <SearchBar
-                placeholder="Search Vendor..."
-                value={search}
-                onChange={setSearch} // update typing value
-                onSubmit={(val) => setQuery(val)} // trigger API only on submit
-              />
+            <div className="d-flex align-items-center flex-wrap">
+              <div className="d-flex align-items-center ">
+                {/*  <input type="search" className="form-control" placeholder="Search Users...">*/}
+                <SearchBar
+                  placeholder="Search Vendor..."
+                  value={search}
+                  onChange={setSearch} // update typing value
+                  onSubmit={(val) => setQuery(val)} // trigger API only on submit
+                />
+              </div>
+              {/* Clear Filter */}
+              {(search !== "" || status !== null) && (
+                <div className="d-flex align-items-center">
+                  <button
+                    className="btn text-danger waves-effect btn-sm"
+                    onClick={handleClearFilters}
+                  >
+                    ✕ Clear All
+                  </button>
+                </div>
+              )}
             </div>
+
             <div className="d-flex">
               <div className="row">
                 <div className="position-relative">

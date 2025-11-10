@@ -70,7 +70,8 @@ export default function ServiceLocation_1_Master_Form() {
                 <div className="row">
                   <div className="col mb-2">
                     <label htmlFor="nameSmall" className="form-label">
-                      Service Location 1 Name
+                      Service Location 1 Name{" "}
+                      <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
@@ -79,6 +80,7 @@ export default function ServiceLocation_1_Master_Form() {
                       placeholder="Enter Service Location 1 Name"
                       value={serviceLocationName}
                       onChange={(e) => setServiceLocationName(e.target.value)}
+                      required
                     />
                   </div>
                 </div>

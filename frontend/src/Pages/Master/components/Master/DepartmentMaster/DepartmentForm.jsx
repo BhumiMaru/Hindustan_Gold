@@ -81,7 +81,7 @@ export default function DepartmentForm() {
               <div className="row">
                 <div className="col mb-2">
                   <label htmlFor="nameSmall" className="form-label">
-                    Department Name
+                    Department Name <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"

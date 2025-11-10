@@ -394,8 +394,20 @@ export default function SideBar() {
                   to="/user/request/request-list"
                   className="menu-link cursor-pointer text-decoration-none d-flex align-items-center gap-2"
                 >
-                  <i className="menu-icon icon-base ti tabler-forms"></i>
-                  <div data-i="Item Request">Item Request</div>
+                  <i
+                    className="menu-icon icon-base ti tabler-forms"
+                    style={{
+                      color: "#6d6b77",
+                    }}
+                  ></i>
+                  <div
+                    data-i="Item Request"
+                    style={{
+                      color: "#6d6b77",
+                    }}
+                  >
+                    Item Request
+                  </div>
                 </Link>
               </li>
             )}
@@ -470,8 +482,20 @@ export default function SideBar() {
                   to="/payment-management/invoice-list"
                   className="menu-link cursor-pointer text-decoration-none d-flex align-items-center gap-2"
                 >
-                  <i className="menu-icon icon-base ti tabler-file-dollar"></i>
-                  <div data-i="Payment List">Payment List</div>
+                  <i
+                    className="menu-icon icon-base ti tabler-file-dollar"
+                    style={{
+                      color: "#6d6b77",
+                    }}
+                  ></i>
+                  <div
+                    data-i="Payment List"
+                    style={{
+                      color: "#6d6b77",
+                    }}
+                  >
+                    Payment List
+                  </div>
                 </Link>
               </li>
             )}

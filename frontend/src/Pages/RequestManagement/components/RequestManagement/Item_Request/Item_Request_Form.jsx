@@ -569,7 +569,7 @@ export default function Item_Request_Form() {
       } else {
         createItemRequest(payload);
       }
-      navigate("/user/request/request-list");
+      // navigate("/user/request/request-list");
     } catch (error) {
       console.log("Save error:", error);
     }
@@ -640,6 +640,7 @@ export default function Item_Request_Form() {
                 }}
                 placeholder="Select Item"
                 required
+                isTextRequired
               />
             </div>
 
@@ -771,13 +772,14 @@ export default function Item_Request_Form() {
                 }}
                 placeholder="Select Purpose"
                 required
+                isTextRequired
               />
             </div>
 
             {/* Quantity */}
             <div className="col-sm-3 mb-4">
               <label htmlFor="Quantity" className="form-label">
-                Quantity
+                Quantity <span className="text-danger">*</span>
               </label>
               <input
                 type="number"
@@ -835,7 +837,7 @@ export default function Item_Request_Form() {
             {type === "material" && (
               <div className="col-sm-3 mb-4">
                 <label htmlFor="ReceivingPerson" className="form-label">
-                  Receiving Person
+                  Receiving Person <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
@@ -849,6 +851,7 @@ export default function Item_Request_Form() {
                       receiving_person: e.target.value,
                     }))
                   }
+                  required
                 />
               </div>
             )}

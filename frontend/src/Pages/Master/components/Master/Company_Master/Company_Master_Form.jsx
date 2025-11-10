@@ -2,6 +2,7 @@ import React from "react";
 import { useCompanyMaster } from "../../../../../Context/Master/CompanyMasterContext";
 import { useUIContext } from "../../../../../Context/UIContext";
 import { validateTextInput } from "../../../../../utils/validation";
+import { toast } from "react-toastify";
 
 export default function Company_Master_Form() {
   const {
@@ -67,7 +68,7 @@ export default function Company_Master_Form() {
                 <div className="row">
                   <div className="col mb-2">
                     <label htmlFor="nameSmall" className="form-label">
-                      Company Name
+                      Company Name <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
@@ -76,6 +77,7 @@ export default function Company_Master_Form() {
                       placeholder="Enter Company Name"
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
+                      required
                     />
                   </div>
                 </div>
