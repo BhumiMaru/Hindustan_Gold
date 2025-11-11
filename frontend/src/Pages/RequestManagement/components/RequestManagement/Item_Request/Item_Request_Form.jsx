@@ -499,8 +499,10 @@ import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSe
 import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
 import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
 import { useServiceLocation3Master } from "../../../../../Context/Master/ServiceLocation3MasterContext";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
+const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export default function Item_Request_Form() {
   const { type, id } = useParams();
@@ -561,7 +563,7 @@ export default function Item_Request_Form() {
       ...(id && { id: itemRequestData.request_id }),
     };
 
-    // console.log("Submitting payload:", payload);
+    console.log("Submitting payload:", payload);
 
     try {
       if (id) {
@@ -763,7 +765,7 @@ export default function Item_Request_Form() {
                     label: "For Stock Replenishment",
                   },
                 ]}
-                value={itemRequestData?.purpose || ""}
+                value={itemRequestData?.purpose || 0}
                 onChange={(selected) => {
                   setItemRequestData((prev) => ({
                     ...prev,
@@ -866,7 +868,45 @@ export default function Item_Request_Form() {
                 className="form-control"
                 id="UploadFile"
                 placeholder=""
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setItemRequestData((prev) => ({
+                      ...prev,
+                      item_request_file: file, // ✅ store file directly
+                    }));
+                  }
+                }}
               />
+              {itemRequestData?.item_request_file ? (
+                <Link
+                  to={`${fileUrl}/storage/item_request_file/${itemRequestData?.item_request_file}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={`${publicUrl}assets/img/icons/misc/doc.png`}
+                    alt="Document"
+                    width={15}
+                    className="me-2"
+                  />
+                  <span className="h6 mb-0 text-info">
+                    {/* {invoiceDetail.invoice_file} */}
+                    View
+                  </span>
+                </Link>
+              ) : (
+                <div className="d-flex align-items-center text-muted">
+                  {/* <img
+                    src={`${publicUrl}assets/img/icons/misc/no-file.png`}
+                    alt="No file"
+                    width={15}
+                    className="me-2 opacity-75"
+                  /> */}
+
+                  <span className="h6 mb-0">No file uploaded</span>
+                </div>
+              )}
             </div>
 
             <div className="col-lg-12 text-end">

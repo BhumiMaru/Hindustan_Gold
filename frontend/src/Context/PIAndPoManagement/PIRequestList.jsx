@@ -698,9 +698,34 @@ export const PIRequestProvider = ({ children }) => {
         request_id: Number(request_id),
       });
 
+      console.log("res service", res);
+
       if (res?.status) {
         toast.success(res.message);
+        getPIRequest();
       }
+
+      // ✅ Update only the specific item in piRequest state
+      // setPiRequest((prev) =>
+      //   prev.map((pi) => {
+      //     if (pi.request_id === Number(request_id)) {
+      //       return {
+      //         ...pi,
+      //         piitems: pi.piitems.map((item) =>
+      //           item.id === pi_request_item_id
+      //             ? {
+      //                 ...item,
+      //                 is_service_recive: 1, // or any updated field
+      //                 final_approve_status: "Completed", // example
+      //               }
+      //             : item
+      //         ),
+      //       };
+      //     }
+      //     return pi;
+      //   })
+      // );
+      // }
       console.log("Service received response:", res);
     } catch (error) {
       if (error.response && error.response.data) {

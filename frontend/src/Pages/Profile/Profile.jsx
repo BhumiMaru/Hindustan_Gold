@@ -1,5 +1,6 @@
 import React from "react";
 import { decryptData } from "../../utils/decryptData";
+const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export default function Profile() {
   const getAuthData = sessionStorage.getItem("authData");
@@ -24,7 +25,7 @@ export default function Profile() {
               <div className="user-profile-header d-flex flex-column flex-lg-row text-sm-start text-center mb-5">
                 <div className="flex-shrink-0 mt-n2 mx-sm-0 mx-auto">
                   <img
-                    src="assets/img/avatars/1.png"
+                    src={`${fileUrl}/storage/users/${userData?.profile_photo}`}
                     alt="user image"
                     className="d-block h-auto ms-0 ms-sm-6 rounded user-profile-img"
                   />

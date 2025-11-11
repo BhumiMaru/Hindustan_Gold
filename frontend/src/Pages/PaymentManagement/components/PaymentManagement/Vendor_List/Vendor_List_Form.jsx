@@ -152,7 +152,8 @@ export default function Vendor_List_Form() {
                 </div>
                 <div className="col-lg-4 mb-2">
                   <label htmlFor="address" className="form-label">
-                    Address <span className="text-danger">*</span>
+                    Address
+                    {/* <span className="text-danger">*</span> */}
                   </label>
                   <input
                     type="text"
@@ -162,12 +163,13 @@ export default function Vendor_List_Form() {
                     name="address"
                     value={vendorData?.address || ""}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </div>
                 <div className="col-lg-4 mb-2">
                   <label htmlFor="gstnumber" className="form-label">
-                    GST Number <span className="text-danger">*</span>
+                    GST Number
+                    {/* <span className="text-danger">*</span> */}
                   </label>
                   <input
                     type="text"
@@ -177,12 +179,13 @@ export default function Vendor_List_Form() {
                     name="gst_number"
                     value={vendorData?.gst_number || ""}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </div>
                 <div className="col-lg-4 mb-2">
                   <label htmlFor="pannumber" className="form-label">
-                    PAN Number <span className="text-danger">*</span>
+                    PAN Number
+                    {/* <span className="text-danger">*</span> */}
                   </label>
                   <input
                     type="text"
@@ -192,7 +195,7 @@ export default function Vendor_List_Form() {
                     name="pan_number"
                     value={vendorData?.pan_number || ""}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </div>
                 <div className="col-lg-4 mb-2">
@@ -211,7 +214,7 @@ export default function Vendor_List_Form() {
                       }))
                     }
                     placeholder="Select"
-                    isTextRequired
+                    // isTextRequired
                   />
                 </div>
               </div>
@@ -219,7 +222,8 @@ export default function Vendor_List_Form() {
               <div className="row">
                 <div className="col-lg-4 mb-2">
                   <label htmlFor="bankname" className="form-label">
-                    Bank Name <span className="text-danger">*</span>
+                    Bank Name
+                    {/* <span className="text-danger">*</span> */}
                   </label>
                   <input
                     type="text"
@@ -229,12 +233,13 @@ export default function Vendor_List_Form() {
                     name="bank_name"
                     value={vendorData?.bank_name || ""}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </div>
                 <div className="col-lg-4 mb-2">
                   <label htmlFor="accountno" className="form-label">
-                    Account No <span className="text-danger">*</span>
+                    Account No
+                    {/* <span className="text-danger">*</span> */}
                   </label>
                   <input
                     type="text"
@@ -244,12 +249,13 @@ export default function Vendor_List_Form() {
                     name="account_no"
                     value={vendorData?.account_no || ""}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </div>
                 <div className="col-lg-4 mb-2">
                   <label htmlFor="ifsccode" className="form-label">
-                    IFSC Code <span className="text-danger">*</span>
+                    IFSC Code
+                    {/* <span className="text-danger">*</span> */}
                   </label>
                   <input
                     type="text"
@@ -259,12 +265,13 @@ export default function Vendor_List_Form() {
                     name="ifsc_code"
                     value={vendorData?.ifsc_code || ""}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </div>
                 <div className="col-lg-4 mb-2">
                   <label htmlFor="BranchName" className="form-label">
-                    Branch Name <span className="text-danger">*</span>
+                    Branch Name
+                    {/* <span className="text-danger">*</span> */}
                   </label>
                   <input
                     type="text"
@@ -274,7 +281,7 @@ export default function Vendor_List_Form() {
                     name="branch_name"
                     value={vendorData?.branch_name || ""}
                     onChange={handleChange}
-                    required
+                    // required
                   />
                 </div>
                 <div className="col-lg-4 mb-2">
@@ -294,7 +301,7 @@ export default function Vendor_List_Form() {
                       }));
                     }}
                     placeholder="Select Status"
-                    isTextRequired
+                    // isTextRequired
                   />
                 </div>
               </div>

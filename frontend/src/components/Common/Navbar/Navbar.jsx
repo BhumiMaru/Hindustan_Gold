@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Small_Screen_Sidebar from "../SideBar/Small_Screen_Sidebar";
 import { decryptData } from "../../../utils/decryptData";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
+const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export default function Navbar() {
   const {
@@ -24,7 +25,7 @@ export default function Navbar() {
 
   const getAuthData = sessionStorage.getItem("authData");
   const decryptAuthData = decryptData(getAuthData);
-  // console.log(decryptAuthData);
+  console.log(decryptAuthData);
 
   return (
     <>
@@ -79,7 +80,7 @@ export default function Navbar() {
               >
                 <div className="avatar avatar-online">
                   <img
-                    src={`${publicUrl}/assets/img/avatars/1.png`}
+                    src={`${fileUrl}/storage/users/${decryptAuthData?.user?.profile_photo}`}
                     alt=""
                     className="rounded-circle"
                   />
@@ -98,10 +99,14 @@ export default function Navbar() {
                       <div className="flex-shrink-0 me-2">
                         <div className="avatar avatar-online">
                           <img
-                            src={`${publicUrl}/assets/img/avatars/1.png`}
+                            // src={`${publicUrl}/assets/img/avatars/1.png`}
+                            src={`${fileUrl}/storage/users/${decryptAuthData?.user?.profile_photo}`}
                             alt=""
                             className="rounded-circle"
                           />
+                          {console.log(
+                            `${fileUrl}/storage/users/${decryptAuthData?.user?.profile_photo}`
+                          )}
                         </div>
                       </div>
                       <div className="flex-grow-1">

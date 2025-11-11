@@ -116,11 +116,19 @@ export const SubCategoryProvider = ({ children }) => {
         id,
         ...payload,
       });
-      setSubCategoryData(res.data.data);
-      toast.success("SubCategory Edit Successfully!");
-      fetchSubCategoryData();
-      setIsSubEditId(null);
-      ReserSubCategory();
+      if (res.success) {
+        handleClose("addNewSubCategory");
+        toast.success(res.message);
+        setSubCategoryData(res.data.data);
+        ReserSubCategory();
+        setIsSubEditId(null);
+        fetchSubCategoryData();
+      }
+      // setSubCategoryData(res.data.data);
+      // toast.success("SubCategory Edit Successfully!");
+      // fetchSubCategoryData();
+      // setIsSubEditId(null);
+      // ReserSubCategory();
     } catch (error) {
       console.log("Error:", error);
       if (error.response && error.response.data) {

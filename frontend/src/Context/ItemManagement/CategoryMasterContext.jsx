@@ -113,7 +113,18 @@ export const CategoryMasterProvider = ({ children }) => {
     try {
       const body = { id, ...payload };
       const res = await postData(ENDPOINTS.CATEGORY_MASTER.ADD_UPDATE, body);
-      toast.success("Category Updated Successfully");
+      if (res.success) {
+        setCategoryData(res.data.data);
+        toast.success(res.message);
+        setCategoryEditId(null);
+        setCategoryData({
+          categoryName: "",
+          groupId: "",
+          prefixCode: "",
+          status: null,
+        });
+        handleClose("addNewCategory");
+      }
       fetchCategories(); // refresh
       return res;
     } catch (error) {

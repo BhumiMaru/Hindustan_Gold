@@ -508,46 +508,60 @@ export default function User_Creation_Form() {
                 type="file"
                 className="form-control"
                 id="uploadid"
+                name="profile_photo"
                 placeholder="Enter Employee ID"
                 onChange={(e) => {
-                  if (e.target.files && e.target.files.length > 0) {
-                    setUserCreationData({
-                      ...useCreationData,
-                      profile_photo: e.target.files[0], // ✅ file object
-                    });
+                  const file = e.target.files[0];
+                  if (file) {
+                    setUserCreationData((prev) => ({
+                      ...prev,
+                      profile_photo: file, // single file object
+                    }));
+
+                    // setUserCreationData({
+                    //   ...useCreationData,
+                    //   profile_photo: e.target.files[0], // ✅ file object
+                    // });
                   }
                 }}
               />
               {/* {console.log("useCreationData", useCreationData)}
               <span>File: {useCreationData?.profile_photo}</span> */}
-              {useCreationData?.profile_photo ? (
-                <Link
-                  to={`${fileUrl}/storage/uploads/users/${useCreationData?.profile_photo}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img
-                    src={`${publicUrl}assets/img/icons/misc/doc.png`}
-                    alt="Document"
-                    width={15}
-                    className="me-2"
-                  />
-                  <span className="h6 mb-0 text-info">
-                    {/* {invoiceDetail.invoice_file} */}
-                    View
-                  </span>
-                </Link>
-              ) : (
-                <div className="d-flex align-items-center text-muted">
-                  {/* <img
+              {id ? (
+                useCreationData?.profile_photo ? (
+                  <Link
+                    to={`${fileUrl}/storage/users/${useCreationData?.profile_photo}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src={`${publicUrl}assets/img/icons/misc/doc.png`}
+                      alt="Document"
+                      width={15}
+                      className="me-2"
+                    />
+                    <span className="h6 mb-0 text-info">
+                      {/* {invoiceDetail.invoice_file} */}
+                      View
+                    </span>
+                    {console.log(
+                      `${fileUrl}/storage/users/${useCreationData?.profile_photo}`
+                    )}
+                  </Link>
+                ) : (
+                  <div className="d-flex align-items-center text-muted">
+                    {/* <img
                     src={`${publicUrl}assets/img/icons/misc/no-file.png`}
                     alt="No file"
                     width={15}
                     className="me-2 opacity-75"
                   /> */}
 
-                  <span className="h6 mb-0">No file uploaded</span>
-                </div>
+                    <span className="h6 mb-0">No file uploaded</span>
+                  </div>
+                )
+              ) : (
+                ""
               )}
             </div>
             <div className="col-lg-12 text-end">

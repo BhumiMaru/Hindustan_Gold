@@ -234,13 +234,13 @@ export default function LayoutPage() {
     );
   }
 
-  if (location.pathname === "/pages-profile-user") {
-    return (
-      <Routes>
-        <Route path="/pages-profile-user" element={<h1>Profile Page</h1>} />
-      </Routes>
-    );
-  }
+  // if (location.pathname === "/pages-profile-user") {
+  //   return (
+  //     <Routes>
+  //       <Route path="/pages-profile-user" element={<h1>Profile Page</h1>} />
+  //     </Routes>
+  //   );
+  // }
 
   return (
     <>

@@ -4,7 +4,7 @@ import { useGRN } from "../../../../../Context/PIAndPoManagement/GRN";
 import { usePOCreate } from "../../../../../Context/PIAndPoManagement/POCreate";
 import { useParams } from "react-router-dom";
 
-export default function UpdateGRN({ id }) {
+export default function UpdateGRN({ id, onClose }) {
   const { handleClose } = useUIContext();
   const {
     grnData,
@@ -125,14 +125,20 @@ export default function UpdateGRN({ id }) {
     if (res?.status) {
       console.log("🔄 Refreshing GRN List...");
       // Try multiple approaches to refresh
-      await GRNList({ po_id: Number(grnData.po_id) });
+      onClose();
+      // GRNList({ po_id: Number(grnData.po_id) });
+      GRNList({ po_id: Number(res?.data?.po_id) });
 
       // Also try to refresh the parent component's data
+      console.log(
+        "typeof getPoDetails === function",
+        typeof getPoDetails === "function"
+      );
       if (typeof getPoDetails === "function") {
-        await getPoDetails(Number(grnData.po_id));
+        getPoDetails(Number(res?.data?.po_id));
       }
 
-      handleClose("editGRN");
+      // handleClose("editGRN");
     }
   };
 

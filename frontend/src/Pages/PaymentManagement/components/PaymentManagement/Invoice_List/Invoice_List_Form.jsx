@@ -14,6 +14,7 @@ export default function Invoice_List_Form({
   // itemIdInvoice,
   poIdInvoice,
   grnIdInvoice,
+  onclose,
 }) {
   const { handleClose } = useUIContext();
   const {
@@ -194,6 +195,7 @@ export default function Invoice_List_Form({
 
     if (invoiceId) {
       await editInvoice({ id: invoiceId, formData }); // send FormData directly
+      onclose();
     } else {
       await createInvoice(formData);
     }
@@ -266,7 +268,7 @@ export default function Invoice_List_Form({
                       </div>
                     </div>
                     <div className="col-lg-4">
-                      <label className="form-label">Item</label>
+                      {/* <label className="form-label">Item</label> */}
                       <div className="select2-info">
                         <div className="position-relative">
                           <CustomSelect

@@ -24,7 +24,7 @@ const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function PO_Details() {
   const { id } = useParams();
-  const { handleOpen, modal } = useUIContext();
+  const { handleOpen, modal, handleClose } = useUIContext();
   const {
     poDetails,
     setPoDetails,
@@ -36,6 +36,7 @@ export default function PO_Details() {
     setPoWorkflowDetails,
     poWorkflow,
   } = usePOCreate();
+
   const printRef = useRef();
   const {
     setType,
@@ -495,6 +496,7 @@ export default function PO_Details() {
                             <div className="ms-4">{index + 1}</div>
                           </td>
                           <td>{grn?.grn_no}</td>
+                          {/* <td>{setPoIdInvoice(grn.po_id)}</td> */}
                           <td>{grn?.grn_date}</td>
                           <td>
                             <div className="d-flex justify-content-start align-items-center user-name">
@@ -986,7 +988,13 @@ export default function PO_Details() {
         <>
           <POProvider>
             <GRNProvider>
-              <UpdateGRN id={id} />
+              <UpdateGRN
+                id={id}
+                onClose={() => {
+                  handleClose("editGRN");
+                  GRNList({ po_id: Number(id) }); //  Refresh GRN list after modal close
+                }}
+              />
             </GRNProvider>
           </POProvider>
         </>

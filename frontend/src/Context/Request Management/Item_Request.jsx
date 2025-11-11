@@ -414,6 +414,7 @@ import { ENDPOINTS } from "../../constants/endpoints";
 import { deleteData, getData, postData } from "../../utils/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export const ItemRequestContext = createContext();
 
@@ -444,12 +445,13 @@ export const ItemRequestProvider = ({ children }) => {
     service_location_2_name: "",
     service_location_3_id: null,
     service_location_3_name: "",
-    purpose: "",
+    purpose: "0",
     quantity: null,
     uom: null,
     remarks: "",
     workflowId: null,
     receiving_person: "",
+    item_request_file: null,
   });
   const [wholeItemRequestData, setWholeItemRequestData] = useState();
   const [itemRequestId, setItemRequestId] = useState(null);
@@ -530,7 +532,11 @@ export const ItemRequestProvider = ({ children }) => {
   // Create Item Request
   const createItemRequest = async (payload) => {
     try {
-      const res = await postData(ENDPOINTS.ITEM_REQUEST.ADD_UPDATE, payload);
+      const res = await postData(ENDPOINTS.ITEM_REQUEST.ADD_UPDATE, payload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       if (res.data.success) {
         await getItemRequestData();
       }
@@ -596,7 +602,7 @@ export const ItemRequestProvider = ({ children }) => {
         workflowId: itemRequestId,
       });
 
-      // console.log("API Response:", res);
+      console.log("API Response:", res);
       setWholeItemRequestData(res.data);
 
       if (res.status && res.data) {
@@ -646,6 +652,7 @@ export const ItemRequestProvider = ({ children }) => {
           service_location_3_name:
             storageLocation?.service_location3?.service_location_3_name || "",
           item_name: data.item_name || "",
+          item_request_file: itemRequest?.item_request_file,
         });
 
         // toast.success("Item request loaded successfully");
@@ -675,17 +682,26 @@ export const ItemRequestProvider = ({ children }) => {
       // console.log("Editing item request with ID:", id);
       // console.log("Payload:", payload);
 
-      const res = await postData(ENDPOINTS.ITEM_REQUEST.ADD_UPDATE, {
-        id: id, // Ensure ID is included
-        ...payload,
-      });
+      const res = await postData(
+        ENDPOINTS.ITEM_REQUEST.ADD_UPDATE,
+        {
+          id: id, // Ensure ID is included
+          ...payload,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
-      // console.log("Edit Response:", res);
+      console.log("Edit Response:", res);
 
       if (res.status) {
         setItemRequestData(res.data);
         toast.success("Updated Successfully");
         getItemRequestData(); // Refresh the list
+        navigate("/user/request/request-list");
       } else {
         toast.error(res.message || "Failed to update item request");
       }

@@ -213,10 +213,18 @@ export const UserCreationProvider = ({ children }) => {
   // Update User
   const updateUser = async (id, payload) => {
     try {
-      const res = await postData(ENDPOINTS.USER_CREATION.ADD_UPDATE, {
-        id,
-        ...payload,
-      });
+      const res = await postData(
+        ENDPOINTS.USER_CREATION.ADD_UPDATE,
+        {
+          id,
+          ...payload,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setUserCreationData(res.data.data);
       toast.success("User updated successfully");
       fetchUserCreationData();
@@ -251,7 +259,7 @@ export const UserCreationProvider = ({ children }) => {
         reporting_manager_2_id: user?.reporting_manager_2_id || null,
         status: user?.status ?? null,
         register_date: user?.register_date || "",
-        profile_photo: user?.profile_photo || "", // if backend gives a URL
+        profile_photo: user?.profile_photo || "",
       });
     } catch (error) {
       // console.log(error);

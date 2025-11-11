@@ -276,9 +276,9 @@ export default function GRN_Details() {
                         {grnDetails?.invoice_file}
                       </span> */}
                       {console.log("grnDetails", grnDetails)}
-                      {grnDetails?.invoice_file ? (
+                      {invoice[0]?.invoice_file ? (
                         <Link
-                          to={`${fileUrl}/storage/uploads/invoices/${grnDetails.invoice_file}`}
+                          to={`${fileUrl}/storage/uploads/invoices/${invoice[0]?.invoice_file}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -310,19 +310,19 @@ export default function GRN_Details() {
                 <div className="row ms-2">
                   <div className="col-lg-3">
                     <label className="form-label">Invoice No</label>
-                    <p>{invoice[0].id}</p>
+                    <p>{invoice[0]?.id}</p>
                   </div>
                   <div className="col-lg-3">
                     <label className="form-label">Invoice Date</label>
-                    <p>{invoice[0].invoice_date}</p>
+                    <p>{invoice[0]?.invoice_date}</p>
                   </div>
                   <div className="col-lg-3">
                     <label className="form-label">Invoice Amount</label>
-                    <p>{invoice[0].taxable_amount}</p>
+                    <p>{invoice[0]?.taxable_amount}</p>
                   </div>
                   <div className="col-lg-3">
                     <label className="form-label">TDS Amount</label>
-                    <p>{invoice[0].tds_amount}</p>
+                    <p>{invoice[0]?.tds_amount}</p>
                   </div>
                 </div>
               </div>
@@ -615,7 +615,13 @@ export default function GRN_Details() {
                 <Invoice_List_Form
                   id={id}
                   type={1}
-                  grnIdInvoice={grnIdInvoice}
+                  grnIdInvoice={grnIdInvoice} 
+                  onclose={async () => {
+                    handleClose("addInvoice");
+                    await invoiceList({ grn_id: id });
+                    await GRNDetails(id); // ✅ Refresh GRN details after closing modal
+                    await grnWorkflow(id); // ✅ (optional) refresh workflow if needed
+                  }}
                 />
               </ItemRequestProvider>
             </SubCategoryProvider>

@@ -89,6 +89,9 @@ export const VendorProvider = ({ children }) => {
   const createVendor = async (payload) => {
     try {
       const res = await postData(ENDPOINTS.VENDOR.ADD_UPDATE, payload);
+
+      console.log("res", res);
+
       if (res.success) {
         setVendorData(res.data.data);
         toast.success(res.message);
@@ -97,8 +100,19 @@ export const VendorProvider = ({ children }) => {
 
       return res;
     } catch (error) {
-      toast.error("Error during Vendor Create");
-      console.error("Vendor Create error:", error);
+      console.log("Error:", error);
+
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errors = error.response.data.errors;
+
+        // Loop through each error key and show all messages
+        Object.keys(errors).forEach((key) => {
+          const messages = errors[key];
+          messages.forEach((msg) => toast.error(msg));
+        });
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
     }
   };
 
@@ -118,8 +132,10 @@ export const VendorProvider = ({ children }) => {
 
       return res;
     } catch (error) {
-      toast.error("Error during Vendor Edit");
-      console.error("Vendor Edit error:", error);
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -161,8 +177,10 @@ export const VendorProvider = ({ children }) => {
         return vendor; // ✅ return filled object
       }
     } catch (error) {
-      toast.error("Error during Vendor Details");
-      console.error("Vendor Details error:", error);
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -180,12 +198,10 @@ export const VendorProvider = ({ children }) => {
 
       return res.data;
     } catch (error) {
-      const backendMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "Error during Vendor Delete";
-      toast.error(backendMessage);
-      console.error("Vendor Delete error:", error);
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -244,12 +260,10 @@ export const VendorProvider = ({ children }) => {
 
       return res;
     } catch (error) {
-      const backendMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "Error during Vendor Approve";
-      toast.error(backendMessage);
-      console.error("Vendor Approve error:", error);
+      console.log("Error:", error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
   // console.log("vendorEditId vendorEditId", vendorEditId);

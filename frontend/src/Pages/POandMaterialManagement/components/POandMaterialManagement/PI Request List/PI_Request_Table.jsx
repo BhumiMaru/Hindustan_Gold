@@ -1387,18 +1387,20 @@ export default function PI_Request_Table({ userPermission }) {
                             {activeTab === "my_request" && (
                               <>
                                 {/* CASE 1: Show text when service is in progress */}
-                                {pi?.pi_type === "service" &&
-                                pi?.final_approve_status === "InProgress" &&
-                                pi?.service_recive_button_status == 1 ? (
-                                  <span className="badge bg-label-success p-2 m-2">
-                                    Service Received
-                                  </span>
-                                ) : null}
+                                {
+                                  // pi?.pi_type === "service" &&
+                                  // pi?.final_approve_status !== "InProgress" &&
+                                  pi?.is_service_recive == 1 ? (
+                                    <span className="badge bg-label-success p-2 m-2">
+                                      Service Received
+                                    </span>
+                                  ) : null
+                                }
 
                                 {/* CASE 2: Show button when service can be received */}
                                 {pi?.service_recive_button_status == 1 &&
-                                pi?.is_service_recive === 0 &&
-                                pi?.final_approve_status !== "InProgress" ? (
+                                pi?.is_service_recive === 0 ? (
+                                  // pi?.final_approve_status == "InProgress"
                                   <button
                                     className="btn btn-info btn-sm waves-effect waves-light mt-2 mb-2"
                                     type="button"

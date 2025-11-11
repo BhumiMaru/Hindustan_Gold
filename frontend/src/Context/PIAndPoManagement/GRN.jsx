@@ -135,7 +135,7 @@ export const GRNProvider = ({ children }) => {
 
       if (res.status) {
         toast.success(res.message);
-        // handleClose("editGRN");
+        handleClose("editGRN");
         setGrnData(res.data.data);
         // GRNList();
       }
@@ -205,6 +205,7 @@ export const GRNProvider = ({ children }) => {
       if (res.status) {
         toast.success(res.message);
         setGrnData(res.data);
+        handleClose("editGRN");
         GRNList();
       }
     } catch (error) {
