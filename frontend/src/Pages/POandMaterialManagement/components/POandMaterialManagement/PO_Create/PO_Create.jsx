@@ -1919,7 +1919,8 @@ export default function PO_Create() {
               <div className="row mb-2">
                 <div className="col-4">
                   <label className="form-label">
-                    Loading and freight charges:
+                    Loading and freight charges
+                    <span className="text-danger">*</span>:
                   </label>
                   <select
                     className="form-select mb-4 form-select-sm"
@@ -1937,7 +1938,9 @@ export default function PO_Create() {
                   </select>
                 </div>
                 <div className="col-4">
-                  <label className="form-label">Installation at Site:</label>
+                  <label className="form-label">
+                    Installation at Site <span className="text-danger">*</span>:{" "}
+                  </label>
                   <select
                     className="form-select mb-4 form-select-sm"
                     value={formData?.installation_at_site}

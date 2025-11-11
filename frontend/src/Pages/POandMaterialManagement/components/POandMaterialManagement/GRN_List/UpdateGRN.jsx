@@ -268,7 +268,9 @@ export default function UpdateGRN({ id }) {
                   />
                 </div> */}
                 <div className="col-lg-4 d-none">
-                  <label className="form-label">GRN Date</label>
+                  <label className="form-label">
+                    GRN Date <span className="text-danger">*</span>
+                  </label>
                   <input
                     type="date"
                     className="form-control"
@@ -278,16 +280,20 @@ export default function UpdateGRN({ id }) {
                       new Date().toISOString().split("T")[0]
                     }
                     onChange={handleChange}
+                    required
                   />
                 </div>
                 <div className="col-lg-4">
-                  <label className="form-label">Date of Receipt</label>
+                  <label className="form-label">
+                    Date of Receipt <span className="text-danger">*</span>
+                  </label>
                   <input
                     type="date"
                     className="form-control"
                     name="date_of_receipt"
                     value={grnData?.date_of_receipt || ""}
                     onChange={handleChange}
+                    required
                   />
                 </div>
                 {/* <div className="col-lg-6">
