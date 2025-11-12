@@ -116,11 +116,14 @@ export default function User_Creation_Table() {
                             src={
                               user.profile_photo_url
                                 ? user.profile_photo_url
-                                : `${publicUrl}/assets/img/avatars/1.png`
+                                : `${publicUrl}/assets/img/avatars/user.png`
                             }
                             alt={user.name}
                             className="rounded-circle"
                           />
+                          {console.log(
+                            `${publicUrl}assets/img/avatars/user.png`
+                          )}
                           {/* to={`${fileUrl}/storage/uploads/invoices/${invoiceDetail.invoice_file}`} */}
                         </div>
                       </div>

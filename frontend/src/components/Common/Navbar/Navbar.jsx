@@ -95,7 +95,7 @@ export default function Navbar() {
                     src={
                       decryptAuthData?.user?.profile_photo
                         ? `${fileUrl}/storage/users/${decryptAuthData.user.profile_photo}`
-                        : `${publicUrl}/assets/img/avatars/1.png`
+                        : `${publicUrl}/assets/img/avatars/user.png`
                     }
                     alt=""
                     className="rounded-circle"
@@ -121,7 +121,7 @@ export default function Navbar() {
                             src={
                               decryptAuthData?.user?.profile_photo
                                 ? `${fileUrl}/storage/users/${decryptAuthData.user.profile_photo}`
-                                : `${publicUrl}/assets/img/avatars/1.png`
+                                : `${publicUrl}/assets/img/avatars/user.png`
                             }
                             // alt="User Profile"
                             className="rounded-circle"
