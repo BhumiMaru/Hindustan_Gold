@@ -37,7 +37,7 @@ export default function Vendor_Approve_Confirmation_Modal({
         vendor_type: vendorApproveData.vendor_type,
       });
       getVendorList();
-      window.location.reload();
+      // window.location.reload();
       // ✅ Close modal only after success
     } catch (error) {
       console.error("Vendor approve error:", error);

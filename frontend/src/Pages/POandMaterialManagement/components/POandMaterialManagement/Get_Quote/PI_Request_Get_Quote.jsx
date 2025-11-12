@@ -95,6 +95,34 @@ export default function PI_Request_Get_Quote() {
     }
   }, [quoteData?.id]);
 
+  // Calculate filtered vendor options (exclude from both old and new lists)
+  const filteredVendorOptions = React.useMemo(() => {
+    if (!vendorFilter.length) {
+      return [];
+    }
+
+    // Get all vendor IDs from both old and new vendor lists
+    const existingOldVendorIds = oldVendorList.map(
+      (vendor) => vendor.vendor_id || vendor.id
+    );
+    const existingNewVendorIds = newVendorList.map(
+      (vendor) => vendor.vendor_id || vendor.id
+    );
+
+    // Combine all existing vendor IDs
+    const allExistingVendorIds = [
+      ...new Set([...existingOldVendorIds, ...existingNewVendorIds]),
+    ];
+
+    // Filter out vendors that are already in either list
+    return vendorFilter
+      .filter((vendor) => !allExistingVendorIds.includes(vendor.id))
+      .map((vendor) => ({
+        value: vendor.id,
+        label: vendor.vendor_name,
+      }));
+  }, [vendorFilter, oldVendorList, newVendorList]);
+
   // console.log("get new", newVendorList);
   // console.log("get old", oldVendorList);
 
@@ -915,7 +943,7 @@ export default function PI_Request_Get_Quote() {
               <h5 className="ms-2">Vendor</h5>
               <div className="d-flex ms-6 ">
                 <div className="position-relative">
-                  <CustomSelect
+                  {/* <CustomSelect
                     placeholder="Select Vendor"
                     options={vendorFilter.map((vendor) => ({
                       value: vendor.id,
@@ -923,7 +951,20 @@ export default function PI_Request_Get_Quote() {
                     }))}
                     value={selectedVendor}
                     onChange={handleVendorSelect}
+                  /> */}
+                  <CustomSelect
+                    placeholder="Select Vendor"
+                    options={filteredVendorOptions}
+                    value={selectedVendor}
+                    onChange={handleVendorSelect}
                   />
+                  {/* Show message when no vendors available */}
+                  {filteredVendorOptions.length === 0 &&
+                    vendorFilter.length > 0 && (
+                      <div className="text-muted small mt-1">
+                        All available vendors have been added
+                      </div>
+                    )}
                 </div>
                 <div className="ms-4">
                   <button
@@ -1233,7 +1274,7 @@ export default function PI_Request_Get_Quote() {
       {modal.addNewVendor && (
         <>
           <VendorProvider>
-            <Vendor_List_Form />
+            <Vendor_List_Form getVendorFilter={getVendorFilter} />
           </VendorProvider>
         </>
       )}

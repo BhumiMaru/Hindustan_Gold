@@ -389,7 +389,12 @@ export default function Invoice_List_List() {
         <VendorProvider>
           <SubCategoryProvider>
             <ItemRequestProvider>
-              <Invoice_List_Form type={0} />
+              <Invoice_List_Form
+                onclose={() => {
+                  invoiceList();
+                }}
+                type={0}
+              />
             </ItemRequestProvider>
           </SubCategoryProvider>
         </VendorProvider>

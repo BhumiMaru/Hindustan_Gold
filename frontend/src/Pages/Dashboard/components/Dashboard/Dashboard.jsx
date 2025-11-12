@@ -283,7 +283,7 @@ export default function Dashboard() {
               (perm) =>
                 [
                   "Item Request",
-                  "Material Approval",
+                  "store_head Approval",
                   "Request History Report",
                 ].includes(perm.type) &&
                 ["add", "view", "approve"].includes(perm.permission)
@@ -293,7 +293,7 @@ export default function Dashboard() {
                   (perm) =>
                     [
                       "Item Request",
-                      "Material Approval",
+                      "store_head Approval",
                       "Request History Report",
                     ].includes(perm.type) &&
                     ["add", "view", "approve"].includes(perm.permission)
@@ -383,7 +383,7 @@ export default function Dashboard() {
                   {/* Total Pending Handover Approval */}
                   {userPermission.some(
                     (perm) =>
-                      perm.type === "Material Approval" &&
+                      perm.type === "store_head Approval" &&
                       perm.permission === "approve"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
@@ -611,6 +611,146 @@ export default function Dashboard() {
               </div>
             </div>
           )} */}
+
+          {/* Item Request */}
+          {!isAdmin &&
+            userPermission.some(
+              (perm) =>
+                [
+                  "Payment Request",
+                  // "store_head Approval",
+                  // "Request History Report",
+                ].includes(perm.type) &&
+                ["add", "view", "approve"].includes(perm.permission)
+            ) && (
+              <div className="pt-5">
+                {/* {userPermission.some(
+                  (perm) =>
+                    [
+                      "Item Request",
+                      "store_head Approval",
+                      "Request History Report",
+                    ].includes(perm.type) &&
+                    ["add", "view", "approve"].includes(perm.permission)
+                ) && ( */}
+                <h5
+                  className="mb-3 fw-semibold text-uppercase"
+                  style={{ color: "#6d6b77" }}
+                >
+                  Payment List
+                </h5>
+                {/* )} */}
+
+                <div className="row g-6">
+                  {/* Total My Request */}
+                  {userPermission.some(
+                    (perm) =>
+                      perm.type === "Payment Request" &&
+                      (perm.permission === "view" ||
+                        perm.permission === "add" ||
+                        perm.permission === "approve")
+                  ) && (
+                    <div className="col-lg-3 col-sm-6">
+                      <div className="card card-border-shadow-primary h-100">
+                        <div className="card-body">
+                          <div className="d-flex align-items-center mb-2">
+                            <div className="avatar me-4">
+                              <span className="avatar-initial rounded bg-label-primary">
+                                <i className="icon-base ti tabler-clipboard icon-28px"></i>
+                              </span>
+                            </div>
+                            <h4 className="mb-0">
+                              {dashboardList?.item_request?.my_request}
+                            </h4>
+                          </div>
+                          <p className="mb-1">Total Pending for Approvals</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Total Pending Request */}
+                  {userPermission.some(
+                    (perm) =>
+                      perm.type === "Payment Request" &&
+                      (perm.permission === "view" ||
+                        perm.permission === "add" ||
+                        perm.permission === "approve")
+                  ) && (
+                    <div className="col-lg-3 col-sm-6">
+                      <div className="card card-border-shadow-warning h-100">
+                        <div className="card-body">
+                          <div className="d-flex align-items-center mb-2">
+                            <div className="avatar me-4">
+                              <span className="avatar-initial rounded bg-label-warning">
+                                <i className="icon-base ti tabler-hourglass icon-28px"></i>
+                              </span>
+                            </div>
+                            <h4 className="mb-0">
+                              {dashboardList?.item_request?.pending}
+                            </h4>
+                          </div>
+                          <p className="mb-1">Total Pending for Pay</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Total Pending Approval Request */}
+                  {userPermission.some(
+                    (perm) =>
+                      perm.type === "Item Request" &&
+                      perm.permission === "approve"
+                  ) && (
+                    <div className="col-lg-3 col-sm-6">
+                      <div className="card card-border-shadow-success h-100">
+                        <div className="card-body">
+                          <div className="d-flex align-items-center mb-2">
+                            <div className="avatar me-4">
+                              <span className="avatar-initial rounded bg-label-success">
+                                <i className="icon-base ti tabler-circle-check icon-28px"></i>
+                              </span>
+                            </div>
+                            <h4 className="mb-0">
+                              {dashboardList?.item_request?.approve}
+                            </h4>
+                          </div>
+                          <p className="mb-1">Total Pending Approval Request</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Total Pending Handover Approval */}
+                  {userPermission.some(
+                    (perm) =>
+                      perm.type === "store_head Approval" &&
+                      perm.permission === "approve"
+                  ) && (
+                    <div className="col-lg-3 col-sm-6">
+                      <div className="card card-border-shadow-success h-100">
+                        <div className="card-body">
+                          <div className="d-flex align-items-center mb-2">
+                            <div className="avatar me-4">
+                              <span className="avatar-initial rounded bg-label-success">
+                                <i className="icon-base ti tabler-circle-check icon-28px"></i>
+                              </span>
+                            </div>
+                            <h4 className="mb-0">
+                              {dashboardList?.item_request?.handover_approve ??
+                                0}
+                            </h4>
+                          </div>
+                          <p className="mb-1">
+                            Total Pending Handover Approval
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
         </div>
       </>
       {/* -------------------------------END DASHBOARD--------------------------------- */}

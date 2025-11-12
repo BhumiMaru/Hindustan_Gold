@@ -3,7 +3,7 @@ import { useUIContext } from "../../../../../Context/UIContext";
 import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSelect";
 import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
 
-export default function Vendor_List_Form() {
+export default function Vendor_List_Form({ getVendorFilter }) {
   const { handleClose } = useUIContext();
   const {
     createVendor,
@@ -11,7 +11,7 @@ export default function Vendor_List_Form() {
     setVendorData,
     vendorData,
     vendorEditId,
-    getVendorFilter,
+    // getVendorFilter,
     getVendorList,
     resetVendorData,
   } = useVendor();

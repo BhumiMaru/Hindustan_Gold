@@ -5,6 +5,7 @@ import { useUserCreation } from "../../../../../Context/Master/UserCreationConte
 import { useUIContext } from "../../../../../Context/UIContext";
 import Loader from "../../../../../components/Common/Loader/Loader";
 const fileUrl = import.meta.env.VITE_FILE_URL;
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function User_Creation_Table() {
   const navigate = useNavigate();
@@ -112,7 +113,11 @@ export default function User_Creation_Table() {
                       <div className="avatar-wrapper">
                         <div className="avatar me-2">
                           <img
-                            src={user.profile_photo_url}
+                            src={
+                              user.profile_photo_url
+                                ? user.profile_photo_url
+                                : `${publicUrl}/assets/img/avatars/1.png`
+                            }
                             alt={user.name}
                             className="rounded-circle"
                           />

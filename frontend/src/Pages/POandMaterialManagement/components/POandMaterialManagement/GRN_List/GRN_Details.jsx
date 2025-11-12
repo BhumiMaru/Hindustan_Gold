@@ -19,7 +19,7 @@ const fileUrl = import.meta.env.VITE_FILE_URL;
 export default function GRN_Details() {
   const { id } = useParams();
   // console.log("id", id);
-  const { handleOpen, modal } = useUIContext();
+  const { handleOpen, modal, handleClose } = useUIContext();
   const { fetchUserPermission, userPermission } = useUserCreation();
   const {
     grnId,
@@ -31,7 +31,7 @@ export default function GRN_Details() {
     setGRNWorkflowdetails,
     grnWorkflow,
   } = useGRN();
-  const { invoiceList, invoice } = useInvoice();
+  const { invoiceList, invoice, isInvoiceLoad } = useInvoice();
   console.log("grnDetails", grnDetails);
   const [grnIdInvoice, setGrnIdInvoice] = useState(null);
 
@@ -163,9 +163,7 @@ export default function GRN_Details() {
             }
 
             {/*  <div class="d-flex gap-4"><button class="btn btn-label-secondary waves-effect">Discard</button>*/}
-
-            {(grnDetails.status === "Approve" ||
-              grnDetails.status === "Reject") && (
+            {isInvoiceLoad && invoice.length === 0 && (
               <a
                 href="po-create"
                 className="btn btn-info waves-effect btn-sm"
@@ -179,6 +177,22 @@ export default function GRN_Details() {
                 Add Invoice
               </a>
             )}
+
+            {/* {(grnDetails.status === "Approve" ||
+              grnDetails.status === "Reject") && (
+              <a
+                href="po-create"
+                className="btn btn-info waves-effect btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#InvoiceModel"
+                onClick={() => {
+                  handleOpen("addInvoice");
+                  setGrnIdInvoice(grnDetails?.po_id);
+                }}
+              >
+                Add Invoice
+              </a>
+            )} */}
           </div>
         </div>
         <div className="row">
@@ -615,7 +629,7 @@ export default function GRN_Details() {
                 <Invoice_List_Form
                   id={id}
                   type={1}
-                  grnIdInvoice={grnIdInvoice} 
+                  grnIdInvoice={grnIdInvoice}
                   onclose={async () => {
                     handleClose("addInvoice");
                     await invoiceList({ grn_id: id });

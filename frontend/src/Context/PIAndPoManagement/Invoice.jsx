@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { getData, postData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
+import { useUIContext } from "../UIContext";
 
 export const InvoiceContext = createContext();
 
@@ -12,7 +13,9 @@ export const useInvoice = () => {
 
 // Invoice Provider
 export const InvoiceProvider = ({ children }) => {
+  const { handleClose } = useUIContext();
   const [loading, setLoading] = useState(false);
+  const [isInvoiceLoad, setIsInvoiceLoad] = useState(false);
   const [invoice, setInvoice] = useState([]);
   const [invoiceData, setInvoiceData] = useState({
     grn_id: "",
@@ -98,6 +101,7 @@ export const InvoiceProvider = ({ children }) => {
       // Support both paginated and non-paginated API
       const apiData = res.data;
       setInvoice(apiData.data || apiData || []);
+      setIsInvoiceLoad(true);
 
       setPagination({
         currentPage: apiData.current_page || page,
@@ -110,6 +114,7 @@ export const InvoiceProvider = ({ children }) => {
       //   toast.error(error.response.data.message);
       // }
       console.error("Invoice List error:", error);
+      setIsInvoiceLoad(true);
     } finally {
       setLoading(false);
     }
@@ -129,8 +134,10 @@ export const InvoiceProvider = ({ children }) => {
       setInvoiceData(res);
       if (res?.status === true) {
         toast.success(res.message || "Invoice created successfully");
+        // handleClose("addInvoice");
       } else {
         toast.error(res?.message || "Failed to create invoice");
+        // handleClose("addInvoice");
       }
       invoiceList(); // refresh list
       setInvoiceData({
@@ -146,10 +153,33 @@ export const InvoiceProvider = ({ children }) => {
         invoice_file: null,
       });
       setInvoiceId(null);
+
+      return res;
     } catch (error) {
+      // console.error("Invoice Create error:", error);
+      // if (error.response && error.response.data) {
+      //   toast.error(error.response.data.message);
+      // }
       console.error("Invoice Create error:", error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
     }
   };
@@ -175,6 +205,7 @@ export const InvoiceProvider = ({ children }) => {
       if (res?.status === true) {
         toast.success(res.message || "Invoice Updated successfully");
         setInvoiceData(res.data);
+        // handleClose("addInvoice");
       } else {
         toast.error(res?.message || "Failed to update invoice");
       }
@@ -195,10 +226,29 @@ export const InvoiceProvider = ({ children }) => {
         invoice_file: null,
       });
       setInvoiceId(null);
+
+      return res;
     } catch (error) {
-      console.error("Invoice Update error:", error);
+      console.error("Invoice Create error:", error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
     }
   };
@@ -438,6 +488,8 @@ export const InvoiceProvider = ({ children }) => {
         revertStatus,
         loading,
         setLoading,
+        isInvoiceLoad,
+        setIsInvoiceLoad,
 
         ////sub category id , vendor id and grn id set via po and grn
         // subcategoryIdInvoice,

@@ -596,8 +596,8 @@ export default function PO_Details() {
                             ) : null}
                           </td> */}
                           {/* ✅ Show View Invoice Icon when GRN is Complete */}
-                          {grn?.status === "Complete" && (
-                            <td>
+                          <td>
+                            {grn?.is_invoice_create === 1 && (
                               <Link
                                 to="/payment-management/invoice-list"
                                 data-bs-toggle="tooltip"
@@ -607,12 +607,12 @@ export default function PO_Details() {
                               >
                                 <i className="icon-base ti tabler-file-invoice text-success icon-20px" />
                               </Link>
-                            </td>
-                          )}
+                            )}
+                          </td>
 
                           {/* ✅ Show Create Invoice Button when GRN is Pending & user has permission */}
 
-                          {grn?.status === "Pending" &&
+                          {grn?.is_invoice_create == 0 &&
                             userPermission?.some(
                               (perm) =>
                                 [
@@ -1004,6 +1004,12 @@ export default function PO_Details() {
           <SubCategoryProvider>
             <ItemRequestProvider>
               <Invoice_List_Form
+                onclose={async () => {
+                  handleClose("addInvoice");
+                  await GRNList({
+                    po_id: poDetails?.id,
+                  });
+                }}
                 type={2}
                 // vendorIdInvoice={vendorIdInvoice}
                 // itemIdInvoice={itemIdInvoice}

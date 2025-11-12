@@ -90,7 +90,7 @@ export default function SideBar() {
   // if (
   //   userPermission?.some(
   //     (perm) =>
-  //       (perm.type === "Item Request" || perm.type === "Material Approval") &&
+  //       (perm.type === "Item Request" || perm.type === "store_head Approval") &&
   //       perm.permission === "view"
   //   )
   // ) {
@@ -131,7 +131,7 @@ export default function SideBar() {
       (perm) => perm.type == "Get Quotation" && perm.permission === "view"
     )
   ) {
-    piAndMaterialManagementRoutes["Get Quot"] = "/po-material/get-quote-list";
+    piAndMaterialManagementRoutes["Get Quote"] = "/po-material/get-quote-list";
   }
   // piAndMaterialManagementRoutes["Get Quote"] =
   //   piAndMaterialManagementRoutesBase["Get Quote"];
@@ -150,7 +150,7 @@ export default function SideBar() {
   // 4. GRN List
   if (
     userPermission?.some(
-      (perm) => perm.type == "GRN" && perm.permission === "view"
+      (perm) => perm.type == "GRN" && perm.permission == "view"
     )
   ) {
     piAndMaterialManagementRoutes["GRN List"] = "/po-material/grn-list";
@@ -276,7 +276,7 @@ export default function SideBar() {
               <li
                 className={`menu-item ${
                   activeMenu === "Master" ? "open active" : ""
-                }`}
+                } cursor-pointer`}
                 onClick={() => toggleMenu("Master")}
               >
                 <a className="menu-link menu-toggle">
@@ -378,36 +378,50 @@ export default function SideBar() {
             userPermission?.some(
               (perm) =>
                 (perm.type === "Item Request" ||
-                  perm.type === "Material Approval") &&
+                  perm.type === "store_head Approval") &&
                 perm.permission === "view"
             ) && (
+              // <li
+              //   className={`menu-item ${
+              //     activeSubMenu === "Item Request" ? "active" : ""
+              //   } cursor-pointer`}
+              //   onClick={(e) => {
+              //     e.stopPropagation();
+              //     handleSubMenuClick(null, "Item Request");
+              //   }}
+              // >
+              //   <Link
+              //     to="/user/request/request-list"
+              //     className="menu-link cursor-pointer text-decoration-none d-flex align-items-center gap-2"
+              //   >
+              //     <i
+              //       className="menu-icon icon-base ti tabler-forms"
+              //       style={{
+              //         color: "#6d6b77",
+              //       }}
+              //     ></i>
+              //     <div
+              //       data-i="Item Request"
+              //       style={{
+              //         color: "#6d6b77",
+              //       }}
+              //     >
+              //       Item Request
+              //     </div>
+              //   </Link>
+              // </li>
               <li
                 className={`menu-item ${
-                  activeSubMenu === "Item Request" ? "active" : ""
-                } cursor-pointer`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSubMenuClick(null, "Item Request");
-                }}
+                  activeMenu === "Item Request" ? "active" : ""
+                }`}
+                onClick={() => toggleMenu("Item Request")}
               >
                 <Link
                   to="/user/request/request-list"
-                  className="menu-link cursor-pointer text-decoration-none d-flex align-items-center gap-2"
+                  className="menu-link cursor-pointer text-decoration-none"
                 >
-                  <i
-                    className="menu-icon icon-base ti tabler-forms"
-                    style={{
-                      color: "#6d6b77",
-                    }}
-                  ></i>
-                  <div
-                    data-i="Item Request"
-                    style={{
-                      color: "#6d6b77",
-                    }}
-                  >
-                    Item Request
-                  </div>
+                  <i className="menu-icon icon-base ti tabler-forms"></i>
+                  <div data-i="Item Request">Item Request</div>
                 </Link>
               </li>
             )}
@@ -469,33 +483,47 @@ export default function SideBar() {
               (perm) =>
                 perm.type === "Payment Request" && perm.permission === "view"
             ) && (
+              // <li
+              //   className={`menu-item ${
+              //     activeSubMenu === "Payment List" ? "active" : ""
+              //   } cursor-pointer`}
+              //   onClick={(e) => {
+              //     e.stopPropagation();
+              //     handleSubMenuClick(null, "Payment List");
+              //   }}
+              // >
+              //   <Link
+              //     to="/payment-management/invoice-list"
+              //     className="menu-link cursor-pointer text-decoration-none d-flex align-items-center gap-2"
+              //   >
+              //     <i
+              //       className="menu-icon icon-base ti tabler-file-dollar"
+              //       style={{
+              //         color: "#6d6b77",
+              //       }}
+              //     ></i>
+              //     <div
+              //       data-i="Payment List"
+              //       style={{
+              //         color: "#6d6b77",
+              //       }}
+              //     >
+              //       Payment List
+              //     </div>
+              //   </Link>
+              // </li>
               <li
                 className={`menu-item ${
-                  activeSubMenu === "Payment List" ? "active" : ""
-                } cursor-pointer`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSubMenuClick(null, "Payment List");
-                }}
+                  activeMenu === "Payment List" ? "active" : ""
+                }`}
+                onClick={() => toggleMenu("Payment List")}
               >
                 <Link
                   to="/payment-management/invoice-list"
-                  className="menu-link cursor-pointer text-decoration-none d-flex align-items-center gap-2"
+                  className="menu-link cursor-pointer text-decoration-none"
                 >
-                  <i
-                    className="menu-icon icon-base ti tabler-file-dollar"
-                    style={{
-                      color: "#6d6b77",
-                    }}
-                  ></i>
-                  <div
-                    data-i="Payment List"
-                    style={{
-                      color: "#6d6b77",
-                    }}
-                  >
-                    Payment List
-                  </div>
+                  <i className="menu-icon icon-base ti tabler-file-dollar"></i>
+                  <div data-i="Payment List">Payment List</div>
                 </Link>
               </li>
             )}

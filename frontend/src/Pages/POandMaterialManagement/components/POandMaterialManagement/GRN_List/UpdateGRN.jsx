@@ -226,7 +226,7 @@ export default function UpdateGRN({ id, onClose }) {
                       <td>{item?.quantity}</td>
                       <td>{item?.uom}</td>
                       <td>{item?.pending_qty}</td>
-                      <td>
+                      {/* <td>
                         {item?.pending_qty > 0 ? (
                           <input
                             type="number"
@@ -244,17 +244,60 @@ export default function UpdateGRN({ id, onClose }) {
                         )}
                         {item?.grn_qty > item?.pending_qty && (
                           <span className="text-danger">
-                            Received quantity cannot be more than pending
-                            quantity.
+                            Received qty exceeds pending qty.
                           </span>
                         )}
+                      </td> */}
+                      <td
+                        className="position-relative align-top"
+                        style={{ minWidth: "120px" }}
+                      >
+                        {item?.pending_qty > 0 ? (
+                          <>
+                            <div className="position-relative w-100">
+                              <input
+                                type="number"
+                                className="form-control form-control-sm"
+                                value={item.grn_qty}
+                                onChange={(e) =>
+                                  handleItemChange(index, e.target.value)
+                                }
+                                placeholder="0"
+                                min="0"
+                                max={item?.pending_qty}
+                                style={{
+                                  width: "100%",
+                                  boxSizing: "border-box",
+                                }}
+                              />
 
-                        {/* Debug info - remove in production */}
-                        {/* {process.env.NODE_ENV === "development" && (
-                          <small className="text-muted">
-                            GRN Item ID: {item.grn_item_id || "new"}
-                          </small>
-                        )} */}
+                              {/* Error Message */}
+                              <div
+                                className="text-danger small"
+                                style={{
+                                  position: "absolute",
+                                  bottom: "-16px",
+                                  left: "2px",
+                                  right: "2px",
+                                  fontSize: "11px",
+                                  lineHeight: "1.1",
+                                  whiteSpace: "normal", // wraps on small screens
+                                }}
+                              >
+                                {item?.grn_qty > item?.pending_qty && (
+                                  <span>Received qty exceeds pending qty.</span>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Reserve space to avoid layout shift */}
+                            <div style={{ height: "18px" }}></div>
+                          </>
+                        ) : (
+                          <span className="text-muted small">
+                            No pending quantity
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))}

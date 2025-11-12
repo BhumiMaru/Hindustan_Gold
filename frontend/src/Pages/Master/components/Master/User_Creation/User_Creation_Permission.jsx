@@ -538,8 +538,8 @@ export default function User_Creation_Permission() {
   //         await ensurePermission(type, "view");
   //       }
 
-  //       // Case 3: For Material Approval
-  //       if (normalizedType === "material approval") {
+  //       // Case 3: For store_head Approval
+  //       if (normalizedType === "store_head approval") {
   //         await ensurePermission(type, "view");
   //       }
 
@@ -678,7 +678,7 @@ export default function User_Creation_Permission() {
         // ----------- Item Request Module -------------- //
         if (normalizedType === "item request")
           await ensurePermission(type, "view");
-        if (normalizedType === "material approval")
+        if (normalizedType === "store_head approval")
           await ensurePermission(type, "view");
         // if (normalizedType === "request history report")
         //   await ensurePermission(type, "view");
@@ -700,10 +700,30 @@ export default function User_Creation_Permission() {
       }
 
       // --- Auto-check 'view' when 'Approve' is checked ---
+      // if (isChecked && normalizedPerm === "approve") {
+      //   if (normalizedType === "PO Generation") {
+      //     await ensurePermission(type, "view");
+      //   }
+      // }
+
+      // --- Auto-check 'view' when 'Approve' is checked ---
       if (isChecked && normalizedPerm === "approve") {
-        if (normalizedType === "PO Generation") {
-          await ensurePermission(type, "view");
+        // Always ensure view is also checked
+        await ensurePermission(type, "view");
+
+        // --- Auto-link Approve between PI Request and PO Generation ---
+        if (normalizedType === "pi request") {
+          await ensurePermission("PO Generation", "approve");
         }
+        if (normalizedType === "po generation") {
+          await ensurePermission("PI Request", "approve");
+        }
+      }
+
+      // --- Auto-check 'view' when 'add_invoice' is checked ---
+      if (isChecked && normalizedPerm === "add_invoice") {
+        // Always ensure view is also checked
+        await ensurePermission(type, "view");
       }
 
       // Refresh backend after all changes
@@ -1023,12 +1043,12 @@ export default function User_Creation_Permission() {
                       </tr>
                       <tr>
                         <td className="text-nowrap text-heading">
-                          Material Approval
+                          Store Head Approval
                         </td>
                         <td>
                           <PermissionCheckbox
                             module="Item Request Module"
-                            type="Material Approval"
+                            type="store_head Approval"
                             permission="view"
                             id="defaultCheck_cust_46"
                           />
@@ -1038,7 +1058,7 @@ export default function User_Creation_Permission() {
                         <td>
                           <PermissionCheckbox
                             module="Item Request Module"
-                            type="Material Approval"
+                            type="store_head Approval"
                             permission="approve"
                             id="defaultCheck_cust_47"
                           />
@@ -1099,6 +1119,9 @@ export default function User_Creation_Permission() {
                         <th className="text-nowrap text-center w-px-50">
                           Approve
                         </th>
+                        <th className="text-nowrap text-center w-px-50">
+                          Add Invoice
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1137,6 +1160,7 @@ export default function User_Creation_Permission() {
                             id="defaultCheck_cust_10"
                           />
                         </td>
+                        <td></td>
                       </tr>
                       <tr>
                         <td className="text-nowrap text-heading">
@@ -1175,6 +1199,7 @@ export default function User_Creation_Permission() {
                           />
                         </td> */}
                         <td></td>
+                        <td></td>
                       </tr>
                       <tr>
                         <td className="text-nowrap text-heading">
@@ -1206,6 +1231,7 @@ export default function User_Creation_Permission() {
                             id="defaultCheck_cust_17"
                           />
                         </td>
+                        <td></td>
                       </tr>
                       <tr>
                         <td className="text-nowrap text-heading">GRN</td>
@@ -1225,7 +1251,15 @@ export default function User_Creation_Permission() {
                             id="defaultCheck_cust_19"
                           />
                         </td>
-                        {/* <td></td> */}
+                        <td></td>
+                        <td>
+                          <PermissionCheckbox
+                            module="PO and Material Management Module"
+                            type="GRN"
+                            permission="add_invoice"
+                            id="defaultCheck_cust_20"
+                          />
+                        </td>
                         {/* <td>
                           <PermissionCheckbox
                             module="PO and Material Management Module"
@@ -1234,14 +1268,14 @@ export default function User_Creation_Permission() {
                             id="defaultCheck_cust_20"
                           />
                         </td> */}
-                        <td>
-                          {/* <PermissionCheckbox
+                        {/* <td> */}
+                        {/* <PermissionCheckbox
                             module="PO and Material Management Module"
                             type="GRN"
                             permission="approve"
                             id="defaultCheck_cust_21"
                           /> */}
-                        </td>
+                        {/* </td> */}
                       </tr>
                       {/* <tr className="border-transparent">
                         <td className="text-nowrap text-heading">

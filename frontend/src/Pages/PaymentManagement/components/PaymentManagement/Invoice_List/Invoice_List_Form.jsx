@@ -193,14 +193,19 @@ export default function Invoice_List_Form({
       console.log(`${key}:`, value);
     }
 
+    let res;
     if (invoiceId) {
-      await editInvoice({ id: invoiceId, formData }); // send FormData directly
-      onclose();
+      res = await editInvoice({ id: invoiceId, formData }); // send FormData directly
     } else {
-      await createInvoice(formData);
+      res = await createInvoice(formData);
     }
 
-    handleClose("addInvoice");
+    console.log("res", res);
+    if (res?.status) {
+      onclose();
+    }
+
+    // handleClose("addInvoice");
   };
 
   return (

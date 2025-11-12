@@ -21,7 +21,19 @@ export default function Navbar() {
 
   const navigate = useNavigate();
   // Decide what to show in Navbar title
-  const pageTitle = activeSubMenu || activeMenu;
+  // const pageTitle =
+  //   activeSubMenu ||
+  //  ( activeMenu == "Dashboard" ||
+  //   activeMenu == "Item Request" ||
+  //   activeMenu == "Payment List")
+  //     ? activeMenu
+  //     : "";
+
+  const pageTitle =
+    activeSubMenu ||
+    (["Dashboard", "Item Request", "Payment List"].includes(activeMenu)
+      ? activeMenu
+      : "");
 
   const getAuthData = sessionStorage.getItem("authData");
   const decryptAuthData = decryptData(getAuthData);
@@ -80,11 +92,18 @@ export default function Navbar() {
               >
                 <div className="avatar avatar-online">
                   <img
-                    src={`${fileUrl}/storage/users/${decryptAuthData?.user?.profile_photo}`}
+                    src={
+                      decryptAuthData?.user?.profile_photo
+                        ? `${fileUrl}/storage/users/${decryptAuthData.user.profile_photo}`
+                        : `${publicUrl}/assets/img/avatars/1.png`
+                    }
                     alt=""
                     className="rounded-circle"
                   />
                 </div>
+                {/* {console.log(
+                  `${fileUrl}/storage/users/${decryptAuthData?.user?.profile_photo}`
+                )} */}
               </a>
               <ul
                 className={`dropdown-menu dropdown-menu-end ${
@@ -99,14 +118,14 @@ export default function Navbar() {
                       <div className="flex-shrink-0 me-2">
                         <div className="avatar avatar-online">
                           <img
-                            // src={`${publicUrl}/assets/img/avatars/1.png`}
-                            src={`${fileUrl}/storage/users/${decryptAuthData?.user?.profile_photo}`}
-                            alt=""
+                            src={
+                              decryptAuthData?.user?.profile_photo
+                                ? `${fileUrl}/storage/users/${decryptAuthData.user.profile_photo}`
+                                : `${publicUrl}/assets/img/avatars/1.png`
+                            }
+                            // alt="User Profile"
                             className="rounded-circle"
                           />
-                          {console.log(
-                            `${fileUrl}/storage/users/${decryptAuthData?.user?.profile_photo}`
-                          )}
                         </div>
                       </div>
                       <div className="flex-grow-1">
