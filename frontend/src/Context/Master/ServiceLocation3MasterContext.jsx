@@ -14,7 +14,10 @@ export const useServiceLocation3Master = () => {
 // PROVIDER
 export const ServiceLocation3MasterProvider = ({ children }) => {
   const { handleClose } = useUIContext();
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const [serviceLocation3, setServiceLocation3] = useState([]);
   const [serviceL3, setServiceL3] = useState([]);
   const [serviceLocation3Data, setServiceLocation3Data] = useState({
@@ -131,6 +134,7 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
     service_location_2_id
   ) => {
     try {
+      setBtnLoading(true);
       const res = await postData(
         ENDPOINTS.SERVICES_LOCATION_3_MASTER.ADD_UPDATE,
         {
@@ -141,6 +145,7 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
       );
       console.log("res", res);
       if (res.success) {
+        toast.success(res.message);
         handleClose("addNewServiceLocation3");
         setServiceLocation3EditId(null);
         setServiceLocation3Data({
@@ -149,10 +154,35 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
           selectedSl2: null,
         });
       }
-      toast.success("Service Location 3 Created Successfully");
       fetchServiceLocations3();
     } catch (error) {
-      toast.error(`Service Location 3 Create Error: ${error.message}`);
+      // console.log(error);
+      // if (error.response && error.response.data) {
+      //   toast.error(error.response.data.message);
+      // }
+      console.error("Invoice Create error:", error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
@@ -182,21 +212,55 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
   // };
   const updateServiceLocation3 = async (id, payload) => {
     try {
+      setBtnLoading(true);
       // ✅ include id inside payload
       const finalPayload = { id, ...payload };
 
-      const response = await postData(
+      const res = await postData(
         ENDPOINTS.SERVICES_LOCATION_3_MASTER.ADD_UPDATE,
         finalPayload
       );
 
       // console.log("res", response);
-
-      toast.success("Service Location 3 updated successfully");
+      if (res.success) {
+        toast.success(res.message);
+        handleClose("addNewServiceLocation3");
+        setServiceLocation3EditId(null);
+        setServiceLocation3Data({
+          service_location_3_name: "",
+          selectedSl1: null,
+          selectedSl2: null,
+        });
+      }
       fetchServiceLocations3(); // refresh list
     } catch (error) {
-      console.error("Service Location 3 Update Error", error);
-      toast.error("Failed to update Service Location 3");
+      // console.log(error);
+      // if (error.response && error.response.data) {
+      //   toast.error(error.response.data.message);
+      // }
+      console.error("Invoice Create error:", error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
@@ -224,7 +288,10 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
       toast.success("Service Location 3 Deleted Successfully");
       fetchServiceLocations3();
     } catch (error) {
-      toast.error(`Service Location 3 Delete Error: ${error.message}`);
+      console.log(error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -253,6 +320,8 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
         startEditing,
         loading,
         setLoading,
+        btnLoading,
+        setBtnLoading,
       }}
     >
       {children}

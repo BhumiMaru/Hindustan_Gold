@@ -630,7 +630,7 @@ export default function GRN_Details() {
                   id={id}
                   type={1}
                   grnIdInvoice={grnIdInvoice}
-                  onclose={async () => {
+                  onClose={async () => {
                     handleClose("addInvoice");
                     await invoiceList({ grn_id: id });
                     await GRNDetails(id); // ✅ Refresh GRN details after closing modal

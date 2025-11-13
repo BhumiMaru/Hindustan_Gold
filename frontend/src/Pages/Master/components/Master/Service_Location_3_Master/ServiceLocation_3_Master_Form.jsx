@@ -16,6 +16,7 @@ export default function ServiceLocation_3_Master_Form() {
     updateServiceLocation3,
     createServiceLocation3,
     setServiceLocation3EditId,
+    btnLoading,
   } = useServiceLocation3Master();
   const { serviceLocation: serviceLocation1, fetchServiceLocations } =
     useServiceLocation1Master();
@@ -189,7 +190,14 @@ export default function ServiceLocation_3_Master_Form() {
                 type="button"
                 className="btn btn-primary waves-effect waves-light"
                 onClick={handleSave}
+                disabled={btnLoading}
               >
+                {btnLoading && (
+                  <div
+                    className="spinner-border spinner-white me-2"
+                    role="status"
+                  ></div>
+                )}
                 Save changes
               </button>
             </div>

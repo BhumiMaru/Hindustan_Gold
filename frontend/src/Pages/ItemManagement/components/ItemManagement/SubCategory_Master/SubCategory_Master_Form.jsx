@@ -18,6 +18,7 @@ export default function SubCategory_Master_Form() {
     setSubCategoryData,
     subCategoryData,
     ReserSubCategory,
+    btnLoading,
   } = useSubCategory();
 
   const handleSave = (e) => {
@@ -230,7 +231,14 @@ export default function SubCategory_Master_Form() {
                     type="button"
                     className="btn btn-primary waves-effect waves-light btn-sm"
                     onClick={handleSave}
+                    disabled={btnLoading}
                   >
+                    {btnLoading && (
+                      <div
+                        className="spinner-border spinner-white me-2"
+                        role="status"
+                      ></div>
+                    )}
                     Save changes
                   </button>
                 </div>

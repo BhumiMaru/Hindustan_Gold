@@ -15,6 +15,7 @@ export default function Category_Master_Form() {
     setCategoryEditId,
     createCategory,
     updateCategory,
+    btnLoading,
   } = useCategoryMaster();
   const { fetchGroupData, groups } = useGroupMasterContext();
 
@@ -42,8 +43,6 @@ export default function Category_Master_Form() {
         // Create
         await createCategory(categoryData);
       }
-
-      // Reset after save
     } catch (error) {
       toast.error(error.message);
     }
@@ -172,7 +171,14 @@ export default function Category_Master_Form() {
                   type="button"
                   className="btn btn-primary waves-effect waves-light"
                   onClick={handleSubmit}
+                  disabled={btnLoading}
                 >
+                  {btnLoading && (
+                    <div
+                      className="spinner-border spinner-white me-2"
+                      role="status"
+                    ></div>
+                  )}
                   Save changes
                 </button>
               </div>

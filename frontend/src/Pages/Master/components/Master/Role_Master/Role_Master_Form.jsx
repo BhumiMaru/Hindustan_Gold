@@ -12,6 +12,7 @@ export default function Role_Master_Form() {
     updateRole,
     createRole,
     setRoleEditId,
+    btnLoading,
   } = useRoleMaster();
   const { handleClose } = useUIContext();
 
@@ -95,7 +96,14 @@ export default function Role_Master_Form() {
                   type="button"
                   className="btn btn-primary waves-effect waves-light"
                   onClick={handleSubmit}
+                  disabled={btnLoading}
                 >
+                  {btnLoading && (
+                    <div
+                      className="spinner-border spinner-white me-2"
+                      role="status"
+                    ></div>
+                  )}
                   Save changes
                 </button>
               </div>

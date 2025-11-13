@@ -14,7 +14,10 @@ export const useSubCategory = () => {
 // SUB CATEGORY PROVIDER
 export const SubCategoryProvider = ({ children }) => {
   const { handleClose } = useUIContext();
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const [subCategory, setSubCategory] = useState([]);
   const [subCategoryData, setSubCategoryData] = useState({
     sub_category_name: "",
@@ -88,6 +91,7 @@ export const SubCategoryProvider = ({ children }) => {
   // Create SubCategory
   const createSubCategory = async (payload) => {
     try {
+      setBtnLoading(true);
       const res = await postData(
         ENDPOINTS.SUBCATEGORY_MASTER.ADD_UPDATE,
         payload
@@ -102,16 +106,36 @@ export const SubCategoryProvider = ({ children }) => {
       }
       // console.log("payload", payload);
     } catch (error) {
-      console.log("Error:", error);
+      console.error(error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
+    } finally {
+      setBtnLoading(false);
     }
   };
 
   // Update SubCategory
   const EditSubCategory = async (id, payload) => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.SUBCATEGORY_MASTER.ADD_UPDATE, {
         id,
         ...payload,
@@ -130,10 +154,29 @@ export const SubCategoryProvider = ({ children }) => {
       // setIsSubEditId(null);
       // ReserSubCategory();
     } catch (error) {
-      console.log("Error:", error);
+      console.error(error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -205,6 +248,7 @@ export const SubCategoryProvider = ({ children }) => {
         fetchSubCategoryFilter,
         loading,
         setLoading,
+        btnLoading,
       }}
     >
       {children}

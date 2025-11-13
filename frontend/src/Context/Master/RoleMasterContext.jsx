@@ -14,7 +14,10 @@ export const useRoleMaster = () => {
 // ROLE MASTER PROVIDER
 export const RoleMasterProvider = ({ children }) => {
   const { handleClose } = useUIContext();
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const [roles, setRoles] = useState([]);
   const [filterRole, setFilterRole] = useState([]);
   const [roleName, setRoleName] = useState("");
@@ -76,11 +79,11 @@ export const RoleMasterProvider = ({ children }) => {
   //   Create Role
   const createRole = async (role_name) => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.ROLE_MASTER.ADD_UPDATE, {
         role_name,
       });
 
-      console.log("rr", res);
       if (res.success) {
         toast.success("Role Master Created Successfully");
         handleClose("addNewRole");
@@ -89,21 +92,71 @@ export const RoleMasterProvider = ({ children }) => {
       }
       fetchRoleData();
     } catch (error) {
-      toast.error(`Role Master Create Error: ${error.message}`);
+      console.error("Invoice Create error:", error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
   // Update
   const updateRole = async (id, role_name) => {
     try {
-      await postData(ENDPOINTS.ROLE_MASTER.ADD_UPDATE, {
+      setBtnLoading(true);
+      const res = await postData(ENDPOINTS.ROLE_MASTER.ADD_UPDATE, {
         id,
         role_name,
       });
-      toast.success("Role Master Updated Successfully");
+      if (res.success) {
+        toast.success("Role Master Created Successfully");
+        handleClose("addNewRole");
+        setRoleEditId(null);
+        setRoleName("");
+      }
       fetchRoleData();
     } catch (error) {
-      toast.error(`Role Master Update Error: ${error.message}`);
+      console.error("Invoice Create error:", error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
@@ -120,7 +173,10 @@ export const RoleMasterProvider = ({ children }) => {
       toast.success("Role Master Deleted Successfully");
       fetchRoleData();
     } catch (error) {
-      toast.error(`Role Master Delete Error: ${error.message}`);
+      console.log(error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -217,6 +273,8 @@ export const RoleMasterProvider = ({ children }) => {
         createRolePermission,
         loading,
         setLoading,
+        btnLoading,
+        setBtnLoading,
       }}
     >
       {children}

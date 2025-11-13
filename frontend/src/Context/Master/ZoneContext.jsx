@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { getData, postData, deleteData } from "../../utils/api";
 import { toast } from "react-toastify";
 import { ENDPOINTS } from "../../constants/endpoints";
+import { useUIContext } from "../UIContext";
 
 const ZoneContext = createContext();
 
@@ -12,7 +13,11 @@ export const useZone = () => {
 
 // PROVIDER
 export const ZoneProvider = ({ children }) => {
+  const { handleClose } = useUIContext();
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const [zones, setZones] = useState([]);
   const [zoneFilter, setZoneFilter] = useState([]);
   const [zoneName, setZoneName] = useState("");
@@ -63,34 +68,84 @@ export const ZoneProvider = ({ children }) => {
   // ✅ Add Zone (POST)
   const addZone = async () => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.ZONES.ADD_UPDATE, {
         zone_name: zoneName,
         color_code: colorCode,
       });
-      toast.success("Zone added successfully");
+      if (res?.status || res?.success) {
+        toast.success(res?.message);
+        handleClose("addNewZone");
+        resetForm();
+      }
       fetchZones();
-      resetForm();
-    } catch (err) {
-      toast.error("Failed to add zone");
-      console.error(err);
+    } catch (error) {
+      console.error("Invoice Create error:", error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
   // ✅ Update Zone (PUT / POST with ID in body)
   const updateZone = async () => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.ZONES.ADD_UPDATE, {
         id: editId,
         zone_name: zoneName,
         color_code: colorCode,
       });
-      toast.success("Zone updated successfully");
+      if (res?.status || res?.success) {
+        toast.success(res?.message);
+        handleClose("addNewZone");
+        setEditId(null);
+        resetForm();
+      }
       fetchZones();
-      setEditId(null);
-      resetForm();
-    } catch (err) {
-      toast.error("Failed to update zone");
-      console.error(err);
+    } catch (error) {
+      console.error("Invoice Create error:", error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
@@ -98,12 +153,15 @@ export const ZoneProvider = ({ children }) => {
   const deleteZone = async (id) => {
     try {
       const res = await deleteData(`${ENDPOINTS.ZONES.DELETE}/${id}`); // 👈 delete uses body, not params
-
-      toast.success("Zone deleted successfully");
+      if (res?.status || res?.success) {
+        toast.success(res?.message);
+      }
       fetchZones();
-    } catch (err) {
-      toast.error("Failed to delete zone");
-      console.error(err);
+    } catch (error) {
+      console.log(error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -148,6 +206,8 @@ export const ZoneProvider = ({ children }) => {
         resetForm,
         loading,
         setLoading,
+        btnLoading,
+        setBtnLoading,
       }}
     >
       {children}

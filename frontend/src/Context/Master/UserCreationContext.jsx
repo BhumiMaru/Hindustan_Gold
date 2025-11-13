@@ -11,7 +11,10 @@ export const useUserCreation = () => useContext(UserCreationContext);
 
 // USER CREATION PROVIDER
 export const UserCreationProvider = ({ children }) => {
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const [userCreations, setUserCreations] = useState([]);
   const [filterUser, setFilterUser] = useState([]);
   // const { fetchRolePermission } = useRoleMaster();
@@ -120,6 +123,7 @@ export const UserCreationProvider = ({ children }) => {
   // Create User
   const createUser = async (payload) => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.USER_CREATION.ADD_UPDATE, payload, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -127,7 +131,7 @@ export const UserCreationProvider = ({ children }) => {
       });
       console.log("usss", res);
       setUserCreationData(res.data);
-      toast.success("User created successfully");
+      toast.success(res.message);
       return res.data;
       // fetchUserCreationData();
     } catch (error) {
@@ -158,6 +162,8 @@ export const UserCreationProvider = ({ children }) => {
       } else {
         toast.error("Something went wrong. Please try again.");
       }
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -213,6 +219,7 @@ export const UserCreationProvider = ({ children }) => {
   // Update User
   const updateUser = async (id, payload) => {
     try {
+      setBtnLoading(true);
       const res = await postData(
         ENDPOINTS.USER_CREATION.ADD_UPDATE,
         {
@@ -226,13 +233,32 @@ export const UserCreationProvider = ({ children }) => {
         }
       );
       setUserCreationData(res.data.data);
-      toast.success("User updated successfully");
+      toast.success(res.message);
       fetchUserCreationData();
     } catch (error) {
-      console.log("Error:", error);
+      console.error("User Update error:", error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -260,6 +286,10 @@ export const UserCreationProvider = ({ children }) => {
         status: user?.status ?? null,
         register_date: user?.register_date || "",
         profile_photo: user?.profile_photo || "",
+        // profile_photo_url: user?.profile_photo_url || "",
+        //   profile_photo: "", // blank here — only holds new file if uploaded
+        // profile_photo_url: user?.profile_photo_url || "", // for preview
+        // existing_profile_photo: user?.profile_photo || "", // filename of old photo
       });
     } catch (error) {
       // console.log(error);
@@ -524,6 +554,8 @@ export const UserCreationProvider = ({ children }) => {
         createUserPermission,
         loading,
         setLoading,
+        btnLoading,
+        setBtnLoading,
       }}
     >
       {children}

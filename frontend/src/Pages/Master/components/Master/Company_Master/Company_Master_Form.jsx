@@ -12,6 +12,7 @@ export default function Company_Master_Form() {
     createCompany,
     setCompanyEditId,
     companyEditId,
+    btnLoading,
   } = useCompanyMaster();
   const { handleClose } = useUIContext();
 
@@ -27,9 +28,9 @@ export default function Company_Master_Form() {
     } else {
       createCompany(companyName);
     }
+    // handleClose("addNewCompany");
     setCompanyEditId(null);
     setCompanyName("");
-    handleClose("addNewCompany");
   };
 
   return (
@@ -98,7 +99,14 @@ export default function Company_Master_Form() {
                   type="button"
                   className="btn btn-primary waves-effect waves-light"
                   onClick={handleSubmit}
+                  disabled={btnLoading}
                 >
+                  {btnLoading && (
+                    <div
+                      className="spinner-border spinner-white me-2"
+                      role="status"
+                    ></div>
+                  )}
                   Save changes
                 </button>
               </div>

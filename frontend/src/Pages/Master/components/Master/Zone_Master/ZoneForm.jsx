@@ -15,6 +15,7 @@ export default function ZoneForm() {
     addZone,
     updateZone,
     setEditId,
+    btnLoading,
   } = useZone();
 
   const handleSave = async () => {
@@ -32,12 +33,12 @@ export default function ZoneForm() {
       }
 
       // ✅ Close modal after save
-      handleClose("addNewZone");
+      // handleClose("addNewZone");
 
       // ✅ Reset form
       setEditId(null);
     } catch (err) {
-      toast.error("Something went wrong while saving zone ❌");
+      // toast.error("Something went wrong while saving zone ❌");
       console.error(err);
     }
   };
@@ -122,7 +123,14 @@ export default function ZoneForm() {
                   type="button"
                   className="btn btn-primary waves-effect waves-light"
                   onClick={handleSave}
+                  disabled={btnLoading}
                 >
+                  {btnLoading && (
+                    <div
+                      className="spinner-border spinner-white me-2"
+                      role="status"
+                    ></div>
+                  )}
                   Save changes
                 </button>
               </div>

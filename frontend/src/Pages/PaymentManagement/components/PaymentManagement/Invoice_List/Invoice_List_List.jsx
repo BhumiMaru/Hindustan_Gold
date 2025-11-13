@@ -22,7 +22,7 @@ import { getData } from "../../../../../utils/api";
 import { ENDPOINTS } from "../../../../../constants/endpoints";
 
 export default function Invoice_List_List() {
-  const { modal, handleOpen } = useUIContext();
+  const { modal, handleOpen, handleClose } = useUIContext();
   const {
     invoiceList,
     selectedType,
@@ -390,8 +390,9 @@ export default function Invoice_List_List() {
           <SubCategoryProvider>
             <ItemRequestProvider>
               <Invoice_List_Form
-                onclose={() => {
+                onClose={() => {
                   invoiceList();
+                  handleClose("addInvoice");
                 }}
                 type={0}
               />

@@ -13,6 +13,7 @@ export default function Group_Master_Form() {
     setgroupEditId,
     createGroup,
     updateGroup,
+    btnLoading,
   } = useGroupMasterContext();
 
   const handleSubmit = () => {
@@ -93,7 +94,14 @@ export default function Group_Master_Form() {
                 type="button"
                 className="btn btn-primary waves-effect waves-light"
                 onClick={handleSubmit}
+                disabled={btnLoading}
               >
+                {btnLoading && (
+                  <div
+                    className="spinner-border spinner-white me-2"
+                    role="status"
+                  ></div>
+                )}
                 Save changes
               </button>
             </div>

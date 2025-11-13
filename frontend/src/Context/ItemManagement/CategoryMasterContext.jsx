@@ -14,7 +14,10 @@ export const useCategoryMaster = () => {
 // CATEGORY MASTER PROVIDER
 export const CategoryMasterProvider = ({ children }) => {
   const { handleClose } = useUIContext();
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [categoryData, setCategoryData] = useState({
     category_name: "",
@@ -82,6 +85,7 @@ export const CategoryMasterProvider = ({ children }) => {
   // ✅ Create Category
   const createCategory = async (payload) => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.CATEGORY_MASTER.ADD_UPDATE, payload);
       // toast.success("Category Created Successfully");
       console.log("res", res);
@@ -100,17 +104,36 @@ export const CategoryMasterProvider = ({ children }) => {
       fetchCategories(); // refresh
       return res;
     } catch (error) {
+      console.error(error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
-      console.log(`Create Category Error: ${error.message}`, error);
-      // toast.error(`Create Category Error: ${error.message}`);
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
   // ✅ Update Category
   const updateCategory = async (id, payload) => {
     try {
+      setBtnLoading(true);
       const body = { id, ...payload };
       const res = await postData(ENDPOINTS.CATEGORY_MASTER.ADD_UPDATE, body);
       if (res.success) {
@@ -128,10 +151,29 @@ export const CategoryMasterProvider = ({ children }) => {
       fetchCategories(); // refresh
       return res;
     } catch (error) {
+      console.error(error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
-      // toast.error(`Update Category Error: ${error.message}`);
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
@@ -185,6 +227,8 @@ export const CategoryMasterProvider = ({ children }) => {
         startEditing,
         loading,
         setLoading,
+        btnLoading,
+        setBtnLoading,
       }}
     >
       {children}

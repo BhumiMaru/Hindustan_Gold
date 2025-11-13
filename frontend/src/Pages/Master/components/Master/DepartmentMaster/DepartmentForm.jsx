@@ -14,6 +14,8 @@ export default function DepartmentForm() {
     fetchDepartments,
     deptEditId,
     setDeptEditId,
+    btnLoading,
+    setBtnLoading,
   } = useDepartment();
 
   // Add or Update Department
@@ -27,14 +29,14 @@ export default function DepartmentForm() {
     try {
       if (deptEditId) {
         await updateDepartment(deptEditId, deptName);
-        toast.success("Department updated successfully ✅");
+        // toast.success("Department updated successfully ✅");
       } else {
         await addDepartment(deptName);
-        toast.success("Department added successfully ✅");
+        // toast.success("Department added successfully ✅");
       }
 
       // ✅ Close modal after save
-      handleClose("addNewDepartment");
+      // handleClose("addNewDepartment");
       fetchDepartments();
 
       // ✅ Reset form
@@ -110,7 +112,14 @@ export default function DepartmentForm() {
                 type="button"
                 className="btn btn-primary waves-effect waves-light"
                 onClick={handleSave}
+                disabled={btnLoading}
               >
+                {btnLoading && (
+                  <div
+                    className="spinner-border spinner-white me-2"
+                    role="status"
+                  ></div>
+                )}
                 Save changes
               </button>
             </div>

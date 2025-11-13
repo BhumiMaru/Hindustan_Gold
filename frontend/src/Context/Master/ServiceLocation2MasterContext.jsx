@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { getData, postData, deleteData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
+import { useUIContext } from "../UIContext";
 
 const ServiceLocation2MasterContext = createContext();
 
@@ -12,7 +13,11 @@ export const useServiceLocation2Master = () => {
 
 // [SERVICE LOCATION 2 MASTER] Provider
 export const ServiceLocation2MasterProvider = ({ children }) => {
+  const { handleClose } = useUIContext();
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const [serviceLocation2, setServiceLocation2] = useState([]);
   const [serviceL2, setServiceL2] = useState([]);
   const [serviceLocation2Name, setServiceLocation2Name] = useState("");
@@ -79,15 +84,43 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
     parent_location_id
   ) => {
     try {
-      await postData(ENDPOINTS.SERVICES_LOCATION_2_MASTER.ADD_UPDATE, {
-        service_location_2_name,
-        service_location_1_id: parent_location_id, // relation with Location 1
-      });
-      toast.success("Service Location 2 Master Created Successfully");
+      setBtnLoading(true);
+      const res = await postData(
+        ENDPOINTS.SERVICES_LOCATION_2_MASTER.ADD_UPDATE,
+        {
+          service_location_2_name,
+          service_location_1_id: parent_location_id, // relation with Location 1
+        }
+      );
+      if (res.success) {
+        toast.success(res.message);
+        handleClose("addNewServiceLocation2");
+      }
       fetchServiceLocations2();
     } catch (error) {
-      toast.error(`Service Location 2 Master Create Error: ${error.message}`);
-      console.log(error);
+      console.error("Invoice Create error:", error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
@@ -98,15 +131,45 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
     parent_location_id
   ) => {
     try {
-      await postData(ENDPOINTS.SERVICES_LOCATION_2_MASTER.ADD_UPDATE, {
-        id,
-        service_location_2_name,
-        service_location_1_id: parent_location_id,
-      });
-      toast.success("Service Location 2 Master Updated Successfully");
+      setBtnLoading(true);
+      const res = await postData(
+        ENDPOINTS.SERVICES_LOCATION_2_MASTER.ADD_UPDATE,
+        {
+          id,
+          service_location_2_name,
+          service_location_1_id: parent_location_id,
+        }
+      );
+      console.log(res);
+      if (res.success) {
+        toast.success(res.message);
+        handleClose("addNewServiceLocation2");
+      }
       fetchServiceLocations2();
     } catch (error) {
-      toast.error(`Service Location 2 Master Update Error: ${error.message}`);
+      console.error("Invoice Create error:", error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
@@ -131,7 +194,10 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
       toast.success("Service Location 2 Master Deleted Successfully");
       fetchServiceLocations2();
     } catch (error) {
-      toast.error(`Service Location 2 Master Delete Error: ${error.message}`);
+      console.log(error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -159,6 +225,8 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
         startEditing,
         loading,
         setLoading,
+        btnLoading,
+        setBtnLoading,
       }}
     >
       {children}

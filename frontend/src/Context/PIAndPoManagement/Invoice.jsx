@@ -14,7 +14,10 @@ export const useInvoice = () => {
 // Invoice Provider
 export const InvoiceProvider = ({ children }) => {
   const { handleClose } = useUIContext();
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const [isInvoiceLoad, setIsInvoiceLoad] = useState(false);
   const [invoice, setInvoice] = useState([]);
   const [invoiceData, setInvoiceData] = useState({
@@ -123,6 +126,7 @@ export const InvoiceProvider = ({ children }) => {
   //   Invoice Create
   const createInvoice = async (formData) => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.INVOICE.ADD_UPDATE, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -181,12 +185,15 @@ export const InvoiceProvider = ({ children }) => {
       } else {
         toast.error("Network error occurred");
       }
+    } finally {
+      setBtnLoading(false);
     }
   };
 
   // Invoice Edit
   const editInvoice = async ({ id, formData }) => {
     try {
+      setBtnLoading(true);
       // Append ID to FormData
       console.log("id id", id);
       console.log("id id typeof", typeof id);
@@ -205,6 +212,19 @@ export const InvoiceProvider = ({ children }) => {
       if (res?.status === true) {
         toast.success(res.message || "Invoice Updated successfully");
         setInvoiceData(res.data);
+        setInvoiceData({
+          grn_id: null,
+          sub_cat_id: null,
+          vendor_id: null,
+          invoice_date: null,
+          taxable_amount: null,
+          tds_amount: null,
+          paid_amount: null,
+          remarks: "",
+          invoice_type: null,
+          invoice_file: null,
+        });
+        setInvoiceId(null);
         // handleClose("addInvoice");
       } else {
         toast.error(res?.message || "Failed to update invoice");
@@ -213,19 +233,6 @@ export const InvoiceProvider = ({ children }) => {
       invoiceList(); // refresh list
       // resetPaymentData();
       // Reset form
-      setInvoiceData({
-        grn_id: null,
-        sub_cat_id: null,
-        vendor_id: null,
-        invoice_date: null,
-        taxable_amount: null,
-        tds_amount: null,
-        paid_amount: null,
-        remarks: "",
-        invoice_type: null,
-        invoice_file: null,
-      });
-      setInvoiceId(null);
 
       return res;
     } catch (error) {
@@ -250,6 +257,8 @@ export const InvoiceProvider = ({ children }) => {
       } else {
         toast.error("Network error occurred");
       }
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -490,6 +499,7 @@ export const InvoiceProvider = ({ children }) => {
         setLoading,
         isInvoiceLoad,
         setIsInvoiceLoad,
+        btnLoading,
 
         ////sub category id , vendor id and grn id set via po and grn
         // subcategoryIdInvoice,

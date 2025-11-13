@@ -14,11 +14,14 @@ export const useGroupMasterContext = () => {
 // Group Master Provider
 export const GroupMasterProvider = ({ children }) => {
   const { handleClose } = useUIContext();
+  // Data Loading
+  const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const [groups, setGroups] = useState([]);
   const [groupName, setGroupName] = useState("");
   const [groupEditId, setgroupEditId] = useState(null);
   const [filterGroup, setFilterGroup] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     perPage: 10,
@@ -63,6 +66,7 @@ export const GroupMasterProvider = ({ children }) => {
   //   Create Company
   const createGroup = async (group_name) => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.GROUP_MASTER.ADD_UPDATE, {
         group_name,
       });
@@ -75,27 +79,71 @@ export const GroupMasterProvider = ({ children }) => {
       }
       fetchGroupData();
     } catch (error) {
-      console.log("Error:", error);
+      console.error(error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
   // Update
   const updateGroup = async (id, group_name) => {
     try {
-      await postData(ENDPOINTS.GROUP_MASTER.ADD_UPDATE, {
+      setBtnLoading(true);
+      const res = await postData(ENDPOINTS.GROUP_MASTER.ADD_UPDATE, {
         id,
         group_name,
       });
-      toast.success("Group Master Updated Successfully");
+      if (res.success) {
+        toast.success(res.message);
+        setgroupEditId(null);
+        setGroupName("");
+        handleClose("addNewGroup");
+      }
       fetchGroupData();
     } catch (error) {
-      console.log("Error:", error);
+      console.error(error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
@@ -136,6 +184,8 @@ export const GroupMasterProvider = ({ children }) => {
         pagination,
         loading,
         setLoading,
+        btnLoading,
+        setBtnLoading,
       }}
     >
       {children}

@@ -19,6 +19,7 @@ export default function ServiceLocation_2_Master_Form() {
     setServiceLocation2EditId,
     selectedOption,
     setSelectedOption,
+    btnLoading,
   } = useServiceLocation2Master();
 
   useEffect(() => {
@@ -53,13 +54,13 @@ export default function ServiceLocation_2_Master_Form() {
       }
 
       // ✅ reset state after success
-      handleClose("addNewServiceLocation2");
+      // handleClose("addNewServiceLocation2");
       setServiceLocation2Name("");
       setServiceLocation2EditId(null);
       setSelectedOption(null); // reset dropdown
     } catch (error) {
       console.error("Error saving Service Location 2:", error);
-      toast.error("Something went wrong while saving");
+      // toast.error("Something went wrong while saving");
     }
   };
 
@@ -152,7 +153,14 @@ export default function ServiceLocation_2_Master_Form() {
                 type="button"
                 className="btn btn-primary waves-effect waves-light"
                 onClick={handleSave}
+                disabled={btnLoading}
               >
+                {btnLoading && (
+                  <div
+                    className="spinner-border spinner-white me-2"
+                    role="status"
+                  ></div>
+                )}
                 Save changes
               </button>
             </div>

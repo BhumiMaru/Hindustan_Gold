@@ -2,6 +2,7 @@ import { toast } from "react-toastify";
 import { deleteData, getData, postData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
 import { createContext, useContext, useState } from "react";
+import { useUIContext } from "../UIContext";
 
 const CompanyMasterContext = createContext();
 
@@ -12,7 +13,11 @@ export const useCompanyMaster = () => {
 
 // Company Provider
 export const CompanyMasterProvider = ({ children }) => {
+  const { handleClose } = useUIContext();
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const [companies, setCompanies] = useState([]);
   const [companyFilter, setCompanyFilter] = useState([]);
   const [companyName, setCompanyName] = useState("");
@@ -67,33 +72,83 @@ export const CompanyMasterProvider = ({ children }) => {
   //   Create Company
   const createCompany = async (company_name) => {
     try {
-      await postData(ENDPOINTS.COMPANY_MASTER.ADD_UPDATE, {
+      setBtnLoading(true);
+      const res = await postData(ENDPOINTS.COMPANY_MASTER.ADD_UPDATE, {
         company_name,
       });
-      toast.success("Company Master Created Successfully");
+      if (res.success || res.status) {
+        toast.success(res.message);
+        handleClose("addNewCompany");
+        setCompanyEditId(null);
+        setCompanyName("");
+      }
       fetchCompanyData();
     } catch (error) {
-      console.log("Error:", error);
+      console.error("Invoice Create error:", error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
   // Update
   const updateCompany = async (id, company_name) => {
     try {
-      await postData(ENDPOINTS.COMPANY_MASTER.ADD_UPDATE, {
+      setBtnLoading(true);
+      const res = await postData(ENDPOINTS.COMPANY_MASTER.ADD_UPDATE, {
         id,
         company_name,
       });
-      toast.success("Company Master Updated Successfully");
+      if (res.success || res.status) {
+        toast.success(res.message);
+        handleClose("addNewCompany");
+        setCompanyEditId(null);
+        setCompanyName("");
+      }
       fetchCompanyData();
     } catch (error) {
-      console.log("Error:", error);
+      console.error("Invoice Create error:", error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
@@ -135,6 +190,8 @@ export const CompanyMasterProvider = ({ children }) => {
         companies,
         loading,
         setLoading,
+        btnLoading,
+        setBtnLoading,
       }}
     >
       {children}

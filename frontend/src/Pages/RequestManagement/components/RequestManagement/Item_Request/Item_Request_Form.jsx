@@ -520,6 +520,7 @@ export default function Item_Request_Form() {
     itemList,
     setEditId,
     getItemNameAndId,
+    btnLoading,
   } = useItemRequest();
   const { itemMaster, fetchItemMaster } = useItemMaster();
   const [isPurpose, setIsPurpose] = useState(false);
@@ -913,7 +914,14 @@ export default function Item_Request_Form() {
               <button
                 className="btn btn-primary waves-effect waves-light"
                 onClick={handleSubmit}
+                disabled={btnLoading}
               >
+                {btnLoading && (
+                  <div
+                    className="spinner-border spinner-white me-2"
+                    role="status"
+                  ></div>
+                )}
                 {id ? "Update" : "Submit"}
               </button>
             </div>

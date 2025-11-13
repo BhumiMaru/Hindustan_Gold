@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import DashboardPage from "../Pages/Dashboard/DashboardPage";
 import DepartmentMasterPage from "../Pages/Master/DepartmentMasterPage";
@@ -10,7 +10,10 @@ import RoleMasterPage from "../Pages/Master/RoleMasterPage";
 import { RoleMasterProvider } from "../Context/Master/RoleMasterContext";
 import Role_Permission from "../Pages/Master/components/Master/Role_Master/Role_Permission";
 import User_Creation_Permission from "../Pages/Master/components/Master/User_Creation/User_Creation_Permission";
-import { UserCreationProvider } from "../Context/Master/UserCreationContext";
+import {
+  UserCreationProvider,
+  useUserCreation,
+} from "../Context/Master/UserCreationContext";
 import User_Creation_Page from "../Pages/Master/User_Creation_Page";
 import { ServiceLocation1MasterProvider } from "../Context/Master/ServiceLocation1MasterContext";
 import { ServiceLocation2MasterProvider } from "../Context/Master/ServiceLocation2MasterContext";
@@ -56,9 +59,44 @@ import Invoice_details from "../Pages/PaymentManagement/components/PaymentManage
 import { InvoiceProvider } from "../Context/PIAndPoManagement/Invoice";
 import { PIRequestProvider } from "../Context/PIAndPoManagement/PIRequestList";
 import ProfileMasterPage from "../Pages/Profile/ProfileMasterPage";
+import { decryptData } from "../utils/decryptData";
+import NotFoundPage from "../Pages/NotFoundPage/NotFoundPage";
 
 export default function AppRoutes() {
   const { isOpenSmallSidebar, closeSmallSidebar, modal } = useUIContext();
+  const { userPermission, fetchUserPermission } = useUserCreation();
+  const [loading, setLoading] = useState(true);
+
+  const getAuthData = sessionStorage.getItem("authData");
+  const decryptAuthData = decryptData(getAuthData);
+  const userData = decryptAuthData?.user;
+  const isAdmin = userData?.id === 56;
+
+  useEffect(() => {
+    fetchUserPermission(userData?.id);
+  }, [userData?.id]);
+
+  // if needed
+  // useEffect(() => {
+  //   if (userData?.id) {
+  //     (async () => {
+  //       await fetchUserPermission(userData.id);
+  //       setLoading(false); // Only render routes after permissions are fetched
+  //     })();
+  //   } else {
+  //     setLoading(false);
+  //   }
+  // }, [userData?.id]);
+
+  // // ✅ While permissions are loading, show loader (or nothing)
+  // if (loading) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <div className="text-gray-500 text-lg">Loading...</div>
+  //     </div>
+  //   );
+  // }
+
   return (
     <>
       {/* ------------------Start App Routes------------------- */}
@@ -73,132 +111,142 @@ export default function AppRoutes() {
         {/* Dashboard */}
         <Route path="/dashboard" element={<DashboardPage />} />
         {/* Master Routes */}
-        <Route
-          path="/super_admin/master/department"
-          element={<DepartmentMasterPage />}
-        />
-        <Route path="/super_admin/master/zone" element={<ZoneMasterpage />} />
-        <Route
-          path="/super_admin/master/service-location-1"
-          element={<ServiceLocation1MasterPage />}
-        />
-        <Route
-          path="/super_admin/master/service-location-2"
-          element={<ServiceLocation2MasterPage />}
-        />
-        <Route
-          path="/super_admin/master/service-location-3"
-          element={<ServiceLocation3MasterPage />}
-        />
-        <Route path="/super_admin/master/role" element={<RoleMasterPage />} />
+        {isAdmin && (
+          <>
+            <Route
+              path="/super_admin/master/department"
+              element={<DepartmentMasterPage />}
+            />
+            <Route
+              path="/super_admin/master/zone"
+              element={<ZoneMasterpage />}
+            />
+            <Route
+              path="/super_admin/master/service-location-1"
+              element={<ServiceLocation1MasterPage />}
+            />
+            <Route
+              path="/super_admin/master/service-location-2"
+              element={<ServiceLocation2MasterPage />}
+            />
+            <Route
+              path="/super_admin/master/service-location-3"
+              element={<ServiceLocation3MasterPage />}
+            />
+            <Route
+              path="/super_admin/master/role"
+              element={<RoleMasterPage />}
+            />
 
-        <Route
-          path="/super_admin/role-permission"
-          element={
-            <div className="container-xxl flex-grow-1 container-p-y">
-              <RoleMasterProvider>
-                <Role_Permission />
-              </RoleMasterProvider>
-            </div>
-          }
-        />
-        <Route
-          path="/super_admin/role-permission/:id"
-          element={
-            <div className="container-xxl flex-grow-1 container-p-y">
-              <RoleMasterProvider>
-                <Role_Permission />
-              </RoleMasterProvider>
-            </div>
-          }
-        />
+            <Route
+              path="/super_admin/role-permission"
+              element={
+                <div className="container-xxl flex-grow-1 container-p-y">
+                  <RoleMasterProvider>
+                    <Role_Permission />
+                  </RoleMasterProvider>
+                </div>
+              }
+            />
+            <Route
+              path="/super_admin/role-permission/:id"
+              element={
+                <div className="container-xxl flex-grow-1 container-p-y">
+                  <RoleMasterProvider>
+                    <Role_Permission />
+                  </RoleMasterProvider>
+                </div>
+              }
+            />
 
-        <Route
-          path="/super_admin/user-permission"
-          element={
-            <div className="container-xxl flex-grow-1 container-p-y">
-              <RoleMasterProvider>
+            <Route
+              path="/super_admin/user-permission"
+              element={
+                <div className="container-xxl flex-grow-1 container-p-y">
+                  <RoleMasterProvider>
+                    <UserCreationProvider>
+                      <User_Creation_Permission />
+                    </UserCreationProvider>
+                  </RoleMasterProvider>
+                </div>
+              }
+            />
+
+            <Route
+              path="/super_admin/user-permission/:id"
+              element={
+                <div className="container-xxl flex-grow-1 container-p-y">
+                  <RoleMasterProvider>
+                    <UserCreationProvider>
+                      <User_Creation_Permission />
+                    </UserCreationProvider>
+                  </RoleMasterProvider>
+                </div>
+              }
+            />
+
+            <Route
+              path="/super_admin/master/company"
+              element={<CompanyMasterPage />}
+            />
+            <Route
+              path="/super_admin/master/user"
+              element={
                 <UserCreationProvider>
-                  <User_Creation_Permission />
+                  <User_Creation_Page />
                 </UserCreationProvider>
-              </RoleMasterProvider>
-            </div>
-          }
-        />
-
-        <Route
-          path="/super_admin/user-permission/:id"
-          element={
-            <div className="container-xxl flex-grow-1 container-p-y">
-              <RoleMasterProvider>
+              }
+            />
+            <Route
+              path="/super_admin/master/user-create"
+              element={
                 <UserCreationProvider>
-                  <User_Creation_Permission />
+                  <RoleMasterProvider>
+                    <CompanyMasterProvider>
+                      <ServiceLocation1MasterProvider>
+                        <ServiceLocation2MasterProvider>
+                          <ServiceLocation3MasterProvider>
+                            <ZoneProvider>
+                              <DepartmentProvider>
+                                <User_Creation_Form />
+                              </DepartmentProvider>
+                            </ZoneProvider>
+                          </ServiceLocation3MasterProvider>
+                        </ServiceLocation2MasterProvider>
+                      </ServiceLocation1MasterProvider>
+                    </CompanyMasterProvider>
+                  </RoleMasterProvider>
                 </UserCreationProvider>
-              </RoleMasterProvider>
-            </div>
-          }
-        />
+              }
+            />
 
-        <Route
-          path="/super_admin/master/company"
-          element={<CompanyMasterPage />}
-        />
-        <Route
-          path="/super_admin/master/user"
-          element={
-            <UserCreationProvider>
-              <User_Creation_Page />
-            </UserCreationProvider>
-          }
-        />
-        <Route
-          path="/super_admin/master/user-create"
-          element={
-            <UserCreationProvider>
-              <RoleMasterProvider>
-                <CompanyMasterProvider>
-                  <ServiceLocation1MasterProvider>
-                    <ServiceLocation2MasterProvider>
-                      <ServiceLocation3MasterProvider>
-                        <ZoneProvider>
-                          <DepartmentProvider>
-                            <User_Creation_Form />
-                          </DepartmentProvider>
-                        </ZoneProvider>
-                      </ServiceLocation3MasterProvider>
-                    </ServiceLocation2MasterProvider>
-                  </ServiceLocation1MasterProvider>
-                </CompanyMasterProvider>
-              </RoleMasterProvider>
-            </UserCreationProvider>
-          }
-        />
+            <Route
+              path="/super_admin/master/user-create/:id"
+              element={
+                <UserCreationProvider>
+                  <RoleMasterProvider>
+                    <CompanyMasterProvider>
+                      <ServiceLocation1MasterProvider>
+                        <ServiceLocation2MasterProvider>
+                          <ServiceLocation3MasterProvider>
+                            <ZoneProvider>
+                              <DepartmentProvider>
+                                <User_Creation_Form />
+                              </DepartmentProvider>
+                            </ZoneProvider>
+                          </ServiceLocation3MasterProvider>
+                        </ServiceLocation2MasterProvider>
+                      </ServiceLocation1MasterProvider>
+                    </CompanyMasterProvider>
+                  </RoleMasterProvider>
+                </UserCreationProvider>
+              }
+            />
 
-        <Route
-          path="/super_admin/master/user-create/:id"
-          element={
-            <UserCreationProvider>
-              <RoleMasterProvider>
-                <CompanyMasterProvider>
-                  <ServiceLocation1MasterProvider>
-                    <ServiceLocation2MasterProvider>
-                      <ServiceLocation3MasterProvider>
-                        <ZoneProvider>
-                          <DepartmentProvider>
-                            <User_Creation_Form />
-                          </DepartmentProvider>
-                        </ZoneProvider>
-                      </ServiceLocation3MasterProvider>
-                    </ServiceLocation2MasterProvider>
-                  </ServiceLocation1MasterProvider>
-                </CompanyMasterProvider>
-              </RoleMasterProvider>
-            </UserCreationProvider>
-          }
-        />
-
-        {/* UOM (unit of measure) */}
-        <Route path="/suprer_admin/uom" element={<UOMPage />} />
+            {/* UOM (unit of measure) */}
+            <Route path="/suprer_admin/uom" element={<UOMPage />} />
+          </>
+        )}
 
         {/* Item Management  */}
         <Route path="/item/group" element={<Group_Master_Page />} />
@@ -262,142 +310,189 @@ export default function AppRoutes() {
         /> */}
 
         {/* Request Management */}
-        <Route
-          path="/user/request/request-list"
-          element={<Request_Management_Page />}
-        />
-        <Route
-          path="/user/request/request-create/:type"
-          element={
-            <ItemRequestProvider>
-              <ItemMasterProvider>
-                <ServiceLocation3MasterProvider>
-                  <Item_Request_Form />
-                </ServiceLocation3MasterProvider>
-              </ItemMasterProvider>
-            </ItemRequestProvider>
-          }
-        />
-        <Route
-          path="/user/request/request-create/:type/:id"
-          element={
-            <ItemRequestProvider>
-              <ItemMasterProvider>
-                <ServiceLocation3MasterProvider>
-                  <Item_Request_Form />
-                </ServiceLocation3MasterProvider>
-              </ItemMasterProvider>
-            </ItemRequestProvider>
-          }
-        />
+        {userPermission?.some(
+          (perm) =>
+            (perm.type === "Item Request" ||
+              perm.type === "store_head Approval") &&
+            perm.permission === "view"
+        ) && (
+          <>
+            <Route
+              path="/user/request/request-list"
+              element={<Request_Management_Page />}
+            />
+            <Route
+              path="/user/request/request-create/:type"
+              element={
+                <ItemRequestProvider>
+                  <ItemMasterProvider>
+                    <ServiceLocation3MasterProvider>
+                      <Item_Request_Form />
+                    </ServiceLocation3MasterProvider>
+                  </ItemMasterProvider>
+                </ItemRequestProvider>
+              }
+            />
+            <Route
+              path="/user/request/request-create/:type/:id"
+              element={
+                <ItemRequestProvider>
+                  <ItemMasterProvider>
+                    <ServiceLocation3MasterProvider>
+                      <Item_Request_Form />
+                    </ServiceLocation3MasterProvider>
+                  </ItemMasterProvider>
+                </ItemRequestProvider>
+              }
+            />
+          </>
+        )}
 
         {/* PO & Material Management */}
-        <Route
-          path="/po-material/pi-request-create/:type"
-          element={<PI_Item_Request_Page />}
-        />
-        {/* PO & Material Management [for edit] */}
-        <Route
-          path="/po-material/pi-request-create/:type/:id"
-          element={<PI_Item_Request_Page />}
-        />
-        <Route
-          path="/po-material/pi-request-list"
-          element={
-            <ItemMasterProvider>
-              <PIRequestProvider>
-                <PI_Request_List_Page />
-              </PIRequestProvider>
-            </ItemMasterProvider>
-          }
-        />
-        <Route
-          path="/po-material/get-quote-list"
-          element={<Get_Quote_Page />}
-        />
+        {userPermission?.some(
+          (perm) => perm.type == "PI Request" && perm.permission === "view"
+        ) && (
+          <>
+            <Route
+              path="/po-material/pi-request-create/:type"
+              element={<PI_Item_Request_Page />}
+            />
+            {/* PO & Material Management [for edit] */}
+            <Route
+              path="/po-material/pi-request-create/:type/:id"
+              element={<PI_Item_Request_Page />}
+            />
+            <Route
+              path="/po-material/pi-request-list"
+              element={
+                <ItemMasterProvider>
+                  <PIRequestProvider>
+                    <PI_Request_List_Page />
+                  </PIRequestProvider>
+                </ItemMasterProvider>
+              }
+            />
+          </>
+        )}
 
-        <Route
-          path="/po-material/pi-request-get-quote/:id"
-          element={
-            <VendorProvider>
-              <GetQuoteProvider>
-                <UserCreationProvider>
-                  <PI_Request_Get_Quote />
-                </UserCreationProvider>
-              </GetQuoteProvider>
-            </VendorProvider>
-          }
-        />
+        {userPermission?.some(
+          (perm) => perm.type == "Get Quotation" && perm.permission === "view"
+        ) && (
+          <>
+            <Route
+              path="/po-material/get-quote-list"
+              element={<Get_Quote_Page />}
+            />
 
-        <Route path="/po-material/po-create/:id" element={<PO_Create_Page />} />
-        <Route path="/po-material/po-list" element={<PO_List_Page />} />
-        <Route
-          path="/po-material/po-detail/:id"
-          element={
-            <POProvider>
-              <InvoiceProvider>
-                <GRNProvider>
-                  <PO_Details />
-                </GRNProvider>
-              </InvoiceProvider>
-            </POProvider>
-          }
-        />
+            <Route
+              path="/po-material/pi-request-get-quote/:id"
+              element={
+                <VendorProvider>
+                  <GetQuoteProvider>
+                    <UserCreationProvider>
+                      <PI_Request_Get_Quote />
+                    </UserCreationProvider>
+                  </GetQuoteProvider>
+                </VendorProvider>
+              }
+            />
+          </>
+        )}
 
-        <Route
-          path="/po-material/po-detail-download/:id"
-          element={
-            <POProvider>
-              <PO_Details_Download />
-            </POProvider>
-          }
-        />
-        <Route path="/po-material/grn-list" element={<GRN_List_Page />} />
-        <Route
-          path="/po-material/grn-details/:id"
-          element={
-            <>
-              <GRNProvider>
-                <UserCreationProvider>
+        {userPermission?.some(
+          (perm) => perm.type == "PO Generation" && perm.permission === "view"
+        ) && (
+          <>
+            <Route
+              path="/po-material/po-create/:id"
+              element={<PO_Create_Page />}
+            />
+            <Route path="/po-material/po-list" element={<PO_List_Page />} />
+            <Route
+              path="/po-material/po-detail/:id"
+              element={
+                <POProvider>
                   <InvoiceProvider>
-                    <GRN_Details />
+                    <GRNProvider>
+                      <PO_Details />
+                    </GRNProvider>
                   </InvoiceProvider>
-                </UserCreationProvider>
-              </GRNProvider>
-            </>
-          }
-        />
+                </POProvider>
+              }
+            />
+
+            <Route
+              path="/po-material/po-detail-download/:id"
+              element={
+                <POProvider>
+                  <PO_Details_Download />
+                </POProvider>
+              }
+            />
+          </>
+        )}
+
+        {userPermission?.some(
+          (perm) => perm.type == "GRN" && perm.permission == "view"
+        ) && (
+          <>
+            <Route path="/po-material/grn-list" element={<GRN_List_Page />} />
+            <Route
+              path="/po-material/grn-details/:id"
+              element={
+                <>
+                  <GRNProvider>
+                    <UserCreationProvider>
+                      <InvoiceProvider>
+                        <GRN_Details />
+                      </InvoiceProvider>
+                    </UserCreationProvider>
+                  </GRNProvider>
+                </>
+              }
+            />
+          </>
+        )}
 
         {/* ---------PAYMENT MANAGMENT-------- */}
-        <Route
-          path="/payment-management/invoice-list"
-          element={<Invoice_List_page />}
-        />
-        <Route
-          path="/payment-management/invoice-detail/:id"
-          element={
-            <>
-              <InvoiceProvider>
-                <Invoice_details />
-              </InvoiceProvider>
-            </>
-          }
-        />
-        <Route
-          path="/payment-management/vendor-list"
-          element={<Vendor_List_page />}
-        />
+        {userPermission?.some(
+          (perm) =>
+            perm.type === "Payment Request" && perm.permission === "view"
+        ) && (
+          <>
+            <Route
+              path="/payment-management/invoice-list"
+              element={<Invoice_List_page />}
+            />
+            <Route
+              path="/payment-management/invoice-detail/:id"
+              element={
+                <>
+                  <InvoiceProvider>
+                    <Invoice_details />
+                  </InvoiceProvider>
+                </>
+              }
+            />
+          </>
+        )}
+
+        {userPermission?.some(
+          (perm) => perm.type == "Get Quotation" && perm.permission === "add"
+        ) && (
+          <>
+            <Route
+              path="/payment-management/vendor-list"
+              element={<Vendor_List_page />}
+            />
+          </>
+        )}
 
         {/* UOM (unit of measure) */}
         {/* <Route path="/uom" element={<UOMPage />} /> */}
 
         {/* Catch all (404) */}
-        <Route
-          path="*"
-          element={
-            <h2 style={{ textAlign: "center" }}>404 - Page Not Found</h2>
-          }
-        />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
       {/* {modal.editGRN && (

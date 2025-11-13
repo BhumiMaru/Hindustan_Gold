@@ -742,6 +742,110 @@ export default function User_Creation_Permission() {
     }
   };
 
+  // ------------------ HANDLE PERMISSION CHANGE ------------------
+  // const handlePermissionChange = async (moduleName, type, permission, e) => {
+  //   const isChecked = e.target.checked;
+
+  //   setPermissions((prev) => {
+  //     const updated = { ...prev };
+
+  //     // Ensure module exists
+  //     if (!updated[moduleName]) updated[moduleName] = {};
+  //     if (!updated[moduleName][type]) updated[moduleName][type] = {};
+
+  //     // Update checkbox state
+  //     updated[moduleName][type][permission] = isChecked;
+
+  //     return updated;
+  //   });
+
+  //   // Normalize values for logic
+  //   const normalizedType = type.toLowerCase().trim();
+  //   const normalizedPerm = permission.toLowerCase().trim();
+
+  //   // --- Helper: Ensure permission is auto-checked ---
+  //   const ensurePermission = async (mod, typ, perm) => {
+  //     setPermissions((prev) => {
+  //       const copy = { ...prev };
+  //       if (!copy[mod]) copy[mod] = {};
+  //       if (!copy[mod][typ]) copy[mod][typ] = {};
+  //       copy[mod][typ][perm] = true;
+  //       return copy;
+  //     });
+  //   };
+
+  //   // ---------------- AUTO-CHECK LOGIC ----------------
+  //   if (isChecked && ["add", "generate"].includes(normalizedPerm)) {
+  //     // ✅ Correct: Main module references
+  //     const poModule = "PO and Material Management Module";
+  //     const paymentModule = "Payment Management Module";
+  //     const itemRequestModule = "Item Request Module";
+
+  //     // ----------- PO and Material Management Module --------------
+  //     if (normalizedType === "get quotation") {
+  //       await ensurePermission(poModule, "Get Quotation", "view");
+  //       await ensurePermission(poModule, "PO Generation", "add");
+  //       await ensurePermission(poModule, "PO Generation", "view");
+  //       await ensurePermission(poModule, "PI Request", "view");
+  //     }
+
+  //     if (normalizedType === "grn") {
+  //       await ensurePermission(poModule, "GRN", "view");
+  //       await ensurePermission(poModule, "PO Generation", "view");
+  //     }
+
+  //     if (normalizedType === "po generation") {
+  //       await ensurePermission(poModule, "PO Generation", "view");
+  //       await ensurePermission(poModule, "Get Quotation", "view");
+  //       await ensurePermission(poModule, "Get Quotation", "add");
+  //     }
+
+  //     if (normalizedType === "pi request") {
+  //       await ensurePermission(poModule, "PI Request", "view");
+  //       await ensurePermission(poModule, "GRN", "view");
+  //     }
+
+  //     // ----------- Payment Management Module --------------
+  //     if (normalizedType === "pending payment vendor list") {
+  //       await ensurePermission(
+  //         paymentModule,
+  //         "Pending Payment Vendor List",
+  //         "view"
+  //       );
+  //     }
+
+  //     if (normalizedType === "payment request") {
+  //       await ensurePermission(paymentModule, "Payment Request", "view");
+  //     }
+
+  //     // ----------- Item Request Module --------------
+  //     if (normalizedType === "item request") {
+  //       await ensurePermission(itemRequestModule, "Item Request", "view");
+  //     }
+
+  //     if (normalizedType === "store_head approval") {
+  //       await ensurePermission(
+  //         itemRequestModule,
+  //         "Store Head Approval",
+  //         "view"
+  //       );
+  //     }
+  //   }
+
+  //   // --- If unchecked and removing "view", auto-remove related ones (optional)
+  //   if (!isChecked && normalizedPerm === "view") {
+  //     setPermissions((prev) => {
+  //       const copy = { ...prev };
+  //       if (copy[moduleName]?.[type]) {
+  //         Object.keys(copy[moduleName][type]).forEach((perm) => {
+  //           if (perm !== "view") copy[moduleName][type][perm] = false;
+  //         });
+  //       }
+  //       return copy;
+  //     });
+  //   }
+  // };
+
   // Checkbox Component with persistent state ---new
   const PermissionCheckbox = ({ module, type, permission }) => {
     const key = makePermissionKey(module, type, permission);

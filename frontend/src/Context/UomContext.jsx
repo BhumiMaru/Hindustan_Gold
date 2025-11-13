@@ -14,7 +14,10 @@ export const useUOM = () => {
 // uom provider
 export const UOMProvider = ({ children }) => {
   const { handleClose } = useUIContext();
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const [search, setSearch] = useState(""); //search
   const [uom, setUom] = useState([]); // List
   const [filterUom, setFilterUom] = useState([]); // Filter List
@@ -70,6 +73,7 @@ export const UOMProvider = ({ children }) => {
   // Create uom
   const createUOM = async (name) => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.UOM.ADD_UPDATE, { name });
 
       console.log("rr", res);
@@ -87,26 +91,70 @@ export const UOMProvider = ({ children }) => {
 
       return res.data.data;
     } catch (error) {
-      toast.error(error.message);
-      console.log("Create uom list error", error);
+      console.error(error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setBtnLoading(false);
     }
   };
 
   //   Update Uom
   const EditUOM = async (payload) => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.UOM.ADD_UPDATE, payload);
       if (res.status) {
         toast.success(res.message);
+        handleClose("addNewUOM");
         setUomData(res.data.data);
-        getUOMList();
+        setUomData({ name: "" });
+        setEditId(null);
       }
-      setUomData({ name: "" });
-      setEditId(null);
+      getUOMList();
       return res.data.data;
     } catch (error) {
-      toast.error(error.message);
-      console.log("Edit uom list error", error);
+      console.error(error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -125,8 +173,10 @@ export const UOMProvider = ({ children }) => {
       }
       getUOMList();
     } catch (error) {
-      toast.error(error.message);
-      console.log("Destroy uom list error", error);
+      console.log(error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
@@ -153,6 +203,8 @@ export const UOMProvider = ({ children }) => {
         startEditing,
         loading,
         setLoading,
+        btnLoading,
+        setBtnLoading,
       }}
     >
       {children}

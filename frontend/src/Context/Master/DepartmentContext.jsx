@@ -14,7 +14,10 @@ export const useDepartment = () => {
 
 // DEPARTMENT PROVIDER
 export const DepartmentProvider = ({ children }) => {
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const { handleClose } = useUIContext();
   const [departments, setDepartments] = useState([]);
   const [deptFilter, setDeptFilter] = useState([]);
@@ -64,19 +67,98 @@ export const DepartmentProvider = ({ children }) => {
     }
   };
 
-  // ✅ Add Department
+  //  Add Department Function
   const addDepartment = async (deptName) => {
-    return await postData(ENDPOINTS.DEPARTMENTS.ADD_UPDATE, {
-      department_name: deptName,
-    });
+    try {
+      setBtnLoading(true); // Start loader
+
+      const response = await postData(ENDPOINTS.DEPARTMENTS.ADD_UPDATE, {
+        department_name: deptName,
+      });
+
+      if (response?.success) {
+        handleClose("addNewDepartment");
+        toast.success(response?.message);
+        // optionally reset input or refresh list here
+      } else {
+        toast.error(response?.message || "Failed to add department");
+      }
+    } catch (error) {
+      console.error(error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setBtnLoading(false); // Stop loader
+    }
   };
 
+  // const addDepartment = async (deptName) => {
+  //   return await postData(ENDPOINTS.DEPARTMENTS.ADD_UPDATE, {
+  //     department_name: deptName,
+  //   });
+  // };
+
   // ✅ Update Department (id in body, not params)
+  // ✅ Update Department Function
   const updateDepartment = async (id, deptName) => {
-    return await postData(ENDPOINTS.DEPARTMENTS.ADD_UPDATE, {
-      id, // 👈 id in body
-      department_name: deptName,
-    });
+    try {
+      setBtnLoading(true); // Start loader
+
+      const response = await postData(ENDPOINTS.DEPARTMENTS.ADD_UPDATE, {
+        id, // 👈 id in body
+        department_name: deptName,
+      });
+
+      if (response?.success) {
+        handleClose("addNewDepartment");
+        toast.success(response?.message);
+        // Optionally: refresh list, close modal, or reset form
+      } else {
+        toast.error(response?.message || "Failed to update department");
+      }
+    } catch (error) {
+      console.error(error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setBtnLoading(false); // Stop loader
+    }
   };
 
   // Delete Department (id in params)
@@ -119,6 +201,8 @@ export const DepartmentProvider = ({ children }) => {
         // handleSave,
         loading,
         setLoading,
+        btnLoading,
+        setBtnLoading,
       }}
     >
       {children}

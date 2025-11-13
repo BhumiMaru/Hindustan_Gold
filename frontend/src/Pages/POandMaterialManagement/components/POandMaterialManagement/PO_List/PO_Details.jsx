@@ -1004,7 +1004,7 @@ export default function PO_Details() {
           <SubCategoryProvider>
             <ItemRequestProvider>
               <Invoice_List_Form
-                onclose={async () => {
+                oncClose={async () => {
                   handleClose("addInvoice");
                   await GRNList({
                     po_id: poDetails?.id,

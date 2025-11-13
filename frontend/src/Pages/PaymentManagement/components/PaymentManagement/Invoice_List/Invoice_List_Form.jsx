@@ -14,7 +14,7 @@ export default function Invoice_List_Form({
   // itemIdInvoice,
   poIdInvoice,
   grnIdInvoice,
-  onclose,
+  onClose,
 }) {
   const { handleClose } = useUIContext();
   const {
@@ -34,6 +34,7 @@ export default function Invoice_List_Form({
     setType,
     // vendorIdInvoice,
     // itemIdInvoice,
+    btnLoading,
   } = useInvoice();
   console.log("poIdInvoice", poIdInvoice);
   console.log("poIdInvoice typeof", typeof poIdInvoice);
@@ -202,7 +203,7 @@ export default function Invoice_List_Form({
 
     console.log("res", res);
     if (res?.status) {
-      onclose();
+      onClose();
     }
 
     // handleClose("addInvoice");
@@ -244,7 +245,20 @@ export default function Invoice_List_Form({
                 onClick={() => {
                   handleClose("addInvoice");
                   setType(null);
-                  // resetPaymentData();
+                  setInvoiceId(null);
+                  resetPaymentData();
+                  setInvoiceData({
+                    grn_id: null,
+                    sub_cat_id: null,
+                    vendor_id: null,
+                    invoice_date: null,
+                    taxable_amount: null,
+                    tds_amount: null,
+                    paid_amount: null,
+                    remarks: "",
+                    invoice_type: null,
+                    invoice_file: null,
+                  });
                 }}
               />
             </div>
@@ -397,6 +411,19 @@ export default function Invoice_List_Form({
                       handleClose("addInvoice");
                       resetPaymentData();
                       setType(null);
+                      setInvoiceId(null);
+                      setInvoiceData({
+                        grn_id: null,
+                        sub_cat_id: null,
+                        vendor_id: null,
+                        invoice_date: null,
+                        taxable_amount: null,
+                        tds_amount: null,
+                        paid_amount: null,
+                        remarks: "",
+                        invoice_type: null,
+                        invoice_file: null,
+                      });
                     }}
                   >
                     Cancel
@@ -404,7 +431,14 @@ export default function Invoice_List_Form({
                   <button
                     className="btn  btn-success ms-2 waves-effect waves-light"
                     onClick={handleSave}
+                    disabled={btnLoading}
                   >
+                    {btnLoading && (
+                      <div
+                        className="spinner-border spinner-white me-2"
+                        role="status"
+                      ></div>
+                    )}
                     Save
                   </button>
                 </div>

@@ -412,8 +412,8 @@
 import { createContext, useContext, useState } from "react";
 import { ENDPOINTS } from "../../constants/endpoints";
 import { deleteData, getData, postData } from "../../utils/api";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export const ItemRequestContext = createContext();
@@ -424,7 +424,10 @@ export const useItemRequest = () => {
 
 export const ItemRequestProvider = ({ children }) => {
   const navigate = useNavigate();
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const [itemList, setItemList] = useState([]);
   const [itemRequest, setItemRequest] = useState([]);
   const [activeTab, setActiveTab] = useState("my_request");
@@ -532,6 +535,7 @@ export const ItemRequestProvider = ({ children }) => {
   // Create Item Request
   const createItemRequest = async (payload) => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.ITEM_REQUEST.ADD_UPDATE, payload, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -547,7 +551,29 @@ export const ItemRequestProvider = ({ children }) => {
         navigate("/user/request/request-list");
       }
     } catch (error) {
-      console.log("Create Item Request Error:", error);
+      console.error(error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -681,7 +707,7 @@ export const ItemRequestProvider = ({ children }) => {
     try {
       // console.log("Editing item request with ID:", id);
       // console.log("Payload:", payload);
-
+      setBtnLoading(true);
       const res = await postData(
         ENDPOINTS.ITEM_REQUEST.ADD_UPDATE,
         {
@@ -699,18 +725,36 @@ export const ItemRequestProvider = ({ children }) => {
 
       if (res.status) {
         setItemRequestData(res.data);
-        toast.success("Updated Successfully");
+        toast.success(res.message);
         getItemRequestData(); // Refresh the list
         navigate("/user/request/request-list");
       } else {
         toast.error(res.message || "Failed to update item request");
       }
     } catch (error) {
-      console.log("Edit Error:", error);
-      // toast.error("Error updating item request");
+      console.error(error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -890,6 +934,8 @@ export const ItemRequestProvider = ({ children }) => {
         set_ItemRequest_Id,
         setWholeItemRequestData,
         wholeItemRequestData,
+        btnLoading,
+        setBtnLoading,
       }}
     >
       {children}

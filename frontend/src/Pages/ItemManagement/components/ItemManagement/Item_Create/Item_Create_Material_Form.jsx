@@ -27,6 +27,7 @@ export default function Item_Create_Material_Form() {
     StartEditing,
     ResetItemMaster,
     setItemEditId,
+    btnLoading,
   } = useItemMaster();
 
   const navigate = useNavigate();
@@ -899,7 +900,14 @@ export default function Item_Create_Material_Form() {
                       <button
                         className="btn btn-primary waves-effect waves-light"
                         onClick={handleSave}
+                        disabled={btnLoading}
                       >
+                        {btnLoading && (
+                          <div
+                            className="spinner-border spinner-white me-2"
+                            role="status"
+                          ></div>
+                        )}
                         Save
                       </button>
                     </div>

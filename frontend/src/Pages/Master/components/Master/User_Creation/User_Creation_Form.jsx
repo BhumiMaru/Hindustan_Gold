@@ -27,6 +27,7 @@ export default function User_Creation_Form() {
     resetUserData,
     setIsEditUserId,
     fetchUserById,
+    btnLoading,
   } = useUserCreation();
   const { fetchRoleFilter, filterRole } = useRoleMaster();
   const { fetchCompanyFilter, companyFilter } = useCompanyMaster();
@@ -78,6 +79,7 @@ export default function User_Creation_Form() {
   // Save Data
   const handleSave = async (e) => {
     e.preventDefault();
+
     const payload = { ...useCreationData };
 
     try {
@@ -99,6 +101,49 @@ export default function User_Creation_Form() {
       console.log(error);
     }
   };
+
+  // Save Data
+  // const handleSave = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     const formData = new FormData();
+
+  //     Object.entries(useCreationData).forEach(([key, value]) => {
+  //       if (key === "profile_photo") {
+  //         if (value instanceof File) {
+  //           formData.append("profile_photo", value); // ✅ new file
+  //         }
+  //       } else {
+  //         formData.append(key, value ?? "");
+  //       }
+  //     });
+
+  //     // Always append existing filename for backend to retain old file
+  //     if (useCreationData.existing_profile_photo) {
+  //       formData.append(
+  //         "existing_profile_photo",
+  //         useCreationData.existing_profile_photo
+  //       );
+  //     }
+
+  //     const payload = {
+  //       ...useCreationData,
+  //       formData,
+  //     };
+
+  //     if (id) {
+  //       await updateUser(id, payload);
+  //     } else {
+  //       const newUser = await createUser(payload);
+  //       if (newUser?.id) {
+  //         navigate(`/super_admin/master/user-create/${newUser.id}`);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Save error:", error);
+  //   }
+  // };
 
   return (
     <>
@@ -509,6 +554,7 @@ export default function User_Creation_Form() {
                 className="form-control"
                 id="uploadid"
                 name="profile_photo"
+                // value={useCreationData?.profile_photo}
                 placeholder="Enter Employee ID"
                 onChange={(e) => {
                   const file = e.target.files[0];
@@ -568,7 +614,14 @@ export default function User_Creation_Form() {
               <button
                 className="btn btn-primary waves-effect waves-light"
                 onClick={handleSave}
+                disabled={btnLoading}
               >
+                {btnLoading && (
+                  <div
+                    className="spinner-border spinner-white me-2"
+                    role="status"
+                  ></div>
+                )}
                 Save
               </button>
             </div>

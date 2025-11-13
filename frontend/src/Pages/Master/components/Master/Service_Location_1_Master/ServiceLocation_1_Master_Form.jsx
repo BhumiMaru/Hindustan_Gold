@@ -13,6 +13,7 @@ export default function ServiceLocation_1_Master_Form() {
     createServiceLocation,
     serviceLocation1EditId,
     setServiceLocation1EditId,
+    btnLoading,
   } = useServiceLocation1Master();
 
   const handleSubmit = () => {
@@ -29,7 +30,7 @@ export default function ServiceLocation_1_Master_Form() {
     }
     setServiceLocation1EditId(null);
     setServiceLocationName("");
-    handleClose("addNewServiceLocation1");
+    // handleClose("addNewServiceLocation1");
   };
 
   return (
@@ -101,7 +102,14 @@ export default function ServiceLocation_1_Master_Form() {
                   type="button"
                   className="btn btn-primary waves-effect waves-light"
                   onClick={handleSubmit}
+                  disabled={btnLoading}
                 >
+                  {btnLoading && (
+                    <div
+                      className="spinner-border spinner-white me-2"
+                      role="status"
+                    ></div>
+                  )}
                   Save changes
                 </button>
               </div>

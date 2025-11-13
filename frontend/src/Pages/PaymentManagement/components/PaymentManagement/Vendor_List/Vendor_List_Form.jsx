@@ -14,6 +14,7 @@ export default function Vendor_List_Form({ getVendorFilter }) {
     // getVendorFilter,
     getVendorList,
     resetVendorData,
+    btnLoading,
   } = useVendor();
 
   // Reset form when modal opens/closes
@@ -318,7 +319,14 @@ export default function Vendor_List_Form({ getVendorFilter }) {
                 type="button"
                 className="btn btn-primary waves-effect waves-light"
                 onClick={handleSave}
+                disabled={btnLoading}
               >
+                {btnLoading && (
+                  <div
+                    className="spinner-border spinner-white me-2"
+                    role="status"
+                  ></div>
+                )}
                 {vendorEditId ? "Update" : "Save"}
               </button>
             </div>

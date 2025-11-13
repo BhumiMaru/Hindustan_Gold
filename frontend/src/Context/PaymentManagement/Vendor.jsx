@@ -12,7 +12,10 @@ export const useVendor = () => {
 
 // Vendor Provider
 export const VendorProvider = ({ children }) => {
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     perPage: 10,
@@ -88,6 +91,7 @@ export const VendorProvider = ({ children }) => {
   // Create Vendor
   const createVendor = async (payload) => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.VENDOR.ADD_UPDATE, payload);
 
       console.log("res", res);
@@ -100,25 +104,49 @@ export const VendorProvider = ({ children }) => {
 
       return res;
     } catch (error) {
-      console.log("Error:", error);
+      // console.log("Error:", error);
 
-      if (error.response && error.response.data && error.response.data.errors) {
-        const errors = error.response.data.errors;
+      // if (error.response && error.response.data && error.response.data.errors) {
+      //   const errors = error.response.data.errors;
 
-        // Loop through each error key and show all messages
-        Object.keys(errors).forEach((key) => {
-          const messages = errors[key];
-          messages.forEach((msg) => toast.error(msg));
-        });
+      //   // Loop through each error key and show all messages
+      //   Object.keys(errors).forEach((key) => {
+      //     const messages = errors[key];
+      //     messages.forEach((msg) => toast.error(msg));
+      //   });
+      // } else {
+      //   toast.error("Something went wrong. Please try again.");
+      // }
+      console.error(error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
       } else {
-        toast.error("Something went wrong. Please try again.");
+        toast.error("Network error occurred");
       }
+    } finally {
+      setBtnLoading(false);
     }
   };
 
   // Edit Vendor
   const EditVendor = async (id, payload) => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.VENDOR.ADD_UPDATE, {
         id,
         ...payload,
@@ -132,10 +160,29 @@ export const VendorProvider = ({ children }) => {
 
       return res;
     } catch (error) {
-      console.log("Error:", error);
+      console.error(error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -177,9 +224,26 @@ export const VendorProvider = ({ children }) => {
         return vendor; // ✅ return filled object
       }
     } catch (error) {
-      console.log("Error:", error);
+      console.error(error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
     }
   };
@@ -297,6 +361,7 @@ export const VendorProvider = ({ children }) => {
         vendorDelete,
         loading,
         setLoading,
+        btnLoading,
       }}
     >
       {children}

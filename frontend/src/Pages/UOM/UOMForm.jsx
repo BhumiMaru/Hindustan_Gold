@@ -5,8 +5,15 @@ import { toast } from "react-toastify";
 import { useUIContext } from "../../Context/UIContext";
 
 export default function UOMForm() {
-  const { editId, setEditId, uomData, setUomData, createUOM, EditUOM } =
-    useUOM();
+  const {
+    editId,
+    setEditId,
+    uomData,
+    setUomData,
+    createUOM,
+    EditUOM,
+    btnLoading,
+  } = useUOM();
   const { handleClose } = useUIContext();
 
   const handleSubmit = () => {
@@ -95,7 +102,14 @@ export default function UOMForm() {
                 type="button"
                 className="btn btn-primary waves-effect waves-light"
                 onClick={handleSubmit}
+                disabled={btnLoading}
               >
+                {btnLoading && (
+                  <div
+                    className="spinner-border spinner-white me-2"
+                    role="status"
+                  ></div>
+                )}
                 Save changes
               </button>
             </div>

@@ -12,7 +12,10 @@ export const useItemMaster = () => {
 
 // Item Category Provider
 export const ItemMasterProvider = ({ children }) => {
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const [itemMaster, setItemMaster] = useState([]);
   const [isItemEditId, setItemEditId] = useState(null);
   const [itemMasterData, setItemMasterData] = useState({
@@ -123,6 +126,7 @@ export const ItemMasterProvider = ({ children }) => {
   // Create Item Master
   const createItemMaster = async (payload) => {
     try {
+      setBtnLoading(true);
       const sanitizedPayload = {
         ...payload,
         is_movable: payload.is_movable !== null ? payload.is_movable : 0, // default to 0
@@ -147,25 +151,36 @@ export const ItemMasterProvider = ({ children }) => {
 
       return res;
     } catch (error) {
-      console.log("item master create error:", error);
-      // if (error.response && error.response.data) {
-      //   toast.error(error.response.data.message);
-      // }
-      if (error.response && error.response.data && error.response.data.errors) {
-        const errors = error.response.data.errors;
+      console.error(error);
 
-        // Flatten all error messages into a single array
-        const messages = Object.values(errors).flat();
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
 
-        // Show each message in toast
-        messages.forEach((msg) => toast.error(msg));
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
   // Edit Item Master
   const EditItemMaster = async (item_id, payload) => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.ITEM_MASTER.ADD_UPDATE, {
         id: item_id,
         ...payload,
@@ -180,19 +195,42 @@ export const ItemMasterProvider = ({ children }) => {
       // fetchItemMaster();
       return res;
     } catch (error) {
-      console.log("Failed to Edit Item", error);
-      // if (error.response && error.response.data) {
-      //   toast.error(error.response.data.message);
+      // console.log("Failed to Edit Item", error);
+      // // if (error.response && error.response.data) {
+      // //   toast.error(error.response.data.message);
+      // // }
+      // if (error.response && error.response.data && error.response.data.errors) {
+      //   const errors = error.response.data.errors;
+
+      //   // Flatten all error messages into a single array
+      //   const messages = Object.values(errors).flat();
+
+      //   // Show each message in toast
+      //   messages.forEach((msg) => toast.error(msg));
       // }
-      if (error.response && error.response.data && error.response.data.errors) {
-        const errors = error.response.data.errors;
+      console.error(error);
 
-        // Flatten all error messages into a single array
-        const messages = Object.values(errors).flat();
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
 
-        // Show each message in toast
-        messages.forEach((msg) => toast.error(msg));
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
+    } finally {
+      setBtnLoading(false); // Stop loader
     }
   };
 
@@ -625,6 +663,7 @@ export const ItemMasterProvider = ({ children }) => {
         fetchItemSubCategoryById,
         loading,
         setLoading,
+        btnLoading,
         setItemEditId,
       }}
     >
