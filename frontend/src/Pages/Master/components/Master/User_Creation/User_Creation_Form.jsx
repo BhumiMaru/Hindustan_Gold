@@ -10,13 +10,11 @@ import { useServiceLocation3Master } from "../../../../../Context/Master/Service
 import { useZone } from "../../../../../Context/Master/ZoneContext";
 import { useDepartment } from "../../../../../Context/Master/DepartmentContext";
 import User_Creation_Permission from "./User_Creation_Permission";
-import { decryptData } from "../../../../../utils/decryptData";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export default function User_Creation_Form() {
-  const { id: encryptId } = useParams();
-  const decryptId = decryptData(encryptId);
+  const { id } = useParams();
   const navigate = useNavigate();
   const {
     createUser,
@@ -52,17 +50,17 @@ export default function User_Creation_Form() {
   // console.log("id", id);
 
   useEffect(() => {
-    if (decryptId) {
+    if (id) {
       // set edit id in context
       // console.log("id1", id);
-      setIsEditUserId(decryptId);
-      fetchUserById(decryptId);
+      setIsEditUserId(id);
+      fetchUserById(id);
     } else {
       // reset if no id in route
       setIsEditUserId(null);
       resetUserData();
     }
-  }, [decryptId]);
+  }, [id]);
 
   useEffect(() => {
     // fetchSL1Filter();
@@ -85,9 +83,9 @@ export default function User_Creation_Form() {
     const payload = { ...useCreationData };
 
     try {
-      if (decryptId) {
+      if (id) {
         // console.log("before id", id, "payload", payload);
-        await updateUser(decryptId, payload);
+        await updateUser(id, payload);
         // resetUserData();
         // setIsEditUserId(null);
       } else {
@@ -579,7 +577,7 @@ export default function User_Creation_Form() {
                 "useCreationData?.profile_photo",
                 useCreationData?.profile_photo
               )} */}
-              {decryptId ? (
+              {id ? (
                 useCreationData?.profile_photo ? (
                   <Link
                     to={`${fileUrl}/storage/users/${useCreationData?.profile_photo}`}
@@ -633,7 +631,7 @@ export default function User_Creation_Form() {
             </div>
           </div>
         </div>
-        {decryptId && (
+        {id && (
           <>
             <h3 className="mt-4">User Permissions</h3>
             <User_Creation_Permission />
