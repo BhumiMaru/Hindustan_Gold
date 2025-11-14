@@ -89,7 +89,7 @@ export const InvoiceProvider = ({ children }) => {
       setLoading(true);
       const params = {
         status: status !== "all" ? status : undefined,
-        search: search || undefined,
+        search: search !== "" ? search : undefined,
         type: selectedType !== "all" ? selectedType : undefined,
         vendor_id: vendorName !== "all" ? vendorName : undefined,
         start_date: startDate || dateRange.start || undefined,
@@ -98,6 +98,8 @@ export const InvoiceProvider = ({ children }) => {
         page,
         per_page: perPage,
       };
+
+      console.log("params", params);
 
       const res = await getData(ENDPOINTS.INVOICE.LIST, params);
 

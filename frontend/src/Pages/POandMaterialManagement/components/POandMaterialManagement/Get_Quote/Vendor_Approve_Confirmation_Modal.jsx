@@ -6,6 +6,9 @@ import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
 export default function Vendor_Approve_Confirmation_Modal({
   vendorApproveData,
   setNewVendorLoading,
+  newVendorLoading,
+  setOldVendorLoading,
+  oldVendorLoading,
 }) {
   const { handleClose } = useUIContext();
   const { vendorApprove, getVendorList } = useVendor();
@@ -15,10 +18,17 @@ export default function Vendor_Approve_Confirmation_Modal({
 
   const handleApprove = async () => {
     try {
-      setNewVendorLoading((prev) => ({
-        ...prev,
-        [vendorApproveData.vendor_id]: true,
-      }));
+      if (vendorApproveData?.vendor_type === "old") {
+        setOldVendorLoading((prev) => ({
+          ...prev,
+          [vendorApproveData.vendor_id]: true,
+        }));
+      } else {
+        setNewVendorLoading((prev) => ({
+          ...prev,
+          [vendorApproveData.vendor_id]: true,
+        }));
+      }
 
       // ✅ Wait for vendor approval API to finish
       const res = await vendorApprove({
@@ -42,10 +52,17 @@ export default function Vendor_Approve_Confirmation_Modal({
     } catch (error) {
       console.error("Vendor approve error:", error);
     } finally {
-      setNewVendorLoading((prev) => ({
-        ...prev,
-        [vendorApproveData.vendor_id]: false,
-      }));
+      if (vendorApproveData?.vendor_type === "old") {
+        setOldVendorLoading((prev) => ({
+          ...prev,
+          [vendorApproveData.vendor_id]: false,
+        }));
+      } else {
+        setNewVendorLoading((prev) => ({
+          ...prev,
+          [vendorApproveData.vendor_id]: false,
+        }));
+      }
     }
   };
 
@@ -91,7 +108,15 @@ export default function Vendor_Approve_Confirmation_Modal({
                 type="button"
                 className="btn btn-primary waves-effect waves-light"
                 onClick={handleApprove}
+                disabled={newVendorLoading || oldVendorLoading}
               >
+                {newVendorLoading ||
+                  (oldVendorLoading && (
+                    <div
+                      className="spinner-border spinner-white me-2"
+                      role="status"
+                    ></div>
+                  ))}
                 Approve
               </button>
             </div>

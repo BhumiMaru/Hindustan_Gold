@@ -732,8 +732,14 @@ import { usePIRequest } from "../../../../../Context/PIAndPoManagement/PIRequest
 
 export default function PI_Item_Request_Form() {
   const { type, id } = useParams();
-  const { CreatePIRequest, items, setItems, findById, editPiRequest } =
-    usePIRequest();
+  const {
+    CreatePIRequest,
+    items,
+    setItems,
+    findById,
+    editPiRequest,
+    btnLoading,
+  } = usePIRequest();
   const { itemMaster, fetchItemMaster } = useItemMaster();
   const [isPurpose, setIsPurpose] = useState(false);
   const [isStock, setIsStock] = useState();
@@ -1331,7 +1337,14 @@ export default function PI_Item_Request_Form() {
               <button
                 className="btn btn-primary waves-effect waves-light"
                 onClick={handleSave}
+                disabled={btnLoading}
               >
+                {btnLoading && (
+                  <div
+                    className="spinner-border spinner-white me-2"
+                    role="status"
+                  ></div>
+                )}
                 Save
               </button>
             </div>

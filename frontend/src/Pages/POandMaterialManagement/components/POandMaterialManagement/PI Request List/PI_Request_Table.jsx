@@ -28,8 +28,9 @@ export default function PI_Request_Table({ userPermission }) {
     setSelectedItemsMap,
     loading,
     serviceReceived,
+    btnLoading,
   } = usePIRequest();
-  const { getQuoteCreate } = useGetQuote();
+  const { getQuoteCreate, getQuoteBtnLoading } = useGetQuote();
   const { modal, handleOpen } = useUIContext();
   const [expandedRows, setExpandedRows] = useState({});
   const navigate = useNavigate();
@@ -1274,7 +1275,14 @@ export default function PI_Request_Table({ userPermission }) {
                                       );
                                     }
                                   }}
+                                  disabled={getQuoteBtnLoading}
                                 >
+                                  {getQuoteBtnLoading && (
+                                    <div
+                                      className="spinner-border spinner-white me-2"
+                                      role="status"
+                                    ></div>
+                                  )}
                                   Get Quotation
                                 </Link>
                               </div>
@@ -1318,7 +1326,14 @@ export default function PI_Request_Table({ userPermission }) {
                                     );
                                   }
                                 }}
+                                disabled={btnLoading}
                               >
+                                {btnLoading && (
+                                  <div
+                                    className="spinner-border spinner-white me-2"
+                                    role="status"
+                                  ></div>
+                                )}
                                 Bulk Item Approve
                               </button>
                             )}
@@ -1358,7 +1373,14 @@ export default function PI_Request_Table({ userPermission }) {
                                     );
                                   }
                                 }}
+                                disabled={btnLoading}
                               >
+                                {btnLoading && (
+                                  <div
+                                    className="spinner-border spinner-white me-2"
+                                    role="status"
+                                  ></div>
+                                )}
                                 Bulk Item Reject
                               </button>
                             )}

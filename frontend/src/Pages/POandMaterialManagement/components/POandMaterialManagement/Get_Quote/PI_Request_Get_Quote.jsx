@@ -1283,6 +1283,9 @@ export default function PI_Request_Get_Quote() {
         <Vendor_Approve_Confirmation_Modal
           vendorApproveData={vendorApproveData}
           setNewVendorLoading={setNewVendorLoading}
+          newVendorLoading={newVendorLoading}
+          setOldVendorLoading={setOldVendorLoading}
+          oldVendorLoading={oldVendorLoading}
         />
       )}
       {/* ---------------END PI REQUEST GET QUOTE-------------------- */}

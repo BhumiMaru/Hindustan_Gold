@@ -14,7 +14,10 @@ export const useGetQuote = () => {
 
 // Get Quote Provider
 export const GetQuoteProvider = ({ children }) => {
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [getQuoteBtnLoading, setGetQuoteBtnLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [quote, setQuote] = useState([]);
   const [quoteData, setQuoteData] = useState(null); // create get quote
@@ -111,6 +114,7 @@ export const GetQuoteProvider = ({ children }) => {
   // ---------------- GET QUOTE CREATE ----------------
   const getQuoteCreate = async (payload) => {
     try {
+      setGetQuoteBtnLoading(true);
       console.log("payload", payload);
       const res = await postData(ENDPOINTS.GETQUOTE.CREATE, payload);
       if (res?.status) {
@@ -122,8 +126,29 @@ export const GetQuoteProvider = ({ children }) => {
       }
       return res;
     } catch (error) {
-      toast.error("Error during Get Quote Create");
-      console.error("Get Quote Create error:", error);
+      console.error(error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setGetQuoteBtnLoading(true);
     }
   };
 
@@ -485,6 +510,7 @@ export const GetQuoteProvider = ({ children }) => {
         setVendorEmailData,
         loading,
         setLoading,
+        getQuoteBtnLoading,
       }}
     >
       {children}

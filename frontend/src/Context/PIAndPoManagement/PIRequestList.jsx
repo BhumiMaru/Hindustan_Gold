@@ -3,14 +3,19 @@ import api, { deleteData, postData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
 import { toast } from "react-toastify";
 import { useItemMaster } from "../ItemManagement/ItemMasterContext";
+import { useUIContext } from "../UIContext";
 
 export const PIRequestContext = createContext();
 export const usePIRequest = () => useContext(PIRequestContext);
 
 export const PIRequestProvider = ({ children }) => {
+  const { handleClose } = useUIContext();
   const itemMasterContext = useItemMaster();
   const itemMaster = itemMasterContext?.itemMaster || [];
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   // const [activeTab, setActiveTab] = useState("my_request");
   const [activeTab, setActiveTab] = useState(() => {
     // ✅ Initialize from sessionStorage if exists
@@ -268,54 +273,80 @@ export const PIRequestProvider = ({ children }) => {
   // Create
   const CreatePIRequest = async (payload) => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.PI_REQUEST.ADD_UPDATE, payload);
       // console.log("res", res);
       if (res?.status) {
-        toast.success(res.message || "PI Request saved successfully!");
+        toast.success(res.message);
       }
       getPIRequest();
       return res;
     } catch (error) {
-      // if (error.response && error.response.data && error.response.data.errors) {
-      //   const errors = error.response.data.errors;
+      console.error(error);
 
-      //   // Flatten all error messages into a single array
-      //   const messages = Object.values(errors).flat();
-
-      //   // Show each message in toast
-      //   messages.forEach((msg) => toast.error(msg));
-      // }
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
-      }
+        const errorData = error.response.data;
 
-      console.error("savePIRequest error:", error);
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+      // if (error.response && error.response.data) {
+      //   toast.error(error.response.data.message);
+      // }
+
+      // console.error("savePIRequest error:", error);
+    } finally {
+      setBtnLoading(false);
     }
   };
 
   // Update
   const editPiRequest = async (id, payload) => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.PI_REQUEST.ADD_UPDATE, payload);
       if (res?.status) {
-        toast.success(res.message || "PI Request updated successfully!");
+        toast.success(res.message);
       }
       getPIRequest();
       return res;
     } catch (error) {
-      // if (error.response && error.response.data && error.response.data.errors) {
-      //   const errors = error.response.data.errors;
+      console.error(error);
 
-      //   // Flatten all error messages into a single array
-      //   const messages = Object.values(errors).flat();
-
-      //   // Show each message in toast
-      //   messages.forEach((msg) => toast.error(msg));
-      // }
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
-      console.error("Editing PIRequest error:", error);
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -403,19 +434,27 @@ export const PIRequestProvider = ({ children }) => {
         );
       }
     } catch (error) {
-      // if (error.response && error.response.data && error.response.data.errors) {
-      //   const errors = error.response.data.errors;
+      console.error(error);
 
-      //   // Flatten all error messages into a single array
-      //   const messages = Object.values(errors).flat();
-
-      //   // Show each message in toast
-      //   messages.forEach((msg) => toast.error(msg));
-      // }
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
-      console.error("Find by id PIRequest error:", error);
     }
   };
 
@@ -506,6 +545,7 @@ export const PIRequestProvider = ({ children }) => {
   // Bulk Approve
   const bulkApprove = async ({ pi_request_item_id, pi_request_id }) => {
     try {
+      setBtnLoading(true);
       const payload = { pi_request_item_id, pi_request_id };
       const res = await postData(ENDPOINTS.PI_REQUEST.BULKAPPROVE, payload);
 
@@ -531,10 +571,29 @@ export const PIRequestProvider = ({ children }) => {
       }
       return res;
     } catch (error) {
+      console.error(error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
-      console.error("Bulk Approve PIRequest error:", error);
+    } finally {
+      setBtnLoading(false);
     }
   };
   // const bulkApprove = async (payload) => {
@@ -570,6 +629,7 @@ export const PIRequestProvider = ({ children }) => {
   // };
 
   //  Single Reject
+
   const singleReject = async ({ pi_request_item_id, pi_request_id }) => {
     try {
       const payload = { pi_request_item_id, pi_request_id };
@@ -631,6 +691,7 @@ export const PIRequestProvider = ({ children }) => {
   // Bulk Reject
   const bulkReject = async ({ pi_request_item_id, pi_request_id }) => {
     try {
+      setBtnLoading(true);
       const payload = { pi_request_item_id, pi_request_id };
       const res = await postData(ENDPOINTS.PI_REQUEST.BULKREJECT, payload);
 
@@ -656,10 +717,29 @@ export const PIRequestProvider = ({ children }) => {
       }
       return res;
     } catch (error) {
+      console.error(error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
-      console.error("Bulk Reject PIRequest error:", error);
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -694,6 +774,7 @@ export const PIRequestProvider = ({ children }) => {
   // Service Received
   const serviceReceived = async ({ request_id }) => {
     try {
+      setBtnLoading(true);
       const res = await postData(ENDPOINTS.PI_REQUEST.SERVICERECEIVED, {
         request_id: Number(request_id),
       });
@@ -702,6 +783,7 @@ export const PIRequestProvider = ({ children }) => {
 
       if (res?.status) {
         toast.success(res.message);
+        handleClose("serviceReceive");
         getPIRequest();
       }
 
@@ -728,10 +810,38 @@ export const PIRequestProvider = ({ children }) => {
       // }
       console.log("Service received response:", res);
     } catch (error) {
+      // if (error.response && error.response.data) {
+      //   toast.error(error.response.data.message);
+      // }
+      // console.error("Service Received in PIRequest error:", error);
+      console.error(error);
+
+      // FIXED: Properly display validation errors
       if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
       }
-      console.error("Service Received in PIRequest error:", error);
+      // if (error.response && error.response.data) {
+      //   toast.error(error.response.data.message);
+      // }
+
+      // console.error("savePIRequest error:", error);
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -784,6 +894,7 @@ export const PIRequestProvider = ({ children }) => {
         loading,
         setLoading,
         serviceReceived,
+        btnLoading,
       }}
     >
       {children}

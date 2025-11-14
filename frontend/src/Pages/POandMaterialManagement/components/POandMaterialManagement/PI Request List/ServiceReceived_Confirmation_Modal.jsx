@@ -4,7 +4,7 @@ import { usePIRequest } from "../../../../../Context/PIAndPoManagement/PIRequest
 
 export default function ServiceReceived_Confirmation_Modal({ piRequestId }) {
   const { handleClose } = useUIContext();
-  const { serviceReceived } = usePIRequest();
+  const { serviceReceived, btnLoading } = usePIRequest();
   console.log("piRequestId", typeof piRequestId);
 
   //  Handle Service Received Confirmation
@@ -13,7 +13,7 @@ export default function ServiceReceived_Confirmation_Modal({ piRequestId }) {
       await serviceReceived({
         request_id: Number(piRequestId),
       });
-      handleClose("serviceReceive");
+      // handleClose("serviceReceive");
     } catch (error) {
       console.error("Error marking service as received:", error);
     }
@@ -63,7 +63,14 @@ export default function ServiceReceived_Confirmation_Modal({ piRequestId }) {
                 type="button"
                 className="btn btn-primary waves-effect waves-light"
                 onClick={handleServiceReceived}
+                disabled={btnLoading}
               >
+                {btnLoading && (
+                  <div
+                    className="spinner-border spinner-white me-2"
+                    role="status"
+                  ></div>
+                )}
                 Yes, Received
               </button>
             </div>

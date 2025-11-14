@@ -302,7 +302,7 @@ export default function Vendor_List_Form({ getVendorFilter }) {
                       }));
                     }}
                     placeholder="Select Status"
-                    // isTextRequired
+                    isTextRequired
                   />
                 </div>
               </div>

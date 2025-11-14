@@ -20,6 +20,7 @@ import Invoice_List_Form from "../../../../PaymentManagement/components/PaymentM
 import { useInvoice } from "../../../../../Context/PIAndPoManagement/Invoice";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 import { decryptData } from "../../../../../utils/decryptData";
+import Loader from "../../../../../components/Common/Loader/Loader";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function PO_Details() {
@@ -45,7 +46,7 @@ export default function PO_Details() {
     // setSubcategoryIdInvoice,
   } = useInvoice();
   const { userPermission, fetchUserPermission } = useUserCreation();
-  const { GRNList, grnList } = useGRN();
+  const { GRNList, grnList, loading } = useGRN();
 
   // sub category id , vendor id and grn id set via po and grn
   // const [subcategoryIdInvoice, setSubcategoryIdInvoice] = useState(null);
@@ -488,54 +489,61 @@ export default function PO_Details() {
                     </tr>
                   </thead>
                   <tbody>
-                    {grnList?.map((grn, index) => {
-                      console.log("grnn", grn);
-                      return (
-                        <tr>
-                          <td>
-                            <div className="ms-4">{index + 1}</div>
-                          </td>
-                          <td>{grn?.grn_no}</td>
-                          {/* <td>{setPoIdInvoice(grn.po_id)}</td> */}
-                          <td>{grn?.grn_date}</td>
-                          <td>
-                            <div className="d-flex justify-content-start align-items-center user-name">
-                              <div className="avatar-wrapper">
-                                {/* <div className="avatar me-2">
+                    {loading ? (
+                      <tr>
+                        <td colSpan="11">
+                          <Loader />
+                        </td>
+                      </tr>
+                    ) : (
+                      grnList?.map((grn, index) => {
+                        console.log("grnn", grn);
+                        return (
+                          <tr>
+                            <td>
+                              <div className="ms-4">{index + 1}</div>
+                            </td>
+                            <td>{grn?.grn_no}</td>
+                            {/* <td>{setPoIdInvoice(grn.po_id)}</td> */}
+                            <td>{grn?.grn_date}</td>
+                            <td>
+                              <div className="d-flex justify-content-start align-items-center user-name">
+                                <div className="avatar-wrapper">
+                                  {/* <div className="avatar me-2">
                                   <img
                                     src="assets/img/avatars/10.png"
                                     alt="Avatar"
                                     className="rounded-circle"
                                   />
                                 </div> */}
-                              </div>
-                              <div className="d-flex flex-column">
-                                <span className="emp_name text-truncate text-heading fw-medium">
-                                  {grn?.pirequestperson?.name}
-                                </span>
-                                {/* <small className="emp_post text-truncate">
+                                </div>
+                                <div className="d-flex flex-column">
+                                  <span className="emp_name text-truncate text-heading fw-medium">
+                                    {grn?.pirequestperson?.name}
+                                  </span>
+                                  {/* <small className="emp_post text-truncate">
                                   {grnList?.pirequestperson?.department}
                                 </small> */}
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                          <td>{grn.items?.length}</td>
+                            </td>
+                            <td>{grn.items?.length}</td>
 
-                          <td>
-                            <span
-                              className={`badge ${
-                                grn?.status === "Complete" ||
-                                grn?.status === "Approve"
-                                  ? "bg-label-success"
-                                  : grn?.status === "Pending"
-                                  ? "bg-label-warning"
-                                  : "bg-label-danger"
-                              }`}
-                            >
-                              {grn?.status}
-                            </span>
-                          </td>
-                          {/* <td
+                            <td>
+                              <span
+                                className={`badge ${
+                                  grn?.status === "Complete" ||
+                                  grn?.status === "Approve"
+                                    ? "bg-label-success"
+                                    : grn?.status === "Pending"
+                                    ? "bg-label-warning"
+                                    : "bg-label-danger"
+                                }`}
+                              >
+                                {grn?.status}
+                              </span>
+                            </td>
+                            {/* <td
                             className={`${
                               grn?.status === "Complete" ? "d-block" : "d-none"
                             }`}
@@ -595,52 +603,53 @@ export default function PO_Details() {
                               </Link>
                             ) : null}
                           </td> */}
-                          {/* ✅ Show View Invoice Icon when GRN is Complete */}
-                          <td>
-                            {grn?.is_invoice_create === 1 && (
-                              <Link
-                                to="/payment-management/invoice-list"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="top"
-                                aria-label="View Invoice"
-                                data-bs-original-title="View Invoice"
-                              >
-                                <i className="icon-base ti tabler-file-invoice text-success icon-20px" />
-                              </Link>
-                            )}
-                          </td>
-
-                          {/* ✅ Show Create Invoice Button when GRN is Pending & user has permission */}
-
-                          {grn?.is_invoice_create == 0 &&
-                            userPermission?.some(
-                              (perm) =>
-                                [
-                                  "Get Quotation",
-                                  "PO Generation",
-                                  "GRN",
-                                ].includes(perm.type) &&
-                                perm.permission === "add"
-                            ) && (
-                              <td>
+                            {/* ✅ Show View Invoice Icon when GRN is Complete */}
+                            <td>
+                              {grn?.is_invoice_create === 1 && (
                                 <Link
-                                  onClick={() => {
-                                    handleOpen("addInvoice");
-                                    setType(2);
-                                    // setSubcategoryIdInvoice();
-                                    // setVendorIdInvoice(grn?.vendor_id);
-                                    // setItemIdInvoice(grn?.items[0]?.item_id);
-                                    setPoIdInvoice(Number(grn?.po_id));
-                                  }}
-                                  className="btn btn-dark btn-sm waves-effect waves-light"
+                                  to="/payment-management/invoice-list"
+                                  data-bs-toggle="tooltip"
+                                  data-bs-placement="top"
+                                  aria-label="View Invoice"
+                                  data-bs-original-title="View Invoice"
                                 >
-                                  Create Invoice
+                                  <i className="icon-base ti tabler-file-invoice text-success icon-20px" />
                                 </Link>
-                              </td>
-                            )}
-                        </tr>
-                      );
-                    })}
+                              )}
+                            </td>
+
+                            {/* ✅ Show Create Invoice Button when GRN is Pending & user has permission */}
+
+                            {grn?.is_invoice_create == 0 &&
+                              userPermission?.some(
+                                (perm) =>
+                                  [
+                                    "Get Quotation",
+                                    "PO Generation",
+                                    "GRN",
+                                  ].includes(perm.type) &&
+                                  perm.permission === "add"
+                              ) && (
+                                <td>
+                                  <Link
+                                    onClick={() => {
+                                      handleOpen("addInvoice");
+                                      setType(2);
+                                      // setSubcategoryIdInvoice();
+                                      // setVendorIdInvoice(grn?.vendor_id);
+                                      // setItemIdInvoice(grn?.items[0]?.item_id);
+                                      setPoIdInvoice(Number(grn?.po_id));
+                                    }}
+                                    className="btn btn-dark btn-sm waves-effect waves-light"
+                                  >
+                                    Create Invoice
+                                  </Link>
+                                </td>
+                              )}
+                          </tr>
+                        );
+                      })
+                    )}
 
                     {/* <tr>
                       <td>

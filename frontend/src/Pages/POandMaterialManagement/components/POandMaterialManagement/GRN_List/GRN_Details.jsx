@@ -271,16 +271,17 @@ export default function GRN_Details() {
               </div>
             </div>
             {/* DataTable with Buttons */}
-            <div className="card mt-4">
-              <div
-                className="card-datatable  pt-0"
-                style={{ paddingBlockEnd: "0.01rem!important" }}
-              >
-                <div className="mx-4 my-2 d-flex justify-content-between">
-                  <h5 className="">Invoice Detail</h5>
-                  <div>
-                    <div className="badge bg-label-info rounded-3">
-                      {/* <img
+            {invoice[0] && (
+              <div className="card mt-4">
+                <div
+                  className="card-datatable  pt-0"
+                  style={{ paddingBlockEnd: "0.01rem!important" }}
+                >
+                  <div className="mx-4 my-2 d-flex justify-content-between">
+                    <h5 className="">Invoice Detail</h5>
+                    <div>
+                      <div className="badge bg-label-info rounded-3">
+                        {/* <img
                         src="assets/img/icons/misc/doc.png"
                         alt="img"
                         width={15}
@@ -289,58 +290,59 @@ export default function GRN_Details() {
                       <span className="h6 mb-0 text-info">
                         {grnDetails?.invoice_file}
                       </span> */}
-                      {console.log("grnDetails", grnDetails)}
-                      {invoice[0]?.invoice_file ? (
-                        <Link
-                          to={`${fileUrl}/storage/uploads/invoices/${invoice[0]?.invoice_file}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <img
-                            src={`${publicUrl}assets/img/icons/misc/doc.png`}
-                            alt="Document"
-                            width={15}
-                            className="me-2"
-                          />
-                          <span className="h6 mb-0 text-info">
-                            View Invoice File
-                            {/* {grnDetails.invoice_file} */}
-                          </span>
-                        </Link>
-                      ) : (
-                        <div className="d-flex align-items-center text-muted">
-                          <img
-                            src={`${publicUrl}assets/img/icons/misc/no-file.png`}
-                            alt="No file"
-                            width={15}
-                            className="me-2 opacity-75"
-                          />
-                          <span className="h6 mb-0">No file uploaded</span>
-                        </div>
-                      )}
+                        {console.log("grnDetails", grnDetails)}
+                        {invoice[0]?.invoice_file ? (
+                          <Link
+                            to={`${fileUrl}/storage/uploads/invoices/${invoice[0]?.invoice_file}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <img
+                              src={`${publicUrl}assets/img/icons/misc/doc.png`}
+                              alt="Document"
+                              width={15}
+                              className="me-2"
+                            />
+                            <span className="h6 mb-0 text-info">
+                              View Invoice File
+                              {/* {grnDetails.invoice_file} */}
+                            </span>
+                          </Link>
+                        ) : (
+                          <div className="d-flex align-items-center text-muted">
+                            <img
+                              src={`${publicUrl}assets/img/icons/misc/no-file.png`}
+                              alt="No file"
+                              width={15}
+                              className="me-2 opacity-75"
+                            />
+                            <span className="h6 mb-0">No file uploaded</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row ms-2">
+                    <div className="col-lg-3">
+                      <label className="form-label">Invoice No</label>
+                      <p>{invoice[0]?.id}</p>
+                    </div>
+                    <div className="col-lg-3">
+                      <label className="form-label">Invoice Date</label>
+                      <p>{invoice[0]?.invoice_date}</p>
+                    </div>
+                    <div className="col-lg-3">
+                      <label className="form-label">Invoice Amount</label>
+                      <p>{invoice[0]?.taxable_amount}</p>
+                    </div>
+                    <div className="col-lg-3">
+                      <label className="form-label">TDS Amount</label>
+                      <p>{invoice[0]?.tds_amount}</p>
                     </div>
                   </div>
                 </div>
-                <div className="row ms-2">
-                  <div className="col-lg-3">
-                    <label className="form-label">Invoice No</label>
-                    <p>{invoice[0]?.id}</p>
-                  </div>
-                  <div className="col-lg-3">
-                    <label className="form-label">Invoice Date</label>
-                    <p>{invoice[0]?.invoice_date}</p>
-                  </div>
-                  <div className="col-lg-3">
-                    <label className="form-label">Invoice Amount</label>
-                    <p>{invoice[0]?.taxable_amount}</p>
-                  </div>
-                  <div className="col-lg-3">
-                    <label className="form-label">TDS Amount</label>
-                    <p>{invoice[0]?.tds_amount}</p>
-                  </div>
-                </div>
               </div>
-            </div>
+            )}
           </div>
           <div className="col-lg-4">
             <div className="card">
