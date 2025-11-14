@@ -320,7 +320,7 @@ export const VendorProvider = ({ children }) => {
         // handleClose("vendorApprove");
         toast.success(res.message);
       }
-      getVendorList(); // Refresh vendor list after approval
+      // getVendorList(); // Refresh vendor list after approval
 
       return res;
     } catch (error) {

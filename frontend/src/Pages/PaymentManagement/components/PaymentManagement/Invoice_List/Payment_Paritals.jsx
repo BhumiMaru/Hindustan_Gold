@@ -23,9 +23,19 @@ export default function Payment_Paritals({ id }) {
     }));
   };
 
-  const handleSave = () => {
-    paymentPartial(paymentData);
-    handleClose("paymentPartials");
+  const handleSave = async () => {
+    try {
+      const res = await paymentPartial(paymentData);
+
+      // ✅ Close modal only if payment was successful
+      if (res?.status === true) {
+        handleClose("paymentPartials");
+        resetPaymentData();
+      }
+    } catch (error) {
+      console.error("Error processing payment:", error);
+      // Don't close modal on error
+    }
   };
 
   return (

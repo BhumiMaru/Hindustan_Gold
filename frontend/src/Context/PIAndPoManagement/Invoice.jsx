@@ -377,15 +377,37 @@ export const InvoiceProvider = ({ children }) => {
       const res = await postData(ENDPOINTS.INVOICE.PAYMENT, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      // console.log("res", res);
-
-      toast.success("Partial payment added successfully!");
-      setPaymentData(res.data);
-    } catch (error) {
-      if (error.response && error.response.data) {
-        toast.error(error.response.data.message);
+      console.log("partial res", res);
+      if (res.status) {
+        toast.success(res.message);
+        setPaymentData(res.data);
       }
-      console.log("payment error", error);
+
+      invoiceDetails(res.data.invoice.id);
+
+      return res;
+    } catch (error) {
+      console.error(error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
     }
   };
 

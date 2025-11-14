@@ -14,7 +14,10 @@ export const useGRN = () => {
 // GRN PRovider
 export const GRNProvider = ({ children }) => {
   const { handleClose } = useUIContext();
+  // Data Loading
   const [loading, setLoading] = useState(false);
+  // Btn Loading
+  const [btnLoading, setBtnLoading] = useState(false);
   const [grnList, setGrnList] = useState([]); //List
   const [grnData, setGrnData] = useState({
     grn_no: "",
@@ -83,6 +86,7 @@ export const GRNProvider = ({ children }) => {
   // GRN Create
   const CreateGRN = async (payload = grnData) => {
     try {
+      setBtnLoading(true);
       const formData = new FormData();
 
       // Append all non-array fields
@@ -142,14 +146,36 @@ export const GRNProvider = ({ children }) => {
 
       return res;
     } catch (error) {
-      toast.error("Error during Create GRN");
-      console.error("Create GRN error:", error);
+      console.error(error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setBtnLoading(false);
     }
   };
 
   // GRN Edit
   const EditGRN = async ({ id, payload }) => {
     try {
+      setBtnLoading(true);
       const formData = new FormData();
 
       // Include the ID
@@ -209,8 +235,29 @@ export const GRNProvider = ({ children }) => {
         GRNList();
       }
     } catch (error) {
-      toast.error("Error during Edit GRN");
-      console.error("Edit GRN error:", error);
+      console.error(error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -274,8 +321,27 @@ export const GRNProvider = ({ children }) => {
       }
       GRNList();
     } catch (error) {
-      toast.error("Error during Approve GRN");
-      console.error("Approve GRN error:", error);
+      console.error(error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
     }
   };
 
@@ -291,8 +357,27 @@ export const GRNProvider = ({ children }) => {
       }
       GRNList();
     } catch (error) {
-      toast.error("Error during Reject GRN");
-      console.error("Reject GRN error:", error);
+      console.error(error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
     }
   };
 
@@ -351,6 +436,7 @@ export const GRNProvider = ({ children }) => {
         grnWorkflow,
         loading,
         setLoading,
+        btnLoading,
       }}
     >
       {children}

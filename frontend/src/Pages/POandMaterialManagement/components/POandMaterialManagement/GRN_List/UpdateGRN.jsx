@@ -15,6 +15,7 @@ export default function UpdateGRN({ id, onClose }) {
     setEditId,
     grnId,
     GRNList,
+    btnLoading,
   } = useGRN();
   const { PoId, getPoDetails, poDetails } = usePOCreate();
 
@@ -107,23 +108,23 @@ export default function UpdateGRN({ id, onClose }) {
       })),
     };
 
-    console.log("📦 Sending GRN Payload:", grnPayload);
-    console.log("🆔 Edit ID:", editId);
-    console.log("📋 PO ID for refresh:", Number(grnData.po_id));
+    // console.log("📦 Sending GRN Payload:", grnPayload);
+    // console.log("🆔 Edit ID:", editId);
+    // console.log("📋 PO ID for refresh:", Number(grnData.po_id));
 
     let res;
     if (editId) {
-      console.log("✏️ Editing GRN...");
+      // console.log("✏️ Editing GRN...");
       res = await EditGRN({ id: editId, payload: grnPayload });
     } else {
-      console.log("🆕 Creating GRN...");
+      // console.log("🆕 Creating GRN...");
       res = await CreateGRN(grnPayload);
     }
 
     console.log("✅ API Response:", res);
 
     if (res?.status) {
-      console.log("🔄 Refreshing GRN List...");
+      // console.log("🔄 Refreshing GRN List...");
       // Try multiple approaches to refresh
       onClose();
       // GRNList({ po_id: Number(grnData.po_id) });
@@ -377,7 +378,14 @@ export default function UpdateGRN({ id, onClose }) {
                   <button
                     className="btn btn-success ms-2 waves-effect waves-light"
                     onClick={handleSave}
+                    disabled={btnLoading}
                   >
+                    {btnLoading && (
+                      <div
+                        className="spinner-border spinner-white me-2"
+                        role="status"
+                      ></div>
+                    )}
                     {editId ? "Update" : "Add"}
                   </button>
                 </div>

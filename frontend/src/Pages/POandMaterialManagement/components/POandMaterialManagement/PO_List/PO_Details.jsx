@@ -371,7 +371,7 @@ export default function PO_Details() {
                             poDetails?.pirequest?.final_approve_status ==
                               "Approve" ||
                             poDetails?.pirequest?.final_approve_status ==
-                              "Complete"
+                              "Completed"
                               ? "bg-label-success"
                               : poDetails?.pirequest?.final_approve_status ==
                                 "Pending"
@@ -459,6 +459,7 @@ export default function PO_Details() {
                 </table>
               </div>
             </div>
+            {/* {grnList.length > 0 && ( */}
             <div className="card mt-4">
               <div className="card-datatable table-responsive pt-0">
                 <div className="mx-4 my-2 d-flex justify-content-between">
@@ -499,7 +500,7 @@ export default function PO_Details() {
                       grnList?.map((grn, index) => {
                         console.log("grnn", grn);
                         return (
-                          <tr>
+                          <tr key={index}>
                             <td>
                               <div className="ms-4">{index + 1}</div>
                             </td>
@@ -740,6 +741,7 @@ export default function PO_Details() {
                 </table>
               </div>
             </div>
+            {/* )} */}
           </div>
           <div className="col-lg-4">
             {/* Vendor Detail */}

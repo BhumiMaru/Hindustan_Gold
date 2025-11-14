@@ -70,10 +70,15 @@ export default function PI_Request_Get_Quote() {
   const [loadingVendors, setLoadingVendors] = useState(false);
   const [oldVendorLoading, setOldVendorLoading] = useState({});
   const [newVendorLoading, setNewVendorLoading] = useState({});
+  //  bulk operations
+  const [bulkLoading, setBulkLoading] = useState(false); // For bulk mail button
+  const [bulkOldVendorLoading, setBulkOldVendorLoading] = useState({}); // For individual vendors in bulk
+  const [bulkNewVendorLoading, setBulkNewVendorLoading] = useState({}); // For individual vendors in bulk
   // Vendor Approve Data
   const [vendorApproveData, setVendorApproveData] = useState();
 
   // console.log("quoteData", quoteData);
+  // console.log("newVendorData", newVendorData);
   const vendor_type = "new";
 
   useEffect(() => {
@@ -448,10 +453,6 @@ export default function PI_Request_Get_Quote() {
     }
   };
 
-  {
-    "newVendorLoading", newVendorLoading;
-  }
-
   useEffect(() => {
     // Initialize all tooltips after render
     const tooltipTriggerList = document.querySelectorAll(
@@ -513,6 +514,92 @@ export default function PI_Request_Get_Quote() {
   // Handle vendor selection
   const handleVendorSelect = (option) => {
     setSelectedVendor(option);
+  };
+  // Add this combined function
+  // console.log("vendorApproveData", vendorApproveData);
+  // console.log("quotation", quotation);
+  // console.log("pastVendor", pastVendor);
+
+  const handleBulkMailRequest = async () => {
+    try {
+      // Check if we have any vendors selected for bulk operations
+      const hasOldVendorsSelected = selectedOldVendors.length > 0;
+      const hasNewVendorsSelected = selectedNewVendors.length > 0;
+
+      if (!hasOldVendorsSelected && !hasNewVendorsSelected) {
+        toast.error(
+          "Please select at least one vendor from either list for bulk mail"
+        );
+        return;
+      }
+
+      setBulkLoading(true); // Set bulk button loading
+
+      // Create arrays to track loading states for bulk operations
+      const oldVendorBulkLoadingState = {};
+      const newVendorBulkLoadingState = {};
+
+      // Set loading states for selected vendors in bulk
+      selectedOldVendors.forEach((vendorId) => {
+        oldVendorBulkLoadingState[vendorId] = true;
+      });
+      selectedNewVendors.forEach((vendorId) => {
+        newVendorBulkLoadingState[vendorId] = true;
+      });
+
+      setBulkOldVendorLoading((prev) => ({
+        ...prev,
+        ...oldVendorBulkLoadingState,
+      }));
+      setBulkNewVendorLoading((prev) => ({
+        ...prev,
+        ...newVendorBulkLoadingState,
+      }));
+
+      // Send requests for both old and new vendors if selected
+      const requests = [];
+
+      if (hasOldVendorsSelected) {
+        requests.push(handleSendOldVendorRequest(null, true, "old"));
+      }
+
+      if (hasNewVendorsSelected) {
+        requests.push(handleSendNewVendorRequest(null, true, "new"));
+      }
+
+      // Wait for all requests to complete
+      await Promise.all(requests);
+
+      toast.success("Bulk mail request sent successfully!");
+
+      // Clear selections after successful send
+      setSelectedOldVendors([]);
+      setSelectedNewVendors([]);
+      setSelectAllOld(false);
+      setSelectAllNew(false);
+    } catch (error) {
+      console.error("Error in bulk mail request:", error);
+      toast.error("Failed to send bulk mail request");
+    } finally {
+      setBulkLoading(false); // Reset bulk button loading
+
+      // Reset bulk vendor loading states
+      const resetOldVendorBulkLoading = Object.fromEntries(
+        selectedOldVendors.map((id) => [id, false])
+      );
+      const resetNewVendorBulkLoading = Object.fromEntries(
+        selectedNewVendors.map((id) => [id, false])
+      );
+
+      setBulkOldVendorLoading((prev) => ({
+        ...prev,
+        ...resetOldVendorBulkLoading,
+      }));
+      setBulkNewVendorLoading((prev) => ({
+        ...prev,
+        ...resetNewVendorBulkLoading,
+      }));
+    }
   };
 
   // console.log("quoteItems", quoteItems);
@@ -643,8 +730,24 @@ export default function PI_Request_Get_Quote() {
             <div className="me-4">
               <button
                 className="btn btn-success btn-sm waves-effect waves-light"
-                onClick={() => handleSendOldVendorRequest(null, true)}
+                onClick={handleBulkMailRequest}
+                disabled={
+                  (selectedOldVendors.length === 0 &&
+                    selectedNewVendors.length === 0) ||
+                  bulkLoading || // Use bulkLoading instead of checking all vendor loadings
+                  Object.values(bulkOldVendorLoading).some(
+                    (loading) => loading
+                  ) ||
+                  Object.values(bulkNewVendorLoading).some((loading) => loading)
+                }
               >
+                {bulkLoading && (
+                  <div
+                    className="spinner-border spinner-white me-2"
+                    role="status"
+                    style={{ width: "1rem", height: "1rem" }}
+                  ></div>
+                )}
                 Bulk Mail Request
               </button>
             </div>
@@ -682,7 +785,7 @@ export default function PI_Request_Get_Quote() {
                 {oldVendorList.map((pastVendor, index) => {
                   const vendorId = pastVendor.vendor_id || pastVendor.id;
                   const isSelected = selectedVendors.includes(vendorId);
-                  console.log("pastVendor", pastVendor);
+                  // console.log("pastVendor", pastVendor);
                   return (
                     <tr key={index}>
                       <td>
@@ -1017,7 +1120,7 @@ export default function PI_Request_Get_Quote() {
                   <th>Action</th>
                 </tr>
               </thead>
-              {console.log("newVendorData", newVendorData)}
+              {/* {console.log("newVendorData", newVendorData)} */}
               <tbody>
                 {/* {console.log("newVendorList", newVendorList)} */}
                 {newVendorList.map((quotation, index) => {
@@ -1026,7 +1129,7 @@ export default function PI_Request_Get_Quote() {
                   const isSelected = selectedVendors.includes(vendorId);
                   // console.log("vendorId", vendorId);
                   // console.log("isSelected", isSelected);
-                  console.log("quotation ", quotation);
+                  // console.log("quotation ", quotation);
                   return (
                     <tr key={index}>
                       <td>

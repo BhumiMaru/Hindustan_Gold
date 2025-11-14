@@ -10,11 +10,13 @@ import { useServiceLocation3Master } from "../../../../../Context/Master/Service
 import { useZone } from "../../../../../Context/Master/ZoneContext";
 import { useDepartment } from "../../../../../Context/Master/DepartmentContext";
 import User_Creation_Permission from "./User_Creation_Permission";
+import { decryptData } from "../../../../../utils/decryptData";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export default function User_Creation_Form() {
-  const { id } = useParams();
+  const { id: encryptId } = useParams();
+  const decryptId = decryptData(encryptId);
   const navigate = useNavigate();
   const {
     createUser,
@@ -50,17 +52,17 @@ export default function User_Creation_Form() {
   // console.log("id", id);
 
   useEffect(() => {
-    if (id) {
+    if (decryptId) {
       // set edit id in context
       // console.log("id1", id);
-      setIsEditUserId(id);
-      fetchUserById(id);
+      setIsEditUserId(decryptId);
+      fetchUserById(decryptId);
     } else {
       // reset if no id in route
       setIsEditUserId(null);
       resetUserData();
     }
-  }, [id]);
+  }, [decryptId]);
 
   useEffect(() => {
     // fetchSL1Filter();
@@ -83,9 +85,9 @@ export default function User_Creation_Form() {
     const payload = { ...useCreationData };
 
     try {
-      if (id) {
+      if (decryptId) {
         // console.log("before id", id, "payload", payload);
-        await updateUser(id, payload);
+        await updateUser(decryptId, payload);
         // resetUserData();
         // setIsEditUserId(null);
       } else {
@@ -573,7 +575,11 @@ export default function User_Creation_Form() {
               />
               {/* {console.log("useCreationData", useCreationData)}
               <span>File: {useCreationData?.profile_photo}</span> */}
-              {id ? (
+              {/* {console.log(
+                "useCreationData?.profile_photo",
+                useCreationData?.profile_photo
+              )} */}
+              {decryptId ? (
                 useCreationData?.profile_photo ? (
                   <Link
                     to={`${fileUrl}/storage/users/${useCreationData?.profile_photo}`}
@@ -627,7 +633,7 @@ export default function User_Creation_Form() {
             </div>
           </div>
         </div>
-        {id && (
+        {decryptId && (
           <>
             <h3 className="mt-4">User Permissions</h3>
             <User_Creation_Permission />

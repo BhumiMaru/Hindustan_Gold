@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 import { useUIContext } from "../../../../../Context/UIContext";
 import Loader from "../../../../../components/Common/Loader/Loader";
+import { decryptData } from "../../../../../utils/decryptData";
+import { encryptData } from "../../../../../utils/encryptData";
 const fileUrl = import.meta.env.VITE_FILE_URL;
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
@@ -61,7 +63,8 @@ export default function User_Creation_Table() {
   const handleEditClick = (user) => {
     console.log("user", user);
     startEditing(user.id); // set edit data in context
-    navigate(`/super_admin/master/user-create/${user.id}`); // then navigate
+    const encryptId = encryptData(user.id);
+    navigate(`/super_admin/master/user-create/${encryptId}`); // then navigate
   };
 
   return (

@@ -182,8 +182,8 @@ export const GetQuoteProvider = ({ children }) => {
   // Get Quote Vendors List
   const quoteVendorList = async ({ pi_get_quote_id, vendor_type }) => {
     try {
-      console.log(" pi_get_quote_id pi_get_quote_id", pi_get_quote_id);
-      console.log(" vendor_type vendor_type", vendor_type);
+      // console.log(" pi_get_quote_id pi_get_quote_id", pi_get_quote_id);
+      // console.log(" vendor_type vendor_type", vendor_type);
       const res = await getData(ENDPOINTS.QUOTATIONDETAILS.LIST, {
         pi_get_quote_id,
         vendor_type,
