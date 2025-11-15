@@ -129,11 +129,13 @@ const UIContext = createContext();
 export const useUIContext = () => useContext(UIContext);
 
 export const UIProvider = ({ children }) => {
+  // this is for main item
   const [activeMenu, setActiveMenu] = useState(
-    sessionStorage.getItem("activeMenu") || "Dashboard"
+    sessionStorage.getItem("activeMenu")
   );
+  // this is for sub item
   const [activeSubMenu, setActiveSubMenu] = useState(
-    sessionStorage.getItem("activeSubMenu") || null
+    sessionStorage.getItem("activeSubMenu")
   );
 
   // ✅ Load sidebar state from sessionStorage

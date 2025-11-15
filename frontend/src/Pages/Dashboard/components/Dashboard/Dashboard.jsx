@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 import { useDashboard } from "../../../../Context/Dashboard/DashboardContext";
 import { useUserCreation } from "../../../../Context/Master/UserCreationContext";
@@ -47,91 +48,102 @@ export default function Dashboard() {
               {/* Card Border Shadow */}
               {/* Total Department */}
               <div className="col-lg-3 col-sm-6">
-                <div className="card card-border-shadow-primary h-100">
-                  <div className="card-body">
-                    <div className="d-flex align-items-center mb-2">
-                      <div className="avatar me-4">
-                        <span className="avatar-initial rounded bg-label-primary">
-                          <i className="icon-base ti tabler-truck icon-28px"></i>
-                        </span>
+                <Link to="/super_admin/master/department">
+                  <div className="card card-border-shadow-primary h-100">
+                    <div className="card-body">
+                      <div className="d-flex align-items-center mb-2">
+                        <div className="avatar me-4">
+                          <span className="avatar-initial rounded bg-label-primary">
+                            <i className="icon-base ti tabler-truck icon-28px"></i>
+                          </span>
+                        </div>
+                        <h4 className="mb-0">
+                          {dashboardList?.master_count?.total_department}
+                        </h4>
                       </div>
-                      <h4 className="mb-0">
-                        {dashboardList?.master_count?.total_department}
-                      </h4>
-                    </div>
-                    <p className="mb-1">Total Department</p>
-                    {/* <!--  <p className="mb-0">
+                      <p className="mb-1">Total Department</p>
+                      {/* <!--  <p className="mb-0">
                                         <span className="text-heading fw-medium me-2">+18.2%</span>
                                         <small className="text-body-secondary">than last week</small>
                                       </p>--> */}
+                    </div>
                   </div>
-                </div>
+                </Link>
               </div>
               {/* Total Zone */}
               <div className="col-lg-3 col-sm-6">
-                <div className="card card-border-shadow-warning h-100">
-                  <div className="card-body">
-                    <div className="d-flex align-items-center mb-2">
-                      <div className="avatar me-4">
-                        <span className="avatar-initial rounded bg-label-warning">
-                          <i className="icon-base ti tabler-alert-triangle icon-28px"></i>
-                        </span>
+                <Link to="/super_admin/master/zone">
+                  <div className="card card-border-shadow-warning h-100">
+                    <div className="card-body">
+                      <div className="d-flex align-items-center mb-2">
+                        <div className="avatar me-4">
+                          <span className="avatar-initial rounded bg-label-warning">
+                            <i className="icon-base ti tabler-alert-triangle icon-28px"></i>
+                          </span>
+                        </div>
+                        <h4 className="mb-0">
+                          {dashboardList?.master_count?.total_zone}
+                        </h4>
                       </div>
-                      <h4 className="mb-0">
-                        {dashboardList?.master_count?.total_zone}
-                      </h4>
-                    </div>
-                    <p className="mb-1">Total Zone</p>
-                    {/* <!-- <p className="mb-0">
+                      <p className="mb-1">Total Zone</p>
+                      {/* <!-- <p className="mb-0">
                                        <span className="text-heading fw-medium me-2">-8.7%</span>
                                        <small className="text-body-secondary">than last week</small>
                                      </p>--> */}
+                    </div>
                   </div>
-                </div>
+                </Link>
               </div>
               {/* Total Service Location */}
               <div className="col-lg-3 col-sm-6">
-                <div className="card card-border-shadow-danger h-100">
-                  <div className="card-body">
-                    <div className="d-flex align-items-center mb-2">
-                      <div className="avatar me-4">
-                        <span className="avatar-initial rounded bg-label-danger">
-                          <i className="icon-base ti tabler-git-fork icon-28px"></i>
-                        </span>
+                <Link to="/super_admin/master/service-location-3">
+                  <div className="card card-border-shadow-danger h-100">
+                    <div className="card-body">
+                      <div className="d-flex align-items-center mb-2">
+                        <div className="avatar me-4">
+                          <span className="avatar-initial rounded bg-label-danger">
+                            <i className="icon-base ti tabler-git-fork icon-28px"></i>
+                          </span>
+                        </div>
+                        <h4 className="mb-0">
+                          {
+                            dashboardList?.master_count
+                              ?.total_services_location_3
+                          }
+                        </h4>
                       </div>
-                      <h4 className="mb-0">
-                        {dashboardList?.master_count?.total_services_location_3}
-                      </h4>
-                    </div>
-                    <p className="mb-1">Total Service Location</p>
-                    {/* <!-- <p className="mb-0">
+                      <p className="mb-1">Total Service Location</p>
+                      {/* <!-- <p className="mb-0">
                                        <span className="text-heading fw-medium me-2">+4.3%</span>
                                        <small className="text-body-secondary">than last week</small>
                                      </p>--> */}
+                    </div>
                   </div>
-                </div>
+                </Link>
               </div>
               {/* Total User */}
               <div className="col-lg-3 col-sm-6">
-                <div className="card card-border-shadow-info h-100">
-                  <div className="card-body">
-                    <div className="d-flex align-items-center mb-2">
-                      <div className="avatar me-4">
-                        <span className="avatar-initial rounded bg-label-info">
-                          <i className="icon-base ti tabler-clock icon-28px"></i>
-                        </span>
+                <Link to="/super_admin/master/user">
+                  <div className="card card-border-shadow-info h-100">
+                    <div className="card-body">
+                      <div className="d-flex align-items-center mb-2">
+                        <div className="avatar me-4">
+                          <span className="avatar-initial rounded bg-label-info">
+                            <i className="icon-base ti tabler-clock icon-28px"></i>
+                          </span>
+                        </div>
+                        <h4 className="mb-0">
+                          {dashboardList?.master_count?.total_user}
+                        </h4>
                       </div>
-                      <h4 className="mb-0">
-                        {dashboardList?.master_count?.total_user}
-                      </h4>
-                    </div>
-                    <p className="mb-1">Total User</p>
-                    {/* <!--<p className="mb-0">
+                      <p className="mb-1">Total User</p>
+                      {/* <!--<p className="mb-0">
                                       <span className="text-heading fw-medium me-2">-2.5%</span>
                                       <small className="text-body-secondary">than last week</small>
                                     </p>--> */}
+                    </div>
                   </div>
-                </div>
+                </Link>
               </div>
               {/*/ Card Border Shadow */}
             </div>
@@ -178,21 +190,23 @@ export default function Dashboard() {
                     if (hasMaterial && hasService && hasAsset) {
                       return (
                         <div className="col-lg-3 col-sm-6">
-                          <div className="card card-border-shadow-primary h-100">
-                            <div className="card-body">
-                              <div className="d-flex align-items-center mb-2">
-                                <div className="avatar me-4">
-                                  <span className="avatar-initial rounded bg-label-primary">
-                                    <i className="icon-base ti tabler-package icon-28px"></i>
-                                  </span>
+                          <Link to="/item/item-master">
+                            <div className="card card-border-shadow-primary h-100">
+                              <div className="card-body">
+                                <div className="d-flex align-items-center mb-2">
+                                  <div className="avatar me-4">
+                                    <span className="avatar-initial rounded bg-label-primary">
+                                      <i className="icon-base ti tabler-package icon-28px"></i>
+                                    </span>
+                                  </div>
+                                  <h4 className="mb-0">
+                                    {dashboardList?.item_count?.item_count}
+                                  </h4>
                                 </div>
-                                <h4 className="mb-0">
-                                  {dashboardList?.item_count?.item_count}
-                                </h4>
+                                <p className="mb-1">Total Item</p>
                               </div>
-                              <p className="mb-1">Total Item</p>
                             </div>
-                          </div>
+                          </Link>
                         </div>
                       );
                     }
@@ -206,21 +220,23 @@ export default function Dashboard() {
                       perm.permission == "allrights"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <div className="card card-border-shadow-light-success h-100">
-                        <div className="card-body">
-                          <div className="d-flex align-items-center mb-2">
-                            <div className="avatar me-4">
-                              <span className="avatar-initial rounded bg-label-lightsuccess">
-                                <i className="icon-base ti tabler-tools icon-28px"></i>
-                              </span>
+                      <Link to="/item/item-master?type=material">
+                        <div className="card card-border-shadow-success h-100">
+                          <div className="card-body">
+                            <div className="d-flex align-items-center mb-2">
+                              <div className="avatar me-4">
+                                <span className="avatar-initial rounded bg-label-success">
+                                  <i className="icon-base ti tabler-tools icon-28px"></i>
+                                </span>
+                              </div>
+                              <h4 className="mb-0">
+                                {dashboardList?.item_count?.total_material}
+                              </h4>
                             </div>
-                            <h4 className="mb-0">
-                              {dashboardList?.item_count?.total_material}
-                            </h4>
+                            <p className="mb-1">Total Material</p>
                           </div>
-                          <p className="mb-1">Total Material</p>
                         </div>
-                      </div>
+                      </Link>
                     </div>
                   )}
 
@@ -231,21 +247,23 @@ export default function Dashboard() {
                       perm.permission == "allrights"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <div className="card card-border-shadow-info h-100">
-                        <div className="card-body">
-                          <div className="d-flex align-items-center mb-2">
-                            <div className="avatar me-4">
-                              <span className="avatar-initial rounded bg-label-info">
-                                <i className="icon-base ti tabler-briefcase icon-28px"></i>
-                              </span>
+                      <Link to="/item/item-master?type=service">
+                        <div className="card card-border-shadow-info h-100">
+                          <div className="card-body">
+                            <div className="d-flex align-items-center mb-2">
+                              <div className="avatar me-4">
+                                <span className="avatar-initial rounded bg-label-info">
+                                  <i className="icon-base ti tabler-briefcase icon-28px"></i>
+                                </span>
+                              </div>
+                              <h4 className="mb-0">
+                                {dashboardList?.item_count?.total_service}
+                              </h4>
                             </div>
-                            <h4 className="mb-0">
-                              {dashboardList?.item_count?.total_service}
-                            </h4>
+                            <p className="mb-1">Total Service</p>
                           </div>
-                          <p className="mb-1">Total Service</p>
                         </div>
-                      </div>
+                      </Link>
                     </div>
                   )}
 
@@ -256,21 +274,23 @@ export default function Dashboard() {
                       perm.permission === "allrights"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <div className="card card-border-shadow-warning h-100">
-                        <div className="card-body">
-                          <div className="d-flex align-items-center mb-2">
-                            <div className="avatar me-4">
-                              <span className="avatar-initial rounded bg-label-warning">
-                                <i className="icon-base ti tabler-building icon-28px"></i>
-                              </span>
+                      <Link to="/item/item-master?type=asset">
+                        <div className="card card-border-shadow-warning h-100">
+                          <div className="card-body">
+                            <div className="d-flex align-items-center mb-2">
+                              <div className="avatar me-4">
+                                <span className="avatar-initial rounded bg-label-warning">
+                                  <i className="icon-base ti tabler-building icon-28px"></i>
+                                </span>
+                              </div>
+                              <h4 className="mb-0">
+                                {dashboardList?.item_count?.total_asset}
+                              </h4>
                             </div>
-                            <h4 className="mb-0">
-                              {dashboardList?.item_count?.total_asset}
-                            </h4>
+                            <p className="mb-1">Total Asset</p>
                           </div>
-                          <p className="mb-1">Total Asset</p>
                         </div>
-                      </div>
+                      </Link>
                     </div>
                   )}
                 </div>
@@ -313,21 +333,23 @@ export default function Dashboard() {
                       perm.type === "Item Request" && perm.permission === "add"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <div className="card card-border-shadow-primary h-100">
-                        <div className="card-body">
-                          <div className="d-flex align-items-center mb-2">
-                            <div className="avatar me-4">
-                              <span className="avatar-initial rounded bg-label-primary">
-                                <i className="icon-base ti tabler-clipboard icon-28px"></i>
-                              </span>
+                      <Link to="/super_admin/master/department">
+                        <div className="card card-border-shadow-primary h-100">
+                          <div className="card-body">
+                            <div className="d-flex align-items-center mb-2">
+                              <div className="avatar me-4">
+                                <span className="avatar-initial rounded bg-label-primary">
+                                  <i className="icon-base ti tabler-clipboard icon-28px"></i>
+                                </span>
+                              </div>
+                              <h4 className="mb-0">
+                                {dashboardList?.item_request?.my_request}
+                              </h4>
                             </div>
-                            <h4 className="mb-0">
-                              {dashboardList?.item_request?.my_request}
-                            </h4>
+                            <p className="mb-1">Total My Request</p>
                           </div>
-                          <p className="mb-1">Total My Request</p>
                         </div>
-                      </div>
+                      </Link>
                     </div>
                   )}
 
@@ -337,21 +359,23 @@ export default function Dashboard() {
                       perm.type === "Item Request" && perm.permission === "view"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <div className="card card-border-shadow-warning h-100">
-                        <div className="card-body">
-                          <div className="d-flex align-items-center mb-2">
-                            <div className="avatar me-4">
-                              <span className="avatar-initial rounded bg-label-warning">
-                                <i className="icon-base ti tabler-hourglass icon-28px"></i>
-                              </span>
+                      <Link to="/super_admin/master/department">
+                        <div className="card card-border-shadow-warning h-100">
+                          <div className="card-body">
+                            <div className="d-flex align-items-center mb-2">
+                              <div className="avatar me-4">
+                                <span className="avatar-initial rounded bg-label-warning">
+                                  <i className="icon-base ti tabler-hourglass icon-28px"></i>
+                                </span>
+                              </div>
+                              <h4 className="mb-0">
+                                {dashboardList?.item_request?.pending}
+                              </h4>
                             </div>
-                            <h4 className="mb-0">
-                              {dashboardList?.item_request?.pending}
-                            </h4>
+                            <p className="mb-1">Total Pending Request</p>
                           </div>
-                          <p className="mb-1">Total Pending Request</p>
                         </div>
-                      </div>
+                      </Link>
                     </div>
                   )}
 
@@ -362,21 +386,25 @@ export default function Dashboard() {
                       perm.permission === "approve"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <div className="card card-border-shadow-success h-100">
-                        <div className="card-body">
-                          <div className="d-flex align-items-center mb-2">
-                            <div className="avatar me-4">
-                              <span className="avatar-initial rounded bg-label-success">
-                                <i className="icon-base ti tabler-circle-check icon-28px"></i>
-                              </span>
+                      <Link to="/super_admin/master/department">
+                        <div className="card card-border-shadow-success h-100">
+                          <div className="card-body">
+                            <div className="d-flex align-items-center mb-2">
+                              <div className="avatar me-4">
+                                <span className="avatar-initial rounded bg-label-success">
+                                  <i className="icon-base ti tabler-circle-check icon-28px"></i>
+                                </span>
+                              </div>
+                              <h4 className="mb-0">
+                                {dashboardList?.item_request?.approve}
+                              </h4>
                             </div>
-                            <h4 className="mb-0">
-                              {dashboardList?.item_request?.approve}
-                            </h4>
+                            <p className="mb-1">
+                              Total Pending Approval Request
+                            </p>
                           </div>
-                          <p className="mb-1">Total Pending Approval Request</p>
                         </div>
-                      </div>
+                      </Link>
                     </div>
                   )}
 
@@ -387,24 +415,26 @@ export default function Dashboard() {
                       perm.permission === "approve"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <div className="card card-border-shadow-success h-100">
-                        <div className="card-body">
-                          <div className="d-flex align-items-center mb-2">
-                            <div className="avatar me-4">
-                              <span className="avatar-initial rounded bg-label-success">
-                                <i className="icon-base ti tabler-circle-check icon-28px"></i>
-                              </span>
+                      <Link to="/super_admin/master/department">
+                        <div className="card card-border-shadow-success h-100">
+                          <div className="card-body">
+                            <div className="d-flex align-items-center mb-2">
+                              <div className="avatar me-4">
+                                <span className="avatar-initial rounded bg-label-success">
+                                  <i className="icon-base ti tabler-circle-check icon-28px"></i>
+                                </span>
+                              </div>
+                              <h4 className="mb-0">
+                                {dashboardList?.item_request
+                                  ?.handover_approve ?? 0}
+                              </h4>
                             </div>
-                            <h4 className="mb-0">
-                              {dashboardList?.item_request?.handover_approve ??
-                                0}
-                            </h4>
+                            <p className="mb-1">
+                              Total Pending Handover Approval
+                            </p>
                           </div>
-                          <p className="mb-1">
-                            Total Pending Handover Approval
-                          </p>
                         </div>
-                      </div>
+                      </Link>
                     </div>
                   )}
                 </div>
@@ -440,6 +470,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-clipboard",
                       color: "warning",
+                      to: "",
                     },
                     {
                       title: "Total Pending PI Request",
@@ -448,6 +479,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-hourglass",
                       color: "primary",
+                      to: "",
                     },
                     {
                       title: "Total Pending PI Approval",
@@ -456,6 +488,7 @@ export default function Dashboard() {
                       permission: "approve",
                       icon: "tabler-checklist",
                       color: "success",
+                      to: "",
                     },
                     {
                       title: "Total Pending Get Quote",
@@ -464,6 +497,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-quote",
                       color: "primary",
+                      to: "",
                     },
                     {
                       title: "Total Pending PO Generate",
@@ -472,6 +506,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-file-plus",
                       color: "primary",
+                      to: "",
                     },
                     {
                       title: "Total In-Progress PO",
@@ -480,6 +515,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-progress",
                       color: "info",
+                      to: "",
                     },
 
                     {
@@ -489,6 +525,7 @@ export default function Dashboard() {
                       permission: "approve",
                       icon: "tabler-clipboard-check",
                       color: "primary",
+                      to: "",
                     },
                     {
                       title: "Total GRN",
@@ -497,6 +534,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-truck",
                       color: "warning",
+                      to: "",
                     },
                     {
                       title: "Total GRN Approvals",
@@ -505,6 +543,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-clipboard-check",
                       color: "success",
+                      to: "",
                     },
                     {
                       title: "Total Pending GRN Approvals",
@@ -513,6 +552,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-file-check",
                       color: "success",
+                      to: "",
                     },
                     {
                       title: "Total Vendor",
@@ -521,6 +561,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-users",
                       color: "warning",
+                      to: "",
                     },
 
                     // {
@@ -542,26 +583,28 @@ export default function Dashboard() {
                     .map((card, idx) => (
                       <div key={idx} className="col-lg-3 col-sm-6">
                         {console.log("cc", card)}
-                        <div
-                          className={`card card-border-shadow-${card?.color} h-100`}
-                        >
-                          <div className="card-body">
-                            <div className="d-flex align-items-center mb-2">
-                              <div className="avatar me-4">
-                                <span
-                                  className={`avatar-initial rounded bg-label-${card?.color}`}
-                                  // style={{ color: card.color }}
-                                >
-                                  <i
-                                    className={`icon-base ti ${card?.icon} icon-28px`}
-                                  ></i>
-                                </span>
+                        <Link to={card.to}>
+                          <div
+                            className={`card card-border-shadow-${card?.color} h-100`}
+                          >
+                            <div className="card-body">
+                              <div className="d-flex align-items-center mb-2">
+                                <div className="avatar me-4">
+                                  <span
+                                    className={`avatar-initial rounded bg-label-${card?.color}`}
+                                    // style={{ color: card.color }}
+                                  >
+                                    <i
+                                      className={`icon-base ti ${card?.icon} icon-28px`}
+                                    ></i>
+                                  </span>
+                                </div>
+                                <h4 className="mb-0">{card?.value}</h4>
                               </div>
-                              <h4 className="mb-0">{card?.value}</h4>
+                              <p className="mb-1">{card?.title}</p>
                             </div>
-                            <p className="mb-1">{card?.title}</p>
                           </div>
-                        </div>
+                        </Link>
                       </div>
                     ))}
                 </div>
@@ -651,21 +694,23 @@ export default function Dashboard() {
                         perm.permission === "approve")
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <div className="card card-border-shadow-primary h-100">
-                        <div className="card-body">
-                          <div className="d-flex align-items-center mb-2">
-                            <div className="avatar me-4">
-                              <span className="avatar-initial rounded bg-label-primary">
-                                <i className="icon-base ti tabler-clipboard icon-28px"></i>
-                              </span>
+                      <Link to="/super_admin/master/department">
+                        <div className="card card-border-shadow-primary h-100">
+                          <div className="card-body">
+                            <div className="d-flex align-items-center mb-2">
+                              <div className="avatar me-4">
+                                <span className="avatar-initial rounded bg-label-primary">
+                                  <i className="icon-base ti tabler-clipboard icon-28px"></i>
+                                </span>
+                              </div>
+                              <h4 className="mb-0">
+                                {dashboardList?.item_request?.my_request}
+                              </h4>
                             </div>
-                            <h4 className="mb-0">
-                              {dashboardList?.item_request?.my_request}
-                            </h4>
+                            <p className="mb-1">Total Pending for Approvals</p>
                           </div>
-                          <p className="mb-1">Total Pending for Approvals</p>
                         </div>
-                      </div>
+                      </Link>
                     </div>
                   )}
 
@@ -678,21 +723,23 @@ export default function Dashboard() {
                         perm.permission === "approve")
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <div className="card card-border-shadow-warning h-100">
-                        <div className="card-body">
-                          <div className="d-flex align-items-center mb-2">
-                            <div className="avatar me-4">
-                              <span className="avatar-initial rounded bg-label-warning">
-                                <i className="icon-base ti tabler-hourglass icon-28px"></i>
-                              </span>
+                      <Link to="/super_admin/master/department">
+                        <div className="card card-border-shadow-warning h-100">
+                          <div className="card-body">
+                            <div className="d-flex align-items-center mb-2">
+                              <div className="avatar me-4">
+                                <span className="avatar-initial rounded bg-label-warning">
+                                  <i className="icon-base ti tabler-hourglass icon-28px"></i>
+                                </span>
+                              </div>
+                              <h4 className="mb-0">
+                                {dashboardList?.item_request?.pending}
+                              </h4>
                             </div>
-                            <h4 className="mb-0">
-                              {dashboardList?.item_request?.pending}
-                            </h4>
+                            <p className="mb-1">Total Pending for Pay</p>
                           </div>
-                          <p className="mb-1">Total Pending for Pay</p>
                         </div>
-                      </div>
+                      </Link>
                     </div>
                   )}
 
@@ -703,21 +750,25 @@ export default function Dashboard() {
                       perm.permission === "approve"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <div className="card card-border-shadow-success h-100">
-                        <div className="card-body">
-                          <div className="d-flex align-items-center mb-2">
-                            <div className="avatar me-4">
-                              <span className="avatar-initial rounded bg-label-success">
-                                <i className="icon-base ti tabler-circle-check icon-28px"></i>
-                              </span>
+                      <Link to="/super_admin/master/department">
+                        <div className="card card-border-shadow-success h-100">
+                          <div className="card-body">
+                            <div className="d-flex align-items-center mb-2">
+                              <div className="avatar me-4">
+                                <span className="avatar-initial rounded bg-label-success">
+                                  <i className="icon-base ti tabler-circle-check icon-28px"></i>
+                                </span>
+                              </div>
+                              <h4 className="mb-0">
+                                {dashboardList?.item_request?.approve}
+                              </h4>
                             </div>
-                            <h4 className="mb-0">
-                              {dashboardList?.item_request?.approve}
-                            </h4>
+                            <p className="mb-1">
+                              Total Pending Approval Request
+                            </p>
                           </div>
-                          <p className="mb-1">Total Pending Approval Request</p>
                         </div>
-                      </div>
+                      </Link>
                     </div>
                   )}
 
@@ -728,24 +779,26 @@ export default function Dashboard() {
                       perm.permission === "approve"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <div className="card card-border-shadow-success h-100">
-                        <div className="card-body">
-                          <div className="d-flex align-items-center mb-2">
-                            <div className="avatar me-4">
-                              <span className="avatar-initial rounded bg-label-success">
-                                <i className="icon-base ti tabler-circle-check icon-28px"></i>
-                              </span>
+                      <Link to="/super_admin/master/department">
+                        <div className="card card-border-shadow-success h-100">
+                          <div className="card-body">
+                            <div className="d-flex align-items-center mb-2">
+                              <div className="avatar me-4">
+                                <span className="avatar-initial rounded bg-label-success">
+                                  <i className="icon-base ti tabler-circle-check icon-28px"></i>
+                                </span>
+                              </div>
+                              <h4 className="mb-0">
+                                {dashboardList?.item_request
+                                  ?.handover_approve ?? 0}
+                              </h4>
                             </div>
-                            <h4 className="mb-0">
-                              {dashboardList?.item_request?.handover_approve ??
-                                0}
-                            </h4>
+                            <p className="mb-1">
+                              Total Pending Handover Approval
+                            </p>
                           </div>
-                          <p className="mb-1">
-                            Total Pending Handover Approval
-                          </p>
                         </div>
-                      </div>
+                      </Link>
                     </div>
                   )}
                 </div>

@@ -285,11 +285,10 @@ export const UserCreationProvider = ({ children }) => {
         reporting_manager_2_id: user?.reporting_manager_2_id || null,
         status: user?.status ?? null,
         register_date: user?.register_date || "",
-        profile_photo: user?.profile_photo || "",
-        // profile_photo_url: user?.profile_photo_url || "",
-        //   profile_photo: "", // blank here — only holds new file if uploaded
-        // profile_photo_url: user?.profile_photo_url || "", // for preview
-        // existing_profile_photo: user?.profile_photo || "", // filename of old photo
+        // profile_photo: user?.profile_photo || "",
+        profile_photo: null, // <-- always null by default
+        existing_profile_photo: user?.profile_photo || "", // <-- store old file name
+        profile_photo_url: user?.profile_photo_url || "",
       });
     } catch (error) {
       // console.log(error);

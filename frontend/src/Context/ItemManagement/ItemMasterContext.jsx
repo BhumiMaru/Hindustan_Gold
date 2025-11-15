@@ -48,7 +48,7 @@ export const ItemMasterProvider = ({ children }) => {
     perPage: 10,
     total: 0,
   });
-
+  const [selectedType, setSelectedType] = useState("all");
   const [itemSubCategoryId, setItemSubCategoryId] = useState(null);
 
   // Get All Item Master Data
@@ -665,6 +665,8 @@ export const ItemMasterProvider = ({ children }) => {
         setLoading,
         btnLoading,
         setItemEditId,
+        selectedType,
+        setSelectedType,
       }}
     >
       {children}

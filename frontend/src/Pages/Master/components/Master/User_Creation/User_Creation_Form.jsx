@@ -80,25 +80,39 @@ export default function User_Creation_Form() {
   const handleSave = async (e) => {
     e.preventDefault();
 
-    const payload = { ...useCreationData };
+    const formData = new FormData();
 
-    try {
-      if (id) {
-        // console.log("before id", id, "payload", payload);
-        await updateUser(id, payload);
-        // resetUserData();
-        // setIsEditUserId(null);
-      } else {
-        // console.log("before payload", payload);
-        const newUser = await createUser(payload); // ✅ get response
-        if (newUser?.id) {
-          navigate(`/super_admin/master/user-create/${newUser.id}`); // ✅ use real id
+    Object.entries(useCreationData).forEach(([key, value]) => {
+      if (key === "profile_photo") {
+        if (value instanceof File) {
+          formData.append("profile_photo", value); // ⬅️ only new file
         }
+      } else {
+        formData.append(key, value ?? "");
       }
+    });
 
-      console.log("submitting form", payload);
-    } catch (error) {
-      console.log(error);
+    // Always send existing image name for backend
+    if (useCreationData.existing_profile_photo) {
+      formData.append(
+        "existing_profile_photo",
+        useCreationData.existing_profile_photo
+      );
+    }
+
+    const payload = {
+      ...useCreationData,
+      formData,
+    };
+
+    if (id) {
+      formData.append("id", id);
+      await updateUser(id, payload);
+    } else {
+      const newUser = await createUser(payload);
+      if (newUser?.id) {
+        navigate(`/super_admin/master/user-create/${newUser.id}`);
+      }
     }
   };
 
@@ -578,41 +592,45 @@ export default function User_Creation_Form() {
                 useCreationData?.profile_photo
               )} */}
               {id ? (
-                useCreationData?.profile_photo ? (
-                  <Link
-                    to={`${fileUrl}/storage/users/${useCreationData?.profile_photo}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <img
-                      src={`${publicUrl}assets/img/icons/misc/doc.png`}
-                      alt="Document"
-                      width={15}
-                      className="me-2"
-                    />
-                    <span className="h6 mb-0 text-info">
-                      {/* {invoiceDetail.invoice_file} */}
-                      View
-                    </span>
-                    {console.log(
-                      `${fileUrl}/storage/users/${useCreationData?.profile_photo}`
-                    )}
-                  </Link>
-                ) : (
-                  <div className="d-flex align-items-center text-muted">
-                    {/* <img
-                    src={`${publicUrl}assets/img/icons/misc/no-file.png`}
-                    alt="No file"
-                    width={15}
-                    className="me-2 opacity-75"
-                  /> */}
+                useCreationData?.profile_photo_url ? (
+                  (() => {
+                    const url = useCreationData.profile_photo_url;
+                    const isImage = /\.(jpg|jpeg|png)$/i.test(url);
 
+                    return isImage ? (
+                      //  Show Image preview
+                      <img
+                        src={url}
+                        alt="Profile"
+                        width={40}
+                        height={40}
+                        className="rounded border"
+                      />
+                    ) : (
+                      // Show icon + View link for non-image files
+                      <Link
+                        to={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="d-flex align-items-center"
+                      >
+                        <img
+                          src={`${publicUrl}assets/img/icons/misc/doc.png`}
+                          alt="Document"
+                          width={20}
+                          className="me-2"
+                        />
+                        <span className="h6 mb-0 text-info">View</span>
+                      </Link>
+                    );
+                  })()
+                ) : (
+                  //  No file uploaded
+                  <div className="d-flex align-items-center text-muted">
                     <span className="h6 mb-0">No file uploaded</span>
                   </div>
                 )
-              ) : (
-                ""
-              )}
+              ) : null}
             </div>
             <div className="col-lg-12 text-end">
               <button

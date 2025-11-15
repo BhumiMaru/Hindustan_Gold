@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
 import { useCategoryMaster } from "../../../../../Context/ItemManagement/CategoryMasterContext";
 import { useSubCategory } from "../../../../../Context/ItemManagement/SubCategoryContext";
@@ -12,6 +12,7 @@ import { useUserCreation } from "../../../../../Context/Master/UserCreationConte
 
 export default function Item_Master_List() {
   const [search, setSearch] = useState(""); // what user types
+  const navigate = useNavigate();
   // const [type, setType] = useState("");
   const [selectedType, setSelectedType] = useState("all"); // default from URL
   const [categoryId, setCategoryId] = useState("all");
@@ -23,6 +24,23 @@ export default function Item_Master_List() {
     useItemMaster();
   const { filterCategory, fetchCategoryFilter } = useCategoryMaster();
   const { filterSubCategory, fetchSubCategoryFilter } = useSubCategory();
+
+  const location = useLocation();
+  // const searchParams = new URLSearchParams(location.search);
+  // const urlType = searchParams.get("type");
+
+  // Initialize selectedType from URL parameter
+  // Read the type from URL only once on first load
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const urlTypeValue = params.get("type");
+
+    if (urlTypeValue) {
+      console.log("urlTypeValue", urlTypeValue);
+
+      setSelectedType(urlTypeValue);
+    }
+  }, []);
 
   useEffect(() => {
     fetchCategoryFilter();
@@ -81,6 +99,9 @@ export default function Item_Master_List() {
       page: 1,
       perPage: pagination.perPage,
     });
+
+    // Clear the ?type=service from URL
+    navigate("/item/item-master", { replace: true });
   };
 
   console.log("selectedType", selectedType);
@@ -98,7 +119,7 @@ export default function Item_Master_List() {
                 options={[
                   { value: "all", label: "Select Type" },
                   { value: "material", label: "Material" },
-                  { value: "service", label: "Services" },
+                  { value: "service", label: "Service" },
                   { value: "asset", label: "Asset" },
                 ]}
                 value={selectedType}

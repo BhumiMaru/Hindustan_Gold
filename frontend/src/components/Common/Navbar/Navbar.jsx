@@ -29,9 +29,34 @@ export default function Navbar() {
   //     ? activeMenu
   //     : "";
 
+  // Auto Page Title Based On Route
+  let routeTitle = "";
+
+  switch (true) {
+    case location.pathname.startsWith("/po-material/pi-request-get-quote"):
+      routeTitle = "PI Request Get Quote";
+      break;
+
+    case location.pathname.startsWith("/po-material/po-detail"):
+      routeTitle = "PO Detail";
+      break;
+
+    case location.pathname.startsWith("/po-material/grn-details"):
+      routeTitle = "GRN Detail";
+      break;
+
+    case location.pathname.startsWith("/payment-management/invoice-detail"):
+      routeTitle = "Invoice Detail";
+      break;
+
+    default:
+      routeTitle = "";
+  }
+
   const pageTitle =
+    routeTitle ||
     activeSubMenu ||
-    (["Dashboard", "Item Request", "Payment List"].includes(activeMenu)
+    (["Dashboard", "Item Request", "Payment List", ,].includes(activeMenu)
       ? activeMenu
       : "");
 
