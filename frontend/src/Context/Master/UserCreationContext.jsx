@@ -145,9 +145,9 @@ export const UserCreationProvider = ({ children }) => {
         const { message, errors } = error.response.data;
 
         // Show main message (e.g. "Validation error")
-        if (message) {
-          toast.error(message);
-        }
+        // if (message) {
+        //   toast.error(message);
+        // }
 
         // Show field-specific validation errors
         if (errors && typeof errors === "object") {

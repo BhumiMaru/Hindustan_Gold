@@ -896,18 +896,18 @@ export default function PI_Item_Request_Form() {
       }
 
       // Check if any item qty exceeds stock
-      const invalidItems = items.filter(
-        (item) => isStock && Number(item.qty) > Number(isStock)
-      );
+      // const invalidItems = items.filter(
+      //   (item) => isStock && Number(item.qty) > Number(isStock)
+      // );
 
-      if (invalidItems.length > 0) {
-        toast.error(
-          `Quantity for Item(s) ${invalidItems
-            .map((i) => i.id)
-            .join(", ")} exceeds available stock (${isStock})`
-        );
-        return; // Stop saving
-      }
+      // if (invalidItems.length > 0) {
+      //   toast.error(
+      //     `Quantity for Item(s) ${invalidItems
+      //       .map((i) => i.id)
+      //       .join(", ")} exceeds available stock (${isStock})`
+      //   );
+      //   return; // Stop saving
+      // }
 
       const formData = new FormData();
       if (id) formData.append("id", id);
@@ -975,12 +975,12 @@ export default function PI_Item_Request_Form() {
   // Handle quantity change with stock validation
   const handleQuantityChange = (itemId, value, stock) => {
     const qty = Number(value);
-    if (qty > stock) {
-      const errorMsg = `Quantity cannot exceed available stock (${stock})`;
-      setQuantityError((prev) => ({ ...prev, [itemId]: errorMsg }));
-    } else {
-      setQuantityError((prev) => ({ ...prev, [itemId]: "" }));
-    }
+    // if (qty > stock) {
+    //   const errorMsg = `Quantity cannot exceed available stock (${stock})`;
+    //   setQuantityError((prev) => ({ ...prev, [itemId]: errorMsg }));
+    // } else {
+    //   setQuantityError((prev) => ({ ...prev, [itemId]: "" }));
+    // }
     handleItemChange(itemId, "qty", value);
   };
 
@@ -1138,7 +1138,8 @@ export default function PI_Item_Request_Form() {
                         htmlFor={`Quantity-${item.id}`}
                         className="form-label"
                       >
-                        Quantity {isStock ? ` (Stock Is : ${isStock})` : null}{" "}
+                        Quantity
+                        {/* {isStock ? ` (Stock Is : ${isStock})` : null}{" "} */}
                         <span className="text-danger">*</span>
                       </label>
                       <input
@@ -1153,11 +1154,11 @@ export default function PI_Item_Request_Form() {
                         }
                         required
                       />
-                      {quantityError[item.id] && (
+                      {/* {quantityError[item.id] && (
                         <small className="text-danger">
                           {quantityError[item.id]}
                         </small>
-                      )}
+                      )} */}
                     </div>
                   )}
 

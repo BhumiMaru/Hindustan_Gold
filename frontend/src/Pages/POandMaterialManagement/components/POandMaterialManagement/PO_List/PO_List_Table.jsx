@@ -16,6 +16,7 @@ export default function PO_List_Table() {
     PoApprove,
     pagination,
     loading,
+    PoEdit,
   } = usePOCreate();
   const { handleOpen, modal } = useUIContext();
   const [expandedRow, setExpandedRow] = useState(false);
@@ -220,6 +221,15 @@ export default function PO_List_Table() {
                               transform: "translate(-45px, 195px)",
                             }}
                           >
+                            {/* <Link
+                              to={`/po-material/po-create/${po.id}`}
+                              className="dropdown-item waves-effect"
+                              onClick={() => {
+                                PoEdit(po.id, po);
+                              }}
+                            >
+                              Edit
+                            </Link> */}
                             <Link
                               to={`/po-material/po-detail/${po.id}`}
                               className="dropdown-item waves-effect"
@@ -227,7 +237,6 @@ export default function PO_List_Table() {
                             >
                               View
                             </Link>
-                            {/* <a className="dropdown-item waves-effect">Edit</a> */}
                             {/* <div className="dropdown-divider" />
                           <a className="dropdown-item text-danger delete-record waves-effect">
                             Delete

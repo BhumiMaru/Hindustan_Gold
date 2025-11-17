@@ -506,6 +506,9 @@ const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export default function Item_Request_Form() {
   const { type, id } = useParams();
+  // Quantity Validation
+  const [qtyError, setQtyError] = useState("");
+  // const [isStock, setIsStock] = useState();
   const navigate = useNavigate();
   const { serviceLocation3, fetchServiceLocations3 } =
     useServiceLocation3Master();
@@ -549,11 +552,42 @@ export default function Item_Request_Form() {
     }
   }, [id, type]);
 
+  console.log("itemMaster itemMaster", itemMaster);
+
+  // ✅ ADD THIS HERE (just before return)
+  const selectedItem = itemMaster.find(
+    (itm) => Number(itm.id) === Number(itemRequestData.item_id)
+  );
+
+  const isStock = selectedItem?.stock ?? 0;
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // const selectedItem = itemMaster.find(
+    //   (itm) => Number(itm.id) === Number(itemRequestData.item_id)
+    // );
+
+    // const stock = selectedItem?.stock ?? 0;
+
+    // Save-time validation
+    if (itemRequestData.quantity > isStock) {
+      toast.error(`Quantity cannot be more than available stock (${isStock})`);
+      return;
+    }
+
     // Validate required fields
-    if (!itemRequestData.item_id || !itemRequestData.quantity) {
+    if (
+      !itemRequestData.item_id ||
+      !itemRequestData.quantity ||
+      !itemRequestData.receiving_person ||
+      !itemRequestData.category_name ||
+      !itemRequestData.sub_category_name ||
+      !itemRequestData.item_code ||
+      !itemRequestData.service_location_1_name ||
+      !itemRequestData.service_location_3_name ||
+      !itemRequestData.uom
+    ) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -782,9 +816,12 @@ export default function Item_Request_Form() {
             {/* Quantity */}
             <div className="col-sm-3 mb-4">
               <label htmlFor="Quantity" className="form-label">
-                Quantity <span className="text-danger">*</span>
+                Quantity <span className="text-danger">*</span>{" "}
+                {selectedItem?.stock !== undefined && (
+                  <span>(Stock Is : {isStock})</span>
+                )}
               </label>
-              <input
+              {/* <input
                 type="number"
                 className="form-control"
                 id="quantity"
@@ -798,7 +835,39 @@ export default function Item_Request_Form() {
                 }
                 min="0"
                 required
+              /> */}
+              <input
+                type="number"
+                className="form-control"
+                id="quantity"
+                placeholder="Quantity"
+                value={itemRequestData?.quantity ?? ""}
+                onChange={(e) => {
+                  const qty = Number(e.target.value);
+                  const selectedItem = itemMaster.find(
+                    (itm) => Number(itm.id) === Number(itemRequestData.item_id)
+                  );
+
+                  const stock = selectedItem?.stock ?? 0;
+
+                  // Live validation
+                  if (qty > stock) {
+                    setQtyError(
+                      `Quantity cannot be more than available stock (${stock})`
+                    );
+                  } else {
+                    setQtyError("");
+                  }
+
+                  setItemRequestData((prev) => ({
+                    ...prev,
+                    quantity: qty || "",
+                  }));
+                }}
+                min="0"
+                required
               />
+              {qtyError && <p className="text-danger mt-1">{qtyError}</p>}
             </div>
 
             {/* Unit of Measure */}

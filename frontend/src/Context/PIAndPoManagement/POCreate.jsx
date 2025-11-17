@@ -210,6 +210,7 @@ export const POProvider = ({ children }) => {
   //   }
   // };
 
+  // get Po List
   const getPoList = async ({
     search: searchText = search,
     status: filterStatus = status,
@@ -272,11 +273,87 @@ export const POProvider = ({ children }) => {
       }
       return res;
     } catch (error) {
-      if (error.response) {
-        const errorMessage = error.response.data?.message;
-        toast.error(errorMessage);
+      // if (error.response) {
+      //   const errorMessage = error.response.data?.message;
+      //   toast.error(errorMessage);
+      // }
+      // console.error("PO creation failed:", error);
+      console.log("Error:", error);
+
+      if (error.response && error.response.data) {
+        const { message, errors } = error.response.data;
+
+        // Show main message (e.g. "Validation error")
+        // if (message) {
+        //   toast.error(message);
+        // }
+
+        // Show field-specific validation errors
+        if (errors && typeof errors === "object") {
+          Object.entries(errors).forEach(([field, msgs]) => {
+            if (Array.isArray(msgs)) {
+              msgs.forEach((msg) => toast.error(`${field}: ${msg}`));
+            } else {
+              toast.error(`${field}: ${msgs}`);
+            }
+          });
+        }
+      } else {
+        toast.error("Something went wrong. Please try again.");
       }
-      console.error("PO creation failed:", error);
+    }
+  };
+
+  // PO Edit
+  // PO Edit
+  const PoEdit = async (id, payload) => {
+    try {
+      setLoading(true);
+
+      // Combine ID + payload in body
+      const bodyData = {
+        id: id,
+        ...payload,
+      };
+
+      const res = await postData(ENDPOINTS.POCREATE.ADD_UPDATE, bodyData);
+
+      if (res.status === true) {
+        toast.success("PO updated successfully");
+
+        // Update formData state
+        setFormData(res.data.data);
+
+        // Navigate to PO Detail page
+        navigate(`/po-material/po-detail/${id}`);
+      }
+
+      return res;
+    } catch (error) {
+      console.log("PO Edit Error:", error);
+
+      // Error Handling
+      if (error.response && error.response.data) {
+        const { message, errors } = error.response.data;
+
+        // Show general message if exists
+        if (message) toast.error(message);
+
+        // Show specific field errors
+        if (errors && typeof errors === "object") {
+          Object.entries(errors).forEach(([field, msgs]) => {
+            if (Array.isArray(msgs)) {
+              msgs.forEach((msg) => toast.error(`${field}: ${msg}`));
+            } else {
+              toast.error(`${field}: ${msgs}`);
+            }
+          });
+        }
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -370,6 +447,7 @@ export const POProvider = ({ children }) => {
         getPoDetails,
         PoApprove,
         PoReject,
+        PoEdit,
 
         // PO WORKFLOW
         poWorkflowDetails,
