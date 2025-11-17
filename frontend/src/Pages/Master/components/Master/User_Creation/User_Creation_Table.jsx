@@ -116,7 +116,7 @@ export default function User_Creation_Table() {
                             src={
                               user.profile_photo_url
                                 ? user.profile_photo_url
-                                : `${publicUrl}/assets/img/avatars/user.png`
+                                : `${publicUrl}assets/img/avatars/user.png`
                             }
                             alt={user.name}
                             className="rounded-circle"

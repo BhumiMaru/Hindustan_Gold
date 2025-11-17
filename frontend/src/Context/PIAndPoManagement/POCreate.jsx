@@ -256,7 +256,9 @@ export const POProvider = ({ children }) => {
   // Po Details
   const getPoDetails = async (po_id) => {
     try {
-      const res = await getData(`${ENDPOINTS.POCREATE.DETAILS}?po_id=${po_id}`);
+      const res = await getData(
+        `${ENDPOINTS.POCREATE.DETAILS}?po_id=${Number(po_id)}`
+      );
       setPoDetails(res.data);
     } catch (error) {
       console.error("PO Details failed:", error);
@@ -305,7 +307,6 @@ export const POProvider = ({ children }) => {
   };
 
   // PO Edit
-  // PO Edit
   const PoEdit = async (id, payload) => {
     try {
       setLoading(true);
@@ -319,13 +320,13 @@ export const POProvider = ({ children }) => {
       const res = await postData(ENDPOINTS.POCREATE.ADD_UPDATE, bodyData);
 
       if (res.status === true) {
-        toast.success("PO updated successfully");
+        toast.success(res.message);
 
         // Update formData state
         setFormData(res.data.data);
 
         // Navigate to PO Detail page
-        navigate(`/po-material/po-detail/${id}`);
+        navigate("/dashboard");
       }
 
       return res;
