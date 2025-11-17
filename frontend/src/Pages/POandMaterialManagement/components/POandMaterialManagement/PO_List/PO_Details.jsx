@@ -3,7 +3,7 @@ import {
   POProvider,
   usePOCreate,
 } from "../../../../../Context/PIAndPoManagement/POCreate";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useUIContext } from "../../../../../Context/UIContext";
 import PO_Reject_Modal from "./PO_Reject_Modal";
 import UpdateGRN from "../GRN_List/UpdateGRN";
@@ -25,6 +25,7 @@ const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function PO_Details() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { handleOpen, modal, handleClose } = useUIContext();
   const {
     poDetails,
@@ -105,8 +106,8 @@ export default function PO_Details() {
     link.click();
   };
 
-  console.log("poDetails", poDetails);
-  console.log("po id", poIdInvoice);
+  // console.log("poDetails", poDetails);
+  // console.log("po id", poIdInvoice);
   return (
     <>
       {/* ------------------------START PO DETAILS--------------------------- */}

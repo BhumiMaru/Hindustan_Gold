@@ -126,6 +126,7 @@ export default function Navbar() {
                     className="rounded-circle"
                   />
                 </div>
+                {console.log("kk", `${publicUrl}assets/img/avatars/user.png`)}
                 {/* {console.log(
                   `${fileUrl}/storage/users/${decryptAuthData?.user?.profile_photo}`
                 )} */}

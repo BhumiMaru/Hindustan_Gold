@@ -42,6 +42,7 @@ export const ItemMasterProvider = ({ children }) => {
     service_location2: null,
     service_location3: null,
     status: 1,
+    item_image: null,
   });
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -140,7 +141,12 @@ export const ItemMasterProvider = ({ children }) => {
 
       const res = await postData(
         ENDPOINTS.ITEM_MASTER.ADD_UPDATE,
-        sanitizedPayload
+        sanitizedPayload,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       // console.log("res", res);
       if (res?.status === true) {
@@ -181,10 +187,18 @@ export const ItemMasterProvider = ({ children }) => {
   const EditItemMaster = async (item_id, payload) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.ITEM_MASTER.ADD_UPDATE, {
-        id: item_id,
-        ...payload,
-      });
+      const res = await postData(
+        ENDPOINTS.ITEM_MASTER.ADD_UPDATE,
+        {
+          id: item_id,
+          ...payload,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       // console.log("res", res);
       if (res?.status) {
@@ -377,7 +391,7 @@ export const ItemMasterProvider = ({ children }) => {
     try {
       const res = await postData(ENDPOINTS.ITEM_MASTER.DETAILS, { id });
       const item = res.data;
-      // console.log("item master", item);
+      console.log("item master", item);
 
       // Based on the nested structure, adjust the mapping accordingly
       const getServiceLocationData = () => {
@@ -482,6 +496,7 @@ export const ItemMasterProvider = ({ children }) => {
         purchase_date: item?.purchase_date || "",
         warranty_expiry: item?.warranty_expiry || "",
         status: Number(item?.status) ?? 1,
+        item_image: item.item_image,
       };
 
       setItemMasterData(itemData);

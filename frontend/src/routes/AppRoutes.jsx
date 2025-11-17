@@ -61,6 +61,7 @@ import { PIRequestProvider } from "../Context/PIAndPoManagement/PIRequestList";
 import ProfileMasterPage from "../Pages/Profile/ProfileMasterPage";
 import { decryptData } from "../utils/decryptData";
 import NotFoundPage from "../Pages/NotFoundPage/NotFoundPage";
+import PO_Edit from "../Pages/POandMaterialManagement/components/POandMaterialManagement/PO_Create/PO_Edit";
 
 export default function AppRoutes() {
   const { isOpenSmallSidebar, closeSmallSidebar, modal } = useUIContext();
@@ -407,6 +408,14 @@ export default function AppRoutes() {
               path="/po-material/po-create/:id"
               element={<PO_Create_Page />}
             />
+            {/* <Route
+              path="/po-material/po-edit/:id"
+              element={
+                <POProvider>
+                  <PO_Edit />
+                </POProvider>
+              }
+            /> */}
             <Route path="/po-material/po-list" element={<PO_List_Page />} />
             <Route
               path="/po-material/po-detail/:id"

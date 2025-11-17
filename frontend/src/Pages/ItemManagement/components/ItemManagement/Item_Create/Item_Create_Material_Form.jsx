@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCategoryMaster } from "../../../../../Context/ItemManagement/CategoryMasterContext";
 import { useZone } from "../../../../../Context/Master/ZoneContext";
 import { useServiceLocation1Master } from "../../../../../Context/Master/ServiceLocation1MasterContext";
@@ -10,6 +10,8 @@ import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSe
 import { toast } from "react-toastify";
 import { useItemMaster } from "../../../../../Context/ItemManagement/ItemMasterContext";
 import { useUOM } from "../../../../../Context/UomContext";
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
+const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export default function Item_Create_Material_Form() {
   const { type, id } = useParams();
@@ -892,6 +894,47 @@ export default function Item_Create_Material_Form() {
                           placeholder="Select Status"
                           isTextRequired
                         />
+                      </div>
+                    </div>
+
+                    <div className="col-sm-6 mb-3">
+                      <label
+                        htmlFor={`UploadFile-${itemMasterData.id}`}
+                        className="form-label"
+                      >
+                        Upload File
+                      </label>
+
+                      {/* Flex container */}
+                      <div className="d-flex align-items-center gap-3">
+                        <input
+                          type="file"
+                          className="form-control"
+                          id={`UploadFile-${itemMasterData.id}`}
+                          onChange={(e) => {
+                            setItemMasterData((prev) => ({
+                              ...prev,
+                              item_image: e.target.files[0],
+                            }));
+                          }}
+                        />
+
+                        {itemMasterData?.item_image ? (
+                          <img
+                            src={`${fileUrl}/${itemMasterData?.item_image}`}
+                            alt="Document"
+                            className="rounded border"
+                            style={{
+                              height: "40px",
+                              width: "40px",
+                              objectFit: "cover",
+                            }}
+                          />
+                        ) : (
+                          <span className="text-muted small">
+                            No file uploaded
+                          </span>
+                        )}
                       </div>
                     </div>
 

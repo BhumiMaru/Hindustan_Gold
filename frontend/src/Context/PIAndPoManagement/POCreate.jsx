@@ -311,22 +311,23 @@ export const POProvider = ({ children }) => {
     try {
       setLoading(true);
 
-      // Combine ID + payload in body
+      // Combine ID + payload in body for update
       const bodyData = {
         id: id,
         ...payload,
       };
 
       const res = await postData(ENDPOINTS.POCREATE.ADD_UPDATE, bodyData);
-
+      console.log("bodyData", bodyData);
+      console.log("res", res);
       if (res.status === true) {
         toast.success(res.message);
 
-        // Update formData state
+        // Update formData state with the response
         setFormData(res.data.data);
 
-        // Navigate to PO Detail page
-        navigate("/dashboard");
+        // Navigate to PO Detail page after successful edit
+        navigate(`/po-material/po-detail/${id}`);
       }
 
       return res;

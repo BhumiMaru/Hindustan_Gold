@@ -221,15 +221,12 @@ export default function PO_List_Table() {
                               transform: "translate(-45px, 195px)",
                             }}
                           >
-                            {/* <Link
+                            <Link
                               to={`/po-material/po-create/${po.id}`}
                               className="dropdown-item waves-effect"
-                              onClick={() => {
-                                PoEdit(po.id, po);
-                              }}
                             >
                               Edit
-                            </Link> */}
+                            </Link>
                             <Link
                               to={`/po-material/po-detail/${po.id}`}
                               className="dropdown-item waves-effect"

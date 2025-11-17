@@ -748,7 +748,7 @@ const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function PO_Create() {
   const { id } = useParams();
-  const { PoCreate, getPoDetails, poDetails, formData, setFormData } =
+  const { PoCreate, getPoDetails, poDetails, formData, setFormData, PoEdit } =
     usePOCreate();
 
   // Form state
@@ -835,7 +835,7 @@ export default function PO_Create() {
       "gst_value",
       "final_total",
       "taxes_pr",
-      "taxes_number",
+      // "taxes_number",
     ];
 
     let processedValue = value;
@@ -894,42 +894,99 @@ export default function PO_Create() {
   //   setCharges(updatedCharges);
   // };
 
-  console.log("poDe", poDetails?.items);
+  console.log("poDe", poDetails);
 
+  // Enhanced useEffect to properly initialize form data for edit
   useEffect(() => {
-    if (poDetails?.items) {
-      // Initialize items with PO details and calculate initial totals
-      const initializedItems = poDetails.items.map((item) => {
-        console.log("itemmmm", item);
-        return {
-          id: item?.id,
-          item_name: item?.pirequestitem?.item_name,
-          description: item?.pirequestitem?.remark,
-          qty: item?.pirequestitem?.qty,
-          uom: item?.pirequestitem?.uom,
-          unit_price: item?.unit_price,
-          disc_pr: "",
-          disc_number: "0",
-          gst_pr: "",
-          taxable_value: item?.Taxable_value,
-          base_amount: (
-            item?.pirequestitem?.unit_price * item?.pirequestitem?.qty
-          ).toFixed(2),
-          gst_amount: "0",
-        };
+    if (id && poDetails?.id) {
+      console.log("Initializing form with PO details:", poDetails);
+
+      // Initialize charges from poDetails
+      if (
+        poDetails.additional_charges &&
+        poDetails.additional_charges.length > 0
+      ) {
+        setCharges(
+          poDetails.additional_charges.map((charge) => ({
+            name: charge.charge_name,
+            amount: String(charge.amount || ""),
+          }))
+        );
+      }
+
+      // Initialize milestones from poDetails
+      if (
+        poDetails.payment_milestones &&
+        poDetails.payment_milestones.length > 0
+      ) {
+        setMilestones(
+          poDetails.payment_milestones.map((milestone) => ({
+            percentage: String(milestone.payment_pr || ""),
+            payment_number: milestone.payment_number || "",
+          }))
+        );
+      }
+
+      // Set checkbox states based on charge values
+      setPackingChargeChecked(
+        !!(poDetails.packing_charge && parseFloat(poDetails.packing_charge) > 0)
+      );
+      setFrightChargeChecked(
+        !!(poDetails.freight_charge && parseFloat(poDetails.freight_charge) > 0)
+      );
+
+      // Initialize form data
+      setFormData({
+        id: poDetails.id,
+        po_date: poDetails.po_date ?? new Date().toISOString().split("T")[0],
+        default_rupees: poDetails.default_rupees ?? "INR",
+        total_discount: String(poDetails.total_discount ?? "0"),
+        packing_charge: poDetails.packing_charge ?? "0",
+        packing_gst: poDetails.packing_gst ?? "0",
+        fright_charge: poDetails.freight_charge ?? "0",
+        fright_gst: poDetails.freight_gst ?? "0",
+        additional_charge_status: String(
+          poDetails.additional_charge_status ?? "0"
+        ),
+        sub_total: String(poDetails.sub_total ?? "0"),
+        gst_value: String(poDetails.gst_value ?? "0"),
+        final_total: String(poDetails.final_total ?? "0"),
+        payment_status: String(poDetails.payment_status ?? "0"),
+        taxes_pr: String(poDetails.taxes_pr ?? "0"),
+        taxes_number: String(poDetails.taxes_number ?? ""),
+        guarantee_and_warranty: poDetails.guarantee_and_warranty ?? "",
+        loading_and_freight_charges:
+          poDetails.loading_and_freight_charges ?? "",
+        installation_at_site: poDetails.installation_at_site ?? "",
+        delivery: poDetails.delivery ?? "",
+        introduction: poDetails.Introduction ?? "",
+        is_payment_advance_or_partial:
+          poDetails.is_payment_advance_or_partial ?? "No",
+        currency: poDetails.default_rupees ?? "INR",
+        total_item: poDetails.total_item ?? 0,
+
+        // Initialize items properly
+        items:
+          poDetails.items?.map((item) => ({
+            id: item?.id,
+            item_name: item?.pirequestitem?.item_name,
+            description: item?.pirequestitem?.remark,
+            qty: item?.pirequestitem?.qty,
+            uom: item?.pirequestitem?.uom,
+            unit_price: item?.unit_price ?? "",
+            disc_pr: item?.disc_pr ?? "",
+            disc_number: item?.disc_number ?? "",
+            gst_pr: item?.gst_pr ?? "",
+            taxable_value: item?.Taxable_value ?? item?.taxable_value ?? "",
+            base_amount: item?.base_amount ?? "",
+            gst_amount: item?.gst_amount ?? "",
+          })) ?? [],
+
+        additional_charges: poDetails.additional_charges ?? [],
+        payment_milestones: poDetails.payment_milestones ?? [],
       });
-
-      const totals = calculateGrandTotals(initializedItems);
-
-      setFormData((prev) => ({
-        ...prev,
-        id: poDetails?.id,
-        items: initializedItems,
-        total_item: initializedItems.length,
-        ...totals,
-      }));
     }
-  }, [poDetails]);
+  }, [id, poDetails]);
 
   useEffect(() => {
     if (formData?.items.length > 0) {
@@ -1242,6 +1299,44 @@ export default function PO_Create() {
   };
 
   // Handle Save
+  // const handleSave = () => {
+  //   try {
+  //     const payload = {
+  //       pi_get_quote_id: poDetails?.pi_get_quote_id || "",
+  //       pi_get_quote_vendor_id: poDetails?.pi_get_quote_vendor_id || "",
+  //       pi_request_id: poDetails?.pi_request_id || "",
+  //       po_number: poDetails?.po_number || "",
+  //       ...formData,
+  //       // Charges
+  //       additional_charges: charges
+  //         ?.filter((charge) => charge?.name && charge?.amount)
+  //         ?.map((charge) => ({
+  //           charge_name: charge?.name,
+  //           amount: parseFloat(charge?.amount) || 0,
+  //         })),
+  //       // Milestones
+  //       payment_milestones: milestones
+  //         ?.filter((m) => m?.percentage && m?.payment_number)
+  //         ?.map((m, idx) => ({
+  //           payment_pr: parseFloat(m?.percentage) || 0,
+  //           payment_number: m?.payment_number, // keep as string/sequence if needed
+  //         })),
+  //       // Respect checkboxes
+  //       packing_charge: packingChargeChecked ? formData?.packing_charge : "0",
+  //       packing_gst: packingChargeChecked ? formData?.packing_gst : "0",
+  //       fright_charge: frightChargeChecked ? formData?.fright_charge : "0",
+  //       fright_gst: frightChargeChecked ? formData?.fright_gst : "0",
+  //     };
+
+  //     console.log("PO Create Payload:", payload);
+  //     PoCreate(payload);
+
+  //     // navigate(`/po-material/po-detail/${poDetails?.id}`);
+  //   } catch (error) {
+  //     console.log("Po Create Error:", error);
+  //   }
+  // };
+  // Handle Save - Updated to handle both create and edit
   const handleSave = () => {
     try {
       const payload = {
@@ -1252,17 +1347,17 @@ export default function PO_Create() {
         ...formData,
         // Charges
         additional_charges: charges
-          ?.filter((charge) => charge?.name && charge?.amount)
-          ?.map((charge) => ({
+          .filter((charge) => charge?.name && charge?.amount)
+          .map((charge) => ({
             charge_name: charge?.name,
             amount: parseFloat(charge?.amount) || 0,
           })),
         // Milestones
         payment_milestones: milestones
-          ?.filter((m) => m?.percentage && m?.payment_number)
-          ?.map((m, idx) => ({
+          .filter((m) => m?.percentage && m?.payment_number)
+          .map((m, idx) => ({
             payment_pr: parseFloat(m?.percentage) || 0,
-            payment_number: m?.payment_number, // keep as string/sequence if needed
+            payment_number: m?.payment_number,
           })),
         // Respect checkboxes
         packing_charge: packingChargeChecked ? formData?.packing_charge : "0",
@@ -1271,12 +1366,17 @@ export default function PO_Create() {
         fright_gst: frightChargeChecked ? formData?.fright_gst : "0",
       };
 
-      console.log("PO Create Payload:", payload);
-      PoCreate(payload);
+      console.log("PO Save Payload:", payload);
 
-      // navigate(`/po-material/po-detail/${poDetails?.id}`);
+      // Use PoEdit for existing records, PoCreate for new ones
+      if (id) {
+        PoEdit(Number(id), payload);
+      } else {
+        PoCreate(payload);
+      }
     } catch (error) {
-      console.log("Po Create Error:", error);
+      console.log("PO Save Error:", error);
+      toast.error("Failed to save PO. Please try again.");
     }
   };
 
