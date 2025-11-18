@@ -864,6 +864,27 @@ export default function PO_Details_Download() {
         `}
       </style>
       {/* ------------------------START PO DETAILS--------------------------- */}
+      <div className="no-print text-end pt-5 pe-5">
+        <button
+          className="btn btn-primary me-2"
+          onClick={handleDownloadPDF}
+          disabled={isGeneratingPDF}
+        >
+          {isGeneratingPDF && (
+            <div
+              className="spinner-border spinner-white me-2"
+              role="status"
+            ></div>
+          )}
+          Download PDF
+        </button>
+        <button
+          className="btn btn-success waves-effect waves-light"
+          onClick={handlePrint}
+        >
+          Print
+        </button>
+      </div>
       <div
         className="flex-grow-1 container-p-y container-fluid pdf-safe"
         ref={printRef}
@@ -876,7 +897,7 @@ export default function PO_Details_Download() {
                   <div className="d-flex svg-illustration mb-6 gap-2 align-items-center">
                     <div>
                       <img
-                        src={`${publicUrl}assets/img/logo_vertical.png`}
+                        src="/assets/img/logo_vertical.png"
                         style={{ height: "86px", width: "137.95px" }}
                         alt="Company Logo"
                         // crossOrigin="anonymous"
@@ -976,6 +997,7 @@ export default function PO_Details_Download() {
                       <tr>
                         <th>Sr.#</th>
                         <th>Item</th>
+                        <th></th>
                         {/* <th>Indent No</th> */}
                         <th>Description</th>
                         <th>Qty.</th>
@@ -1004,6 +1026,7 @@ export default function PO_Details_Download() {
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{item.item_name}</td>
+                          <td></td>
                           {/* <td>{item.item_name}</td> */}
                           <td>{item.description}</td>
                           <td>{item.qty}</td>
@@ -1473,7 +1496,7 @@ export default function PO_Details_Download() {
                 </div>
               )}
 
-              <div className="col-12 mt-2 text-end no-print">
+              {/* <div className="col-12 mt-2 text-end no-print">
                 <button
                   className="btn btn-primary me-2"
                   onClick={handleDownloadPDF}
@@ -1493,7 +1516,7 @@ export default function PO_Details_Download() {
                 >
                   Print
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

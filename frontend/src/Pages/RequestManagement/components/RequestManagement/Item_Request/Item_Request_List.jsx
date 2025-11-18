@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Item_Request_Table from "./Item_Request_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
 import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
@@ -18,6 +18,350 @@ import { useUserCreation } from "../../../../../Context/Master/UserCreationConte
 import { postData } from "../../../../../utils/api";
 import { ENDPOINTS } from "../../../../../constants/endpoints";
 import { toast } from "react-toastify";
+
+// export default function Item_Request_List() {
+//   const {
+//     getItemRequestData,
+//     pagination,
+//     setPagination,
+//     itemList,
+//     activeTab,
+//     setActiveTab,
+//     itemRequest,
+//     filterItem,
+//     fetchItemFilter,
+//     setItemRequestData,
+//     getItemNameAndId,
+//     selectedType,
+//     setSelectedType,
+//     startDate,
+//     setStartDate,
+//     endDate,
+//     setEndDate,
+//     setFilterItem,
+//   } = useItemRequest();
+//   const [loading, setLoading] = useState(false);
+//   const [exporting, setExporting] = useState(false);
+//   const [search, setSearch] = useState("");
+//   const { modal } = useUIContext();
+//   // const [selectedType, setSelectedType] = useState("all"); // item type filter
+//   const [statusFilter, setStatusFilter] = useState("all"); // status filter
+//   const [itemNameId, setItemNameId] = useState("all");
+//   const [showDatePicker, setShowDatePicker] = useState(false);
+//   const [selectedDateRange, setSelectedDateRange] = useState("");
+//   const { userPermission, fetchUserPermission } = useUserCreation();
+
+//   //  NEW: Add URL parameter handling
+//   const location = useLocation();
+//   const [isReadyToFetch, setIsReadyToFetch] = useState(false);
+
+//   //  FIX 1: Handle URL parameters on initial load
+//   useEffect(() => {
+//     const params = new URLSearchParams(location.search);
+//     const urlStatus = params.get("status");
+
+//     console.log("URL Parameters:", {
+//       status: urlStatus,
+//       fullSearch: location.search,
+//     });
+
+//     // Set status from URL if provided
+//     if (urlStatus) {
+//       setStatusFilter(urlStatus);
+//       console.log(" Setting status filter from URL:", urlStatus);
+//     }
+
+//     // Fetch user permissions
+//     const getAuthData = sessionStorage.getItem("authData");
+//     const decryptAuthData = decryptData(getAuthData);
+//     const user = decryptAuthData?.user;
+
+//     if (user?.id) {
+//       fetchUserPermission(user.id);
+//     }
+
+//     setIsReadyToFetch(true);
+//   }, [location.search]); //  Run when URL changes
+
+//   //  FIX 2: Handle item filter when type changes
+//   useEffect(() => {
+//     if (!isReadyToFetch) return;
+
+//     console.log("🔄 Item type changed to:", selectedType);
+
+//     if (selectedType && selectedType !== "all") {
+//       setFilterItem([]);
+//       setItemNameId("all");
+//       fetchItemFilter(null, selectedType);
+//     } else {
+//       setFilterItem([]);
+//       setItemNameId("all");
+//     }
+//   }, [selectedType, isReadyToFetch]);
+
+//   //  FIX 3: Single data fetching effect with URL sync
+//   useEffect(() => {
+//     if (!isReadyToFetch) {
+//       console.log(" Not ready to fetch yet...");
+//       return;
+//     }
+
+//     console.log(" Fetching data with filters:", {
+//       search,
+//       activeTab,
+//       selectedType,
+//       statusFilter,
+//       itemNameId,
+//       startDate,
+//       endDate,
+//       page: pagination.currentPage,
+//     });
+
+//     // Update URL with current filters
+//     const params = new URLSearchParams();
+//     if (statusFilter !== "all") {
+//       params.set("status", statusFilter);
+//     }
+//     if (selectedType !== "all") {
+//       params.set("type", selectedType);
+//     }
+
+//     // Replace URL without causing navigation
+//     const newUrl = `${window.location.pathname}${
+//       params.toString() ? `?${params.toString()}` : ""
+//     }`;
+//     window.history.replaceState({}, "", newUrl);
+
+//     const fetchTimer = setTimeout(() => {
+//       getItemRequestData({
+//         search: search || "",
+//         type: activeTab || "my_request",
+//         item_type: selectedType === "all" ? "" : selectedType,
+//         status: statusFilter === "all" ? "" : statusFilter,
+//         item_id: itemNameId === "all" ? "" : itemNameId,
+//         start_date: startDate || "",
+//         end_date: endDate || "",
+//         page: pagination.currentPage,
+//         perPage: pagination.perPage,
+//       });
+//     }, 150);
+
+//     return () => clearTimeout(fetchTimer);
+//   }, [
+//     search,
+//     activeTab,
+//     selectedType,
+//     statusFilter,
+//     itemNameId,
+//     startDate,
+//     endDate,
+//     pagination.currentPage,
+//     pagination.perPage,
+//     isReadyToFetch,
+//   ]);
+
+//   // // when type changes, fetch items and update itemRequestData
+//   // useEffect(() => {
+//   //   if (selectedType) {
+//   //     getItemNameAndId(selectedType);
+//   //     setItemRequestData((prev) => ({ ...prev, item_type: selectedType }));
+//   //   }
+//   // }, [selectedType]);
+
+//   // // // when item name changes, update item_id in itemRequestData
+//   // // useEffect(() => {
+//   // //   if (itemNameId) {
+//   // //     setItemRequestData((prev) => ({ ...prev, id: itemNameId }));
+//   // //   }
+//   // // }, [itemNameId]);
+
+//   // console.log("fff", filterItem);
+
+//   // useEffect(() => {
+//   //   getItemRequestData({
+//   //     search,
+//   //     type: activeTab,
+//   //     item_type: selectedType === "all" ? "" : selectedType,
+//   //     status: statusFilter === "all" ? "" : statusFilter,
+//   //     page: pagination.currentPage,
+//   //     perPage: pagination.perPage,
+//   //     start_date: startDate || undefined,
+//   //     end_date: endDate || undefined,
+//   //     item_id: itemNameId,
+//   //   });
+//   // }, [
+//   //   search,
+//   //   activeTab,
+//   //   selectedType,
+//   //   statusFilter,
+//   //   pagination.currentPage,
+//   //   pagination.perPage,
+//   //   startDate,
+//   //   endDate,
+//   //   itemNameId,
+//   // ]);
+
+//   // // When type changes, fetch new filter + clear old data
+//   // useEffect(() => {
+//   //   if (selectedType) {
+//   //     // Clear previous filter items before loading new ones
+//   //     setFilterItem([]);
+
+//   //     // Fetch new item filter
+//   //     fetchItemFilter(null, selectedType);
+
+//   //     // Also update itemRequestData for context if needed
+//   //     getItemNameAndId(selectedType);
+//   //     setItemRequestData((prev) => ({ ...prev, item_type: selectedType }));
+//   //   }
+//   // }, [selectedType]);
+
+//   // const getAuthData = sessionStorage.getItem("authData");
+//   // const decryptAuthData = decryptData(getAuthData);
+//   // const user = decryptAuthData?.user;
+
+//   // useEffect(() => {
+//   //   fetchUserPermission(user?.id);
+//   // }, [user?.id]);
+
+//   const handlePageChange = (page) => {
+//     setPagination((prev) => ({ ...prev, currentPage: page }));
+//   };
+
+//   const handleItemsPerPageChange = (size) => {
+//     setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
+//   };
+
+//   const handleDateSelect = (range) => {
+//     setSelectedDateRange(range);
+
+//     // Split "DD/MM/YYYY - DD/MM/YYYY"
+//     const [start, end] = range.split(" - ");
+
+//     // Convert to YYYY-MM-DD for API
+//     setStartDate(start ? moment(start, "DD/MM/YYYY").format("YYYY-MM-DD") : "");
+//     setEndDate(end ? moment(end, "DD/MM/YYYY").format("YYYY-MM-DD") : "");
+
+//     setShowDatePicker(false);
+//   };
+
+//   //  FIX 5: Updated clear filters to also clear URL
+//   const handleClearFilters = () => {
+//     // Reset all states
+//     setSearch("");
+//     setSelectedType("all");
+//     setStatusFilter("all");
+//     setItemNameId("all");
+//     setStartDate("");
+//     setEndDate("");
+//     setSelectedDateRange("");
+//     setShowDatePicker(false);
+//     setFilterItem([]);
+
+//     // Reset pagination
+//     setPagination((prev) => ({
+//       ...prev,
+//       currentPage: 1,
+//     }));
+
+//     // Clear URL parameters
+//     window.history.replaceState({}, "", window.location.pathname);
+//   };
+
+//   // const handleClearFilters = () => {
+//   //   // Reset all filter-related states
+//   //   setSearch("");
+//   //   setSelectedType("all");
+//   //   setStatusFilter("all");
+//   //   setItemNameId("all");
+//   //   setStartDate("");
+//   //   setEndDate("");
+//   //   setSelectedDateRange("");
+//   //   setShowDatePicker(false);
+
+//   //   // Reset pagination
+//   //   setPagination((prev) => ({
+//   //     ...prev,
+//   //     currentPage: 1,
+//   //   }));
+
+//   //   // Fetch unfiltered data
+//   //   getItemRequestData({
+//   //     search: "",
+//   //     type: activeTab,
+//   //     item_type: "",
+//   //     status: "",
+//   //     page: 1,
+//   //     perPage: pagination.perPage,
+//   //   });
+
+//   //   // Optional: Clear item filters if any
+//   //   setFilterItem([]);
+//   // };
+
+//   //  Export to Excel
+
+//   const handleExportItemRequestExcel = async () => {
+//     try {
+//       setExporting(true);
+
+//       // ✅ use same params as getItemRequestData
+//       const params = {
+//         type: activeTab,
+//         search: search || undefined,
+//         item_type: selectedType !== "all" ? selectedType : undefined,
+//         status: statusFilter !== "all" ? statusFilter : undefined,
+//         from_date: startDate || undefined,
+//         to_date: endDate || undefined,
+//         page: 1,
+//         per_page: 100, // backend limit
+//       };
+
+//       const res = await postData(ENDPOINTS.ITEM_REQUEST.LIST, params);
+//       const data = res?.data?.data || [];
+
+//       if (!data.length) {
+//         toast.info("No records found to export.");
+//         return;
+//       }
+
+//       // ✅ Map the export data based on Item Request table
+//       const exportData = data.map((item, i) => ({
+//         "Sr No": i + 1,
+//         "Request ID": item?.item_request?.item_request_id || "",
+//         Date: item?.item_request?.created_at
+//           ? moment(item.item_request.created_at).format("YYYY-MM-DD")
+//           : "",
+//         "Item Type": item?.item_request?.item_type || "",
+//         "Item Name": item?.item_request?.item?.item_name || "",
+//         "Request Person":
+//           item?.item_request?.workflows?.[0]?.request_user?.name || "",
+//         Quantity: item?.item_request?.quantity || "",
+//         UOM: item?.item_request?.uom || "",
+//         "Total Amount": item?.item_request?.total_amount
+//           ? `₹${item.item_request.total_amount}`
+//           : "",
+//         Status: item?.final_approve_status || "",
+//       }));
+
+//       // ✅ Generate Excel
+//       const worksheet = XLSX.utils.json_to_sheet(exportData);
+//       const workbook = XLSX.utils.book_new();
+//       XLSX.utils.book_append_sheet(workbook, worksheet, "Item Request List");
+
+//       XLSX.writeFile(
+//         workbook,
+//         `ItemRequest_List_${moment().format("YYYYMMDD_HHmmss")}.xlsx`
+//       );
+
+//       toast.success("Item Request list exported successfully!");
+//     } catch (error) {
+//       console.error("Export Error:", error);
+//       toast.error("Failed to export Item Request list.");
+//     } finally {
+//       setExporting(false);
+//     }
+//   };
 
 export default function Item_Request_List() {
   const {
@@ -40,80 +384,102 @@ export default function Item_Request_List() {
     setEndDate,
     setFilterItem,
   } = useItemRequest();
+
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [search, setSearch] = useState("");
   const { modal } = useUIContext();
-  // const [selectedType, setSelectedType] = useState("all"); // item type filter
-  const [statusFilter, setStatusFilter] = useState("all"); // status filter
+  const [statusFilter, setStatusFilter] = useState("all");
   const [itemNameId, setItemNameId] = useState("all");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDateRange, setSelectedDateRange] = useState("");
   const { userPermission, fetchUserPermission } = useUserCreation();
 
-  // when type changes, fetch items and update itemRequestData
+  //  Only handle status from URL
+  const location = useLocation();
+  const [isReadyToFetch, setIsReadyToFetch] = useState(false);
+
+  //  FIX 1: Handle ONLY status parameter from URL
   useEffect(() => {
-    if (selectedType) {
-      getItemNameAndId(selectedType);
-      setItemRequestData((prev) => ({ ...prev, item_type: selectedType }));
+    const params = new URLSearchParams(location.search);
+    const urlStatus = params.get("status");
+
+    // console.log(" URL Status Parameter:", urlStatus);
+
+    // Set status from URL if provided
+    if (urlStatus) {
+      setStatusFilter(urlStatus);
+      // console.log(" Setting status filter from URL:", urlStatus);
     }
-  }, [selectedType]);
 
-  // // when item name changes, update item_id in itemRequestData
-  // useEffect(() => {
-  //   if (itemNameId) {
-  //     setItemRequestData((prev) => ({ ...prev, id: itemNameId }));
-  //   }
-  // }, [itemNameId]);
+    // Fetch user permissions
+    const getAuthData = sessionStorage.getItem("authData");
+    const decryptAuthData = decryptData(getAuthData);
+    const user = decryptAuthData?.user;
 
-  console.log("fff", filterItem);
+    if (user?.id) {
+      fetchUserPermission(user.id);
+    }
 
+    setIsReadyToFetch(true);
+  }, [location.search]); //  Only depends on location.search
+
+  //  FIX 2: Handle item filter when type changes
   useEffect(() => {
-    getItemRequestData({
-      search,
-      type: activeTab,
-      item_type: selectedType === "all" ? "" : selectedType,
-      status: statusFilter === "all" ? "" : statusFilter,
-      page: pagination.currentPage,
-      perPage: pagination.perPage,
-      start_date: startDate || undefined,
-      end_date: endDate || undefined,
-      item_id: itemNameId,
-    });
+    if (!isReadyToFetch) return;
+
+    if (selectedType && selectedType !== "all") {
+      setFilterItem([]);
+      setItemNameId("all");
+      fetchItemFilter(null, selectedType);
+    } else {
+      setFilterItem([]);
+      setItemNameId("all");
+    }
+  }, [selectedType, isReadyToFetch]);
+
+  //  FIX 3: Single data fetching effect (NO URL sync for filters)
+  useEffect(() => {
+    if (!isReadyToFetch) return;
+
+    // console.log(" Fetching data with filters:", {
+    //   search,
+    //   activeTab,
+    //   selectedType,
+    //   statusFilter,
+    //   itemNameId,
+    //   startDate,
+    //   endDate,
+    //   page: pagination.currentPage,
+    // });
+
+    const fetchTimer = setTimeout(() => {
+      getItemRequestData({
+        search: search || "",
+        type: activeTab || "my_request",
+        item_type: selectedType === "all" ? "" : selectedType,
+        status: statusFilter === "all" ? "" : statusFilter,
+        item_id: itemNameId === "all" ? "" : itemNameId,
+        start_date: startDate || "",
+        end_date: endDate || "",
+        page: pagination.currentPage,
+        perPage: pagination.perPage,
+      });
+    }, 150);
+
+    return () => clearTimeout(fetchTimer);
   }, [
     search,
     activeTab,
     selectedType,
     statusFilter,
-    pagination.currentPage,
-    pagination.perPage,
+    itemNameId,
     startDate,
     endDate,
-    itemNameId,
+    pagination.currentPage,
+    pagination.perPage,
+    isReadyToFetch,
   ]);
-
-  // When type changes, fetch new filter + clear old data
-  useEffect(() => {
-    if (selectedType) {
-      // Clear previous filter items before loading new ones
-      setFilterItem([]);
-
-      // Fetch new item filter
-      fetchItemFilter(null, selectedType);
-
-      // Also update itemRequestData for context if needed
-      getItemNameAndId(selectedType);
-      setItemRequestData((prev) => ({ ...prev, item_type: selectedType }));
-    }
-  }, [selectedType]);
-
-  const getAuthData = sessionStorage.getItem("authData");
-  const decryptAuthData = decryptData(getAuthData);
-  const user = decryptAuthData?.user;
-
-  useEffect(() => {
-    fetchUserPermission(user?.id);
-  }, [user?.id]);
 
   const handlePageChange = (page) => {
     setPagination((prev) => ({ ...prev, currentPage: page }));
@@ -125,19 +491,15 @@ export default function Item_Request_List() {
 
   const handleDateSelect = (range) => {
     setSelectedDateRange(range);
-
-    // Split "DD/MM/YYYY - DD/MM/YYYY"
     const [start, end] = range.split(" - ");
-
-    // Convert to YYYY-MM-DD for API
     setStartDate(start ? moment(start, "DD/MM/YYYY").format("YYYY-MM-DD") : "");
     setEndDate(end ? moment(end, "DD/MM/YYYY").format("YYYY-MM-DD") : "");
-
     setShowDatePicker(false);
   };
 
+  //  FIX 4: Clear filters (NO URL clearing since we don't sync other filters)
   const handleClearFilters = () => {
-    // Reset all filter-related states
+    // Reset all states
     setSearch("");
     setSelectedType("all");
     setStatusFilter("all");
@@ -146,6 +508,7 @@ export default function Item_Request_List() {
     setEndDate("");
     setSelectedDateRange("");
     setShowDatePicker(false);
+    setFilterItem([]);
 
     // Reset pagination
     setPagination((prev) => ({
@@ -153,26 +516,15 @@ export default function Item_Request_List() {
       currentPage: 1,
     }));
 
-    // Fetch unfiltered data
-    getItemRequestData({
-      search: "",
-      type: activeTab,
-      item_type: "",
-      status: "",
-      page: 1,
-      perPage: pagination.perPage,
-    });
-
-    // Optional: Clear item filters if any
-    setFilterItem([]);
+    //  Clear URL parameters completely
+    window.history.replaceState({}, "", window.location.pathname);
   };
 
-  //  Export to Excel
+  // Your existing export function
   const handleExportItemRequestExcel = async () => {
     try {
       setExporting(true);
 
-      // ✅ use same params as getItemRequestData
       const params = {
         type: activeTab,
         search: search || undefined,
@@ -181,7 +533,7 @@ export default function Item_Request_List() {
         from_date: startDate || undefined,
         to_date: endDate || undefined,
         page: 1,
-        per_page: 100, // backend limit
+        per_page: 100,
       };
 
       const res = await postData(ENDPOINTS.ITEM_REQUEST.LIST, params);
@@ -192,7 +544,6 @@ export default function Item_Request_List() {
         return;
       }
 
-      // ✅ Map the export data based on Item Request table
       const exportData = data.map((item, i) => ({
         "Sr No": i + 1,
         "Request ID": item?.item_request?.item_request_id || "",
@@ -211,7 +562,6 @@ export default function Item_Request_List() {
         Status: item?.final_approve_status || "",
       }));
 
-      // ✅ Generate Excel
       const worksheet = XLSX.utils.json_to_sheet(exportData);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Item Request List");
@@ -229,6 +579,19 @@ export default function Item_Request_List() {
       setExporting(false);
     }
   };
+
+  // Debug current state
+  console.log(" CURRENT FILTER STATE:", {
+    search,
+    activeTab,
+    selectedType,
+    statusFilter,
+    itemNameId,
+    startDate,
+    endDate,
+    filterItemCount: filterItem?.length,
+    isReadyToFetch,
+  });
 
   return (
     <>

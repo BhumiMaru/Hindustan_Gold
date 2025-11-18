@@ -26,6 +26,8 @@ const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 export default function PO_Details() {
   const { id } = useParams();
   const navigate = useNavigate();
+  // Download po btn hover
+  const [showDropdown, setShowDropdown] = useState(false);
   const { handleOpen, modal, handleClose } = useUIContext();
   const {
     poDetails,
@@ -47,7 +49,7 @@ export default function PO_Details() {
     // setSubcategoryIdInvoice,
   } = useInvoice();
   const { userPermission, fetchUserPermission } = useUserCreation();
-  const { GRNList, grnList, loading } = useGRN();
+  const { GRNList, grnList, loading, setLoading } = useGRN();
 
   // sub category id , vendor id and grn id set via po and grn
   // const [subcategoryIdInvoice, setSubcategoryIdInvoice] = useState(null);
@@ -57,12 +59,31 @@ export default function PO_Details() {
 
   // console.log("vendorIdInvoice", vendorIdInvoice);
 
-  // fetch grn after add
+  const firstRender = useRef(true);
+
   useEffect(() => {
-    GRNList({
-      po_id: poDetails?.id,
-    });
+    if (!poDetails?.id) return;
+
+    if (firstRender.current) {
+      firstRender.current = false;
+    } else {
+      return; //  prevent second call
+    }
+
+    const getGrnList = async () => {
+      try {
+        setLoading(true);
+        await GRNList({ po_id: poDetails?.id });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getGrnList();
   }, [poDetails?.id]);
+
   console.log("grnList", grnList);
 
   const getAuthData = sessionStorage.getItem("authData");
@@ -106,7 +127,7 @@ export default function PO_Details() {
     link.click();
   };
 
-  // console.log("poDetails", poDetails);
+  console.log("poDetails", poDetails);
   // console.log("po id", poIdInvoice);
   return (
     <>
@@ -214,7 +235,7 @@ export default function PO_Details() {
                   >
                     Generate GRN
                   </button>
-                  <button
+                  {/* <button
                     type="submit"
                     className={`btn btn-label-success waves-effect btn-sm ${
                       poDetails.status === "Reject" ||
@@ -225,7 +246,67 @@ export default function PO_Details() {
                   >
                     <i className="icon-base ti tabler-download icon-md me-2" />
                     Download PO
-                  </button>
+                  </button> */}
+                  <div
+                    className="dropdown d-flex justify-content-start"
+                    onMouseEnter={() => setShowDropdown(true)}
+                    onMouseLeave={() => setShowDropdown(false)}
+                  >
+                    <button
+                      type="button"
+                      className={`btn btn-label-success waves-effect btn-sm dropdown-toggle ${
+                        poDetails.status === "Reject" ||
+                        poDetails.status === "Approve" ||
+                        (poDetails.status === "Pending" && "d-none")
+                      }`}
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i className="icon-base ti tabler-download icon-md me-2" />
+                      Download PO
+                    </button>
+                    <ul
+                      className={`dropdown-menu ${showDropdown ? "show" : ""}`}
+                      style={{
+                        left: "20%",
+                        transform: "translateX(-50%)",
+                        top: "100%",
+                      }}
+                    >
+                      <li>
+                        <Link
+                          to={`/po-material/download-po-quotation/${id}`}
+                          className="dropdown-item"
+                          type="button"
+                          // onClick={() => handleDownload("quotation+po")}
+                        >
+                          <i className="icon-base ti tabler-file-text icon-md me-2" />
+                          Download Quotation + PO
+                        </Link>
+                      </li>
+                      <li>
+                        <button
+                          className="dropdown-item"
+                          type="button"
+                          // onClick={() => handleDownload("po-without-quotation")}
+                        >
+                          <i className="icon-base ti tabler-file icon-md me-2" />
+                          PO Without Quotation
+                        </button>
+                      </li>
+                      <li>
+                        <Link
+                          to={`/po-material/po-detail-download/${id}`}
+                          className="dropdown-item"
+                          type="button"
+                          // onClick={() => handleDownload("po-only")}
+                        >
+                          <i className="icon-base ti tabler-file-export icon-md me-2" />
+                          PO Only
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
                 </>
               )}
             {/* {poDetails.status === "Approve" && (
@@ -460,92 +541,92 @@ export default function PO_Details() {
                 </table>
               </div>
             </div>
-            {/* {grnList.length > 0 && ( */}
-            <div className="card mt-4">
-              <div className="card-datatable table-responsive pt-0">
-                <div className="mx-4 my-2 d-flex justify-content-between">
-                  <h5 className="">GRN Detail</h5>
-                  <div>
-                    <Link
-                      to="/po-material/grn-list"
-                      className="badge bg-label-success rounded p-1_5 mt-1"
-                    >
-                      <i className="icon-base ti tabler-eye icon-md" />
-                    </Link>
-                  </div>
-                </div>
-                <table className="table datatables-basic align-middle">
-                  <thead>
-                    <tr className="align-items-center">
-                      <th scope="col" style={{ width: 80 }}>
-                        <div className="ms-4">Sr#</div>
-                      </th>
-                      <th scope="col">GRN&nbsp;ID</th>
-                      <th scope="col">GRN&nbsp;Date</th>
-                      <th scope="col">PI Request Person</th>
-                      <th scope="col">Total Item</th>
-                      <th scope="col">Status</th>
-                      <th scope="col" style={{ minWidth: 160 }}>
-                        Action
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {loading ? (
-                      <tr>
-                        <td colSpan="11">
-                          <Loader />
-                        </td>
-                      </tr>
-                    ) : (
-                      grnList?.map((grn, index) => {
-                        console.log("grnn", grn);
-                        return (
-                          <tr key={index}>
-                            <td>
-                              <div className="ms-4">{index + 1}</div>
-                            </td>
-                            <td>{grn?.grn_no}</td>
-                            {/* <td>{setPoIdInvoice(grn.po_id)}</td> */}
-                            <td>{grn?.grn_date}</td>
-                            <td>
-                              <div className="d-flex justify-content-start align-items-center user-name">
-                                <div className="avatar-wrapper">
-                                  {/* <div className="avatar me-2">
+            {loading ? (
+              <tr>
+                <td colSpan="11">
+                  <Loader />
+                </td>
+              </tr>
+            ) : (
+              grnList.length > 0 && (
+                <div className="card mt-4">
+                  <div className="card-datatable table-responsive pt-0">
+                    <div className="mx-4 my-2 d-flex justify-content-between">
+                      <h5 className="">GRN Detail</h5>
+                      <div>
+                        <Link
+                          to="/po-material/grn-list"
+                          className="badge bg-label-success rounded p-1_5 mt-1"
+                        >
+                          <i className="icon-base ti tabler-eye icon-md" />
+                        </Link>
+                      </div>
+                    </div>
+                    <table className="table datatables-basic align-middle">
+                      <thead>
+                        <tr className="align-items-center">
+                          <th scope="col" style={{ width: 80 }}>
+                            <div className="ms-4">Sr#</div>
+                          </th>
+                          <th scope="col">GRN&nbsp;ID</th>
+                          <th scope="col">GRN&nbsp;Date</th>
+                          <th scope="col">PI Request Person</th>
+                          <th scope="col">Total Item</th>
+                          <th scope="col">Status</th>
+                          <th scope="col" style={{ minWidth: 160 }}>
+                            Action
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {grnList?.map((grn, index) => {
+                          console.log("grnn", grn);
+                          return (
+                            <tr key={index}>
+                              <td>
+                                <div className="ms-4">{index + 1}</div>
+                              </td>
+                              <td>{grn?.grn_no}</td>
+                              {/* <td>{setPoIdInvoice(grn.po_id)}</td> */}
+                              <td>{grn?.grn_date}</td>
+                              <td>
+                                <div className="d-flex justify-content-start align-items-center user-name">
+                                  <div className="avatar-wrapper">
+                                    {/* <div className="avatar me-2">
                                   <img
                                     src="assets/img/avatars/10.png"
                                     alt="Avatar"
                                     className="rounded-circle"
                                   />
                                 </div> */}
-                                </div>
-                                <div className="d-flex flex-column">
-                                  <span className="emp_name text-truncate text-heading fw-medium">
-                                    {grn?.pirequestperson?.name}
-                                  </span>
-                                  {/* <small className="emp_post text-truncate">
+                                  </div>
+                                  <div className="d-flex flex-column">
+                                    <span className="emp_name text-truncate text-heading fw-medium">
+                                      {grn?.pirequestperson?.name}
+                                    </span>
+                                    {/* <small className="emp_post text-truncate">
                                   {grnList?.pirequestperson?.department}
                                 </small> */}
+                                  </div>
                                 </div>
-                              </div>
-                            </td>
-                            <td>{grn.items?.length}</td>
+                              </td>
+                              <td>{grn.items?.length}</td>
 
-                            <td>
-                              <span
-                                className={`badge ${
-                                  grn?.status === "Complete" ||
-                                  grn?.status === "Approve"
-                                    ? "bg-label-success"
-                                    : grn?.status === "Pending"
-                                    ? "bg-label-warning"
-                                    : "bg-label-danger"
-                                }`}
-                              >
-                                {grn?.status}
-                              </span>
-                            </td>
-                            {/* <td
+                              <td>
+                                <span
+                                  className={`badge ${
+                                    grn?.status === "Complete" ||
+                                    grn?.status === "Approve"
+                                      ? "bg-label-success"
+                                      : grn?.status === "Pending"
+                                      ? "bg-label-warning"
+                                      : "bg-label-danger"
+                                  }`}
+                                >
+                                  {grn?.status}
+                                </span>
+                              </td>
+                              {/* <td
                             className={`${
                               grn?.status === "Complete" ? "d-block" : "d-none"
                             }`}
@@ -605,55 +686,54 @@ export default function PO_Details() {
                               </Link>
                             ) : null}
                           </td> */}
-                            {/* ✅ Show View Invoice Icon when GRN is Complete */}
-                            <td>
-                              {grn?.is_invoice_create === 1 && (
-                                <Link
-                                  to="/payment-management/invoice-list"
-                                  data-bs-toggle="tooltip"
-                                  data-bs-placement="top"
-                                  aria-label="View Invoice"
-                                  data-bs-original-title="View Invoice"
-                                >
-                                  <i className="icon-base ti tabler-file-invoice text-success icon-20px" />
-                                </Link>
-                              )}
-                            </td>
-
-                            {/* ✅ Show Create Invoice Button when GRN is Pending & user has permission */}
-
-                            {grn?.is_invoice_create == 0 &&
-                              userPermission?.some(
-                                (perm) =>
-                                  [
-                                    "Get Quotation",
-                                    "PO Generation",
-                                    "GRN",
-                                  ].includes(perm.type) &&
-                                  perm.permission === "add"
-                              ) && (
-                                <td>
+                              {/* ✅ Show View Invoice Icon when GRN is Complete */}
+                              <td>
+                                {grn?.is_invoice_create === 1 && (
                                   <Link
-                                    onClick={() => {
-                                      handleOpen("addInvoice");
-                                      setType(2);
-                                      // setSubcategoryIdInvoice();
-                                      // setVendorIdInvoice(grn?.vendor_id);
-                                      // setItemIdInvoice(grn?.items[0]?.item_id);
-                                      setPoIdInvoice(Number(grn?.po_id));
-                                    }}
-                                    className="btn btn-dark btn-sm waves-effect waves-light"
+                                    to="/payment-management/invoice-list"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    aria-label="View Invoice"
+                                    data-bs-original-title="View Invoice"
                                   >
-                                    Create Invoice
+                                    <i className="icon-base ti tabler-file-invoice text-success icon-20px" />
                                   </Link>
-                                </td>
-                              )}
-                          </tr>
-                        );
-                      })
-                    )}
+                                )}
+                              </td>
 
-                    {/* <tr>
+                              {/* ✅ Show Create Invoice Button when GRN is Pending & user has permission */}
+
+                              {grn?.is_invoice_create == 0 &&
+                                userPermission?.some(
+                                  (perm) =>
+                                    [
+                                      "Get Quotation",
+                                      "PO Generation",
+                                      "GRN",
+                                    ].includes(perm.type) &&
+                                    perm.permission === "add"
+                                ) && (
+                                  <td>
+                                    <Link
+                                      onClick={() => {
+                                        handleOpen("addInvoice");
+                                        setType(2);
+                                        // setSubcategoryIdInvoice();
+                                        // setVendorIdInvoice(grn?.vendor_id);
+                                        // setItemIdInvoice(grn?.items[0]?.item_id);
+                                        setPoIdInvoice(Number(grn?.po_id));
+                                      }}
+                                      className="btn btn-dark btn-sm waves-effect waves-light"
+                                    >
+                                      Create Invoice
+                                    </Link>
+                                  </td>
+                                )}
+                            </tr>
+                          );
+                        })}
+
+                        {/* <tr>
                       <td>
                         <div className="ms-4">2</div>
                       </td>
@@ -693,7 +773,7 @@ export default function PO_Details() {
                         </a>
                       </td>
                     </tr> */}
-                    {/* <tr>
+                        {/* <tr>
                       <td>
                         <div className="ms-4">3</div>
                       </td>
@@ -738,11 +818,12 @@ export default function PO_Details() {
                         </Link>
                       </td>
                     </tr> */}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            {/* )} */}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )
+            )}
           </div>
           <div className="col-lg-4">
             {/* Vendor Detail */}

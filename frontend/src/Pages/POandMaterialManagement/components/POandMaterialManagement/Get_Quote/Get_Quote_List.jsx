@@ -14,6 +14,114 @@ import CustomSelect from "../../../../../components/Common/CustomSelect/CustomSe
 import DateRangePickerReact from "../../../../../components/Date Range/DateRangePickerReact";
 import Date_Range_Model from "../../../../../components/Date Range/Date_Range_Model";
 import moment from "moment";
+import { useLocation, useNavigate } from "react-router-dom";
+
+// export default function Get_Quote_List() {
+//   const {
+//     search,
+//     getQuoteList,
+//     setPagination,
+//     pagination,
+//     setSearch,
+//     itemType,
+//     setItemType,
+//     department,
+//     setDepartment,
+//     createdBy,
+//     setCreatedBy,
+//     status,
+//     setStatus,
+//     dateRange,
+//     setDateRange,
+//   } = useGetQuote();
+//   const { deptFilter, setDeptFilter, fetchDeptFilter } = useDepartment();
+//   const { filterUser, fetchUserFilter, setFilterUser } = useUserCreation();
+//   const [showDatePicker, setShowDatePicker] = useState(false);
+//   const [selectedDateRange, setSelectedDateRange] = useState("");
+
+//   useEffect(() => {
+//     fetchDeptFilter();
+//     fetchUserFilter();
+//   }, []);
+
+//   // useEffect(() => {
+//   //   getQuoteList({
+//   //     search,
+//   //     page: pagination.currentPage,
+//   //     perPage: pagination.perPage,
+//   //   });
+//   // }, [
+//   //   search,
+//   //   itemType,
+//   //   department,
+//   //   createdBy,
+//   //   status,
+//   //   pagination.currentPage,
+//   //   pagination.perPage,
+//   //   dateRange,
+//   // ]);
+
+//   useEffect(() => {
+//     getQuoteList({
+//       search,
+//       page: pagination.currentPage,
+//       perPage: pagination.perPage,
+//       itemType,
+//       department,
+//       createdBy,
+//       status,
+//       dateRange,
+//     });
+//   }, [
+//     search,
+//     itemType,
+//     department,
+//     createdBy,
+//     status,
+//     pagination.currentPage,
+//     pagination.perPage,
+//     dateRange, // ✅ refresh list when date range changes
+//   ]);
+
+//   const handlePageChange = (page) => {
+//     setPagination((prev) => ({ ...prev, currentPage: page }));
+//   };
+
+//   const handleItemsPerPageChange = (size) => {
+//     setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
+//   };
+
+//   // Date Select
+//   const handleDateSelect = (range) => {
+//     setSelectedDateRange(range);
+
+//     const [start, end] = range.split(" - ");
+//     setDateRange({
+//       start: start ? moment(start, "DD/MM/YYYY").format("YYYY-MM-DD") : "",
+//       end: end ? moment(end, "DD/MM/YYYY").format("YYYY-MM-DD") : "",
+//     });
+
+//     setShowDatePicker(false);
+//   };
+
+//   //  Clear all filters
+//   const handleClearFilters = () => {
+//     setSearch("");
+//     setItemType("all");
+//     setDepartment("all");
+//     setCreatedBy("all");
+//     setStatus("all");
+//     setDateRange({ start: "", end: "" });
+//     setSelectedDateRange("");
+//     setPagination((prev) => ({ ...prev, currentPage: 1 }));
+
+//     //  Refetch unfiltered data
+//     getQuoteList({
+//       search: "",
+//       page: 1,
+//       perPage: pagination.perPage,
+//     });
+//   };
 
 export default function Get_Quote_List() {
   const {
@@ -37,40 +145,45 @@ export default function Get_Quote_List() {
   const { filterUser, fetchUserFilter, setFilterUser } = useUserCreation();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDateRange, setSelectedDateRange] = useState("");
+  // filter status by url
+  const [urlStatusApplied, setUrlStatusApplied] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchDeptFilter();
     fetchUserFilter();
   }, []);
 
-  // useEffect(() => {
-  //   getQuoteList({
-  //     search,
-  //     page: pagination.currentPage,
-  //     perPage: pagination.perPage,
-  //   });
-  // }, [
-  //   search,
-  //   itemType,
-  //   department,
-  //   createdBy,
-  //   status,
-  //   pagination.currentPage,
-  //   pagination.perPage,
-  //   dateRange,
-  // ]);
+  // ✅ Handle URL parameters for filtering
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const statusFromUrl = params.get("status");
+
+    if (statusFromUrl && !urlStatusApplied) {
+      console.log("Setting status from URL:", statusFromUrl);
+      setStatus(statusFromUrl);
+      setUrlStatusApplied(true);
+
+      // Reset to first page when applying URL filter
+      setPagination((prev) => ({ ...prev, currentPage: 1 }));
+    }
+  }, [location.search, urlStatusApplied]);
 
   useEffect(() => {
-    getQuoteList({
-      search,
-      page: pagination.currentPage,
-      perPage: pagination.perPage,
-      itemType,
-      department,
-      createdBy,
-      status,
-      dateRange,
-    });
+    // Only fetch if URL status has been applied (if present) or if no URL status
+    if (!location.search || (location.search && urlStatusApplied)) {
+      getQuoteList({
+        search,
+        page: pagination.currentPage,
+        perPage: pagination.perPage,
+        itemType,
+        department,
+        createdBy,
+        status,
+        dateRange,
+      });
+    }
   }, [
     search,
     itemType,
@@ -79,7 +192,8 @@ export default function Get_Quote_List() {
     status,
     pagination.currentPage,
     pagination.perPage,
-    dateRange, // ✅ refresh list when date range changes
+    dateRange,
+    urlStatusApplied, // ← ADD THIS LINE
   ]);
 
   const handlePageChange = (page) => {
@@ -103,8 +217,22 @@ export default function Get_Quote_List() {
     setShowDatePicker(false);
   };
 
-  //  Clear all filters
+  // Check if any filter is active (including URL status)
+  const isAnyFilterActive =
+    itemType !== "all" ||
+    department !== "all" ||
+    createdBy !== "all" ||
+    status !== "all" ||
+    (dateRange.start && dateRange.start !== "") ||
+    (dateRange.end && dateRange.end !== "") ||
+    search !== "" ||
+    (location.search && location.search.includes("status"));
+
+  //  Clear all filters including URL status
   const handleClearFilters = () => {
+    // FIRST stop URL logic from re-running
+    setUrlStatusApplied(true);
+
     setSearch("");
     setItemType("all");
     setDepartment("all");
@@ -112,9 +240,13 @@ export default function Get_Quote_List() {
     setStatus("all");
     setDateRange({ start: "", end: "" });
     setSelectedDateRange("");
+
     setPagination((prev) => ({ ...prev, currentPage: 1 }));
 
-    //  Refetch unfiltered data
+    // Remove URL params on first click itself
+    navigate(location.pathname, { replace: true });
+
+    // Fetch list once
     getQuoteList({
       search: "",
       page: 1,
@@ -140,13 +272,7 @@ export default function Get_Quote_List() {
                 />
               </div>
 
-              {(itemType !== "all" ||
-                department !== "all" ||
-                createdBy !== "all" ||
-                status !== "all" ||
-                (dateRange.start && dateRange.start !== "") ||
-                (dateRange.end && dateRange.end !== "") ||
-                search !== "") && (
+              {isAnyFilterActive && (
                 <div className="d-flex align-items-center">
                   <button
                     className="btn text-danger waves-effect btn-sm"

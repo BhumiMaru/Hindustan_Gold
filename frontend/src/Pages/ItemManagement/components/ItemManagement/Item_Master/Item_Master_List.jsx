@@ -10,14 +10,107 @@ import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import { decryptData } from "../../../../../utils/decryptData";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 
+// export default function Item_Master_List() {
+//   const [search, setSearch] = useState(""); // what user types
+//   const navigate = useNavigate();
+//   // const [type, setType] = useState("");
+//   const [selectedType, setSelectedType] = useState("all"); // default from URL
+//   const [categoryId, setCategoryId] = useState("all");
+//   const [subCategoryId, setSubCategoryId] = useState("all");
+//   const [status, setStatus] = useState("all");
+
+//   const { userPermission, fetchUserPermission } = useUserCreation();
+//   const { fetchItemMaster, setPagination, pagination, itemMaster } =
+//     useItemMaster();
+//   const { filterCategory, fetchCategoryFilter } = useCategoryMaster();
+//   const { filterSubCategory, fetchSubCategoryFilter } = useSubCategory();
+
+//   const location = useLocation();
+//   // const searchParams = new URLSearchParams(location.search);
+//   // const urlType = searchParams.get("type");
+
+//   // Initialize selectedType from URL parameter
+//   // Read the type from URL only once on first load
+//   useEffect(() => {
+//     const params = new URLSearchParams(location.search);
+//     const urlTypeValue = params.get("type");
+
+//     if (urlTypeValue) {
+//       console.log("urlTypeValue", urlTypeValue);
+
+//       setSelectedType(urlTypeValue);
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     fetchCategoryFilter();
+//     fetchSubCategoryFilter();
+//     fetchItemMaster({
+//       search,
+//       type: selectedType === "all" ? "" : selectedType,
+//       c_id: categoryId === "all" ? "" : categoryId,
+//       sub_c_id: subCategoryId === "all" ? "" : subCategoryId,
+//       status: status === "all" ? "" : status,
+//       page: pagination.currentPage,
+//       perPage: pagination.perPage,
+//     }); // fetch only when query changes
+//   }, [
+//     search,
+//     selectedType,
+//     categoryId,
+//     subCategoryId,
+//     status,
+//     pagination.currentPage,
+//     pagination.perPage,
+//   ]);
+
+//   const getAuthData = sessionStorage.getItem("authData");
+//   const decryptAuthData = decryptData(getAuthData);
+//   const user = decryptAuthData?.user;
+
+//   useEffect(() => {
+//     fetchUserPermission(user?.id);
+//   }, [user?.id]);
+
+//   const handlePageChange = (page) => {
+//     setPagination((prev) => ({ ...prev, currentPage: page }));
+//   };
+
+//   const handleItemsPerPageChange = (size) => {
+//     setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
+//   };
+
+//   // ✅ CLEAR FILTER FUNCTIONALITY
+//   const handleClearFilters = () => {
+//     setSelectedType("all");
+//     setSearch("");
+//     setCategoryId("all");
+//     setSubCategoryId("all");
+//     setStatus("all");
+//     setPagination((prev) => ({ ...prev, currentPage: 1 }));
+
+//     // Re-fetch full list
+//     fetchItemMaster({
+//       search: "",
+//       type: "",
+//       c_id: null,
+//       sub_c_id: null,
+//       status: null,
+//       page: 1,
+//       perPage: pagination.perPage,
+//     });
+
+//     // Clear the ?type=service from URL
+//     navigate("/item/item-master", { replace: true });
+//   };
 export default function Item_Master_List() {
-  const [search, setSearch] = useState(""); // what user types
+  const [search, setSearch] = useState("");
   const navigate = useNavigate();
-  // const [type, setType] = useState("");
-  const [selectedType, setSelectedType] = useState("all"); // default from URL
+  const [selectedType, setSelectedType] = useState("all");
   const [categoryId, setCategoryId] = useState("all");
   const [subCategoryId, setSubCategoryId] = useState("all");
   const [status, setStatus] = useState("all");
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const { userPermission, fetchUserPermission } = useUserCreation();
   const { fetchItemMaster, setPagination, pagination, itemMaster } =
@@ -26,34 +119,51 @@ export default function Item_Master_List() {
   const { filterSubCategory, fetchSubCategoryFilter } = useSubCategory();
 
   const location = useLocation();
-  // const searchParams = new URLSearchParams(location.search);
-  // const urlType = searchParams.get("type");
 
-  // Initialize selectedType from URL parameter
-  // Read the type from URL only once on first load
+  // ✅ FIX 1: Handle URL parameters only once on initial load
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const urlTypeValue = params.get("type");
+    const urlType = params.get("type");
 
-    if (urlTypeValue) {
-      console.log("urlTypeValue", urlTypeValue);
+    console.log("URL Type from dashboard:", urlType);
 
-      setSelectedType(urlTypeValue);
+    if (urlType) {
+      setSelectedType(urlType);
     }
-  }, []);
 
-  useEffect(() => {
+    // Fetch static data (categories, subcategories, permissions)
     fetchCategoryFilter();
     fetchSubCategoryFilter();
-    fetchItemMaster({
-      search,
-      type: selectedType === "all" ? "" : selectedType,
-      c_id: categoryId === "all" ? "" : categoryId,
-      sub_c_id: subCategoryId === "all" ? "" : subCategoryId,
-      status: status === "all" ? "" : status,
-      page: pagination.currentPage,
-      perPage: pagination.perPage,
-    }); // fetch only when query changes
+
+    const getAuthData = sessionStorage.getItem("authData");
+    const decryptAuthData = decryptData(getAuthData);
+    const user = decryptAuthData?.user;
+
+    if (user?.id) {
+      fetchUserPermission(user.id);
+    }
+
+    setIsInitialLoad(false);
+  }, []); //  Empty dependency array - runs only once
+
+  //  FIX 2: Single useEffect for data fetching with proper dependencies
+  useEffect(() => {
+    // Don't fetch on initial render if we're still setting up from URL
+    if (isInitialLoad) return;
+
+    const fetchData = setTimeout(() => {
+      fetchItemMaster({
+        search,
+        type: selectedType === "all" ? "" : selectedType,
+        c_id: categoryId === "all" ? "" : categoryId,
+        sub_c_id: subCategoryId === "all" ? "" : subCategoryId,
+        status: status === "all" ? "" : status,
+        page: pagination.currentPage,
+        perPage: pagination.perPage,
+      });
+    }, 100); // Small delay to batch state updates
+
+    return () => clearTimeout(fetchData);
   }, [
     search,
     selectedType,
@@ -62,15 +172,21 @@ export default function Item_Master_List() {
     status,
     pagination.currentPage,
     pagination.perPage,
+    isInitialLoad, //  Add this to control when fetching starts
   ]);
 
-  const getAuthData = sessionStorage.getItem("authData");
-  const decryptAuthData = decryptData(getAuthData);
-  const user = decryptAuthData?.user;
-
+  //  FIX 3: Handle URL synchronization separately
   useEffect(() => {
-    fetchUserPermission(user?.id);
-  }, [user?.id]);
+    if (isInitialLoad) return;
+
+    const params = new URLSearchParams();
+    if (selectedType !== "all") {
+      params.set("type", selectedType);
+    }
+
+    // Replace the URL without causing a re-render
+    navigate(`/item/item-master?${params.toString()}`, { replace: true });
+  }, [selectedType, isInitialLoad]);
 
   const handlePageChange = (page) => {
     setPagination((prev) => ({ ...prev, currentPage: page }));
@@ -80,7 +196,7 @@ export default function Item_Master_List() {
     setPagination((prev) => ({ ...prev, perPage: size, currentPage: 1 }));
   };
 
-  // ✅ CLEAR FILTER FUNCTIONALITY
+  // ✅ FIX 4: Optimized clear filters
   const handleClearFilters = () => {
     setSelectedType("all");
     setSearch("");
@@ -89,20 +205,12 @@ export default function Item_Master_List() {
     setStatus("all");
     setPagination((prev) => ({ ...prev, currentPage: 1 }));
 
-    // Re-fetch full list
-    fetchItemMaster({
-      search: "",
-      type: "",
-      c_id: null,
-      sub_c_id: null,
-      status: null,
-      page: 1,
-      perPage: pagination.perPage,
-    });
-
-    // Clear the ?type=service from URL
+    // Navigate without triggering re-fetch until next render
     navigate("/item/item-master", { replace: true });
   };
+
+  // console.log("Current selectedType:", selectedType);
+  // console.log("Current URL search:", location.search);
 
   console.log("selectedType", selectedType);
 

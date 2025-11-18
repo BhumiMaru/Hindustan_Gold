@@ -642,7 +642,7 @@ export default function Item_Request_Form() {
                   const selectedItem = itemMaster.find(
                     (itm) => Number(itm.id) === selectedId
                   );
-                  // console.log("selectedId", selectedItem);
+                  console.log("selectedId", selectedItem);
 
                   const storage = selectedItem?.storage_locations?.[0];
                   setItemRequestData((prev) => ({
@@ -655,6 +655,7 @@ export default function Item_Request_Form() {
                     sub_category_name:
                       selectedItem?.subcategory?.sub_category_name || null,
                     uom: selectedItem?.uom || "",
+                    unit_price: selectedItem?.unit_price || "",
                     item_code: selectedItem?.item_code || "",
                     service_location_1_id:
                       storage?.service_location3?.service_location2
@@ -869,6 +870,24 @@ export default function Item_Request_Form() {
               />
               {qtyError && <p className="text-danger mt-1">{qtyError}</p>}
             </div>
+
+            {/* Unit Price */}
+            <div className="col-sm-3 mb-4">
+              <label htmlFor="UnitofMeasure" className="form-label">
+                Unit Price 
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="UnitofMeasure"
+                placeholder="Unit of Measure"
+                disabled
+                readOnly
+                value={itemRequestData?.unit_price || ""}
+              />
+            </div>
+
+            {console.log("itemRequestData", itemRequestData)}
 
             {/* Unit of Measure */}
             <div className="col-sm-3 mb-4">

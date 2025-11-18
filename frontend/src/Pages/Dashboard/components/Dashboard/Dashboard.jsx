@@ -333,7 +333,7 @@ export default function Dashboard() {
                       perm.type === "Item Request" && perm.permission === "add"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <Link to="/super_admin/master/department">
+                      <Link to="/user/request/request-list">
                         <div className="card card-border-shadow-primary h-100">
                           <div className="card-body">
                             <div className="d-flex align-items-center mb-2">
@@ -359,7 +359,7 @@ export default function Dashboard() {
                       perm.type === "Item Request" && perm.permission === "view"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <Link to="/super_admin/master/department">
+                      <Link to="/user/request/request-list?status=pending">
                         <div className="card card-border-shadow-warning h-100">
                           <div className="card-body">
                             <div className="d-flex align-items-center mb-2">
@@ -470,7 +470,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-clipboard",
                       color: "warning",
-                      to: "",
+                      to: "/po-material/pi-request-list",
                     },
                     {
                       title: "Total Pending PI Request",
@@ -479,7 +479,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-hourglass",
                       color: "primary",
-                      to: "",
+                      to: "/po-material/pi-request-list?status=pending",
                     },
                     {
                       title: "Total Pending PI Approval",
@@ -497,7 +497,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-quote",
                       color: "primary",
-                      to: "",
+                      to: "/po-material/get-quote-list?status=Pending",
                     },
                     {
                       title: "Total Pending PO Generate",
@@ -561,7 +561,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-users",
                       color: "warning",
-                      to: "",
+                      to: "/payment-management/vendor-list",
                     },
 
                     // {
@@ -685,7 +685,7 @@ export default function Dashboard() {
                 {/* )} */}
 
                 <div className="row g-6">
-                  {/* Total My Request */}
+                  {/* Total Pending for Approvals */}
                   {userPermission.some(
                     (perm) =>
                       perm.type === "Payment Request" &&
@@ -714,7 +714,7 @@ export default function Dashboard() {
                     </div>
                   )}
 
-                  {/* Total Pending Request */}
+                  {/* Total Pending for Pay */}
                   {userPermission.some(
                     (perm) =>
                       perm.type === "Payment Request" &&
@@ -744,7 +744,7 @@ export default function Dashboard() {
                   )}
 
                   {/* Total Pending Approval Request */}
-                  {userPermission.some(
+                  {/* {userPermission.some(
                     (perm) =>
                       perm.type === "Item Request" &&
                       perm.permission === "approve"
@@ -770,10 +770,10 @@ export default function Dashboard() {
                         </div>
                       </Link>
                     </div>
-                  )}
+                  )} */}
 
                   {/* Total Pending Handover Approval */}
-                  {userPermission.some(
+                  {/* {userPermission.some(
                     (perm) =>
                       perm.type === "store_head Approval" &&
                       perm.permission === "approve"
@@ -800,7 +800,7 @@ export default function Dashboard() {
                         </div>
                       </Link>
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
             )}

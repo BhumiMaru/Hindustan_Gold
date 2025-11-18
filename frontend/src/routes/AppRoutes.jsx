@@ -62,6 +62,7 @@ import ProfileMasterPage from "../Pages/Profile/ProfileMasterPage";
 import { decryptData } from "../utils/decryptData";
 import NotFoundPage from "../Pages/NotFoundPage/NotFoundPage";
 import PO_Edit from "../Pages/POandMaterialManagement/components/POandMaterialManagement/PO_Create/PO_Edit";
+import Download_PO_With_Quotation from "../Pages/POandMaterialManagement/components/POandMaterialManagement/PO_List/Download_PO_With_Quotation";
 
 export default function AppRoutes() {
   const { isOpenSmallSidebar, closeSmallSidebar, modal } = useUIContext();
@@ -426,6 +427,15 @@ export default function AppRoutes() {
                       <PO_Details />
                     </GRNProvider>
                   </InvoiceProvider>
+                </POProvider>
+              }
+            />
+
+            <Route
+              path="/po-material/download-po-quotation/:id"
+              element={
+                <POProvider>
+                  <Download_PO_With_Quotation />
                 </POProvider>
               }
             />
