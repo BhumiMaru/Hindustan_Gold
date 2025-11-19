@@ -144,7 +144,7 @@ export default function PO_List_Table() {
                   <td>
                     <span
                       className={`badge  ${
-                        po.status === "Approve"
+                        po.status === "Approve" || po.status === "Complete"
                           ? "bg-label-success"
                           : po.status === "Reject"
                           ? "bg-label-danger"
@@ -165,8 +165,11 @@ export default function PO_List_Table() {
                         <div className="d-inline-flex gap-2">
                           <button
                             className={`btn btn-success btn-sm waves-effect waves-light ${
-                              po.status === "Pending" ? "d-block" : "d-none"
-                            }`}
+                              po.po_generat_status === 1 &&
+                              poDetails?.status == "Pending"
+                                ? "d-block"
+                                : "d-none"
+                            } `}
                             onClick={() => {
                               PoApprove(po?.id);
                               console.log(" poDetails.id", po.id);
@@ -176,7 +179,10 @@ export default function PO_List_Table() {
                           </button>
                           <button
                             className={`btn btn-danger btn-sm waves-effect waves-light ${
-                              po.status === "Pending" ? "d-block" : "d-none"
+                              po.po_generat_status === 1 &&
+                              poDetails?.status == "Pending"
+                                ? "d-block"
+                                : "d-none"
                             }`}
                             onClick={() => {
                               handleOpen("viewRejectPo");

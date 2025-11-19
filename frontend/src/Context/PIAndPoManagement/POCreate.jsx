@@ -81,6 +81,7 @@ export const POProvider = ({ children }) => {
     total: 0,
   });
   const [status, setStatus] = useState("all");
+  const [poPendingGenerate, setPoPendingGenerate] = useState("all");
   const [itemName, setItemName] = useState("all");
   const [selectedType, setSelectedType] = useState("all");
   const [startDate, setStartDate] = useState("");
@@ -214,6 +215,7 @@ export const POProvider = ({ children }) => {
   const getPoList = async ({
     search: searchText = search,
     status: filterStatus = status,
+    poPendingGenerate: filterPendingPoGenerate = poPendingGenerate,
     poType = selectedType,
     item_id = itemName,
     vendor: vendorFilter = vendor,
@@ -228,6 +230,10 @@ export const POProvider = ({ children }) => {
       const params = {
         search: searchText || undefined,
         status: filterStatus !== "all" ? filterStatus : undefined,
+        poPendingGenerate:
+          filterPendingPoGenerate !== "all"
+            ? filterPendingPoGenerate
+            : undefined,
         po_type: poType !== "all" ? poType : undefined,
         item_id: item_id !== "all" ? item_id : undefined,
         vendor: vendorFilter !== "all" ? vendorFilter : undefined,
@@ -434,6 +440,8 @@ export const POProvider = ({ children }) => {
         setSearch,
         status,
         setStatus,
+        poPendingGenerate,
+        setPoPendingGenerate,
         itemName,
         setItemName,
         selectedType,

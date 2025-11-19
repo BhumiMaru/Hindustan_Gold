@@ -139,42 +139,41 @@ export default function PO_Details() {
             {userPermission?.some(
               (perm) =>
                 perm.type === "PO Generation" && perm.permission === "approve"
-            ) &&
-              poDetails.status === "Pending" && (
-                <>
-                  <button
-                    type="submit"
-                    className={`btn btn-success waves-effect waves-light btn-sm ${
-                      poDetails.status === "Approve" ||
-                      poDetails.status === "Reject"
-                        ? "d-none"
-                        : ""
-                    } `}
-                    onClick={async () => {
-                      PoApprove(poDetails.id);
-                      await getPoDetails(poDetails.id);
-                    }}
-                  >
-                    Approve
-                  </button>
+            ) && (
+              <>
+                <button
+                  type="submit"
+                  className={`btn btn-success waves-effect waves-light btn-sm ${
+                    poDetails.po_generat_status === 1 &&
+                    poDetails?.status == "Pending"
+                      ? "d-block"
+                      : "d-none"
+                  } `}
+                  onClick={async () => {
+                    PoApprove(poDetails.id);
+                    await getPoDetails(poDetails.id);
+                  }}
+                >
+                  Approve
+                </button>
 
-                  <button
-                    type="submit"
-                    className={`btn btn-danger waves-effect waves-light btn-sm ${
-                      poDetails.status === "Approve" ||
-                      poDetails.status === "Reject"
-                        ? "d-none"
-                        : ""
-                    } `}
-                    onClick={() => {
-                      handleOpen("viewRejectPo");
-                      setPoId(poDetails.id);
-                    }}
-                  >
-                    Reject
-                  </button>
-                </>
-              )}
+                <button
+                  type="submit"
+                  className={`btn btn-danger waves-effect waves-light btn-sm ${
+                    poDetails.po_generat_status === 1 &&
+                    poDetails?.status == "Pending"
+                      ? "d-block"
+                      : "d-none"
+                  }`}
+                  onClick={() => {
+                    handleOpen("viewRejectPo");
+                    setPoId(poDetails.id);
+                  }}
+                >
+                  Reject
+                </button>
+              </>
+            )}
 
             {/*  <div class="d-flex gap-4"><button class="btn btn-label-secondary waves-effect">Discard</button>*/}
             {poDetails.status === "Reject" ? (
@@ -188,19 +187,27 @@ export default function PO_Details() {
                 {userPermission?.some(
                   (perm) =>
                     perm.type === "PO Generation" && perm.permission === "add"
-                ) &&
-                  poDetails.status === "Approve" && (
+                ) && (
+                  <>
                     <Link
                       to={`/po-material/po-create/${poDetails.id}`}
                       className={`btn btn-warning waves-effect btn-sm ${
-                        poDetails.status === "Reject" ||
-                        poDetails.status === "Approve" ||
-                        (poDetails.status === "Pending" && "d-none")
-                      } ${poDetails.po_generat_status === 1 ? "d-none" : ""} `}
+                        poDetails.po_generat_status === 0 ? "d-block" : "d-none"
+                      }`}
                     >
                       Generate PO
                     </Link>
-                  )}
+
+                    <Link
+                      to={`/po-material/po-create/${poDetails.id}`}
+                      className={`btn btn-warning waves-effect btn-sm pt-2 ${
+                        poDetails.po_generat_status === 1 ? "d-block" : "d-none"
+                      }`}
+                    >
+                      Edit PO
+                    </Link>
+                  </>
+                )}
               </>
             )}
 
@@ -255,9 +262,7 @@ export default function PO_Details() {
                     <button
                       type="button"
                       className={`btn btn-label-success waves-effect btn-sm dropdown-toggle ${
-                        poDetails.status === "Reject" ||
-                        poDetails.status === "Approve" ||
-                        (poDetails.status === "Pending" && "d-none")
+                        poDetails.po_generat_status === 1 ? "d-block" : "d-none"
                       }`}
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
@@ -291,7 +296,7 @@ export default function PO_Details() {
                           // onClick={() => handleDownload("po-without-quotation")}
                         >
                           <i className="icon-base ti tabler-file icon-md me-2" />
-                          PO Without Quotation
+                          Download Quotation
                         </button>
                       </li>
                       <li>
@@ -302,7 +307,7 @@ export default function PO_Details() {
                           // onClick={() => handleDownload("po-only")}
                         >
                           <i className="icon-base ti tabler-file-export icon-md me-2" />
-                          PO Only
+                          Download PO
                         </Link>
                       </li>
                     </ul>
@@ -893,6 +898,7 @@ export default function PO_Details() {
               <div className=" h-100">
                 <div className="card-body">
                   <ul className="timeline mb-0">
+                    {console.log("poWorkflowDetails", poWorkflowDetails)}
                     {poWorkflowDetails?.map((po, index) => {
                       console.log("po", po);
                       const formateDate = po?.detail

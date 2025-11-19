@@ -2019,8 +2019,8 @@ export default function PO_Create() {
               <div className="row mb-2">
                 <div className="col-4">
                   <label className="form-label">
-                    Loading and freight charges
-                    <span className="text-danger">*</span>:
+                    Loading and freight charges :
+                    <span className="text-danger">*</span>
                   </label>
                   <select
                     className="form-select mb-4 form-select-sm"
@@ -2039,7 +2039,7 @@ export default function PO_Create() {
                 </div>
                 <div className="col-4">
                   <label className="form-label">
-                    Installation at Site <span className="text-danger">*</span>:{" "}
+                    Installation at Site :<span className="text-danger">*</span>
                   </label>
                   <select
                     className="form-select mb-4 form-select-sm"
@@ -2087,11 +2087,24 @@ export default function PO_Create() {
                 />
               </div>
               <div className="col-12 mt-2 text-end">
+                {/* Cancel button */}
+                <button
+                  className="btn btn-gray waves-effect waves-light me-2"
+                  onClick={() => navigate(-1)}
+                >
+                  Cancel
+                </button>
+
+                {/* Save Button */}
                 <button
                   className="btn btn-success waves-effect waves-light"
                   onClick={handleSave}
                 >
-                  Save
+                  {poDetails?.po_generat_status === 1
+                    ? id
+                      ? "Edit"
+                      : "Save"
+                    : "Generate PO"}
                 </button>
               </div>
             </div>

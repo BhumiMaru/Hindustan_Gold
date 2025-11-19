@@ -11,10 +11,23 @@ export default function Pagination({
 
   // Create page numbers (you can limit to e.g. 5 numbers if needed)
   // Generate page numbers dynamically
+  // Generate max 3 page numbers dynamically
   const pageNumbers = [];
-  for (let i = 1; i <= totalPages; i++) {
+  let startPage = Math.max(1, currentPage - 1);
+  let endPage = Math.min(totalPages, currentPage + 1);
+
+  // Ensure exactly 3 pages when possible
+  if (currentPage === 1) {
+    endPage = Math.min(3, totalPages);
+  } else if (currentPage === totalPages) {
+    startPage = Math.max(totalPages - 2, 1);
+  }
+
+  // Push page numbers to array
+  for (let i = startPage; i <= endPage; i++) {
     pageNumbers.push(i);
   }
+
   return (
     <>
       {/* -----------------------Start Common Pagination------------------------------ */}

@@ -61,7 +61,7 @@ export default function Item_Request_Table({ search }) {
             <th scope="col">Date</th>
             <th scope="col">Item&nbsp;Type</th>
             <th scope="col">Item&nbsp;Name</th>
-            <th scope="col">Unit Price</th>
+            {/* <th scope="col">Unit Price</th> */}
             {activeTab === "approval_request" && (
               <th scope="col">Request&nbsp;Person&nbsp;Name</th>
             )}
@@ -90,7 +90,7 @@ export default function Item_Request_Table({ search }) {
               </td>
             </tr>
           ) : (
-            filteredData.map((item, index) => {
+            filteredData.reverse().map((item, index) => {
               console.log("item", item);
               return (
                 <tr key={index}>
@@ -111,7 +111,7 @@ export default function Item_Request_Table({ search }) {
 
                   <td>{item?.item_request?.item_type}</td>
                   <td>{item?.item_request?.item?.item_name}</td>
-                  <td>{item?.item_request?.item?.unit_price}</td>
+                  {/* <td>{item?.item_request?.item?.unit_price}</td> */}
                   {activeTab === "approval_request" && (
                     <td>
                       <div className="d-flex justify-content-start align-items-center user-name">

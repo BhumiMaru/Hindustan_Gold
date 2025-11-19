@@ -815,28 +815,14 @@ export default function Item_Request_Form() {
             </div>
 
             {/* Quantity */}
-            <div className="col-sm-3 mb-4">
+            <div className="col-sm-3 mb-4" style={{ position: "relative" }}>
               <label htmlFor="Quantity" className="form-label">
                 Quantity <span className="text-danger">*</span>{" "}
                 {selectedItem?.stock !== undefined && (
-                  <span>(Stock Is : {isStock})</span>
+                  <span>(Stock : {isStock})</span>
                 )}
               </label>
-              {/* <input
-                type="number"
-                className="form-control"
-                id="quantity"
-                placeholder="Quantity"
-                value={itemRequestData?.quantity ?? ""}
-                onChange={(e) =>
-                  setItemRequestData((prev) => ({
-                    ...prev,
-                    quantity: e.target.value ? Number(e.target.value) : "",
-                  }))
-                }
-                min="0"
-                required
-              /> */}
+
               <input
                 type="number"
                 className="form-control"
@@ -848,17 +834,11 @@ export default function Item_Request_Form() {
                   const selectedItem = itemMaster.find(
                     (itm) => Number(itm.id) === Number(itemRequestData.item_id)
                   );
-
                   const stock = selectedItem?.stock ?? 0;
 
-                  // Live validation
-                  if (qty > stock) {
-                    setQtyError(
-                      `Quantity cannot be more than available stock (${stock})`
-                    );
-                  } else {
-                    setQtyError("");
-                  }
+                  qty > stock
+                    ? setQtyError(`Exceeds stock (${stock})`)
+                    : setQtyError("");
 
                   setItemRequestData((prev) => ({
                     ...prev,
@@ -868,19 +848,33 @@ export default function Item_Request_Form() {
                 min="0"
                 required
               />
-              {qtyError && <p className="text-danger mt-1">{qtyError}</p>}
+
+              {qtyError && (
+                <p
+                  className="text-danger"
+                  style={{
+                    fontSize: "12px",
+                    position: "absolute",
+                    bottom: "-18px",
+                    left: "13px",
+                    margin: 0,
+                  }}
+                >
+                  {qtyError}
+                </p>
+              )}
             </div>
 
             {/* Unit Price */}
             <div className="col-sm-3 mb-4">
               <label htmlFor="UnitofMeasure" className="form-label">
-                Unit Price 
+                Unit Price
               </label>
               <input
                 type="text"
                 className="form-control"
                 id="UnitofMeasure"
-                placeholder="Unit of Measure"
+                placeholder="Unit Price"
                 disabled
                 readOnly
                 value={itemRequestData?.unit_price || ""}

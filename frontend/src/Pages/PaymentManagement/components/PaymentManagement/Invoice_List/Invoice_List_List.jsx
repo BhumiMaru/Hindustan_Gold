@@ -20,6 +20,7 @@ import { decryptData } from "../../../../../utils/decryptData";
 import { useUserCreation } from "../../../../../Context/Master/UserCreationContext";
 import { getData } from "../../../../../utils/api";
 import { ENDPOINTS } from "../../../../../constants/endpoints";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Invoice_List_List() {
   const { modal, handleOpen, handleClose } = useUIContext();
@@ -47,9 +48,27 @@ export default function Invoice_List_List() {
   const [selectedDateRange, setSelectedDateRange] = useState("");
   const [exporting, setExporting] = useState(false); // ✅ for loader on Export
 
+  // Location for search filter by url
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [urlParamsApplied, setUrlParamsApplied] = useState(false);
+
   const getAuthData = sessionStorage.getItem("authData");
   const decryptAuthData = decryptData(getAuthData);
   const user = decryptAuthData?.user;
+
+  // Read URL params only ONCE when page loads
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const statusUrl = params.get("status");
+
+    if (statusUrl) {
+      setStatus(statusUrl);
+    }
+
+    // Mark URL params applied
+    setUrlParamsApplied(true);
+  }, []); // runs only once
 
   useEffect(() => {
     fetchUserPermission(user.id);
@@ -60,6 +79,7 @@ export default function Invoice_List_List() {
   }, []);
 
   useEffect(() => {
+    if (!urlParamsApplied) return;
     invoiceList({
       search,
       status,
@@ -71,6 +91,7 @@ export default function Invoice_List_List() {
       perPage: pagination.perPage,
     });
   }, [
+    urlParamsApplied,
     search,
     status,
     selectedType,
@@ -114,6 +135,8 @@ export default function Invoice_List_List() {
 
     // Reset pagination to first page
     setPagination((prev) => ({ ...prev, currentPage: 1 }));
+
+    navigate(location.pathname, { replace: true });
 
     // ✅ Refresh list after clearing filters
     invoiceList({
@@ -200,6 +223,14 @@ export default function Invoice_List_List() {
     }
   };
 
+  const isAnyFilterActive =
+    selectedType !== "all" ||
+    status !== "all" ||
+    vendorName !== "all" ||
+    dateRange.start !== "" ||
+    dateRange.end !== "" ||
+    (location.search && location.search !== "?");
+
   return (
     <>
       <div className="container-xxl flex-grow-1 container-p-y">
@@ -217,11 +248,7 @@ export default function Invoice_List_List() {
 
               {/* Clear Filter */}
               {/* ✅ Correct Clear Filter Button */}
-              {(selectedType !== "all" ||
-                status !== "all" ||
-                vendorName !== "all" ||
-                dateRange.start !== "" ||
-                dateRange.end !== "") && (
+              {isAnyFilterActive && (
                 <div className="d-flex align-items-center ms-2">
                   <button
                     className="btn text-danger waves-effect btn-sm"

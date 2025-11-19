@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
 import { useItemRequest } from "../../../../../Context/Request Management/Item_Request";
 import { useUIContext } from "../../../../../Context/UIContext";
+import { Link } from "react-router-dom";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
+const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export default function View_Item_Request_Details() {
   const { handleClose } = useUIContext();
@@ -65,33 +67,41 @@ export default function View_Item_Request_Details() {
                     <div className="col-lg-4">
                       <label className="form-label">Item&nbsp;Name</label>
                       <p>
-                        {
-                          wholeItemRequestData?.item_request?.item_master
-                            ?.item_name
-                        }
+                        {wholeItemRequestData?.item_request?.item?.item_name}
                       </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Category</label>
                       <p>
                         {" "}
-                        {wholeItemRequestData?.item_request?.item_master?.c_id}
+                        {
+                          wholeItemRequestData?.item_request?.item?.subcategory
+                            ?.category?.category_name
+                        }
                       </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Subcategory</label>
-                      <p>{wholeItemRequestData?.item_request?.sub_c_id}</p>
+                      <p>
+                        {
+                          wholeItemRequestData?.item_request?.item?.subcategory
+                            ?.sub_category_name
+                        }
+                      </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Item Code </label>
-                      <p>{wholeItemRequestData?.item_request?.item_code}</p>
+                      <p>
+                        {wholeItemRequestData?.item_request?.item?.item_code}
+                      </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Service Location </label>
                       <p>
                         {
-                          wholeItemRequestData?.item_request
-                            ?.service_location_3_id
+                          wholeItemRequestData?.item_request?.item
+                            ?.storage_locations[0]?.service_location3
+                            ?.service_location_3_name
                         }
                       </p>
                     </div>
@@ -113,11 +123,13 @@ export default function View_Item_Request_Details() {
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">UOM</label>
-                      <p>{wholeItemRequestData?.item_request?.uom}</p>
+                      <p>{wholeItemRequestData?.item_request?.item?.uom}</p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Unit&nbsp;Price</label>
-                      <p>{wholeItemRequestData?.item_request?.unit_price}</p>
+                      <p>
+                        {wholeItemRequestData?.item_request?.item?.unit_price}
+                      </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Total&nbsp;Amount</label>
@@ -159,20 +171,29 @@ export default function View_Item_Request_Details() {
                     <div className="col-lg-4">
                       <label className="form-label">File </label>
                       <p>
-                        <i className="icon-base ti tabler-file text-info icon-22px" />
+                        <Link
+                          to={`${fileUrl}/storage/item_request_file/${wholeItemRequestData?.item_request?.item_request_file}`}
+                          target="_blank"
+                        >
+                          <i className="icon-base ti tabler-file text-info icon-22px" />
+                        </Link>
                       </p>
                     </div>
                     <div className="col-lg-12">
                       <hr />
-                      <div className="d-flex">
-                        <div className="badge bg-label-danger rounded p-1_5">
-                          <i className="icon-base ti tabler-ban icon-md" />
-                        </div>
-                        <h6 className="mb-0 ms-4 mt-1">Reject Reason</h6>
-                      </div>
-                      <p className="ms-6 ps-6">
-                        {wholeItemRequestData?.item_request?.reject_reason}{" "}
-                      </p>
+                      {wholeItemRequestData?.item_request?.reject_reason && (
+                        <>
+                          <div className="d-flex">
+                            <div className="badge bg-label-danger rounded p-1_5">
+                              <i className="icon-base ti tabler-ban icon-md" />
+                            </div>
+                            <h6 className="mb-0 ms-4 mt-1">Reject Reason</h6>
+                          </div>
+                          <p className="ms-6 ps-6">
+                            {wholeItemRequestData?.item_request?.reject_reason}{" "}
+                          </p>
+                        </>
+                      )}
                     </div>
                     <div className="col-lg-12 text-center">
                       <button
@@ -355,6 +376,8 @@ export default function View_Item_Request_Details() {
                               "Headover",
                             ];
                             const user = workflow.assign_user; // fallback
+
+                            console.log("user", user);
                             return (
                               <li
                                 className="timeline-item timeline-item-transparent"
@@ -402,17 +425,21 @@ export default function View_Item_Request_Details() {
                                     </div>
                                   </div>
 
+                                  {console.log(workflow.profile_photo)}
                                   <p>
                                     {workflow.status === "Pending"
                                       ? "Waiting for approval"
                                       : `Approved by ${user?.name}`}
                                   </p>
-
                                   <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
                                     <div className="d-flex flex-wrap align-items-center mb-50">
                                       <div className="avatar avatar-sm me-2">
                                         <img
-                                          src={`${publicUrl}/assets/img/avatars/1.png`}
+                                          src={
+                                            user?.profile_photo
+                                              ? `${fileUrl}/storage/users/${user?.profile_photo}`
+                                              : `${publicUrl}assets/img/avatars/user.png`
+                                          }
                                           alt="Avatar"
                                           className="rounded-circle"
                                         />

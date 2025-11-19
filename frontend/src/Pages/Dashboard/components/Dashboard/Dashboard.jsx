@@ -379,14 +379,14 @@ export default function Dashboard() {
                     </div>
                   )}
 
-                  {/* Total Pending Approval Request */}
+                  {/*  Total Pending Approval Request */}
                   {userPermission.some(
                     (perm) =>
-                      perm.type === "Item Request" &&
+                      perm.type === "store_head Approval" &&
                       perm.permission === "approve"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <Link to="/super_admin/master/department">
+                      <Link to="/user/request/request-list">
                         <div className="card card-border-shadow-success h-100">
                           <div className="card-body">
                             <div className="d-flex align-items-center mb-2">
@@ -415,7 +415,7 @@ export default function Dashboard() {
                       perm.permission === "approve"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <Link to="/super_admin/master/department">
+                      <Link to="/user/request/request-list?status=completed">
                         <div className="card card-border-shadow-success h-100">
                           <div className="card-body">
                             <div className="d-flex align-items-center mb-2">
@@ -479,7 +479,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-hourglass",
                       color: "primary",
-                      to: "/po-material/pi-request-list?status=pending",
+                      to: "/po-material/pi-request-list?activeTab=my_request&&status=pending",
                     },
                     {
                       title: "Total Pending PI Approval",
@@ -488,7 +488,7 @@ export default function Dashboard() {
                       permission: "approve",
                       icon: "tabler-checklist",
                       color: "success",
-                      to: "",
+                      to: "/po-material/pi-request-list?activeTab=approval_request&&status=pending",
                     },
                     {
                       title: "Total Pending Get Quote",
@@ -515,7 +515,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-progress",
                       color: "info",
-                      to: "",
+                      to: "/po-material/po-list?status=InProgress",
                     },
 
                     {
@@ -525,7 +525,7 @@ export default function Dashboard() {
                       permission: "approve",
                       icon: "tabler-clipboard-check",
                       color: "primary",
-                      to: "",
+                      to: "/po-material/po-list?status=Pending",
                     },
                     {
                       title: "Total GRN",
@@ -534,16 +534,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-truck",
                       color: "warning",
-                      to: "",
-                    },
-                    {
-                      title: "Total GRN Approvals",
-                      value: dashboardList?.grn_approvel_total,
-                      type: "GRN",
-                      permission: "add",
-                      icon: "tabler-clipboard-check",
-                      color: "success",
-                      to: "",
+                      to: "/po-material/grn-list",
                     },
                     {
                       title: "Total Pending GRN Approvals",
@@ -552,8 +543,18 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-file-check",
                       color: "success",
-                      to: "",
+                      to: "/po-material/grn-list?status=Pending",
                     },
+                    {
+                      title: "Total GRN Approvals",
+                      value: dashboardList?.grn_approvel_total,
+                      type: "GRN",
+                      permission: "add",
+                      icon: "tabler-clipboard-check",
+                      color: "success",
+                      to: "/po-material/grn-list?status=Approve",
+                    },
+
                     {
                       title: "Total Vendor",
                       value: dashboardList?.po_generate?.total_active_vender,
@@ -685,7 +686,7 @@ export default function Dashboard() {
                 {/* )} */}
 
                 <div className="row g-6">
-                  {/* Total Pending for Approvals */}
+                  {/* Total Pending Invoice Approvals */}
                   {userPermission.some(
                     (perm) =>
                       perm.type === "Payment Request" &&
@@ -694,7 +695,7 @@ export default function Dashboard() {
                         perm.permission === "approve")
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <Link to="/super_admin/master/department">
+                      <Link to="/payment-management/invoice-list?status=Pending">
                         <div className="card card-border-shadow-primary h-100">
                           <div className="card-body">
                             <div className="d-flex align-items-center mb-2">
@@ -704,10 +705,12 @@ export default function Dashboard() {
                                 </span>
                               </div>
                               <h4 className="mb-0">
-                                {dashboardList?.item_request?.my_request}
+                                {dashboardList?.invoice_approvel_total}
                               </h4>
                             </div>
-                            <p className="mb-1">Total Pending for Approvals</p>
+                            <p className="mb-1">
+                              Total Pending Invoice Approvals
+                            </p>
                           </div>
                         </div>
                       </Link>
@@ -715,7 +718,7 @@ export default function Dashboard() {
                   )}
 
                   {/* Total Pending for Pay */}
-                  {userPermission.some(
+                  {/* {userPermission.some(
                     (perm) =>
                       perm.type === "Payment Request" &&
                       (perm.permission === "view" ||
@@ -741,7 +744,7 @@ export default function Dashboard() {
                         </div>
                       </Link>
                     </div>
-                  )}
+                  )} */}
 
                   {/* Total Pending Approval Request */}
                   {/* {userPermission.some(

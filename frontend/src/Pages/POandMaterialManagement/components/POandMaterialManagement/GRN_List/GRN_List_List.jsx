@@ -14,6 +14,7 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import { getData } from "../../../../../utils/api";
 import { ENDPOINTS } from "../../../../../constants/endpoints";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function GRN_List_List() {
   const {
@@ -38,12 +39,32 @@ export default function GRN_List_List() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDateRange, setSelectedDateRange] = useState("");
 
+  // Location for search filter by url
+  const location = useLocation();
+  console.log("location", location);
+  const navigate = useNavigate();
+  const [urlParamsApplied, setUrlParamsApplied] = useState(false);
+
+  // Read URL params only ONCE when page loads
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const statusUrl = params.get("status");
+
+    if (statusUrl) {
+      setStatus(statusUrl);
+    }
+
+    // Mark URL params applied
+    setUrlParamsApplied(true);
+  }, []); // runs only once
+
   useEffect(() => {
     getVendorFilter();
     fetchItemFilter();
   }, []);
 
   useEffect(() => {
+    if (!urlParamsApplied) return;
     GRNList({
       status,
       search,
@@ -55,6 +76,7 @@ export default function GRN_List_List() {
       perPage: pagination.perPage,
     });
   }, [
+    urlParamsApplied,
     search,
     status,
     itemName,
@@ -87,7 +109,7 @@ export default function GRN_List_List() {
     setShowDatePicker(false);
   };
 
-  // ✅ Clear All Filters
+  //  Clear All Filters
   const handleClearFilters = () => {
     setSearch("");
     setStatus("all");
@@ -97,7 +119,9 @@ export default function GRN_List_List() {
     setSelectedDateRange("");
     setPagination((prev) => ({ ...prev, currentPage: 1 }));
 
-    // ✅ Refresh list with default (unfiltered) data
+    navigate(location.pathname, { replace: true });
+
+    //  Refresh list with default (unfiltered) data
     GRNList({
       search: "",
       status: "all",
@@ -163,6 +187,15 @@ export default function GRN_List_List() {
     }
   };
 
+  const isAnyFilterActive =
+    status !== "all" ||
+    itemName !== "all" ||
+    vendorName !== "all" ||
+    dateRange.start !== "" ||
+    dateRange.end !== "" ||
+    search !== "" ||
+    (location.search && location.search !== "?");
+
   return (
     <>
       {/* -------------START GRN LIST --------------- */}
@@ -182,12 +215,7 @@ export default function GRN_List_List() {
               </div>
 
               {/* Clear Filter */}
-              {(status !== "all" ||
-                itemName !== "all" ||
-                vendorName !== "all" ||
-                dateRange.start !== "" ||
-                dateRange.end !== "" ||
-                search !== "") && (
+              {isAnyFilterActive && (
                 <div className="d-flex align-items-center">
                   <button
                     className="btn text-danger waves-effect btn-sm"

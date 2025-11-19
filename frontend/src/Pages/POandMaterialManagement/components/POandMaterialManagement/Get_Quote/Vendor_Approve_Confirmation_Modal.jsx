@@ -3,6 +3,7 @@ import { useUIContext } from "../../../../../Context/UIContext";
 import { useVendor } from "../../../../../Context/PaymentManagement/Vendor";
 import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function Vendor_Approve_Confirmation_Modal({
   vendorApproveData,
@@ -10,10 +11,12 @@ export default function Vendor_Approve_Confirmation_Modal({
   newVendorLoading,
   setOldVendorLoading,
   oldVendorLoading,
+  refreshVendorList,
 }) {
   const { handleClose } = useUIContext();
   const { vendorApprove, getVendorList } = useVendor();
   const { quoteVendorList } = useGetQuote();
+  const navigate = useNavigate();
 
   console.log("vendorApproveData", vendorApproveData);
 
@@ -91,21 +94,23 @@ export default function Vendor_Approve_Confirmation_Modal({
       console.log("📥 Vendor approve result:", res);
 
       // Check if approval was successful
-      if (res?.success === true) {
+      if (res?.success || res?.status) {
         console.log("🎉 Vendor approved successfully, refreshing lists...");
+        toast.success(res.message);
 
         // ✅ Refresh the quote vendor lists (not getVendorList)
         try {
           // Refresh both vendor lists to ensure UI updates
-          await quoteVendorList({
-            pi_get_quote_id: vendorApproveData.pi_get_quote_id,
-            vendor_type: "old",
-          });
+          // await quoteVendorList({
+          //   pi_get_quote_id: vendorApproveData.pi_get_quote_id,
+          //   vendor_type: "old",
+          // });
 
-          await quoteVendorList({
-            pi_get_quote_id: vendorApproveData.pi_get_quote_id,
-            vendor_type: "new",
-          });
+          // await quoteVendorList({
+          //   pi_get_quote_id: vendorApproveData.pi_get_quote_id,
+          //   vendor_type: "new",
+          // });
+          refreshVendorList();
 
           console.log("✅ Quote vendor lists refreshed");
         } catch (refreshError) {
@@ -113,6 +118,8 @@ export default function Vendor_Approve_Confirmation_Modal({
         }
 
         handleClose("vendorApprove");
+        navigate(`/po-material/po-create/${res?.data?.po?.id}`);
+        // navigate(`/po-material/po-create/${vendorApproveData?.pi_id}`);
         // toast.success("Vendor approved successfully!"); // Already shown in vendorApprove
       } else {
         console.log("❌ Vendor approval failed");

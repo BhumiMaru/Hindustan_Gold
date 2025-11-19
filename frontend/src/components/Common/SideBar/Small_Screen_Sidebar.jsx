@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useUIContext } from "../../../Context/UIContext";
 import { Link } from "react-router-dom";
 import { decryptData } from "../../../utils/decryptData";
+import { useUserCreation } from "../../../Context/Master/UserCreationContext";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function Small_Screen_Sidebar({ onClose }) {
@@ -12,6 +13,8 @@ export default function Small_Screen_Sidebar({ onClose }) {
     toggleMenu,
     handleSubMenuClick,
   } = useUIContext();
+  const { userPermission, fetchUserPermission } = useUserCreation();
+
   // ✅ Get saved auth data
   const savedAuth = sessionStorage.getItem("authData");
   let user = null;
@@ -25,6 +28,10 @@ export default function Small_Screen_Sidebar({ onClose }) {
     }
   }
 
+  useEffect(() => {
+    fetchUserPermission(user?.id);
+  }, [user?.id]);
+
   // ✅ Check if current user is Admin (id === 54)
   const isAdmin = user?.id === 56;
 
@@ -37,6 +44,7 @@ export default function Small_Screen_Sidebar({ onClose }) {
     "Role Master": "/super_admin/master/role",
     "Company Master": "/super_admin/master/company",
     "User Creation": "/super_admin/master/user",
+    UOM: "/suprer_admin/uom",
   };
 
   const itemRoutes = {
@@ -47,23 +55,132 @@ export default function Small_Screen_Sidebar({ onClose }) {
     // "Item Create": "/item/item-create-material",
   };
 
-  const requestManagementRoutes = {
-    "Item Request": "/request/request-list",
+  // const requestManagementRoutesBase = {
+  //   // "Item Request": "/user/request/request-list",
+  // };
+
+  // let requestManagementRoutes = {};
+
+  // if (
+  //   userPermission?.some(
+  //     (perm) =>
+  //       (perm.type === "Item Request" || perm.type === "store_head Approval") &&
+  //       perm.permission === "view"
+  //   )
+  // ) {
+  //   requestManagementRoutes["Item Request"] = "/user/request/request-list";
+  // }
+
+  // const piAndMaterialManagementRoutes = {
+  //   "PI Request List": "/po-material/pi-request-list",
+  //   "Get Quote": "/po-material/get-quote-list",
+  //   // "PO Create": "/po-material/po-create",
+  //   "GRN List": "/po-material/grn-list",
+  // };
+
+  // Conditionally add "PO List" based on userPermission
+  const piAndMaterialManagementRoutesBase = {
+    // "PI Request List": "/po-material/pi-request-list",
+    // "Get Quote": "/po-material/get-quote-list",
+    // "GRN List": "/po-material/grn-list",
   };
 
-  const piAndMaterialManagementRoutes = {
-    // "PI Item Request": "/po-material/pi-request-create",
-    "PI Request List": "/po-material/pi-request-list",
-    "Get Quote": "/po-material/get-quote-list",
-    "PO Create": "/po-material/po-create",
-    "PO List": "/po-material/po-list",
-    "GRN List": "/po-material/grn-list",
-  };
+  let piAndMaterialManagementRoutes = {};
 
-  const paymentManagementRoutes = {
-    "Invoice List": "/payment-management/invoice-list",
-    "Vendor List": "/payment-management/vendor-list",
-  };
+  // 1. PI Request List
+  if (
+    userPermission?.some(
+      (perm) => perm.type == "PI Request" && perm.permission === "view"
+    )
+  ) {
+    piAndMaterialManagementRoutes["PI Request List"] =
+      "/po-material/pi-request-list";
+  }
+  // piAndMaterialManagementRoutes["PI Request List"] =
+  //   piAndMaterialManagementRoutesBase["PI Request List"];
+
+  // 2. Get Quote
+  if (
+    userPermission?.some(
+      (perm) => perm.type == "Get Quotation" && perm.permission === "view"
+    )
+  ) {
+    piAndMaterialManagementRoutes["Get Quote"] = "/po-material/get-quote-list";
+  }
+  // piAndMaterialManagementRoutes["Get Quote"] =
+  //   piAndMaterialManagementRoutesBase["Get Quote"];
+
+  // 3. Conditionally add PO List
+  if (
+    userPermission?.some(
+      (perm) => perm.type == "PO Generation" && perm.permission === "view"
+    )
+  ) {
+    piAndMaterialManagementRoutes["PO List"] = "/po-material/po-list";
+  }
+
+  // console.log("user", userPermission);
+
+  // 4. GRN List
+  if (
+    userPermission?.some(
+      (perm) => perm.type == "GRN" && perm.permission == "view"
+    )
+  ) {
+    piAndMaterialManagementRoutes["GRN List"] = "/po-material/grn-list";
+  }
+  // if (
+  //   userPermission?.some(
+  //     (perm) => perm.type == "GRN" && perm.permission === "view"
+  //   )
+  // ) {
+  //   piAndMaterialManagementRoutes["GRN List"] = "/po-material/grn-list";
+  // }
+  // piAndMaterialManagementRoutes["GRN List"] =
+  //   piAndMaterialManagementRoutesBase["GRN List"];
+
+  // 5. Vendor List
+  // piAndMaterialManagementRoutes["Vendor List"] =
+  //   piAndMaterialManagementRoutesBase["Vendor List"];
+  if (
+    userPermission?.some(
+      (perm) => perm.type == "Get Quotation" && perm.permission === "add"
+    )
+  ) {
+    piAndMaterialManagementRoutes["Vendor List"] =
+      "/payment-management/vendor-list";
+  }
+
+  // Payment Management
+  // const paymentManagementRoutesBase = {};
+
+  // let paymentManagementRoutes = {};
+
+  // // Payment
+  // if (
+  //   userPermission?.some(
+  //     (perm) => perm.type == "Payment Request" && perm.permission === "view"
+  //   )
+  // ) {
+  //   paymentManagementRoutes["Payment List"] =
+  //     "/payment-management/invoice-list";
+  // }
+
+  // Vendor
+  // if (
+  //   userPermission?.some(
+  //     (perm) =>
+  //       perm.type == "Vendor Payment History" && perm.permission === "view"
+  //   )
+  // ) {
+  //   paymentManagementRoutes["Vendor List"] = "/payment-management/vendor-list";
+  // }
+
+  // const paymentManagementRoutes = {
+  //   "Payment List": "/payment-management/invoice-list",
+  //   "Vendor List": "/payment-management/vendor-list",
+  // };
+
   return (
     <>
       {/* --------------------START SMALL SCREEN SIDEBAR------------------------ */}
@@ -154,205 +271,315 @@ export default function Small_Screen_Sidebar({ onClose }) {
 
           {/* ✅ Master menu only for Admin */}
           {isAdmin && (
-            <li
-              className={`menu-item ${
-                activeMenu === "Master" ? "open active" : ""
-              } cursor-pointer`}
-              onClick={() => toggleMenu("Master")}
-            >
-              <a className="menu-link menu-toggle">
-                <i className="menu-icon icon-base ti tabler-book"></i>
-                <div data-i="Master">Master</div>
-              </a>
-              <ul
-                className={`menu-sub dropdown ${
-                  activeMenu === "Master" ? "open" : ""
-                }`}
+            <>
+              <li
+                className={`menu-item ${
+                  activeMenu === "Master" ? "open active" : ""
+                } cursor-pointer`}
+                onClick={() => toggleMenu("Master")}
               >
-                {Object.keys(masterRoutes).map((item) => (
-                  <li
-                    key={item}
-                    className={`menu-item ${
-                      activeSubMenu === item ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSubMenuClick("Master", item);
-                    }}
-                  >
-                    <Link
-                      to={masterRoutes[item]}
-                      className="menu-link cursor-pointer text-decoration-none"
+                <a className="menu-link menu-toggle">
+                  <i className="menu-icon icon-base ti tabler-book"></i>
+                  <div data-i="Master">Master</div>
+                </a>
+                <ul
+                  className={`menu-sub dropdown ${
+                    activeMenu === "Master" ? "open" : ""
+                  }`}
+                >
+                  {Object.keys(masterRoutes).map((item) => (
+                    <li
+                      key={item}
+                      className={`menu-item ${
+                        activeSubMenu === item ? "active" : ""
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSubMenuClick("Master", item);
+                      }}
                     >
-                      <div>{item}</div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
+                      <Link
+                        to={masterRoutes[item]}
+                        className="menu-link cursor-pointer text-decoration-none"
+                      >
+                        <div>{item}</div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+              {/* UOM */}
+              {/* <li
+                      className={`menu-item ${activeMenu === "Uom" ? "active" : ""}`}
+                      onClick={() => toggleMenu("Uom")}
+                    >
+                      <Link
+                        to="/suprer_admin/uom"
+                        className="menu-link cursor-pointer text-decoration-none"
+                      >
+                        <i className="menu-icon ti tabler-ruler"></i>
+                        <div data-i="Uom">UOM</div>
+                      </Link>
+                    </li> */}
+            </>
           )}
 
           {/* Item Management */}
-          {!isAdmin && (
-            <li
-              className={`menu-item ${
-                activeMenu === "Item" ? "open active" : ""
-              } cursor-pointer`}
-              onClick={() => toggleMenu("Item")}
-            >
-              <a className="menu-link menu-toggle">
-                <i className="menu-icon icon-base ti tabler-color-swatch"></i>
-                <div data-i="Item Management">Item Management</div>
-              </a>
-              <ul
-                className={`menu-sub dropdown ${
-                  activeMenu === "Item" ? "open" : ""
-                }`}
+          {!isAdmin &&
+            userPermission?.some(
+              (perm) =>
+                (perm.type === "Material Code" &&
+                  perm.permission === "allrights") ||
+                (perm.type === "Service Code" &&
+                  perm.permission === "allrights") ||
+                (perm.type === "Asset Code" && perm.permission === "allrights")
+            ) && (
+              <li
+                className={`menu-item ${
+                  activeMenu === "Item" ? "open active" : ""
+                } cursor-pointer`}
+                onClick={() => toggleMenu("Item")}
               >
-                {Object.keys(itemRoutes).map((item) => (
-                  <li
-                    key={item}
-                    className={`menu-item ${
-                      activeSubMenu === item ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSubMenuClick("Item", item);
-                    }}
-                  >
-                    <Link
-                      to={itemRoutes[item]}
-                      className="menu-link cursor-pointer text-decoration-none"
+                <a className="menu-link menu-toggle">
+                  <i className="menu-icon icon-base ti tabler-color-swatch"></i>
+                  <div data-i="Item Management">Item Management</div>
+                </a>
+                <ul
+                  className={`menu-sub dropdown ${
+                    activeMenu === "Item" ? "open" : ""
+                  }`}
+                >
+                  {Object.keys(itemRoutes).map((item) => (
+                    <li
+                      key={item}
+                      className={`menu-item ${
+                        activeSubMenu === item ? "active" : ""
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSubMenuClick("Item", item);
+                      }}
                     >
-                      <div data-i={item}>{item}</div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          )}
+                      <Link
+                        to={itemRoutes[item]}
+                        className="menu-link cursor-pointer text-decoration-none"
+                      >
+                        <div data-i={item}>{item}</div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            )}
 
           {/* Request Management */}
-          {!isAdmin && (
-            <li
-              className={`menu-item ${
-                activeMenu === "Request" ? "open active" : ""
-              } cursor-pointer`}
-              onClick={() => toggleMenu("Request")}
-            >
-              <a className="menu-link menu-toggle">
-                <i className="menu-icon icon-base ti tabler-forms"></i>
-                <div data-i="Request Management">Request Management</div>
-              </a>
-              <ul
-                className={`menu-sub dropdown ${
-                  activeMenu === "Request" ? "open" : ""
+          {!isAdmin &&
+            userPermission?.some(
+              (perm) =>
+                (perm.type === "Item Request" ||
+                  perm.type === "store_head Approval") &&
+                perm.permission === "view"
+            ) && (
+              // <li
+              //   className={`menu-item ${
+              //     activeSubMenu === "Item Request" ? "active" : ""
+              //   } cursor-pointer`}
+              //   onClick={(e) => {
+              //     e.stopPropagation();
+              //     handleSubMenuClick(null, "Item Request");
+              //   }}
+              // >
+              //   <Link
+              //     to="/user/request/request-list"
+              //     className="menu-link cursor-pointer text-decoration-none d-flex align-items-center gap-2"
+              //   >
+              //     <i
+              //       className="menu-icon icon-base ti tabler-forms"
+              //       style={{
+              //         color: "#6d6b77",
+              //       }}
+              //     ></i>
+              //     <div
+              //       data-i="Item Request"
+              //       style={{
+              //         color: "#6d6b77",
+              //       }}
+              //     >
+              //       Item Request
+              //     </div>
+              //   </Link>
+              // </li>
+              <li
+                className={`menu-item ${
+                  activeMenu === "Item Request" ? "active" : ""
                 }`}
+                onClick={() => toggleMenu("Item Request")}
               >
-                {Object.keys(requestManagementRoutes).map((item) => (
-                  <li
-                    key={item}
-                    className={`menu-item ${
-                      activeSubMenu === item ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSubMenuClick("Request", item);
-                    }}
-                  >
-                    <Link
-                      to={requestManagementRoutes[item]}
-                      className="menu-link cursor-pointer text-decoration-none"
-                    >
-                      <div data-i={item}>{item}</div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          )}
+                <Link
+                  to="/user/request/request-list"
+                  className="menu-link cursor-pointer text-decoration-none"
+                >
+                  <i className="menu-icon icon-base ti tabler-forms"></i>
+                  <div data-i="Item Request">Item Request</div>
+                </Link>
+              </li>
+            )}
 
           {/* PO & Material Management */}
-          {!isAdmin && (
-            <li
-              className={`menu-item ${
-                activeMenu === "PO" ? "open active" : ""
-              } cursor-pointer`}
-              onClick={() => toggleMenu("PO")}
-            >
-              <a className="menu-link menu-toggle">
-                <i className="menu-icon icon-base ti tabler-truck"></i>
-                <div data-i="PO & Material Management">
-                  PO & Material Management
-                </div>
-              </a>
-              <ul
-                className={`menu-sub dropdown ${
-                  activeMenu === "PO" ? "open" : ""
-                }`}
+          {!isAdmin &&
+            userPermission?.some(
+              (perm) =>
+                (perm.type === "PI Request" ||
+                  perm.type === "Get Quotation" ||
+                  perm.type === "PO Generation" ||
+                  perm.type === "GRN") &&
+                (perm.permission === "view" || perm.permission === "add")
+            ) && (
+              <li
+                className={`menu-item ${
+                  activeMenu === "PO" ? "open active" : ""
+                } cursor-pointer`}
+                onClick={() => toggleMenu("PO")}
               >
-                {Object.keys(piAndMaterialManagementRoutes).map((item) => (
-                  <li
-                    key={item}
-                    className={`menu-item ${
-                      activeSubMenu === item ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSubMenuClick("PO", item);
-                    }}
-                  >
-                    <Link
-                      to={piAndMaterialManagementRoutes[item]}
-                      className="menu-link cursor-pointer text-decoration-none"
+                <a className="menu-link menu-toggle">
+                  <i className="menu-icon icon-base ti tabler-truck"></i>
+                  <div data-i="PO & Material Management">
+                    PO & Material Management
+                  </div>
+                </a>
+                <ul
+                  className={`menu-sub dropdown ${
+                    activeMenu === "PO" ? "open" : ""
+                  }`}
+                >
+                  {Object.keys(piAndMaterialManagementRoutes).map((item) => (
+                    <li
+                      key={item}
+                      className={`menu-item ${
+                        activeSubMenu === item ? "active" : ""
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSubMenuClick("PO", item);
+                      }}
                     >
-                      <div data-i={item}>{item}</div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          )}
+                      <Link
+                        to={piAndMaterialManagementRoutes[item]}
+                        className="menu-link cursor-pointer text-decoration-none"
+                      >
+                        <div data-i={item}>{item}</div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            )}
 
           {/* Payment Management */}
-          {!isAdmin && (
-            <li
-              className={`menu-item ${
-                activeMenu === "Payment" ? "open active" : ""
-              } cursor-pointer`}
-              onClick={() => toggleMenu("Payment")}
-            >
-              <a className="menu-link menu-toggle">
-                <i className="menu-icon icon-base ti tabler-file-dollar"></i>
-                <div data-i="Payment Management">Payment Management</div>
-              </a>
-              <ul
-                className={`menu-sub dropdown ${
-                  activeMenu === "Payment" ? "open" : ""
+          {/* Payment List (direct link) */}
+          {!isAdmin &&
+            userPermission?.some(
+              (perm) =>
+                perm.type === "Payment Request" && perm.permission === "view"
+            ) && (
+              // <li
+              //   className={`menu-item ${
+              //     activeSubMenu === "Payment List" ? "active" : ""
+              //   } cursor-pointer`}
+              //   onClick={(e) => {
+              //     e.stopPropagation();
+              //     handleSubMenuClick(null, "Payment List");
+              //   }}
+              // >
+              //   <Link
+              //     to="/payment-management/invoice-list"
+              //     className="menu-link cursor-pointer text-decoration-none d-flex align-items-center gap-2"
+              //   >
+              //     <i
+              //       className="menu-icon icon-base ti tabler-file-dollar"
+              //       style={{
+              //         color: "#6d6b77",
+              //       }}
+              //     ></i>
+              //     <div
+              //       data-i="Payment List"
+              //       style={{
+              //         color: "#6d6b77",
+              //       }}
+              //     >
+              //       Payment List
+              //     </div>
+              //   </Link>
+              // </li>
+              <li
+                className={`menu-item ${
+                  activeMenu === "Payment List" ? "active" : ""
                 }`}
+                onClick={() => toggleMenu("Payment List")}
               >
-                {Object.keys(paymentManagementRoutes).map((item) => (
-                  <li
-                    key={item}
-                    className={`menu-item ${
-                      activeSubMenu === item ? "active" : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSubMenuClick("Payment", item);
-                    }}
-                  >
-                    <Link
-                      to={paymentManagementRoutes[item]}
-                      className="menu-link cursor-pointer text-decoration-none"
+                <Link
+                  to="/payment-management/invoice-list"
+                  className="menu-link cursor-pointer text-decoration-none"
+                >
+                  <i className="menu-icon icon-base ti tabler-file-dollar"></i>
+                  <div data-i="Payment List">Payment List</div>
+                </Link>
+              </li>
+            )}
+
+          {/* {!isAdmin &&
+                  userPermission?.some(
+                    (perm) =>
+                      perm.type == "Payment Request" && perm.permission === "view"
+                  ) && (
+                    <li
+                      className={`menu-item ${
+                        activeMenu === "Payment" ? "open active" : ""
+                      } cursor-pointer`}
+                      onClick={() => toggleMenu("Payment")}
                     >
-                      <div data-i={item}>{item}</div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          )}
+                      <a className="menu-link menu-toggle">
+                        <i className="menu-icon icon-base ti tabler-file-dollar"></i>
+                        <div data-i="Payment Management">Payment Management</div>
+                      </a>
+                      <ul
+                        className={`menu-sub dropdown ${
+                          activeMenu === "Payment" ? "open" : ""
+                        }`}
+                      >
+                        {Object.keys(paymentManagementRoutes).map((item) => (
+                          <li
+                            key={item}
+                            className={`menu-item ${
+                              activeSubMenu === item ? "active" : ""
+                            }`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSubMenuClick("Payment", item);
+                            }}
+                          >
+                            <Link
+                              to={paymentManagementRoutes[item]}
+                              className="menu-link cursor-pointer text-decoration-none"
+                            >
+                              <div data-i={item}>{item}</div>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  )} */}
+
+          {/* UOM
+                <li
+                  className={`menu-item ${activeMenu === "Uom" ? "active" : ""}`}
+                  onClick={() => toggleMenu("Uom")}
+                >
+                  <Link to="/suprer_admin/uom" className="menu-link cursor-pointer">
+                    <i className="menu-icon ti tabler-ruler"></i>
+                    <div data-i="Uom">Uom</div>
+                  </Link>
+                </li> */}
         </ul>
       </aside>
 

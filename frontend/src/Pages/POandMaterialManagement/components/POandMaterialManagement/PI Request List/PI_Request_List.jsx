@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import SearchBar from "../../../../../components/Common/SearchBar/SearchBar";
 import PI_Request_Table from "./PI_Request_Table";
 import Pagination from "../../../../../components/Common/Pagination/Pagination";
@@ -57,6 +57,8 @@ export default function PI_Request_List() {
   const [urlStatusApplied, setUrlStatusApplied] = useState(false);
 
   const location = useLocation();
+  console.log("location", location);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchItemFilter();
@@ -81,10 +83,12 @@ export default function PI_Request_List() {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const statusFromUrl = params.get("status");
+    const activeTabFromUrl = params.get("activeTab");
 
-    if (statusFromUrl && !urlStatusApplied) {
+    if (statusFromUrl && activeTabFromUrl && !urlStatusApplied) {
       console.log("Setting status from URL:", statusFromUrl);
       setStatus(statusFromUrl);
+      setActiveTab(activeTabFromUrl);
       setUrlStatusApplied(true);
 
       // Reset to first page when applying URL filter
@@ -219,8 +223,13 @@ export default function PI_Request_List() {
     }
   };
 
-  // ✅ Clear all filters including URL status
+  //  Clear all filters including URL status
   const handleClearFilters = () => {
+    // First navigate to clear URL parameters
+    navigate(location.pathname, { replace: true });
+
+    // Then reset all state values
+    setActiveTab("my_request");
     setSelectedType("all");
     setItemName("all");
     setDepartment("all");
@@ -230,16 +239,12 @@ export default function PI_Request_List() {
     setSelectedDateRange("");
     setStartDate("");
     setEndDate("");
-    setUrlStatusApplied(false); // Reset URL status flag
+    setUrlStatusApplied(true);
     setPagination((prev) => ({ ...prev, currentPage: 1 }));
-
-    // Remove status from URL without page reload
-    const newUrl = window.location.pathname;
-    window.history.replaceState({}, "", newUrl);
 
     // Refetch unfiltered data
     getPIRequest({
-      type: activeTab,
+      type: "my_request", // Use the hardcoded value instead of activeTab
       page: 1,
       perPage: pagination.perPage,
     });
@@ -255,7 +260,7 @@ export default function PI_Request_List() {
     startDate !== "" ||
     endDate !== "" ||
     search !== "" ||
-    (location.search && location.search.includes("status"));
+    (location.search && location.search !== "?");
 
   return (
     <>

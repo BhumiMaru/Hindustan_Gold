@@ -13,6 +13,7 @@ import Date_Range_Model from "../../../../../components/Date Range/Date_Range_Mo
 import { getData } from "../../../../../utils/api";
 import { ENDPOINTS } from "../../../../../constants/endpoints";
 import { toast } from "react-toastify";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function PO_List_List() {
   const [exporting, setExporting] = useState(false);
@@ -35,11 +36,17 @@ export default function PO_List_List() {
     setEndDate,
     vendor,
     setVendor,
+    poPendingGenerate,
+    setPoPendingGenerate,
   } = usePOCreate();
   const { vendorFilter, setVendorFilter, getVendorFilter } = useVendor();
   const { fetchItemFilter, filterItem } = useItemRequest();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDateRange, setSelectedDateRange] = useState("");
+  // Location for search filter by url
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [urlParamsApplied, setUrlParamsApplied] = useState(false);
 
   useEffect(() => {
     getVendorFilter();
@@ -47,9 +54,27 @@ export default function PO_List_List() {
   }, []);
 
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const statusUrl = params.get("status");
+
+    // Apply only if exists + not applied yet
+    if (statusUrl && !urlParamsApplied) {
+      setStatus(statusUrl);
+      setUrlParamsApplied(true);
+    }
+
+    // If no URL param, mark it applied so fetch can start normally
+    if (!statusUrl && !urlParamsApplied) {
+      setUrlParamsApplied(true);
+    }
+  }, [location.search, urlParamsApplied]);
+
+  useEffect(() => {
+    if (!urlParamsApplied) return;
     getPoList({
       search,
       status,
+      poPendingGenerate,
       poType: selectedType,
       item_id: itemName,
       vendor,
@@ -59,8 +84,10 @@ export default function PO_List_List() {
       perPage: pagination.perPage,
     });
   }, [
+    urlParamsApplied,
     search,
     status,
+    poPendingGenerate,
     selectedType,
     itemName,
     vendor,
@@ -94,34 +121,6 @@ export default function PO_List_List() {
     setShowDatePicker(false);
   };
 
-  // ✅ Clear all filters
-  // ✅ Clear all filters
-  const handleClearFilters = () => {
-    // Reset all filter states
-    setSearch("");
-    setStatus("all");
-    setSelectedType("all");
-    setItemName("all");
-    setVendor("all");
-    setStartDate("");
-    setEndDate("");
-    setSelectedDateRange("");
-    setPagination((prev) => ({ ...prev, currentPage: 1 }));
-
-    // ✅ Refetch unfiltered PO list
-    getPoList({
-      search: "",
-      status: "all",
-      poType: "all",
-      item_id: "all",
-      vendor: "all",
-      start_date: "",
-      end_date: "",
-      page: 1,
-      perPage: pagination.perPage,
-    });
-  };
-
   //  Export to Excel
   const handleExportPOExcel = async () => {
     try {
@@ -129,6 +128,8 @@ export default function PO_List_List() {
 
       const params = {
         search: search || undefined,
+        poPendingGenerate:
+          poPendingGenerate !== "all" ? poPendingGenerate : undefined,
         status: status !== "all" ? status : undefined,
         po_type: selectedType !== "all" ? selectedType : undefined,
         item_id: itemName && itemName !== "all" ? itemName : undefined,
@@ -178,6 +179,48 @@ export default function PO_List_List() {
       setExporting(false);
     }
   };
+
+  // Clear all filters
+  const handleClearFilters = () => {
+    // First navigate to clear URL parameters
+    navigate(location.pathname, { replace: true });
+
+    // Reset all filter states
+    setSearch("");
+    setStatus("all");
+    setPoPendingGenerate("all");
+    setSelectedType("all");
+    setItemName("all");
+    setVendor("all");
+    setStartDate("");
+    setEndDate("");
+    setSelectedDateRange("");
+    setPagination((prev) => ({ ...prev, currentPage: 1 }));
+
+    // ✅ Refetch unfiltered PO list
+    getPoList({
+      search: "",
+      status: "all",
+      poPendingGenerate: "all",
+      poType: "all",
+      item_id: "all",
+      vendor: "all",
+      start_date: "",
+      end_date: "",
+      page: 1,
+      perPage: pagination.perPage,
+    });
+  };
+
+  const isAnyFilterActive =
+    status !== "all" ||
+    poPendingGenerate !== "all" ||
+    selectedType !== "all" ||
+    itemName !== "all" ||
+    vendor !== "all" ||
+    startDate !== "" ||
+    endDate !== "" ||
+    (location.search && location.search !== "?");
 
   return (
     <>
@@ -244,13 +287,7 @@ export default function PO_List_List() {
                 />
               </div>
 
-              {(selectedType !== "all" ||
-                status !== "all" ||
-                itemName !== "all" ||
-                vendor !== "all" ||
-                startDate !== "" ||
-                endDate !== "" ||
-                search !== "") && (
+              {isAnyFilterActive && (
                 <div className="d-flex align-items-center">
                   <button
                     className="btn text-danger waves-effect btn-sm"
@@ -348,7 +385,8 @@ export default function PO_List_List() {
                 placeholder="Select Vendor"
               />
             </div>
-            {console.log("vendor", vendor)}
+            {/* {console.log("vendor", vendor)} */}
+            {/* Status */}
             <div className="col-lg-3">
               <CustomSelect
                 id="selectItemStatus"
@@ -379,6 +417,30 @@ export default function PO_List_List() {
                 placeholder="Select Item Status"
               />
             </div>
+            {/* PO Pending Generate */}
+            <div className="col-lg-3 mt-2">
+              <CustomSelect
+                id="selectPoPendingGenerate"
+                options={[
+                  {
+                    value: "all",
+                    label: "Select Pending Po Generate",
+                  },
+                  {
+                    value: 0,
+                    label: "Pending",
+                  },
+                  {
+                    value: 1,
+                    label: "Generate",
+                  },
+                ]}
+                value={poPendingGenerate}
+                onChange={setPoPendingGenerate}
+                placeholder="Select Pending Po Generate"
+              />
+            </div>
+            {/* Date Range */}
             <div className="col-lg-3 mt-2">
               <div className="d-flex items-center">
                 <input

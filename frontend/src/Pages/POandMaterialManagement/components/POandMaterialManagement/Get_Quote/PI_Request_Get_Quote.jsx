@@ -77,8 +77,8 @@ export default function PI_Request_Get_Quote() {
   // Vendor Approve Data
   const [vendorApproveData, setVendorApproveData] = useState();
 
-  // console.log("quoteData", quoteData);
-  // console.log("newVendorData", newVendorData);
+  console.log("quoteData", quoteData);
+  console.log("newVendorData", newVendorData);
   const vendor_type = "new";
 
   useEffect(() => {
@@ -87,7 +87,7 @@ export default function PI_Request_Get_Quote() {
   }, [id]);
 
   // Add this separate useEffect to call quoteVendorList when quoteData is available
-  useEffect(() => {
+  const refreshVendorList = () => {
     if (quoteData?.id) {
       quoteVendorList({
         pi_get_quote_id: quoteData.id,
@@ -98,6 +98,10 @@ export default function PI_Request_Get_Quote() {
         vendor_type: "old",
       });
     }
+  };
+
+  useEffect(() => {
+    refreshVendorList();
   }, [quoteData?.id]);
 
   // Calculate filtered vendor options (exclude from both old and new lists)
@@ -1389,6 +1393,7 @@ export default function PI_Request_Get_Quote() {
           newVendorLoading={newVendorLoading}
           setOldVendorLoading={setOldVendorLoading}
           oldVendorLoading={oldVendorLoading}
+          refreshVendorList={refreshVendorList}
         />
       )}
       {/* ---------------END PI REQUEST GET QUOTE-------------------- */}

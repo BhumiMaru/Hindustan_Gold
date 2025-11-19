@@ -430,6 +430,8 @@ export const InvoiceProvider = ({ children }) => {
         `${ENDPOINTS.INVOICE.WORKFLOW}?invoice_id=${invoiceId}`
       );
 
+      console.log("res", res);
+      
       if (res.status) {
         invoiceDetails(invoiceId);
       } else {
