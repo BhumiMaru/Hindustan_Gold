@@ -46,7 +46,7 @@ export default function Invoice_List_Table() {
             <th scope="col">Type</th>
             {/* <th scope="col">Item</th> */}
             <th scope="col">Invoice Amount</th>
-            <th scope="col">Paid Amount</th>
+            {/* <th scope="col">Paid Amount</th> */}
             <th scope="col">Status</th>
             <th scope="col">Action</th>
           </tr>
@@ -82,8 +82,12 @@ export default function Invoice_List_Table() {
                   <td>{invoice?.vendor?.vendor_name}</td>
                   <td>{invoice?.type}</td>
                   {/* <td>{invoice?.created_at}</td> */}
-                  <td>{invoice?.taxable_amount}/-</td>
-                  <td>{invoice?.paid_amount}/-</td>
+                  <td>
+                    {invoice?.taxable_amount
+                      ? `${invoice?.taxable_amount}/-`
+                      : ""}
+                  </td>
+                  {/* <td>{invoice?.paid_amount}/-</td> */}
                   <td>
                     <span
                       className={`badge ${
