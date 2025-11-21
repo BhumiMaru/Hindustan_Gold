@@ -237,10 +237,7 @@ export default function SideBar() {
           <a href="index" className="app-brand-link me-4">
             <span className="app-brand-logo demo">
               <span className="text-primary">
-                <img
-                  src={`${publicUrl}assets/img/logo.png`}
-                  className="img-fluid"
-                />
+                <img src="assets/img/logo.png" className="img-fluid" />
               </span>
             </span>
           </a>
