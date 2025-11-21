@@ -687,7 +687,7 @@ export default function Dashboard() {
 
                 <div className="row g-6">
                   {/* Total Pending Invoice Approvals */}
-                  {userPermission.some(
+                  {/* {userPermission.some(
                     (perm) =>
                       perm.type === "Payment Request" &&
                       (perm.permission === "view" ||
@@ -711,6 +711,64 @@ export default function Dashboard() {
                             <p className="mb-1">
                               Total Pending Invoice Approvals
                             </p>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                  )} */}
+
+                  {/* Total Pending for Approvals */}
+                  {userPermission.some(
+                    (perm) =>
+                      perm.type === "Payment Request" &&
+                      (perm.permission === "view" ||
+                        perm.permission === "add" ||
+                        perm.permission === "approve")
+                  ) && (
+                    <div className="col-lg-3 col-sm-6">
+                      <Link to="/payment-management/invoice-list">
+                        <div className="card card-border-shadow-primary h-100">
+                          <div className="card-body">
+                            <div className="d-flex align-items-center mb-2">
+                              <div className="avatar me-4">
+                                <span className="avatar-initial rounded bg-label-primary">
+                                  <i className="icon-base ti tabler-clipboard icon-28px"></i>
+                                </span>
+                              </div>
+                              <h4 className="mb-0">
+                                {dashboardList?.item_request?.my_request}
+                              </h4>
+                            </div>
+                            <p className="mb-1">Total Pending for Approvals</p>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                  )}
+
+                  {/* Total Pending for Pay */}
+                  {userPermission.some(
+                    (perm) =>
+                      perm.type === "Payment Request" &&
+                      (perm.permission === "view" ||
+                        perm.permission === "add" ||
+                        perm.permission === "approve")
+                  ) && (
+                    <div className="col-lg-3 col-sm-6">
+                      <Link to="/payment-management/invoice-list">
+                        <div className="card card-border-shadow-warning h-100">
+                          <div className="card-body">
+                            <div className="d-flex align-items-center mb-2">
+                              <div className="avatar me-4">
+                                <span className="avatar-initial rounded bg-label-warning">
+                                  <i className="icon-base ti tabler-hourglass icon-28px"></i>
+                                </span>
+                              </div>
+                              <h4 className="mb-0">
+                                {dashboardList?.item_request?.pending}
+                              </h4>
+                            </div>
+                            <p className="mb-1">Total Pending for Pay</p>
                           </div>
                         </div>
                       </Link>

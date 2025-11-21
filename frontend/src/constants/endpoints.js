@@ -87,6 +87,10 @@ export const ENDPOINTS = {
   // Authentication
   AUTH: {
     LOGIN: "/login",
+    LOGOUT: "/logout",
+    SENDOTP: "/sendotp",
+    VERIFYOTP: "/verifyotp",
+    UPDATEPASSWORD: "/updatepassword",
   },
 
   // ITEM REQUEST
@@ -190,6 +194,8 @@ export const ENDPOINTS = {
     PAYMENT: "/po/grn/invoice/payment",
     WORKFLOW: "/po/grn/invoice/workflow",
     REVERT_STATUS: "/po/grn/invoice/status-update",
+    INVOICE_DELETE: "/invoice/delete",
+    PAYMENT_DELETE: "/invoice/payment/delete",
   },
 };
 

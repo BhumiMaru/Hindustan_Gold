@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useInvoice } from "../../../../../Context/PIAndPoManagement/Invoice";
 import { useUIContext } from "../../../../../Context/UIContext";
 
@@ -6,6 +6,8 @@ export default function Payment_Paritals({ id }) {
   const { paymentData, setPaymentData, paymentPartial, resetPaymentData } =
     useInvoice();
   const { handleClose } = useUIContext();
+  // BTN Loding
+  const [isBtnLoading, setIsBtnLoading] = useState(false);
 
   useEffect(() => {
     setPaymentData((prev) => ({
@@ -25,7 +27,11 @@ export default function Payment_Paritals({ id }) {
 
   const handleSave = async () => {
     try {
+      setIsBtnLoading(true);
+      console.log("paymentData", paymentData);
       const res = await paymentPartial(paymentData);
+
+      console.log("res", res);
 
       // ✅ Close modal only if payment was successful
       if (res?.status === true) {
@@ -35,6 +41,8 @@ export default function Payment_Paritals({ id }) {
     } catch (error) {
       console.error("Error processing payment:", error);
       // Don't close modal on error
+    } finally {
+      setIsBtnLoading(false);
     }
   };
 
@@ -80,7 +88,9 @@ export default function Payment_Paritals({ id }) {
             <div className="modal-body">
               <div className="row">
                 <div className="col-lg-12">
-                  <label className="form-label">Amount</label>
+                  <label className="form-label">
+                    Amount <span className="text-danger">*</span>
+                  </label>
                   <input
                     type="number"
                     className="form-control"
@@ -90,7 +100,9 @@ export default function Payment_Paritals({ id }) {
                   />
                 </div>
                 <div className="col-lg-12 mt-2">
-                  <label className="form-label">Remarks</label>
+                  <label className="form-label">
+                    Remarks <span className="text-danger">*</span>
+                  </label>
                   <textarea
                     className="form-control"
                     name="remark"
@@ -99,7 +111,9 @@ export default function Payment_Paritals({ id }) {
                   />
                 </div>
                 <div className="col-lg-12 mt-2">
-                  <label className="form-label">Date Of Invoice</label>
+                  <label className="form-label">
+                    Date Of Invoice <span className="text-danger">*</span>
+                  </label>
                   <input
                     type="date"
                     className="form-control"
@@ -109,16 +123,19 @@ export default function Payment_Paritals({ id }) {
                   />
                 </div>
                 <div className="col-lg-12 mt-2">
-                  <label className="form-label">Payment Slip Attachment </label>
+                  <label className="form-label">
+                    Payment Slip Attachment{" "}
+                    <span className="text-danger">*</span>
+                  </label>
                   <input
                     type="file"
                     className="form-control"
-                    name="paymentslip"
-                    // value={paymentData.paymentslip}
+                    name="invoice_file"
+                    // value={paymentData.invoice_file}
                     onChange={(e) =>
                       setPaymentData((prev) => ({
                         ...prev,
-                        paymentslip: e.target.files[0],
+                        invoice_file: e.target.files[0],
                       }))
                     }
                   />
@@ -138,7 +155,14 @@ export default function Payment_Paritals({ id }) {
                   <button
                     className="btn  btn-success ms-2 waves-effect waves-light"
                     onClick={handleSave}
+                    disabled={isBtnLoading}
                   >
+                    {isBtnLoading && (
+                      <div
+                        className="spinner-border spinner-white me-2"
+                        role="status"
+                      ></div>
+                    )}
                     Save
                   </button>
                 </div>

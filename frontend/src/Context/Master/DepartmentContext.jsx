@@ -4,6 +4,8 @@ import { deleteData, getData, postData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
 import { validateTextInput } from "../../utils/validation";
 import { useUIContext } from "../UIContext";
+import { encryptData } from "../../utils/encryptData";
+import { decryptData } from "../../utils/decryptData";
 
 const DepartmentContext = createContext();
 
@@ -37,7 +39,9 @@ export const DepartmentProvider = ({ children }) => {
         search,
         page,
         per_page: perPage,
-      }); // ✅ pass search as query param
+      });
+      // Decrypt Res
+      // const decryptRes = decryptData(res);
       // if (res.status) {
       const apiData = res.data;
       setDepartments(apiData.data);
@@ -60,6 +64,8 @@ export const DepartmentProvider = ({ children }) => {
   const fetchDeptFilter = async () => {
     try {
       const res = await getData(ENDPOINTS.DEPARTMENTS.FILTER);
+      // Decrypt Res
+      // const decryptRes = decryptData(res);
       setDeptFilter(res.data);
     } catch (error) {
       console.log(error);
@@ -72,14 +78,32 @@ export const DepartmentProvider = ({ children }) => {
     try {
       setBtnLoading(true); // Start loader
 
-      const response = await postData(ENDPOINTS.DEPARTMENTS.ADD_UPDATE, {
-        department_name: deptName,
-      });
+      // const departmentName = {
+      //   department_name: deptName,
+      // };
+
+      // const encryptPayload = encryptData(departmentName);
+      // console.log("encryptPayload", encryptPayload);
+
+      const response = await postData(
+        ENDPOINTS.DEPARTMENTS.ADD_UPDATE,
+        {
+          department_name: deptName,
+        }
+
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // console.log("response", response);
+
+      // const decryptResData = decryptData(response);
+      // console.log("decryptResData", decryptResData);
 
       if (response?.success) {
         handleClose("addNewDepartment");
         toast.success(response?.message);
-        // optionally reset input or refresh list here
       } else {
         toast.error(response?.message || "Failed to add department");
       }
@@ -116,16 +140,31 @@ export const DepartmentProvider = ({ children }) => {
   //   });
   // };
 
-  // ✅ Update Department (id in body, not params)
-  // ✅ Update Department Function
+  //  Update Department (id in body, not params)
+  //  Update Department Function
   const updateDepartment = async (id, deptName) => {
     try {
       setBtnLoading(true); // Start loader
 
-      const response = await postData(ENDPOINTS.DEPARTMENTS.ADD_UPDATE, {
-        id, // 👈 id in body
-        department_name: deptName,
-      });
+      // Encrypt Data
+      // const encryptData = encryptData({
+      //   id,
+      //   department_name: deptName,
+      // });
+
+      const response = await postData(
+        ENDPOINTS.DEPARTMENTS.ADD_UPDATE,
+        {
+          id,
+          department_name: deptName,
+        }
+        // {
+        //   data: encryptData,
+        // }
+      );
+
+      // Decrypt Data
+      // const decryptData = decryptData(response)
 
       if (response?.success) {
         handleClose("addNewDepartment");

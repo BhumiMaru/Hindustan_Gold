@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useInvoice } from "../../../../../Context/PIAndPoManagement/Invoice";
 import { useUIContext } from "../../../../../Context/UIContext";
 
@@ -11,6 +11,8 @@ export default function Mark_as_Paid({ id }) {
     invoiceDetail,
   } = useInvoice();
   const { handleClose } = useUIContext();
+  // BTN Loding
+  const [isBtnLoading, setIsBtnLoading] = useState(false);
 
   useEffect(() => {
     setPaymentData((prev) => ({
@@ -30,27 +32,37 @@ export default function Mark_as_Paid({ id }) {
     }));
   };
 
-  const handleSave = () => {
-    if (invoiceDetail.is_payment_advance_or_partial === "Yes") {
-      console.log({
-        amount: invoiceDetail.taxable_amount,
-        // payment_date: "",
-        remark: "Payment Done",
-        type_of_payment: 2,
-        invoice_file: null,
-      });
-      setPaymentData({
-        amount: invoiceDetail.taxable_amount,
-        // payment_date: "",
-        remark: "Payment Done",
-        type_of_payment: 2,
-        invoice_file: null,
-      });
-    } else {
-      console.log("paymentData", paymentData);
-      paymentPartial(paymentData);
+  const handleSave = async () => {
+    try {
+      setIsBtnLoading(true);
+
+      if (invoiceDetail.is_payment_advance_or_partial === "Yes") {
+        console.log({
+          amount: invoiceDetail.taxable_amount,
+          remark: "Payment Done",
+          type_of_payment: 2,
+          invoice_file: null,
+        });
+
+        setPaymentData({
+          amount: invoiceDetail.taxable_amount,
+          remark: "Payment Done",
+          type_of_payment: 2,
+          invoice_file: null,
+        });
+
+        // handleClose("markaspaid");
+      } else {
+        console.log("paymentData", paymentData);
+
+        // ✅ THIS is important
+        await paymentPartial(paymentData);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsBtnLoading(false);
     }
-    handleClose("markaspaid");
   };
 
   return (
@@ -134,12 +146,13 @@ export default function Mark_as_Paid({ id }) {
                     <div className="col-lg-12 mt-2">
                       <label className="form-label">
                         Payment Slip Attachment{" "}
+                        <span className="text-danger">*</span>
                       </label>
                       <input
                         type="file"
                         className="form-control"
                         name="invoice_file"
-                        // value={paymentData.paymentslip}
+                        // value={paymentData.invoice_file}
                         onChange={(e) =>
                           setPaymentData((prev) => ({
                             ...prev,
@@ -166,7 +179,14 @@ export default function Mark_as_Paid({ id }) {
                   <button
                     className="btn  btn-success ms-2 waves-effect waves-light"
                     onClick={handleSave}
+                    disabled={isBtnLoading}
                   >
+                    {isBtnLoading && (
+                      <div
+                        className="spinner-border spinner-white me-2"
+                        role="status"
+                      ></div>
+                    )}
                     Payment Done
                   </button>
                 </div>

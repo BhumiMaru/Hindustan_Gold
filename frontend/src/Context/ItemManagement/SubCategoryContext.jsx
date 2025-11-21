@@ -57,6 +57,10 @@ export const SubCategoryProvider = ({ children }) => {
         category_id,
         user_id,
       };
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       // console.log("params", params);
       const res = await getData(ENDPOINTS.SUBCATEGORY_MASTER.LIST, params);
       const apiData = res.data;
@@ -81,6 +85,10 @@ export const SubCategoryProvider = ({ children }) => {
   const fetchSubCategoryFilter = async () => {
     try {
       const res = await getData(ENDPOINTS.SUBCATEGORY_MASTER.FILTER);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       setFilterSubCategory(res.data);
     } catch (error) {
       console.log(error);
@@ -92,11 +100,22 @@ export const SubCategoryProvider = ({ children }) => {
   const createSubCategory = async (payload) => {
     try {
       setBtnLoading(true);
+      // Encryt Payload
+      // const encryptPayload = encryptData(payload);
+
       const res = await postData(
         ENDPOINTS.SUBCATEGORY_MASTER.ADD_UPDATE,
         payload
+
+        // {
+        //   data: encryptPayload,
+        // }
       );
       console.log("rr", res);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.success) {
         handleClose("addNewSubCategory");
         toast.success(res.message);
@@ -136,10 +155,24 @@ export const SubCategoryProvider = ({ children }) => {
   const EditSubCategory = async (id, payload) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.SUBCATEGORY_MASTER.ADD_UPDATE, {
-        id,
-        ...payload,
-      });
+
+      // Encryt Payload
+      // const encryptPayload = encryptData(payload);
+
+      const res = await postData(
+        ENDPOINTS.SUBCATEGORY_MASTER.ADD_UPDATE,
+        {
+          id,
+          ...payload,
+        }
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.success) {
         handleClose("addNewSubCategory");
         toast.success(res.message);

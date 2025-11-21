@@ -45,12 +45,17 @@ export const CategoryMasterProvider = ({ children }) => {
   } = {}) => {
     try {
       setLoading(true);
+
       const res = await getData(ENDPOINTS.CATEGORY_MASTER.LIST, {
         search,
         group_id,
         page,
         per_page: perPage,
       });
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       const apiData = res.data;
       setCategories(apiData.data);
       setPagination({
@@ -72,6 +77,10 @@ export const CategoryMasterProvider = ({ children }) => {
   const fetchCategoryFilter = async () => {
     try {
       const res = await getData(ENDPOINTS.CATEGORY_MASTER.FILTER);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       setFilterCategory(res.data);
     } catch (error) {
       console.log(error);
@@ -86,9 +95,24 @@ export const CategoryMasterProvider = ({ children }) => {
   const createCategory = async (payload) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.CATEGORY_MASTER.ADD_UPDATE, payload);
+
+      // Encryt Payload
+      // const encryptPayload = encryptData(payload);
+
+      const res = await postData(
+        ENDPOINTS.CATEGORY_MASTER.ADD_UPDATE,
+        payload
+
+        // {
+        //   data: encryptPayload,
+        // }
+      );
       // toast.success("Category Created Successfully");
       console.log("res", res);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.success) {
         setCategoryData(res.data.data);
         toast.success(res.message);
@@ -135,7 +159,21 @@ export const CategoryMasterProvider = ({ children }) => {
     try {
       setBtnLoading(true);
       const body = { id, ...payload };
-      const res = await postData(ENDPOINTS.CATEGORY_MASTER.ADD_UPDATE, body);
+      // Encryt Payload
+      // const encryptPayload = encryptData(body);
+
+      const res = await postData(
+        ENDPOINTS.CATEGORY_MASTER.ADD_UPDATE,
+        body
+
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.success) {
         setCategoryData(res.data.data);
         toast.success(res.message);

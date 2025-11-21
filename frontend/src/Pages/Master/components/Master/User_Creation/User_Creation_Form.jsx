@@ -10,6 +10,12 @@ import { useServiceLocation3Master } from "../../../../../Context/Master/Service
 import { useZone } from "../../../../../Context/Master/ZoneContext";
 import { useDepartment } from "../../../../../Context/Master/DepartmentContext";
 import User_Creation_Permission from "./User_Creation_Permission";
+import {
+  validateEmail,
+  validateMobile,
+  validatePassword,
+} from "../../../../../utils/validators";
+import { toast } from "react-toastify";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 const fileUrl = import.meta.env.VITE_FILE_URL;
 
@@ -79,6 +85,28 @@ export default function User_Creation_Form() {
   // Save Data
   const handleSave = async (e) => {
     e.preventDefault();
+
+    // FRONTEND VALIDATION
+    const emailError = validateEmail(useCreationData.email);
+    const passwordError = validatePassword(useCreationData.password);
+    const mobileError = validateMobile(useCreationData.mobileno);
+
+    if (emailError) {
+      toast.error(emailError);
+      return;
+    }
+
+    if (!id) {
+      if (passwordError) {
+        toast.error(passwordError);
+        return;
+      }
+    }
+
+    if (mobileError) {
+      toast.error(mobileError);
+      return;
+    }
 
     const formData = new FormData();
 

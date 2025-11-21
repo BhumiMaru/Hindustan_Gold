@@ -244,6 +244,10 @@ export const POProvider = ({ children }) => {
       };
 
       const res = await getData(ENDPOINTS.POCREATE.LIST, params);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       const apiData = res.data;
 
       setPoList(apiData.data || []);
@@ -274,8 +278,23 @@ export const POProvider = ({ children }) => {
   //   PO Create
   const PoCreate = async (payload) => {
     try {
-      const res = await postData(ENDPOINTS.POCREATE.ADD_UPDATE, payload);
+      // Encryt Payload
+      // const encryptPayload = encryptData(payload);
+
+      const res = await postData(
+        ENDPOINTS.POCREATE.ADD_UPDATE,
+        payload
+
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       setFormData(res.data.data);
+
       if (res.status === true) {
         navigate(`/po-material/po-detail/${poDetails?.id}`);
       }
@@ -323,9 +342,23 @@ export const POProvider = ({ children }) => {
         ...payload,
       };
 
-      const res = await postData(ENDPOINTS.POCREATE.ADD_UPDATE, bodyData);
-      console.log("bodyData", bodyData);
-      console.log("res", res);
+      // Encryt Payload
+      // const encryptPayload = encryptData(bodyData);
+
+      const res = await postData(
+        ENDPOINTS.POCREATE.ADD_UPDATE,
+        bodyData
+
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+      // console.log("bodyData", bodyData);
+      // console.log("res", res);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.status === true) {
         toast.success(res.message);
 

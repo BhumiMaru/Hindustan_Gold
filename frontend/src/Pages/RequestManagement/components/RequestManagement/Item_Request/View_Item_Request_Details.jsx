@@ -58,7 +58,13 @@ export default function View_Item_Request_Details() {
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Date</label>
-                      <p>{wholeItemRequestData?.item_request?.created_at}</p>
+                      <p>
+                        {
+                          wholeItemRequestData?.item_request?.created_at.split(
+                            "T"
+                          )[0]
+                        }
+                      </p>
                     </div>
                     <div className="col-lg-4">
                       <label className="form-label">Item&nbsp;Type</label>
@@ -195,16 +201,20 @@ export default function View_Item_Request_Details() {
                         </>
                       )}
                     </div>
-                    <div className="col-lg-12 text-center">
-                      <button
-                        className="btn btn-success btn-sm waves-effect waves-light"
-                        onClick={() =>
-                          serviceReceived(wholeItemRequestData?.item_request_id)
-                        }
-                      >
-                        Service Received
-                      </button>
-                    </div>
+                    {wholeItemRequestData?.item_type === "service" && (
+                      <div className="col-lg-12 text-center">
+                        <button
+                          className="btn btn-success btn-sm waves-effect waves-light"
+                          onClick={() =>
+                            serviceReceived(
+                              wholeItemRequestData?.item_request_id
+                            )
+                          }
+                        >
+                          Service Received
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="col-lg-5">

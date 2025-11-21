@@ -37,6 +37,10 @@ export const CompanyMasterProvider = ({ children }) => {
         page,
         per_page: perPage,
       });
+
+      // Decrypt Res
+      // const decryptRes = decryptData(res);
+
       const apiData = res.data;
       setCompanies(apiData.data);
       setPagination({
@@ -60,6 +64,10 @@ export const CompanyMasterProvider = ({ children }) => {
   const fetchCompanyFilter = async () => {
     try {
       const res = await getData(ENDPOINTS.COMPANY_MASTER.FILTER);
+
+      // Decrypt Res
+      // const decryptRes = decryptData(res);
+
       setCompanyFilter(res.data);
     } catch (error) {
       console.log("Error:", error);
@@ -73,9 +81,25 @@ export const CompanyMasterProvider = ({ children }) => {
   const createCompany = async (company_name) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.COMPANY_MASTER.ADD_UPDATE, {
-        company_name,
-      });
+
+      // Encryt Payload
+      // const encryptPayload = encryptData({
+      // company_name
+      // });
+
+      const res = await postData(
+        ENDPOINTS.COMPANY_MASTER.ADD_UPDATE,
+        {
+          company_name,
+        }
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.success || res.status) {
         toast.success(res.message);
         handleClose("addNewCompany");
@@ -114,10 +138,27 @@ export const CompanyMasterProvider = ({ children }) => {
   const updateCompany = async (id, company_name) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.COMPANY_MASTER.ADD_UPDATE, {
-        id,
-        company_name,
-      });
+
+      // Encryt Payload
+      // const encryptPayload = encryptData({
+      // id,
+      //   company_name,
+      // });
+
+      const res = await postData(
+        ENDPOINTS.COMPANY_MASTER.ADD_UPDATE,
+        {
+          id,
+          company_name,
+        }
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.success || res.status) {
         toast.success(res.message);
         handleClose("addNewCompany");

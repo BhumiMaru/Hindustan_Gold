@@ -77,6 +77,9 @@ export const ItemMasterProvider = ({ children }) => {
 
       const res = await getData(ENDPOINTS.ITEM_MASTER.LIST, params);
 
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       //  Normalize backend response
       const apiData = res?.data || {};
 
@@ -139,15 +142,26 @@ export const ItemMasterProvider = ({ children }) => {
         // status: payload.status ?? 1,
       };
 
+      // Encryt Payload
+      // const encryptPayload = encryptData(sanitizedPayload);
+
       const res = await postData(
         ENDPOINTS.ITEM_MASTER.ADD_UPDATE,
         sanitizedPayload,
+
+        // {
+        //   data: encryptPayload,
+        // }
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         }
       );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       // console.log("res", res);
       if (res?.status === true) {
         setItemMasterData(res.data.data);
@@ -187,18 +201,27 @@ export const ItemMasterProvider = ({ children }) => {
   const EditItemMaster = async (item_id, payload) => {
     try {
       setBtnLoading(true);
+
+      // Encryt Payload
+      // const encryptPayload = encryptData(sanitizedPayload);
+
       const res = await postData(
         ENDPOINTS.ITEM_MASTER.ADD_UPDATE,
         {
           id: item_id,
           ...payload,
         },
+        // {
+        //   data: encryptPayload,
+        // }
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         }
       );
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
 
       // console.log("res", res);
       if (res?.status) {

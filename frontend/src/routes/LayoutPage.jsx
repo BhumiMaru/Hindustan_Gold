@@ -20,6 +20,7 @@ import ResetPasswordMasterPage from "../Pages/Authentication/ResetPassword/Reset
 import { GetQuoteProvider } from "../Context/PIAndPoManagement/GetQuote";
 import Vendor_fill_quote from "../Pages/POandMaterialManagement/components/POandMaterialManagement/Get_Quote/Vendor_fill_quote";
 import Thank_You_Quote_Fill from "../Pages/POandMaterialManagement/components/POandMaterialManagement/Get_Quote/Thank_You_Quote_Fill";
+import OTP from "../Pages/Authentication/OTP/OTP";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function LayoutPage() {
@@ -142,6 +143,7 @@ export default function LayoutPage() {
     "/auth-reset-password",
     "/send-request",
     "/pages-profile-user",
+    "/auth-otp",
   ];
 
   // inside your LayoutPage
@@ -155,6 +157,7 @@ export default function LayoutPage() {
     location.pathname === "/auth-forgot-password" ||
     location.pathname === "/auth-reset-password" ||
     location.pathname === "/pages-profile-user" ||
+    location.pathname === "/auth-otp" ||
     sendRequestMatch ||
     thankyouMatch;
 
@@ -210,6 +213,15 @@ export default function LayoutPage() {
       </Routes>
     );
   }
+
+  if (location.pathname === "/auth-otp") {
+    return (
+      <Routes>
+        <Route path="/auth-otp" element={<OTP />} />
+      </Routes>
+    );
+  }
+
   // console.log("/send-request");
   if (sendRequestMatch) {
     return (

@@ -498,6 +498,9 @@ export const ItemRequestProvider = ({ children }) => {
 
       const res = await postData(ENDPOINTS.ITEM_REQUEST.LIST, payload);
 
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       const apiData = res.data;
       setItemRequest(apiData.data || []);
       setPagination({
@@ -536,15 +539,30 @@ export const ItemRequestProvider = ({ children }) => {
   const createItemRequest = async (payload) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.ITEM_REQUEST.ADD_UPDATE, payload, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+
+      // Encryt Payload
+      // const encryptPayload = encryptData(payload);
+
+      const res = await postData(
+        ENDPOINTS.ITEM_REQUEST.ADD_UPDATE,
+        payload,
+        // {
+        //   data: encryptPayload,
+        // }
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       if (res.data.success) {
         await getItemRequestData();
       }
       console.log("res", res);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.data) {
         setItemRequestData(res.data);
         toast.success("Created Successfully");
@@ -708,18 +726,28 @@ export const ItemRequestProvider = ({ children }) => {
       // console.log("Editing item request with ID:", id);
       // console.log("Payload:", payload);
       setBtnLoading(true);
+
+      // Encryt Payload
+      // const encryptPayload = encryptData(id, payload);
+
       const res = await postData(
         ENDPOINTS.ITEM_REQUEST.ADD_UPDATE,
         {
           id: id, // Ensure ID is included
           ...payload,
         },
+        // {
+        //   data: encryptPayload,
+        // }
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         }
       );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
 
       console.log("Edit Response:", res);
 

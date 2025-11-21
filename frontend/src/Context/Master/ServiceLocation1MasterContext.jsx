@@ -37,6 +37,10 @@ export const ServiceLocation1MasterProvider = ({ children }) => {
         page,
         per_page: perPage,
       });
+
+      // Decrypt Res
+      // const decryptRes = decryptData(res);
+
       const apiData = res.data;
       setServiceLocation(apiData.data);
       setPagination({
@@ -55,6 +59,10 @@ export const ServiceLocation1MasterProvider = ({ children }) => {
   const fetchSL1Filter = async () => {
     try {
       const res = await getData(ENDPOINTS.SERVICES_LOCATION_1_MASTER.FILTER);
+
+      // Decrypt Res
+      // const decryptRes = decryptData(res);
+
       setServiceL1(res.data);
     } catch (error) {
       console.log(error);
@@ -66,12 +74,26 @@ export const ServiceLocation1MasterProvider = ({ children }) => {
   const createServiceLocation = async (service_location_name) => {
     try {
       setBtnLoading(true);
+
+      // Encryt Payload
+      // const encryptPayload = encryptData({
+      //  service_location_name,
+      // });
+
       const res = await postData(
         ENDPOINTS.SERVICES_LOCATION_1_MASTER.ADD_UPDATE,
         {
           service_location_name,
         }
+
+        // {
+        //   data: encryptPayload,
+        // }
       );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res?.status || res?.success) {
         toast.success(res.message);
         handleClose("addNewServiceLocation1");
@@ -108,13 +130,28 @@ export const ServiceLocation1MasterProvider = ({ children }) => {
   const updateServiceLocation = async (id, service_location_name) => {
     try {
       setBtnLoading(true);
+
+      // Encryt Payload
+      // const encryptPayload = encryptData({
+      // id,
+      //     service_location_name,
+      // });
+
       const res = await postData(
         ENDPOINTS.SERVICES_LOCATION_1_MASTER.ADD_UPDATE,
         {
           id,
           service_location_name,
         }
+
+        // {
+        //   data: encryptPayload,
+        // }
       );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res?.status || res?.success) {
         toast.success(res.message);
         handleClose("addNewServiceLocation1");

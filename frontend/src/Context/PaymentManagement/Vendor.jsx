@@ -59,6 +59,9 @@ export const VendorProvider = ({ children }) => {
       const params = { search, page, per_page: perPage, status };
       const res = await getData(ENDPOINTS.VENDOR.LIST, params);
 
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       const apiData = res.data;
       setVendorList(apiData.data || []);
       setPagination({
@@ -79,6 +82,9 @@ export const VendorProvider = ({ children }) => {
   const getVendorFilter = async () => {
     try {
       const res = await getData(ENDPOINTS.VENDOR.FILTER);
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.success) {
         setVendorFilter(res.data);
       }
@@ -92,9 +98,22 @@ export const VendorProvider = ({ children }) => {
   const createVendor = async (payload) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.VENDOR.ADD_UPDATE, payload);
+
+      // Encryt Payload
+      // const encryptPayload = encryptData(payload);
+
+      const res = await postData(
+        ENDPOINTS.VENDOR.ADD_UPDATE,
+        payload
+        // {
+        //   data: encryptPayload,
+        // }
+      );
 
       console.log("res", res);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
 
       if (res.success) {
         setVendorData(res.data.data);
@@ -147,10 +166,26 @@ export const VendorProvider = ({ children }) => {
   const EditVendor = async (id, payload) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.VENDOR.ADD_UPDATE, {
-        id,
-        ...payload,
-      });
+
+      // Encryt Payload
+      // const encryptPayload = encryptData({
+      //   id,
+      //   ...payload,
+      // });
+
+      const res = await postData(
+        ENDPOINTS.VENDOR.ADD_UPDATE,
+        {
+          id,
+          ...payload,
+        }
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
 
       if (res.success) {
         setVendorData(res.data.data);

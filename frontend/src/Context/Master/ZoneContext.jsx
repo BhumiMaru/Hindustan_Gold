@@ -3,6 +3,7 @@ import { getData, postData, deleteData } from "../../utils/api";
 import { toast } from "react-toastify";
 import { ENDPOINTS } from "../../constants/endpoints";
 import { useUIContext } from "../UIContext";
+import { decryptData } from "../../utils/decryptData";
 
 const ZoneContext = createContext();
 
@@ -39,6 +40,9 @@ export const ZoneProvider = ({ children }) => {
         per_page: perPage,
       });
 
+      // Decrypt Res
+      // const decryptRes = decryptData(res);
+
       const apiData = res.data;
       setZones(apiData.data);
       setPagination({
@@ -58,6 +62,10 @@ export const ZoneProvider = ({ children }) => {
   const fetchZoneFilter = async () => {
     try {
       const res = await getData(ENDPOINTS.ZONES.FILTER);
+
+      // Decrypt Res
+      // const decryptRes = decryptData(res);
+
       setZoneFilter(res.data);
     } catch (error) {
       console.log(error);
@@ -65,14 +73,31 @@ export const ZoneProvider = ({ children }) => {
     }
   };
 
-  // ✅ Add Zone (POST)
+  //  Add Zone (POST)
   const addZone = async () => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.ZONES.ADD_UPDATE, {
-        zone_name: zoneName,
-        color_code: colorCode,
-      });
+
+      // Encryt Payload
+      // const encryptPayload = encryptData({
+      //   zone_name: zoneName,
+      //   color_code: colorCode,
+      // });
+
+      const res = await postData(
+        ENDPOINTS.ZONES.ADD_UPDATE,
+        {
+          zone_name: zoneName,
+          color_code: colorCode,
+        }
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res?.status || res?.success) {
         toast.success(res?.message);
         handleClose("addNewZone");
@@ -110,11 +135,29 @@ export const ZoneProvider = ({ children }) => {
   const updateZone = async () => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.ZONES.ADD_UPDATE, {
-        id: editId,
-        zone_name: zoneName,
-        color_code: colorCode,
-      });
+
+      // Encryt Payload
+      // const encryptPayload = encryptData({
+      //   id: editId,
+      //   zone_name: zoneName,
+      //   color_code: colorCode,
+      // });
+
+      const res = await postData(
+        ENDPOINTS.ZONES.ADD_UPDATE,
+        {
+          id: editId,
+          zone_name: zoneName,
+          color_code: colorCode,
+        }
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res?.status || res?.success) {
         toast.success(res?.message);
         handleClose("addNewZone");

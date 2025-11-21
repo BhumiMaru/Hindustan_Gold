@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { getData, postData, deleteData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
 import { useUIContext } from "../UIContext";
+import { encryptData } from "../../utils/encryptData";
 
 const ServiceLocation3MasterContext = createContext();
 
@@ -98,6 +99,9 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
         params
       );
 
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       // Ensure serviceLocation3 is always an array
       setServiceLocation3(res.data?.data || []);
 
@@ -120,6 +124,8 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
   const fetchSL3Filter = async () => {
     try {
       const res = await getData(ENDPOINTS.SERVICES_LOCATION_3_MASTER.FILTER);
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
       setServiceL3(res.data);
     } catch (error) {
       console.log(error);
@@ -135,6 +141,14 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
   ) => {
     try {
       setBtnLoading(true);
+
+      // Encryt Payload
+      // const encryptPayload = encryptData({
+      // service_location_3_name,
+      //     service_location_1_id,
+      //     service_location_2_id,
+      // });
+
       const res = await postData(
         ENDPOINTS.SERVICES_LOCATION_3_MASTER.ADD_UPDATE,
         {
@@ -142,8 +156,17 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
           service_location_1_id,
           service_location_2_id,
         }
+
+        // {
+        //   data:encryptPayload
+        // }
       );
+
       console.log("res", res);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.success) {
         toast.success(res.message);
         handleClose("addNewServiceLocation3");
@@ -216,10 +239,20 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
       // ✅ include id inside payload
       const finalPayload = { id, ...payload };
 
+      // Encrypt Payload
+      // const encryptPayload = encryptData(finalPayload)
+
       const res = await postData(
         ENDPOINTS.SERVICES_LOCATION_3_MASTER.ADD_UPDATE,
         finalPayload
+
+        // {
+        //   data: encryptPayload,
+        // }
       );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
 
       // console.log("res", response);
       if (res.success) {

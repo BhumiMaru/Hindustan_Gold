@@ -4,6 +4,7 @@ import { postData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
 import { toast } from "react-toastify";
 import { decryptData } from "../../utils/decryptData";
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
@@ -14,6 +15,15 @@ export const AuthProvider = ({ children }) => {
     email: "",
     password: "",
   });
+  // Send otp
+  const [email, setEmail] = useState("");
+  const [sendOTPLoading, setSendOTPLoading] = useState(false);
+  // const [isSendOTP, setIsSendOTP] = useState(false);
+  // verify otp
+  const [otp, setOtp] = useState("");
+  const [isVerifyOtp, setIsVerifyOtp] = useState(false);
+
+  const navigate = useNavigate();
 
   const key = CryptoJS.enc.Utf8.parse(import.meta.env.VITE_AES_SECRET_KEY);
   const iv = CryptoJS.enc.Utf8.parse(import.meta.env.VITE_AES_SECRET_IV);
@@ -60,6 +70,7 @@ export const AuthProvider = ({ children }) => {
   //   }
   // }
 
+  // LOGIN
   const login = async (payload) => {
     try {
       console.log("📤 Raw login form:", payload);
@@ -67,7 +78,7 @@ export const AuthProvider = ({ children }) => {
       // 🔐 Use reusable encrypt function
       const encrypted = encryptData(payload);
       if (!encrypted) return null;
-      // console.log("encrypted", encrypted);
+      console.log("encrypted", encrypted);
 
       const res = await postData(ENDPOINTS.AUTH.LOGIN, { data: encrypted });
       console.log("📥 Raw login response:", res);
@@ -101,6 +112,96 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // LOGOUT
+  const logout = async () => {
+    try {
+      const res = await postData(ENDPOINTS.AUTH.LOGOUT);
+
+      console.log("res", res);
+
+      // const decryptRes = decryptData(res);
+
+      if (res.status || res.success) {
+        toast.success(res.message);
+        sessionStorage.clear("authData");
+        navigate("/");
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
+    }
+  };
+
+  // SEND OTP
+  const sendOTP = async (email) => {
+    try {
+      setSendOTPLoading(true);
+
+      // encrypt data
+      const encryptPayload = encryptData({
+        email: email,
+      });
+
+      const res = await postData(ENDPOINTS.AUTH.SENDOTP, {
+        data: encryptPayload,
+      });
+
+      console.log(ENDPOINTS.AUTH.SENDOTP);
+      console.log("res", res);
+
+      const decryptRes = decryptData(res);
+      console.log("decryptRes", decryptRes);
+
+      if (res.status || res.success) {
+        toast.success(res.message);
+        // setIsSendOTP(true);
+        navigate("/auth-otp");
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
+    } finally {
+      setSendOTPLoading(false);
+    }
+  };
+
+  // Verify OTP
+  const verifyOTP = async (email, otp) => {
+    try {
+      setIsVerifyOtp(true);
+
+      // encrypt data
+      const encryptPayload = encryptData({
+        email: email,
+        otp: otp,
+      });
+
+      const res = await postData(ENDPOINTS.AUTH.VERIFYOTP, {
+        data: encryptPayload,
+      });
+
+      console.log(ENDPOINTS.AUTH.SENDOTP);
+      console.log("res", res);
+
+      const decryptRes = decryptData(res);
+      console.log("decryptRes", decryptRes);
+
+      if (res.status || res.success) {
+        toast.success(res.message);
+        setIsSendOTP(true);
+        navigate("/auth-otp");
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
+    } finally {
+      setIsVerifyOtp(false);
+    }
+  };
+
   // ✅ Load authData from sessionStorage on refresh
   useEffect(() => {
     const savedAuth = sessionStorage.getItem("authData");
@@ -122,7 +223,27 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ authData, login, form, setForm, encryptData, decryptData }}
+      value={{
+        authData,
+        login,
+        form,
+        setForm,
+        encryptData,
+        decryptData,
+        logout,
+        sendOTP,
+        sendOTPLoading,
+        setSendOTPLoading,
+        // isSendOTP,
+        // setIsSendOTP,
+        isVerifyOtp,
+        setIsVerifyOtp,
+        email,
+        setEmail,
+        otp,
+        setOtp,
+        verifyOTP,
+      }}
     >
       {children}
     </AuthContext.Provider>

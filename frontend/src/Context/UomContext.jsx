@@ -40,6 +40,10 @@ export const UOMProvider = ({ children }) => {
         page,
         per_page: perPage,
       });
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       const apiData = res.data;
       setUom(apiData.data);
       setPagination({
@@ -60,6 +64,9 @@ export const UOMProvider = ({ children }) => {
     try {
       const res = await getData(ENDPOINTS.UOM.FILTER);
 
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.status) {
         setFilterUom(res.data);
       }
@@ -74,9 +81,23 @@ export const UOMProvider = ({ children }) => {
   const createUOM = async (name) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.UOM.ADD_UPDATE, { name });
+      // Encryt Payload
+      // const encryptPayload = encryptData({
+      // name
+      // });
+
+      const res = await postData(
+        ENDPOINTS.UOM.ADD_UPDATE,
+        { name }
+        // {
+        //   data: encryptPayload,
+        // }
+      );
 
       console.log("rr", res);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
 
       if (res.status) {
         toast.success(res.message);
@@ -121,7 +142,22 @@ export const UOMProvider = ({ children }) => {
   const EditUOM = async (payload) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.UOM.ADD_UPDATE, payload);
+
+      // Encryt Payload
+      // const encryptPayload = encryptData(payload);
+
+      const res = await postData(
+        ENDPOINTS.UOM.ADD_UPDATE,
+        payload
+
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.status) {
         toast.success(res.message);
         handleClose("addNewUOM");

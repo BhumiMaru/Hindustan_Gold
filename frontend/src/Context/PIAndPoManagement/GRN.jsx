@@ -69,6 +69,9 @@ export const GRNProvider = ({ children }) => {
 
       const res = await getData(ENDPOINTS.GRN.LIST, params);
 
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       setGrnList(res.data.data || []);
       setPagination({
         currentPage: res.data.current_page || page,
@@ -132,10 +135,23 @@ export const GRNProvider = ({ children }) => {
         );
       });
 
-      const res = await postData(ENDPOINTS.GRN.ADD_UPDATE, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      // Encryt Payload
+      // const encryptPayload = encryptData(formData);
+
+      const res = await postData(
+        ENDPOINTS.GRN.ADD_UPDATE,
+        formData,
+        // {
+        //   data: encryptPayload,
+        // }
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
       console.log("rr", res);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
 
       if (res.status) {
         toast.success(res.message);
@@ -222,11 +238,24 @@ export const GRNProvider = ({ children }) => {
         );
       });
 
-      const res = await postData(ENDPOINTS.GRN.ADD_UPDATE, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      // Encryt Payload
+      // const encryptPayload = encryptData(formData);
+
+      const res = await postData(
+        ENDPOINTS.GRN.ADD_UPDATE,
+        formData,
+        // {
+        //   data: encryptPayload,
+        // }
+
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
       // console.log("res", res);
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
 
       if (res.status) {
         toast.success(res.message);

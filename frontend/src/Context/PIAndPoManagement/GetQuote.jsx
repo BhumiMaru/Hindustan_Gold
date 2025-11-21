@@ -78,6 +78,10 @@ export const GetQuoteProvider = ({ children }) => {
       };
 
       const res = await postData(ENDPOINTS.GETQUOTE.LIST, params);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       const apiData = res.data;
 
       setQuote(apiData.data || []);
@@ -115,8 +119,23 @@ export const GetQuoteProvider = ({ children }) => {
   const getQuoteCreate = async (payload) => {
     try {
       setGetQuoteBtnLoading(true);
+
+      // Encryt Payload
+      // const encryptPayload = encryptData(payload);
+
       console.log("payload", payload);
-      const res = await postData(ENDPOINTS.GETQUOTE.CREATE, payload);
+      const res = await postData(
+        ENDPOINTS.GETQUOTE.CREATE,
+        payload
+
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res?.status) {
         const newId = res.data.id;
         // toast.success(res.message || "Get Quote Create successful!");
@@ -262,6 +281,9 @@ export const GetQuoteProvider = ({ children }) => {
         }
       );
 
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       // console.log("API Response:", res);
 
       // ✅ Check proper success condition
@@ -289,12 +311,24 @@ export const GetQuoteProvider = ({ children }) => {
   // create quote
   const createQuoteVendor = async (pi_get_quote_id, pi_id, vendor_id) => {
     try {
+      // Encryt Payload
+      // const encryptPayload = encryptData(  pi_get_quote_id,
+      // pi_id,
+      // vendor_id);
+
       const res = await postData(
         ENDPOINTS.QUOTATIONDETAILS.ADD_UPDATE,
         pi_get_quote_id,
         pi_id,
         vendor_id
+
+        // {
+        //   data: encryptPayload,
+        // }
       );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
 
       if (res.status) {
         toast.success(res.message);
@@ -422,15 +456,24 @@ export const GetQuoteProvider = ({ children }) => {
         console.log("key:", key, "value:", value);
       }
 
+      // Encryt Payload
+      // const encryptPayload = encryptData(formData);
+
       const res = await postData(
         ENDPOINTS.QUOTATIONDETAILS.RATEUPDATE,
         formData,
+        // {
+        //   data: encryptPayload,
+        // }
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         }
       );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
 
       console.log("res", res);
 

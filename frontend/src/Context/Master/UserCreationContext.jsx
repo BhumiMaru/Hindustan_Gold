@@ -94,6 +94,10 @@ export const UserCreationProvider = ({ children }) => {
       }
 
       const res = await getData(ENDPOINTS.USER_CREATION.LIST, params);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       const apiData = res.data;
       setUserCreations(apiData.data);
       setPagination({
@@ -113,6 +117,10 @@ export const UserCreationProvider = ({ children }) => {
   const fetchUserFilter = async () => {
     try {
       const res = await getData(ENDPOINTS.USER_CREATION.FILTER);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       setFilterUser(res.data);
     } catch (error) {
       console.log(error);
@@ -124,12 +132,28 @@ export const UserCreationProvider = ({ children }) => {
   const createUser = async (payload) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.USER_CREATION.ADD_UPDATE, payload, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+
+      // Encryt Payload
+      // const encryptPayload = encryptData(payload);
+
+      const res = await postData(
+        ENDPOINTS.USER_CREATION.ADD_UPDATE,
+        payload,
+
+        // {
+        //   data: encryptPayload,
+        // }
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       console.log("usss", res);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       setUserCreationData(res.data);
       toast.success(res.message);
       return res.data;
@@ -220,18 +244,32 @@ export const UserCreationProvider = ({ children }) => {
   const updateUser = async (id, payload) => {
     try {
       setBtnLoading(true);
+
+      // Encryt Payload
+      // const encryptPayload = encryptData(  {
+      //   id,
+      //   ...payload,
+      // });
+
       const res = await postData(
         ENDPOINTS.USER_CREATION.ADD_UPDATE,
         {
           id,
           ...payload,
         },
+        // {
+        //   data: encryptPayload,
+        // }
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         }
       );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       setUserCreationData(res.data.data);
       toast.success(res.message);
       fetchUserCreationData();
@@ -444,10 +482,20 @@ export const UserCreationProvider = ({ children }) => {
   // Create / Update User Permission
   const createUserPermission = async (payload) => {
     try {
+      // Encryt Payload
+      // const encryptPayload = encryptData(payload);
+
       const res = await postData(
         ENDPOINTS.USER_CREATION.PERMISSION_ADD_UPDATE,
         payload
+
+        // {
+        //   data: encryptPayload,
+        // }
       );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
 
       // console.log("payload", payload);
       // console.log("res", res);
@@ -487,6 +535,10 @@ export const UserCreationProvider = ({ children }) => {
       const res = await getData(
         `${ENDPOINTS.USER_CREATION.PERMISSION_LIST}?user_id=${user_id}`
       );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       const data = res?.data || [];
       // console.log("res", res?.data);
       // ✅ filter data by correct user id only

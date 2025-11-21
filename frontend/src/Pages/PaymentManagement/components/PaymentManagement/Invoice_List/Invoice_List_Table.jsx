@@ -15,6 +15,7 @@ export default function Invoice_List_Table() {
     setInvoiceId,
     startEditing,
     loading,
+    invoiceDelete,
   } = useInvoice();
   console.log("type", type);
   console.log("invoice", invoice);
@@ -148,7 +149,10 @@ export default function Invoice_List_Table() {
                               Edit
                             </a>
                             <div className="dropdown-divider" />
-                            <a className="dropdown-item text-danger delete-record waves-effect">
+                            <a
+                              className="dropdown-item text-danger delete-record waves-effect"
+                              onClick={() => invoiceDelete(invoice.id)}
+                            >
                               Delete
                             </a>
                           </div>

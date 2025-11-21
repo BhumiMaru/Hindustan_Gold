@@ -51,6 +51,10 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
         ENDPOINTS.SERVICES_LOCATION_2_MASTER.LIST,
         params
       );
+
+      // Decrypt Res
+      // const decryptRes = decryptData(res);
+
       setServiceLocation2(res.data.data);
 
       // ✅ Update pagination
@@ -71,6 +75,8 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
   const fetchSL2Filter = async () => {
     try {
       const res = await getData(ENDPOINTS.SERVICES_LOCATION_2_MASTER.FILTER);
+      // Decrypt Res
+      // const decryptRes = decryptData(res);
       setServiceL2(res.data);
     } catch (error) {
       console.log(error);
@@ -85,13 +91,27 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
   ) => {
     try {
       setBtnLoading(true);
+
+      // Encryt Payload
+      // const encryptPayload = encryptData({
+      // service_location_2_name,
+      //     service_location_1_id: parent_location_id,
+      // });
+
       const res = await postData(
         ENDPOINTS.SERVICES_LOCATION_2_MASTER.ADD_UPDATE,
         {
           service_location_2_name,
           service_location_1_id: parent_location_id, // relation with Location 1
         }
+        // {
+        //   data: encryptPayload,
+        // }
       );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.success) {
         toast.success(res.message);
         handleClose("addNewServiceLocation2");
@@ -132,6 +152,14 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
   ) => {
     try {
       setBtnLoading(true);
+
+      // Encryt Payload
+      // const encryptPayload = encryptData({
+      // id,
+      //     service_location_2_name,
+      //     service_location_1_id: parent_location_id,
+      // });
+
       const res = await postData(
         ENDPOINTS.SERVICES_LOCATION_2_MASTER.ADD_UPDATE,
         {
@@ -139,7 +167,15 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
           service_location_2_name,
           service_location_1_id: parent_location_id,
         }
+
+        // {
+        //   data: encryptPayload,
+        // }
       );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       console.log(res);
       if (res.success) {
         toast.success(res.message);

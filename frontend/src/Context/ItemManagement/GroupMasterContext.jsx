@@ -37,6 +37,10 @@ export const GroupMasterProvider = ({ children }) => {
         page,
         per_page: perPage,
       });
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       const apiData = res.data;
       setGroups(apiData.data);
       setPagination({
@@ -56,6 +60,10 @@ export const GroupMasterProvider = ({ children }) => {
   const fetchGroupFilter = async () => {
     try {
       const res = await getData(ENDPOINTS.GROUP_MASTER.FILTER);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       setFilterGroup(res.data);
     } catch (error) {
       console.log(error);
@@ -67,9 +75,25 @@ export const GroupMasterProvider = ({ children }) => {
   const createGroup = async (group_name) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.GROUP_MASTER.ADD_UPDATE, {
-        group_name,
-      });
+
+      // Encryt Payload
+      // const encryptPayload = encryptData({
+      // group_name
+      // });
+
+      const res = await postData(
+        ENDPOINTS.GROUP_MASTER.ADD_UPDATE,
+        {
+          group_name,
+        }
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       console.log("res", res);
       if (res.success) {
         toast.success(res.message);
@@ -109,10 +133,28 @@ export const GroupMasterProvider = ({ children }) => {
   const updateGroup = async (id, group_name) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.GROUP_MASTER.ADD_UPDATE, {
-        id,
-        group_name,
-      });
+
+      // Encryt Payload
+      // const encryptPayload = encryptData({
+      // id,
+      // group_name,
+      // });
+
+      const res = await postData(
+        ENDPOINTS.GROUP_MASTER.ADD_UPDATE,
+        {
+          id,
+          group_name,
+        }
+
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.success) {
         toast.success(res.message);
         setgroupEditId(null);

@@ -255,6 +255,10 @@ export const PIRequestProvider = ({ children }) => {
         per_page: perPage,
       };
       const res = await postData(ENDPOINTS.PI_REQUEST.LIST, payload);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       const apiData = res.data;
       console.log("apiData", apiData.data);
       setPiRequest(apiData.data || []);
@@ -274,7 +278,22 @@ export const PIRequestProvider = ({ children }) => {
   const CreatePIRequest = async (payload) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.PI_REQUEST.ADD_UPDATE, payload);
+
+      // Encryt Payload
+      // const encryptPayload = encryptData(payload);
+
+      const res = await postData(
+        ENDPOINTS.PI_REQUEST.ADD_UPDATE,
+        payload
+
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       // console.log("res", res);
       if (res?.status) {
         toast.success(res.message);
@@ -317,7 +336,22 @@ export const PIRequestProvider = ({ children }) => {
   const editPiRequest = async (id, payload) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.PI_REQUEST.ADD_UPDATE, payload);
+
+      // Encryt Payload
+      // const encryptPayload = encryptData(payload);
+
+      const res = await postData(
+        ENDPOINTS.PI_REQUEST.ADD_UPDATE,
+        payload
+
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res?.status) {
         toast.success(res.message);
       }

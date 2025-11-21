@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
-import { getData, postData } from "../../utils/api";
+import { deleteData, getData, postData } from "../../utils/api";
 import { ENDPOINTS } from "../../constants/endpoints";
 import { useUIContext } from "../UIContext";
 
@@ -103,6 +103,9 @@ export const InvoiceProvider = ({ children }) => {
 
       const res = await getData(ENDPOINTS.INVOICE.LIST, params);
 
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       // Support both paginated and non-paginated API
       const apiData = res.data;
       setInvoice(apiData.data || apiData || []);
@@ -129,11 +132,25 @@ export const InvoiceProvider = ({ children }) => {
   const createInvoice = async (formData) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.INVOICE.ADD_UPDATE, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+
+      // Encryt Payload
+      // const encryptPayload = encryptData(formData);
+
+      const res = await postData(
+        ENDPOINTS.INVOICE.ADD_UPDATE,
+        formData,
+        // {
+        //   data: encryptPayload,
+        // }
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
 
       // console.log("res.data", res);
       console.log("formData", formData);
@@ -197,6 +214,10 @@ export const InvoiceProvider = ({ children }) => {
     try {
       setBtnLoading(true);
       // Append ID to FormData
+
+      // Encryt Payload
+      // const encryptPayload = encryptData(formData);
+
       console.log("id id", id);
       console.log("id id typeof", typeof id);
       formData.append("id", id);
@@ -204,12 +225,19 @@ export const InvoiceProvider = ({ children }) => {
       const res = await postData(
         ENDPOINTS.INVOICE.ADD_UPDATE,
         formData, // send FormData with ID included
+        // {
+        //   data: encryptPayload,
+        // }
+
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         }
       );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
 
       if (res?.status === true) {
         toast.success(res.message || "Invoice Updated successfully");
@@ -374,13 +402,30 @@ export const InvoiceProvider = ({ children }) => {
         formData.append(key, payload[key]);
       }
 
-      const res = await postData(ENDPOINTS.INVOICE.PAYMENT, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      // Encryt Payload
+      // const encryptPayload = encryptData(formData);
+
+      const res = await postData(
+        ENDPOINTS.INVOICE.PAYMENT,
+        formData,
+
+        // {
+        //   data: encryptPayload,
+        // }
+
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
       console.log("partial res", res);
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.status) {
         toast.success(res.message);
         setPaymentData(res.data);
+        handleClose("markaspaid");
       }
 
       invoiceDetails(res.data.invoice.id);
@@ -418,7 +463,7 @@ export const InvoiceProvider = ({ children }) => {
       payment_date: "",
       remark: "",
       type_of_payment: "",
-      paymentslip: null,
+      invoice_file: null,
     });
     setType(null);
   };
@@ -431,7 +476,7 @@ export const InvoiceProvider = ({ children }) => {
       );
 
       console.log("res", res);
-      
+
       if (res.status) {
         invoiceDetails(invoiceId);
       } else {
@@ -463,6 +508,78 @@ export const InvoiceProvider = ({ children }) => {
         toast.error(error.response.data.message);
       }
       console.error("Invoice Revert error:", error);
+    }
+  };
+
+  // Payment Delete
+  const paymentDelete = async (id) => {
+    try {
+      const res = await deleteData(`${ENDPOINTS.INVOICE.PAYMENT_DELETE}/${id}`);
+
+      if (res.status || res.success) {
+        toast.success(res.message);
+      }
+    } catch (error) {
+      console.error(error);
+
+      // FIXED: Properly display validation errors
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+
+        // Handle validation errors (422)
+        if (errorData.errors) {
+          // Display each validation error
+          Object.values(errorData.errors).forEach((errorArray) => {
+            errorArray.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          // Handle other API errors
+          toast.error(errorData.message || "An error occurred");
+        }
+      } else {
+        toast.error("Network error occurred");
+      }
+    }
+  };
+
+  // Invoice Delete
+  const invoiceDelete = async (id) => {
+    try {
+      const res = await deleteData(`${ENDPOINTS.INVOICE.INVOICE_DELETE}/${id}`);
+      console.log(
+        "`${ENDPOINTS.INVOICE.INVOICE_DELETE}/${id}`",
+        `${ENDPOINTS.INVOICE.INVOICE_DELETE}/${id}`
+      );
+
+      if (res.status || res.success) {
+        toast.success(res.message);
+      }
+    } catch (error) {
+      console.error(error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message);
+      }
+      // FIXED: Properly display validation errors
+      // if (error.response && error.response.data) {
+      //   const errorData = error.response.data;
+
+      //   // Handle validation errors (422)
+      //   if (errorData.errors) {
+      //     // Display each validation error
+      //     Object.values(errorData.errors).forEach((errorArray) => {
+      //       errorArray.forEach((errorMessage) => {
+      //         toast.error(errorMessage);
+      //       });
+      //     });
+      //   } else {
+      //     // Handle other API errors
+      //     toast.error(errorData.message || "An error occurred");
+      //   }
+      // } else {
+      //   toast.error("Network error occurred");
+      // }
     }
   };
 
@@ -511,11 +628,13 @@ export const InvoiceProvider = ({ children }) => {
         paymentPartial,
         resetPaymentData,
         startEditing,
+        paymentDelete,
 
         // Invoice workflow
         invoiceWorkflowDetails,
         setInvoiceWorkflowDetails,
         InvoiceWorkflow,
+        invoiceDelete,
 
         // Revert Status
         revertStatusData,

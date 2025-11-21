@@ -48,6 +48,9 @@ export const RoleMasterProvider = ({ children }) => {
         per_page: perPage,
       });
 
+      // Decrypt Res
+      // const decryptRes = decryptData(res);
+
       const apiData = res.data; // 👈 your API response structure
       setRoles(apiData.data); // table data
 
@@ -68,6 +71,10 @@ export const RoleMasterProvider = ({ children }) => {
   const fetchRoleFilter = async () => {
     try {
       const res = await getData(ENDPOINTS.ROLE_MASTER.FILTER);
+
+      // Decrypt Res
+      // const decryptRes = decryptData(res);
+
       setFilterRole(res.data);
     } catch (error) {
       console.log(error);
@@ -80,9 +87,22 @@ export const RoleMasterProvider = ({ children }) => {
   const createRole = async (role_name) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.ROLE_MASTER.ADD_UPDATE, {
-        role_name,
-      });
+
+      // Encrypt Payload
+      // const encryptPayload = encryptData(role_name);
+
+      const res = await postData(
+        ENDPOINTS.ROLE_MASTER.ADD_UPDATE,
+        {
+          role_name,
+        }
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
 
       if (res.success) {
         toast.success("Role Master Created Successfully");
@@ -122,10 +142,27 @@ export const RoleMasterProvider = ({ children }) => {
   const updateRole = async (id, role_name) => {
     try {
       setBtnLoading(true);
-      const res = await postData(ENDPOINTS.ROLE_MASTER.ADD_UPDATE, {
-        id,
-        role_name,
-      });
+
+      // Encrypt Payload
+      // const encryptPayload = encryptData({
+      //   id,
+      //   role_name,
+      // });
+
+      const res = await postData(
+        ENDPOINTS.ROLE_MASTER.ADD_UPDATE,
+        {
+          id,
+          role_name,
+        }
+        // {
+        //   data: encryptPayload,
+        // }
+      );
+
+      // Decrypt Response
+      // const decryptRes = decryptData(res)
+
       if (res.success) {
         toast.success("Role Master Created Successfully");
         handleClose("addNewRole");
@@ -213,6 +250,10 @@ export const RoleMasterProvider = ({ children }) => {
       const res = await getData(
         `${ENDPOINTS.ROLE_MASTER.PERMISSION_LIST}?role_id=${role_id}`
       );
+
+      // Decrypt Res
+      // const decryptRes = decryptData(res);
+
       // console.log("res", res?.data);
       const data = res?.data || [];
       // ✅ filter data by correct user id only
@@ -231,10 +272,20 @@ export const RoleMasterProvider = ({ children }) => {
   // Add Role Permission
   const createRolePermission = async (payload) => {
     try {
+      // Encrypt Payload
+      // const encryptPayload = encryptData(payload);
+
       const res = await postData(
         ENDPOINTS.ROLE_MASTER.PERMISSION_ADD_UPDATE,
         payload
+        // {
+        //   data: encryptPayload,
+        // }
       );
+
+      // Decrypt Res
+      // const decryptRes = decryptData(res);
+
       toast.success("Role Permission Created/Updated Successfully");
       setRolePermissionData(res.data.data);
 

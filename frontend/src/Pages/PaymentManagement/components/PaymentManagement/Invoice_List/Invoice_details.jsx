@@ -24,6 +24,7 @@ export default function Invoice_details() {
     setInvoiceWorkflowDetails,
     InvoiceWorkflow,
     revertStatus,
+    paymentDelete,
   } = useInvoice();
   // console.log("userPermission", userPermission);
   console.log("invoiceDetail", invoiceDetail);
@@ -110,9 +111,9 @@ export default function Invoice_details() {
                 <button
                   type="button"
                   className={`btn btn-primary waves-effect waves-light btn-sm ${
-                    invoiceDetail.is_payment_advance_or_partial === "No"
-                      ? "d-none"
-                      : ""
+                    invoiceDetail.is_payment_advance_or_partial === "Yes"
+                      ? "d-block"
+                      : "d-none"
                   }`}
                   data-bs-toggle="modal"
                   data-bs-target="#partialModal"
@@ -316,7 +317,10 @@ export default function Invoice_details() {
                                     Edit
                                   </a>
                                   <div className="dropdown-divider" /> */}
-                                    <a className="dropdown-item text-danger delete-record waves-effect">
+                                    <a
+                                      className="dropdown-item text-danger delete-record waves-effect"
+                                      onClick={() => paymentDelete(payment.id)}
+                                    >
                                       Delete
                                     </a>
                                   </div>

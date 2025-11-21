@@ -5,10 +5,12 @@ import { useUIContext } from "../../../Context/UIContext";
 import { Link, useNavigate } from "react-router-dom";
 import Small_Screen_Sidebar from "../SideBar/Small_Screen_Sidebar";
 import { decryptData } from "../../../utils/decryptData";
+import { useAuth } from "../../../Context/Authentication/LoginContext";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export default function Navbar() {
+  const { logout } = useAuth();
   const {
     activeMenu,
     toggleMenu,
@@ -318,8 +320,9 @@ export default function Navbar() {
                       // href="login.html"
                       // target="_blank"
                       onClick={() => {
-                        sessionStorage.clear("authData");
-                        navigate("/");
+                        logout();
+                        // sessionStorage.clear("authData");
+                        // navigate("/");
                       }}
                     >
                       <small className="align-middle text-white">Logout</small>
