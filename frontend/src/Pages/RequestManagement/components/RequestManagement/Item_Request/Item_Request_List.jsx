@@ -403,12 +403,14 @@ export default function Item_Request_List() {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const urlStatus = params.get("status");
+    const urlActiveTab = params.get("activeTab");
 
     // console.log(" URL Status Parameter:", urlStatus);
 
     // Set status from URL if provided
     if (urlStatus) {
       setStatusFilter(urlStatus);
+      setActiveTab(urlActiveTab);
       // console.log(" Setting status filter from URL:", urlStatus);
     }
 
@@ -860,6 +862,14 @@ export default function Item_Request_List() {
                     {
                       value: "pending",
                       label: "Pending",
+                    },
+                    {
+                      value: "in-progress",
+                      label: "In-Progress",
+                    },
+                    {
+                      value: "approve",
+                      label: "Approve",
                     },
                     {
                       value: "completed",

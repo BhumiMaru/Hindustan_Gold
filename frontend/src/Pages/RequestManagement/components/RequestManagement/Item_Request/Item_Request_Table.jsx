@@ -165,6 +165,8 @@ export default function Item_Request_Table({ search }) {
                           : item?.final_approve_status === "Pending" ||
                             item?.final_approve_status === "Reject"
                           ? "bg-label-warning"
+                          : item?.final_approve_status === "In-Progress"
+                          ? "bg-label-info"
                           : "bg-label-secondary"
                       }`}
                     >

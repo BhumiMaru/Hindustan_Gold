@@ -19,3 +19,6 @@ export const validateMobile = (mobile) => {
   if (!regex.test(mobile)) return "Mobile must be a 10-digit number";
   return "";
 };
+
+export const strongPasswordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^])[A-Za-z\d@$!%*?&#^]{6,}$/;

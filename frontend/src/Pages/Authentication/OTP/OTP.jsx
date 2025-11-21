@@ -1,14 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../Context/Authentication/LoginContext";
+import { decryptData } from "../../../utils/decryptData";
 const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function OTP() {
-  const { isVerifyOtp, otp, setOtp, email, verifyOTP } = useAuth();
+  const { isVerifyOtp, otp, setOtp, email, verifyOTP, sendOTP } = useAuth();
+  const [timer, setTimer] = useState(60);
+
+  const getEmailFromSession = sessionStorage.getItem("email");
+  const decryptEmail = decryptData(getEmailFromSession);
+  const extractencryptEmail = decryptData(decryptEmail);
+
+  console.log("extractencryptEmail", extractencryptEmail);
+
+  useEffect(() => {
+    if (timer === 0) return;
+    const interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
+    return () => clearInterval(interval);
+  }, [timer]);
 
   //   Submit handler
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
-    verifyOTP({ email, otp }); // Context function that hits your /verify-otp API
+    verifyOTP({ email, otp });
+  };
+
+  // Resend Otp
+  const handleResendOtp = () => {
+    sendOTP(extractencryptEmail.email);
+    setTimer(60); // restart timer
   };
 
   return (
@@ -35,7 +55,8 @@ export default function OTP() {
 
                 <h4 className="mb-1">OTP Verification</h4>
                 <p className="mb-6">
-                  We have sent an OTP to <strong>{email}</strong>
+                  We have sent an OTP to
+                  <strong>{email || extractencryptEmail.email}</strong>
                 </p>
 
                 <form
@@ -56,6 +77,26 @@ export default function OTP() {
                       value={otp}
                       onChange={(e) => setOtp(e.target.value)}
                     />
+                    {timer > 0 ? (
+                      <span
+                        style={{
+                          fontSize: "13px",
+                        }}
+                      >
+                        Resend OTP in <strong>{timer}</strong>s
+                      </span>
+                    ) : (
+                      <button
+                        className="btn btn-link p-0 text-primary"
+                        type="button"
+                        onClick={handleResendOtp}
+                        style={{
+                          fontSize: "13px",
+                        }}
+                      >
+                        Resend OTP
+                      </button>
+                    )}
                   </div>
 
                   <button

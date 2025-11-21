@@ -17,11 +17,16 @@ export const AuthProvider = ({ children }) => {
   });
   // Send otp
   const [email, setEmail] = useState("");
+
   const [sendOTPLoading, setSendOTPLoading] = useState(false);
-  // const [isSendOTP, setIsSendOTP] = useState(false);
+  const [isOtpStep, setIsOtpStep] = useState(false);
   // verify otp
   const [otp, setOtp] = useState("");
   const [isVerifyOtp, setIsVerifyOtp] = useState(false);
+  // Reset Passowrd
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isResetPassword, setIsResetPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -143,6 +148,10 @@ export const AuthProvider = ({ children }) => {
         email: email,
       });
 
+      // Store encrypted email
+      const encryptedEmail = encryptData(encryptPayload);
+      sessionStorage.setItem("email", encryptedEmail);
+
       const res = await postData(ENDPOINTS.AUTH.SENDOTP, {
         data: encryptPayload,
       });
@@ -150,15 +159,17 @@ export const AuthProvider = ({ children }) => {
       console.log(ENDPOINTS.AUTH.SENDOTP);
       console.log("res", res);
 
-      const decryptRes = decryptData(res);
-      console.log("decryptRes", decryptRes);
+      // const decryptRes = decryptData(res.data);
+      // console.log("decryptRes", decryptRes);
 
       if (res.status || res.success) {
         toast.success(res.message);
-        // setIsSendOTP(true);
-        navigate("/auth-otp");
+        setEmail("");
+        setIsOtpStep(true);
+        // navigate("/auth-otp");
       }
     } catch (error) {
+      console.log(error);
       if (error.response && error.response.data) {
         toast.error(error.response.data.message);
       }
@@ -168,37 +179,116 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Verify OTP
-  const verifyOTP = async (email, otp) => {
+  // const verifyOTP = async ({ email, otp }) => {
+  //   try {
+  //     setIsVerifyOtp(true);
+
+  //     console.log("Verify otp", {
+  //       email: email,
+  //       otp: otp,
+  //     });
+
+  //     // encrypt data
+  //     const encryptPayload = encryptData({
+  //       email: email,
+  //       otp: otp,
+  //     });
+
+  //     console.log("encrypt verify", encryptPayload);
+
+  //     const res = await postData(ENDPOINTS.AUTH.VERIFYOTP, {
+  //       data: encryptPayload,
+  //     });
+
+  //     console.log(ENDPOINTS.AUTH.SENDOTP);
+  //     console.log("res", res);
+
+  //     const decryptRes = decryptData(res.data);
+  //     console.log("decryptRes", decryptRes);
+
+  //     if (res.status || res.success) {
+  //       toast.success(res.message);
+  //       setIsSendOTP(true);
+  //       navigate("/auth-otp");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     if (error.response && error.response.data) {
+  //       toast.error(error.response.data.message);
+  //     }
+  //   } finally {
+  //     setIsVerifyOtp(false);
+  //   }
+  // };
+
+  const verifyOTP = async ({ email, otp }) => {
     try {
       setIsVerifyOtp(true);
+      console.log("verify ", { email, otp });
 
-      // encrypt data
-      const encryptPayload = encryptData({
-        email: email,
-        otp: otp,
-      });
+      const encryptPayload = encryptData({ email, otp });
+      console.log("encryptPayload", encryptPayload);
 
       const res = await postData(ENDPOINTS.AUTH.VERIFYOTP, {
         data: encryptPayload,
       });
 
-      console.log(ENDPOINTS.AUTH.SENDOTP);
-      console.log("res", res);
+      console.log("verify res", res);
 
-      const decryptRes = decryptData(res);
+      const decryptRes = decryptData(res.data);
+      console.log("decryptRes", decryptRes);
+
+      if (res?.status || res?.success) {
+        toast.success(res.message);
+        setOtp("");
+        navigate("/auth-reset-password"); // redirect to reset page
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "OTP verification failed");
+    } finally {
+      setIsVerifyOtp(false);
+    }
+  };
+
+  // Reset Password
+  const resetPassword = async ({ email, newPassword }) => {
+    try {
+      setIsResetPassword(true);
+
+      console.log("reset", { email, newPassword });
+
+      // Encrypt Payload
+      const encryptPayload = encryptData({
+        email,
+        newPassword,
+      });
+
+      console.log("encryptPayload", encryptPayload);
+
+      const res = await postData(ENDPOINTS.AUTH.UPDATEPASSWORD, {
+        data: encryptPayload,
+      });
+
+      console.log("reset res", res);
+
+      // Decrypt response
+      const decryptRes = decryptData(res.data);
       console.log("decryptRes", decryptRes);
 
       if (res.status || res.success) {
         toast.success(res.message);
-        setIsSendOTP(true);
-        navigate("/auth-otp");
+        setNewPassword("");
+        setConfirmPassword("");
+        navigate("/login");
       }
     } catch (error) {
+      console.log(error);
       if (error.response && error.response.data) {
         toast.error(error.response.data.message);
       }
     } finally {
-      setIsVerifyOtp(false);
+      setIsResetPassword(false);
     }
   };
 
@@ -234,8 +324,8 @@ export const AuthProvider = ({ children }) => {
         sendOTP,
         sendOTPLoading,
         setSendOTPLoading,
-        // isSendOTP,
-        // setIsSendOTP,
+        isOtpStep,
+        setIsOtpStep,
         isVerifyOtp,
         setIsVerifyOtp,
         email,
@@ -243,6 +333,13 @@ export const AuthProvider = ({ children }) => {
         otp,
         setOtp,
         verifyOTP,
+        resetPassword,
+        newPassword,
+        setNewPassword,
+        isResetPassword,
+        setIsResetPassword,
+        confirmPassword,
+        setConfirmPassword,
       }}
     >
       {children}

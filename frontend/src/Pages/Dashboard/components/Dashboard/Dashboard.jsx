@@ -386,7 +386,7 @@ export default function Dashboard() {
                       perm.permission === "approve"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <Link to="/user/request/request-list">
+                      <Link to="/user/request/request-list?activeTab=approval_request&&status=pending">
                         <div className="card card-border-shadow-success h-100">
                           <div className="card-body">
                             <div className="d-flex align-items-center mb-2">
@@ -415,7 +415,7 @@ export default function Dashboard() {
                       perm.permission === "approve"
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <Link to="/user/request/request-list?status=completed">
+                      <Link to="/user/request/request-list?activeTab=my_request&&status=completed">
                         <div className="card card-border-shadow-success h-100">
                           <div className="card-body">
                             <div className="d-flex align-items-center mb-2">
@@ -506,7 +506,7 @@ export default function Dashboard() {
                       permission: "add",
                       icon: "tabler-file-plus",
                       color: "primary",
-                      to: "",
+                      to: "/po-material/po-list?status=Pending",
                     },
                     {
                       title: "Total In-Progress PO",
@@ -726,7 +726,7 @@ export default function Dashboard() {
                         perm.permission === "approve")
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <Link to="/payment-management/invoice-list">
+                      <Link to="/payment-management/invoice-list?status=Pending">
                         <div className="card card-border-shadow-primary h-100">
                           <div className="card-body">
                             <div className="d-flex align-items-center mb-2">
@@ -755,7 +755,7 @@ export default function Dashboard() {
                         perm.permission === "approve")
                   ) && (
                     <div className="col-lg-3 col-sm-6">
-                      <Link to="/payment-management/invoice-list">
+                      <Link to="/payment-management/invoice-list?status=Paid">
                         <div className="card card-border-shadow-warning h-100">
                           <div className="card-body">
                             <div className="d-flex align-items-center mb-2">

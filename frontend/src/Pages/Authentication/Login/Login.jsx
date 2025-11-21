@@ -118,6 +118,7 @@ export default function Login() {
                     <Link
                       to="/auth-forgot-password"
                       className="text-decoration-none"
+                      onClick={() => setIsOtpStep(false)}
                     >
                       <p className="mb-0">Forgot Password?</p>
                     </Link>

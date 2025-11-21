@@ -1,8 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
+import { strongPasswordRegex } from "../../../utils/validators";
+import { useAuth } from "../../../Context/Authentication/LoginContext";
+import { toast } from "react-toastify";
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function ResetPassword() {
+  const {
+    resetPassword,
+    newPassword,
+    setNewPassword,
+    isResetPassword,
+    setIsResetPassword,
+    confirmPassword,
+    setConfirmPassword,
+    email,
+  } = useAuth();
+  // console.log("email", email);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  //   Submit handler
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+
+    // 6 digit validation
+    if (newPassword.length !== 6) {
+      toast.error("Password must be exactly 6 digits");
+      return;
+    }
+
+    if (!strongPasswordRegex.test(newPassword)) {
+      toast.error(
+        "Password must be at least 6 characters, include uppercase, lowercase, number, and special character"
+      );
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    resetPassword({ email, newPassword });
+  };
+
   return (
     <>
+      <link
+        rel="stylesheet"
+        href={`${publicUrl}assets/vendor/css/pages/page-auth.css`}
+      />
       {/* ---------------------START RESET PASSWORD------------------- */}
       <div className="container-xxl">
         <div className="authentication-wrapper authentication-basic container-p-y">
@@ -44,7 +91,10 @@ export default function ResetPassword() {
             <span class="app-brand-text demo text-heading fw-bold">Vuexy</span>*/}
                     <img
                       src="assets/img/logo_vertical.png"
-                      className="img-fluid"
+                      // className="img-fluid"
+                      style={{
+                        maxWidth: "52%",
+                      }}
                     />
                   </div>
                 </div>
@@ -58,10 +108,8 @@ export default function ResetPassword() {
                 </p>
                 <form
                   id="formAuthentication"
-                  action="login"
-                  method="GET"
                   className="fv-plugins-bootstrap5 fv-plugins-framework"
-                  noValidate="novalidate"
+                  onSubmit={handleResetPassword}
                 >
                   <div className="mb-6 form-password-toggle form-control-validation fv-plugins-icon-container">
                     <label className="form-label" htmlFor="password">
@@ -69,15 +117,22 @@ export default function ResetPassword() {
                     </label>
                     <div className="input-group input-group-merge has-validation">
                       <input
-                        type="password"
+                        type={showNewPassword ? "text" : "password"}
                         id="password"
                         className="form-control"
                         name="password"
                         placeholder="············"
                         aria-describedby="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
                       />
                       <span className="input-group-text cursor-pointer">
-                        <i className="icon-base ti tabler-eye-off" />
+                        <i
+                          className={`icon-base ti tabler-${
+                            showNewPassword ? "eye" : "eye-off"
+                          }`}
+                          onClick={() => setShowNewPassword(!showNewPassword)}
+                        />
                       </span>
                     </div>
                     <div className="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback" />
@@ -88,20 +143,38 @@ export default function ResetPassword() {
                     </label>
                     <div className="input-group input-group-merge has-validation">
                       <input
-                        type="password"
+                        type={showConfirmPassword ? "text" : "password"}
                         id="confirm-password"
                         className="form-control"
                         name="confirm-password"
                         placeholder="············"
                         aria-describedby="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                       />
                       <span className="input-group-text cursor-pointer">
-                        <i className="icon-base ti tabler-eye-off" />
+                        <i
+                          className={`icon-base ti tabler-${
+                            showConfirmPassword ? "eye" : "eye-off"
+                          }`}
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                        />
                       </span>
                     </div>
                     <div className="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback" />
                   </div>
-                  <button className="btn btn-primary d-grid w-100 mb-6 waves-effect waves-light">
+                  <button
+                    className="btn btn-primary d-flex w-100 mb-6 waves-effect waves-light"
+                    disabled={isResetPassword}
+                  >
+                    {isResetPassword && (
+                      <div
+                        className="spinner-border spinner-white me-2"
+                        role="status"
+                      ></div>
+                    )}
                     Set new password
                   </button>
                   <div className="text-center">
