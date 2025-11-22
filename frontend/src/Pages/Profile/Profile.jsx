@@ -1,8 +1,61 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { decryptData } from "../../utils/decryptData";
+import { useAuth } from "../../Context/Authentication/LoginContext";
+import { toast } from "react-toastify";
+import { strongPasswordRegex } from "../../utils/validators";
 const fileUrl = import.meta.env.VITE_FILE_URL;
 
 export default function Profile() {
+  const {
+    resetPassword,
+    newPassword,
+    setNewPassword,
+    isResetPassword,
+    setIsResetPassword,
+    confirmPassword,
+    setConfirmPassword,
+    email,
+  } = useAuth();
+  // console.log("email", email);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  // Show Alert
+  const [showAlert, setShowAlert] = useState(false);
+
+  // useEffect(() => {
+  //   if (newPassword && !strongPasswordRegex.test(newPassword)) {
+  //     setShowAlert(true);
+  //   } else {
+  //     setShowAlert(false);
+  //   }
+  // }, [newPassword]);
+
+  //   Submit handler
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+
+    // 6 digit validation
+    if (newPassword.length !== 6) {
+      toast.error("Password must be exactly 6 digits");
+      return;
+    }
+
+    if (!strongPasswordRegex.test(newPassword)) {
+      toast.error(
+        "Password must be at least 6 characters, include uppercase, lowercase, number, and special character"
+      );
+      setShowAlert(true);
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    resetPassword({ email, newPassword });
+  };
+
   const getAuthData = sessionStorage.getItem("authData");
   const decryptAuthData = decryptData(getAuthData);
   const userData = decryptAuthData?.user;
@@ -41,14 +94,22 @@ export default function Profile() {
                         </li>
                         <li className="list-inline-item d-flex gap-2 align-items-center">
                           <i className="icon-base ti tabler-calendar icon-lg" />
-                          <span className="fw-medium"> Joined April 2021</span>
+                          {/* <span className="fw-medium"> Joined April 2021</span> */}
+                          <span className="fw-medium">
+                            {" "}
+                            Joined{" "}
+                            {new Date(userData?.created_at).toLocaleDateString(
+                              "en-US",
+                              {
+                                year: "numeric",
+                                month: "long",
+                              }
+                            )}
+                          </span>
                         </li>
                       </ul>
                     </div>
-                    <a
-                      href="javascript:void(0)"
-                      className="btn btn-primary mb-1 waves-effect waves-light"
-                    >
+                    <a className="btn btn-primary mb-1 waves-effect waves-light">
                       <i className="icon-base ti tabler-edit icon-xs me-2" />
                       Edit
                     </a>
@@ -128,28 +189,31 @@ export default function Profile() {
               <div className="card-body">
                 <form
                   id="formChangePassword"
-                  method="GET"
-                  onsubmit="return false"
                   className="fv-plugins-bootstrap5 fv-plugins-framework"
-                  noValidate="novalidate"
+                  onSubmit={handleResetPassword}
                 >
-                  <div
-                    className="alert alert-warning alert-dismissible py-3"
-                    role="alert"
-                  >
-                    <h5 className="alert-heading mb-1">
-                      Ensure that these requirements are met
-                    </h5>
-                    <span>
-                      Minimum 8 characters long, uppercase &amp; symbol
-                    </span>
-                    <button
-                      type="button"
-                      className="btn-close"
-                      data-bs-dismiss="alert"
-                      aria-label="Close"
-                    />
-                  </div>
+                  {showAlert && (
+                    <div
+                      className="alert alert-warning alert-dismissible py-3"
+                      role="alert"
+                    >
+                      <h5 className="alert-heading mb-1">
+                        Ensure that these requirements are met
+                      </h5>
+                      <span>
+                        Password must be at least 6 characters, include
+                        uppercase, lowercase, number, and special character
+                      </span>
+                      <button
+                        type="button"
+                        className="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close"
+                        onClick={() => setShowAlert(false)}
+                      />
+                    </div>
+                  )}
+
                   <div className="row gy-4 gx-6">
                     <div className="col-12 col-sm-6 form-password-toggle form-control-validation fv-plugins-icon-container">
                       <label className="form-label" htmlFor="newPassword">
@@ -158,13 +222,20 @@ export default function Profile() {
                       <div className="input-group input-group-merge has-validation">
                         <input
                           className="form-control"
-                          type="password"
+                          type={showNewPassword ? "text" : "password"}
                           id="newPassword"
                           name="newPassword"
                           placeholder="············"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
                         />
                         <span className="input-group-text cursor-pointer">
-                          <i className="icon-base ti tabler-eye icon-xs" />
+                          <i
+                            className={`icon-base ti tabler-${
+                              showNewPassword ? "eye" : "eye-off"
+                            }`}
+                            onClick={() => setShowNewPassword(!showNewPassword)}
+                          />
                         </span>
                       </div>
                       <div className="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback" />
@@ -176,13 +247,22 @@ export default function Profile() {
                       <div className="input-group input-group-merge has-validation">
                         <input
                           className="form-control"
-                          type="password"
+                          type={showConfirmPassword ? "text" : "password"}
                           name="confirmPassword"
                           id="confirmPassword"
                           placeholder="············"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
                         />
                         <span className="input-group-text cursor-pointer">
-                          <i className="icon-base ti tabler-eye icon-xs" />
+                          <i
+                            className={`icon-base ti tabler-${
+                              showConfirmPassword ? "eye" : "eye-off"
+                            }`}
+                            onClick={() =>
+                              setShowConfirmPassword(!showConfirmPassword)
+                            }
+                          />
                         </span>
                       </div>
                       <div className="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback" />
@@ -191,7 +271,16 @@ export default function Profile() {
                       <button
                         type="submit"
                         className="btn btn-primary me-2 waves-effect waves-light"
+                        disabled={
+                          isResetPassword || !newPassword || !confirmPassword
+                        }
                       >
+                        {isResetPassword && (
+                          <div
+                            className="spinner-border spinner-white me-2"
+                            role="status"
+                          ></div>
+                        )}
                         Change Password
                       </button>
                     </div>

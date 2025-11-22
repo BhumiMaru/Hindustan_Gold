@@ -186,6 +186,12 @@ export default function Navbar() {
       break;
     // -------------end uom --------------- //
 
+    // ---------- profile------------------ //
+    case location.pathname.startsWith("/erp/frontend/pages-profile-user"):
+      routeTitle = "Profile";
+      break;
+    // ---------- profile------------------ //
+
     default:
       routeTitle = "";
   }
@@ -263,7 +269,7 @@ export default function Navbar() {
                     className="rounded-circle"
                   />
                 </div>
-                {console.log("kk", `${publicUrl}assets/img/avatars/user.png`)}
+                {/* {console.log("kk", `${publicUrl}assets/img/avatars/user.png`)} */}
                 {/* {console.log(
                   `${fileUrl}/storage/users/${decryptAuthData?.user?.profile_photo}`
                 )} */}
@@ -272,7 +278,7 @@ export default function Navbar() {
                 className={`dropdown-menu dropdown-menu-end ${
                   activeMenu === "avatar" ? "show" : ""
                 }`}
-                onClick={() => toggleMenu("avatar")}
+                onClick={() => toggleMenu("")}
                 data-bs-popper="static"
               >
                 <li>
@@ -306,8 +312,11 @@ export default function Navbar() {
                 </li>
                 <li>
                   <Link
-                    className="dropdown-item waves-effect"
+                    className={`dropdown-item waves-effect ${
+                      activeMenu === "Profile" ? "active" : ""
+                    }`}
                     to="/pages-profile-user"
+                    onClick={() => toggleMenu("Profile")}
                   >
                     <i className="icon-base ti tabler-user me-3 icon-md"></i>
                     <span className="align-middle">My Profile</span>

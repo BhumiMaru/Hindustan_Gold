@@ -7,6 +7,7 @@ import { decryptData } from "../../../../../utils/decryptData";
 import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
 import axios from "axios";
 const base_url = import.meta.env.VITE_API_BASE_URL;
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 // export default function Vendor_fill_quote({
 //   pi_get_quote_id,
@@ -384,7 +385,11 @@ export default function Vendor_fill_quote() {
             <div>token :{decryptEmailData?.token}</div>
           </div>
           <div className="col-12 text-center mt-10">
-            <img src="assets/img/logo_vertical.png" style={{ height: 100 }} />
+            <img
+              // src="assets/img/logo_vertical.png"
+              src={`${publicUrl}assets/img/logo_vertical.png`}
+              style={{ height: 100 }}
+            />
           </div>
           <div className="col-12 text-center mt-6">
             <h3>Item Quotation</h3>

@@ -253,7 +253,8 @@ export default function Download_PO_With_Quotation() {
                   <div className="d-flex svg-illustration mb-6 gap-2 align-items-center">
                     <div>
                       <img
-                        src="/assets/img/logo_vertical.png"
+                        // src="/assets/img/logo_vertical.png"
+                        src={`${publicUrl}assets/img/logo_vertical.png`}
                         style={{ height: "86px", width: "137.95px" }}
                         alt="Company Logo"
                         // crossOrigin="anonymous"
