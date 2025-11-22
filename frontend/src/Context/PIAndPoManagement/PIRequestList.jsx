@@ -260,7 +260,7 @@ export const PIRequestProvider = ({ children }) => {
       // const decryptRes = decryptData(res)
 
       const apiData = res.data;
-      console.log("apiData", apiData.data);
+      // console.log("apiData", apiData.data);
       setPiRequest(apiData.data || []);
       setPagination({
         currentPage: apiData.current_page || 1,
@@ -813,7 +813,7 @@ export const PIRequestProvider = ({ children }) => {
         request_id: Number(request_id),
       });
 
-      console.log("res service", res);
+      // console.log("res service", res);
 
       if (res?.status) {
         toast.success(res.message);
@@ -842,7 +842,7 @@ export const PIRequestProvider = ({ children }) => {
       //   })
       // );
       // }
-      console.log("Service received response:", res);
+      // console.log("Service received response:", res);
     } catch (error) {
       // if (error.response && error.response.data) {
       //   toast.error(error.response.data.message);

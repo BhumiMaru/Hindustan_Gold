@@ -59,7 +59,7 @@ export default function User_Creation_Table() {
   // console.log("filteredUsers", filteredUsers);
 
   const handleEditClick = (user) => {
-    console.log("user", user);
+    // console.log("user", user);
     startEditing(user.id); // set edit data in context
     navigate(`/super_admin/master/user-create/${user.id}`); // then navigate
   };
@@ -101,7 +101,7 @@ export default function User_Creation_Table() {
             userCreations?.map((user, index) => {
               return (
                 <tr key={user.id}>
-                  {console.log(user)}
+                  {/* {console.log(user)} */}
                   <td>
                     <div className="ms-4">
                       {(pagination.currentPage - 1) * pagination.perPage +
@@ -121,9 +121,9 @@ export default function User_Creation_Table() {
                             alt={user.name}
                             className="rounded-circle"
                           />
-                          {console.log(
+                          {/* {console.log(
                             `${publicUrl}assets/img/avatars/user.png`
-                          )}
+                          )} */}
                           {/* to={`${fileUrl}/storage/uploads/invoices/${invoiceDetail.invoice_file}`} */}
                         </div>
                       </div>

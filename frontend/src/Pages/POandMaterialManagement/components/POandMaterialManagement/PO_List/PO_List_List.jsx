@@ -368,7 +368,7 @@ export default function PO_List_List() {
                 onChange={setItemName}
                 placeholder="Select Item"
               />
-              {console.log("itemName", itemName)}
+              {/* {console.log("itemName", itemName)} */}
             </div>
             <div className="col-lg-3">
               <CustomSelect

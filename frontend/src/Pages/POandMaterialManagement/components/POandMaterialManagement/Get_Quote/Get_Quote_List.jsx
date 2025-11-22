@@ -161,7 +161,7 @@ export default function Get_Quote_List() {
     const statusFromUrl = params.get("status");
 
     if (statusFromUrl && !urlStatusApplied) {
-      console.log("Setting status from URL:", statusFromUrl);
+      // console.log("Setting status from URL:", statusFromUrl);
       setStatus(statusFromUrl);
       setUrlStatusApplied(true);
 

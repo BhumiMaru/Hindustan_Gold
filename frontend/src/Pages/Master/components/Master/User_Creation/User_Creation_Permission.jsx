@@ -585,7 +585,7 @@ export default function User_Creation_Permission() {
       permission,
       status: isChecked ? 1 : 0,
     };
-    console.log("payload", payload);
+    // console.log("payload", payload);
 
     try {
       // 1️⃣ Update current permission
@@ -611,7 +611,7 @@ export default function User_Creation_Permission() {
             permission: targetPerm,
             status: 1,
           };
-          console.log("auto-check payload", newPayload);
+          // console.log("auto-check payload", newPayload);
           setOptimisticUpdates((prev) => ({ ...prev, [targetKey]: true }));
           setLoadingStates((prev) => ({ ...prev, [targetKey]: true }));
           await createUserPermission(newPayload);
@@ -636,7 +636,7 @@ export default function User_Creation_Permission() {
             permission: targetPerm,
             status: 0,
           };
-          console.log("auto-uncheck payload", newPayload);
+          // console.log("auto-uncheck payload", newPayload);
           setOptimisticUpdates((prev) => ({ ...prev, [targetKey]: false }));
           setLoadingStates((prev) => ({ ...prev, [targetKey]: true }));
           await createUserPermission(newPayload);

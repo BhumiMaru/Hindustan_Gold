@@ -170,7 +170,29 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
+      // console.log("error.response", error.response.data.errors);
+      // if (error.response && error.response.data) {
+      //   toast.error(error.response.data.message);
+      // }
       if (error.response && error.response.data) {
+        const { message, errors } = error.response.data;
+
+        // Show main message (e.g. "Validation error")
+        // if (message) {
+        //   toast.error(message);
+        // }
+
+        // Show field-specific validation errors
+        if (errors && typeof errors === "object") {
+          Object.entries(errors).forEach(([field, msgs]) => {
+            if (Array.isArray(msgs)) {
+              msgs.forEach((msg) => toast.error(`${field}: ${msg}`));
+            } else {
+              toast.error(`${field}: ${msgs}`);
+            }
+          });
+        }
+      } else {
         toast.error(error.response.data.message);
       }
     } finally {
@@ -280,7 +302,7 @@ export const AuthProvider = ({ children }) => {
         toast.success(res.message);
         setNewPassword("");
         setConfirmPassword("");
-        navigate("/login");
+        navigate("/");
       }
     } catch (error) {
       console.log(error);

@@ -57,7 +57,7 @@ export default function PI_Request_List() {
   const [urlStatusApplied, setUrlStatusApplied] = useState(false);
 
   const location = useLocation();
-  console.log("location", location);
+  // console.log("location", location);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -86,7 +86,7 @@ export default function PI_Request_List() {
     const activeTabFromUrl = params.get("activeTab");
 
     if (statusFromUrl && activeTabFromUrl && !urlStatusApplied) {
-      console.log("Setting status from URL:", statusFromUrl);
+      // console.log("Setting status from URL:", statusFromUrl);
       setStatus(statusFromUrl);
       setActiveTab(activeTabFromUrl);
       setUrlStatusApplied(true);

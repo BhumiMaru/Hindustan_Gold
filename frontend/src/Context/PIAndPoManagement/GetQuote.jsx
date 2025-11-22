@@ -123,7 +123,7 @@ export const GetQuoteProvider = ({ children }) => {
       // Encryt Payload
       // const encryptPayload = encryptData(payload);
 
-      console.log("payload", payload);
+      // console.log("payload", payload);
       const res = await postData(
         ENDPOINTS.GETQUOTE.CREATE,
         payload
@@ -356,8 +356,8 @@ export const GetQuoteProvider = ({ children }) => {
     pi_get_quote_vendor_ids,
     vendor_type, // Make vendor_type dynamic with default value
   }) => {
-    console.log("pi_get_quote_id", pi_get_quote_id);
-    console.log("vendor_type", vendor_type);
+    // console.log("pi_get_quote_id", pi_get_quote_id);
+    // console.log("vendor_type", vendor_type);
     // console.log("pi_get_quote_vendor_ids", pi_get_quote_vendor_ids);
     try {
       setLoadingSendRequest(true);
@@ -387,7 +387,7 @@ export const GetQuoteProvider = ({ children }) => {
         payload
       );
 
-      console.log("Sending request with response:", res);
+      // console.log("Sending request with response:", res);
 
       if (res.status) {
         toast.success(res.message);
@@ -423,12 +423,12 @@ export const GetQuoteProvider = ({ children }) => {
     file = null,
   }) => {
     try {
-      console.log("hh", {
-        pi_get_quote_id: pi_get_quote_id,
-        pi_get_quote_vendor_id: pi_get_quote_vendor_id,
-        items: items, // Expect an array of objects [{ id, rate }]
-        vendor_quote_file: file,
-      });
+      // console.log("hh", {
+      //   pi_get_quote_id: pi_get_quote_id,
+      //   pi_get_quote_vendor_id: pi_get_quote_vendor_id,
+      //   items: items, // Expect an array of objects [{ id, rate }]
+      //   vendor_quote_file: file,
+      // });
 
       if (!pi_get_quote_id || !pi_get_quote_vendor_id || items.length === 0) {
         toast.error("Missing required fields for rate update");
@@ -452,9 +452,9 @@ export const GetQuoteProvider = ({ children }) => {
         formData.append("vendor_quote_file", file);
       }
 
-      for (let [key, value] of formData.entries()) {
-        console.log("key:", key, "value:", value);
-      }
+      // for (let [key, value] of formData.entries()) {
+      //   console.log("key:", key, "value:", value);
+      // }
 
       // Encryt Payload
       // const encryptPayload = encryptData(formData);
@@ -475,7 +475,7 @@ export const GetQuoteProvider = ({ children }) => {
       // Decrypt Response
       // const decryptRes = decryptData(res)
 
-      console.log("res", res);
+      // console.log("res", res);
 
       if (res.status) {
         toast.success(res.message);

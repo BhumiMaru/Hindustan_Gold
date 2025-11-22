@@ -18,7 +18,7 @@ export default function Vendor_Approve_Confirmation_Modal({
   const { quoteVendorList } = useGetQuote();
   const navigate = useNavigate();
 
-  console.log("vendorApproveData", vendorApproveData);
+  // console.log("vendorApproveData", vendorApproveData);
 
   // const handleApprove = async () => {
   //   try {
@@ -70,7 +70,7 @@ export default function Vendor_Approve_Confirmation_Modal({
 
   const handleApprove = async () => {
     try {
-      console.log("🔍 Starting vendor approval with data:", vendorApproveData);
+      // console.log(" Starting vendor approval with data:", vendorApproveData);
 
       // Set loading state
       if (vendorApproveData?.vendor_type === "old") {
@@ -91,14 +91,14 @@ export default function Vendor_Approve_Confirmation_Modal({
         pi_get_quate: vendorApproveData.pi_get_quote_id,
       });
 
-      console.log("📥 Vendor approve result:", res);
+      // console.log(" Vendor approve result:", res);
 
       // Check if approval was successful
       if (res?.success || res?.status) {
-        console.log("🎉 Vendor approved successfully, refreshing lists...");
+        // console.log(" Vendor approved successfully, refreshing lists...");
         toast.success(res.message);
 
-        // ✅ Refresh the quote vendor lists (not getVendorList)
+        //  Refresh the quote vendor lists (not getVendorList)
         try {
           // Refresh both vendor lists to ensure UI updates
           // await quoteVendorList({
@@ -112,9 +112,9 @@ export default function Vendor_Approve_Confirmation_Modal({
           // });
           refreshVendorList();
 
-          console.log("✅ Quote vendor lists refreshed");
+          // console.log(" Quote vendor lists refreshed");
         } catch (refreshError) {
-          console.error("❌ Error refreshing vendor lists:", refreshError);
+          console.error(" Error refreshing vendor lists:", refreshError);
         }
 
         handleClose("vendorApprove");
@@ -122,14 +122,14 @@ export default function Vendor_Approve_Confirmation_Modal({
         // navigate(`/po-material/po-create/${vendorApproveData?.pi_id}`);
         // toast.success("Vendor approved successfully!"); // Already shown in vendorApprove
       } else {
-        console.log("❌ Vendor approval failed");
+        console.log(" Vendor approval failed");
         toast.error(res?.message || "Failed to approve vendor");
       }
     } catch (error) {
-      console.error("💥 Error in handleApprove:", error);
+      console.error(" Error in handleApprove:", error);
       toast.error("Error approving vendor");
     } finally {
-      console.log("🧹 Cleaning up loading states");
+      console.log(" Cleaning up loading states");
       // Reset loading states
       if (vendorApproveData?.vendor_type === "old") {
         setOldVendorLoading((prev) => ({

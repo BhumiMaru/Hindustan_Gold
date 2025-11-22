@@ -17,18 +17,18 @@ export default function Dashboard() {
   const decryptAuthData = decryptData(getAuthData);
   const user = decryptAuthData?.user;
 
-  console.log("user ", user);
+  // console.log("user ", user);
 
   useEffect(() => {
     fetchUserPermission(user?.id);
   }, [user?.id]);
 
-  console.log("userPermission", userPermission);
+  // console.log("userPermission", userPermission);
 
   // ✅ Check if current user is Admin (id === 54)
   const isAdmin = user?.id === 56;
 
-  console.log("DashboardList", dashboardList);
+  // console.log("DashboardList", dashboardList);
 
   return (
     <>
@@ -583,7 +583,7 @@ export default function Dashboard() {
                     )
                     .map((card, idx) => (
                       <div key={idx} className="col-lg-3 col-sm-6">
-                        {console.log("cc", card)}
+                        {/* {console.log("cc", card)} */}
                         <Link to={card.to}>
                           <div
                             className={`card card-border-shadow-${card?.color} h-100`}

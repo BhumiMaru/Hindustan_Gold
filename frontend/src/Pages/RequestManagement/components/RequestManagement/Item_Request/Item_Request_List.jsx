@@ -583,17 +583,17 @@ export default function Item_Request_List() {
   };
 
   // Debug current state
-  console.log(" CURRENT FILTER STATE:", {
-    search,
-    activeTab,
-    selectedType,
-    statusFilter,
-    itemNameId,
-    startDate,
-    endDate,
-    filterItemCount: filterItem?.length,
-    isReadyToFetch,
-  });
+  // console.log(" CURRENT FILTER STATE:", {
+  //   search,
+  //   activeTab,
+  //   selectedType,
+  //   statusFilter,
+  //   itemNameId,
+  //   startDate,
+  //   endDate,
+  //   filterItemCount: filterItem?.length,
+  //   isReadyToFetch,
+  // });
 
   return (
     <>
@@ -711,7 +711,7 @@ export default function Item_Request_List() {
               </div>
 
               <div className=" d-sm-block d-lg-flex gap-2">
-                {console.log("userPermission", userPermission)}
+                {/* {console.log("userPermission", userPermission)} */}
                 <Link
                   to="/user/request/request-create/material"
                   className={`btn btn-primary text-white waves-effect waves-light text-decoration-none ${

@@ -88,13 +88,13 @@ export const GroupMasterProvider = ({ children }) => {
         }
         // {
         //   data: encryptPayload,
-        // }
+        // }s
       );
 
       // Decrypt Response
       // const decryptRes = decryptData(res)
 
-      console.log("res", res);
+      // console.log("res", res);
       if (res.success) {
         toast.success(res.message);
         setgroupEditId(null);

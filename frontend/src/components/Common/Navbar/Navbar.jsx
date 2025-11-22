@@ -34,93 +34,97 @@ export default function Navbar() {
   // Auto Page Title Based On Route
   let routeTitle = "";
 
+  // console.log("location", location);
+  const baseLocationPath = location.pathname.split("/erp/frontend")[1];
+  // console.log("baseLocationPath", baseLocationPath);
+
   switch (true) {
     // --------- start Dashboard ------------ //
-    case location.pathname.startsWith("/dashboard"):
+    case baseLocationPath.startsWith("/dashboard"):
       routeTitle = "Dashboard";
       break;
     // --------- end Dashboard ------------ //
 
     // ---------- start Master ------------- //
     // ------ Department ------- //
-    case location.pathname.startsWith("/super_admin/master/department"):
+    case baseLocationPath.startsWith("/super_admin/master/department"):
       routeTitle = "Department Master";
       break;
 
     // ------ Zone ------- //
-    case location.pathname.startsWith("/super_admin/master/zone"):
+    case baseLocationPath.startsWith("/super_admin/master/zone"):
       routeTitle = "Zone Master";
       break;
 
     // ------ Service Location 1 ------- //
-    case location.pathname.startsWith("/super_admin/master/service-location-1"):
+    case baseLocationPath.startsWith("/super_admin/master/service-location-1"):
       routeTitle = "Service Location 1 Master";
       break;
 
     // ------ Service Location 2 ------- //
-    case location.pathname.startsWith("/super_admin/master/service-location-2"):
+    case baseLocationPath.startsWith("/super_admin/master/service-location-2"):
       routeTitle = "Service Location 2 Master";
       break;
 
     // ------ Service Location 3 ------- //
-    case location.pathname.startsWith("/super_admin/master/service-location-3"):
+    case baseLocationPath.startsWith("/super_admin/master/service-location-3"):
       routeTitle = "Service Location 3 Master";
       break;
 
     // ------ Role ------- //
-    case location.pathname.startsWith("/super_admin/master/role"):
+    case baseLocationPath.startsWith("/super_admin/master/role"):
       routeTitle = "Role Master";
       break;
 
     // ------ Role Permission ------- //
-    case location.pathname.startsWith("/super_admin/role-permission"):
+    case baseLocationPath.startsWith("/super_admin/role-permission"):
       routeTitle = "Role Permission";
       break;
 
     // ------ Company ------- //
-    case location.pathname.startsWith("/super_admin/master/company"):
+    case baseLocationPath.startsWith("/super_admin/master/company"):
       routeTitle = "Company Master";
       break;
 
     // ------ User Creation ------- //
-    case location.pathname.startsWith("/super_admin/master/user"):
+    case baseLocationPath.startsWith("/super_admin/master/user"):
       routeTitle = "User Master";
       break;
 
-    case location.pathname.startsWith("/super_admin/master/user-create"):
+    case baseLocationPath.startsWith("/super_admin/master/user-create"):
       routeTitle = "User Create";
       break;
 
     // ---------- end Master ------------- //
 
     // --------- start Item Management ------------ //
-    case location.pathname.startsWith("/item/group"):
+    case baseLocationPath.startsWith("/item/group"):
       routeTitle = "Group Master";
       break;
 
-    case location.pathname.startsWith("/item/category"):
+    case baseLocationPath.startsWith("/item/category"):
       routeTitle = "Category Master";
       break;
 
-    case location.pathname.startsWith("/item/subcategory"):
+    case baseLocationPath.startsWith("/item/subcategory"):
       routeTitle = "Subcategory Master";
       break;
 
-    case location.pathname.startsWith("/item/item-master"):
+    case baseLocationPath.startsWith("/item/item-master"):
       routeTitle = "Item Master";
       break;
 
-    case location.pathname.startsWith("/item/item-create"):
+    case baseLocationPath.startsWith("/item/item-create"):
       routeTitle = "Item Create";
       break;
     // --------- end Item Management ------------ //
 
     // --------- start Item Request ------------ //
-    case location.pathname.startsWith("/user/request/request-list"):
+    case baseLocationPath.startsWith("/user/request/request-list"):
       routeTitle = "Request Master";
       break;
 
-    case location.pathname.startsWith("/user/request/request-create"):
+    case baseLocationPath.startsWith("/user/request/request-create"):
       routeTitle = "Item Request";
       break;
     // --------- end Item Request -------------- //
@@ -128,63 +132,69 @@ export default function Navbar() {
     // --------- start PO & Material Management ------------ //
 
     // ------ PI REQUEST ------- //
-    case location.pathname.startsWith("/po-material/pi-request-list"):
+    case baseLocationPath.startsWith("/po-material/pi-request-list"):
       routeTitle = "PI Request Master";
       break;
 
-    case location.pathname.startsWith("/po-material/pi-request-create"):
+    case baseLocationPath.startsWith("/po-material/pi-request-create"):
       routeTitle = "PI Item Request";
       break;
 
     // ------ GET QUOTE ------- //
-    case location.pathname.startsWith("/po-material/get-quote-list"):
+    case baseLocationPath.startsWith("/po-material/get-quote-list"):
       routeTitle = "Get Quote";
       break;
 
-    case location.pathname.startsWith("/po-material/pi-request-get-quote"):
+    case baseLocationPath.startsWith("/po-material/pi-request-get-quote"):
       routeTitle = "PI Request Get Quote";
       break;
 
     // -------- PO LIST -------- //
-    case location.pathname.startsWith("/po-material/po-list"):
+    case baseLocationPath.startsWith("/po-material/po-list"):
       routeTitle = "PO Master";
       break;
 
-    case location.pathname.startsWith("/po-material/po-create"):
+    case baseLocationPath.startsWith("/po-material/po-create"):
       routeTitle = "PO Create";
       break;
 
-    case location.pathname.startsWith("/po-material/po-detail"):
+    case baseLocationPath.startsWith("/po-material/po-detail"):
       routeTitle = "PO Detail";
       break;
 
     // --------- GRN LIST ----------- //
-    case location.pathname.startsWith("/po-material/grn-list"):
+    case baseLocationPath.startsWith("/po-material/grn-list"):
       routeTitle = "GRN Master";
       break;
 
-    case location.pathname.startsWith("/po-material/grn-details"):
+    case baseLocationPath.startsWith("/po-material/grn-details"):
       routeTitle = "GRN Detail";
       break;
 
     // ----------- Vendor LIST ---------- //
-    case location.pathname.startsWith("/payment-management/vendor-list"):
+    case baseLocationPath.startsWith("/payment-management/vendor-list"):
       routeTitle = "Vendor Master";
       break;
 
     // --------- end PO & Material Management ------------ //
 
     // --------- start Payment List ------------ //
-    case location.pathname.startsWith("/payment-management/invoice-detail"):
+    case baseLocationPath.startsWith("/payment-management/invoice-detail"):
       routeTitle = "Invoice Detail";
       break;
     // --------- end Payment List ------------ //
 
     // -------------start uom ------------- //
-    case location.pathname.startsWith("/suprer_admin/uom"):
+    case baseLocationPath.startsWith("/suprer_admin/uom"):
       routeTitle = "UOM";
       break;
     // -------------end uom --------------- //
+
+    // ---------- profile------------------ //
+    case baseLocationPath.startsWith("/erp/frontend/pages-profile-user"):
+      routeTitle = "Profile";
+      break;
+    // ---------- profile------------------ //
 
     default:
       routeTitle = "";
@@ -263,7 +273,7 @@ export default function Navbar() {
                     className="rounded-circle"
                   />
                 </div>
-                {console.log("kk", `${publicUrl}assets/img/avatars/user.png`)}
+                {/* {console.log("kk", `${publicUrl}assets/img/avatars/user.png`)} */}
                 {/* {console.log(
                   `${fileUrl}/storage/users/${decryptAuthData?.user?.profile_photo}`
                 )} */}
@@ -272,7 +282,7 @@ export default function Navbar() {
                 className={`dropdown-menu dropdown-menu-end ${
                   activeMenu === "avatar" ? "show" : ""
                 }`}
-                onClick={() => toggleMenu("avatar")}
+                onClick={() => toggleMenu("")}
                 data-bs-popper="static"
               >
                 <li>
@@ -306,8 +316,11 @@ export default function Navbar() {
                 </li>
                 <li>
                   <Link
-                    className="dropdown-item waves-effect"
+                    className={`dropdown-item waves-effect ${
+                      activeMenu === "Profile" ? "active" : ""
+                    }`}
                     to="/pages-profile-user"
+                    onClick={() => toggleMenu("Profile")}
                   >
                     <i className="icon-base ti tabler-user me-3 icon-md"></i>
                     <span className="align-middle">My Profile</span>

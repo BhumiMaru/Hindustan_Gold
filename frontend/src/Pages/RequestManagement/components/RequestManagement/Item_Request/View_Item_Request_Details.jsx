@@ -19,7 +19,7 @@ export default function View_Item_Request_Details() {
     fetchItemRequestById(itemRequestId);
   }, [itemRequestId]);
 
-  console.log("wholeItemRequestData", wholeItemRequestData);
+  // console.log("wholeItemRequestData", wholeItemRequestData);
   return (
     <>
       {/* ---------------------START VIEW ITEM REQUEST DETAILS----------------------- */}
@@ -348,7 +348,7 @@ export default function View_Item_Request_Details() {
                                 11-08-2025&nbsp;11:25&nbsp;AM
                               </small>
                             </div>
-                            <p class="mb-2">6 team members in a project</p>
+                            <p className="mb-2">6 team members in a project</p>
                             <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
                               <div className="d-flex flex-wrap align-items-center mb-50">
                                 <div className="avatar avatar-sm me-2">
@@ -369,10 +369,10 @@ export default function View_Item_Request_Details() {
                           </div>
                         </li>
                       </ul> */}
-                      {console.log(
+                      {/* {console.log(
                         "wholeItemRequestData",
                         wholeItemRequestData
-                      )}
+                      )} */}
                       <ul className="timeline mb-0">
                         {wholeItemRequestData?.item_request?.workflows
                           // ?.slice()
@@ -387,7 +387,7 @@ export default function View_Item_Request_Details() {
                             ];
                             const user = workflow.assign_user; // fallback
 
-                            console.log("user", user);
+                            // console.log("user", user);
                             return (
                               <li
                                 className="timeline-item timeline-item-transparent"
@@ -435,7 +435,7 @@ export default function View_Item_Request_Details() {
                                     </div>
                                   </div>
 
-                                  {console.log(workflow.profile_photo)}
+                                  {/* {console.log(workflow.profile_photo)} */}
                                   <p>
                                     {workflow.status === "Pending"
                                       ? "Waiting for approval"

@@ -176,7 +176,7 @@ export const ServiceLocation2MasterProvider = ({ children }) => {
       // Decrypt Response
       // const decryptRes = decryptData(res)
 
-      console.log(res);
+      // console.log(res);
       if (res.success) {
         toast.success(res.message);
         handleClose("addNewServiceLocation2");

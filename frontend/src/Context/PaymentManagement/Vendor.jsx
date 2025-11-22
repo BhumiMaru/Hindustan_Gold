@@ -110,7 +110,7 @@ export const VendorProvider = ({ children }) => {
         // }
       );
 
-      console.log("res", res);
+      // console.log("res", res);
 
       // Decrypt Response
       // const decryptRes = decryptData(res)

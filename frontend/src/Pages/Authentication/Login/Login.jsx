@@ -17,11 +17,11 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("📤 Submitting login form:", form);
+    // console.log("📤 Submitting login form:", form);
 
     const result = await login(form);
 
-    console.log("✅ Login result:", result);
+    // console.log("✅ Login result:", result);
 
     if (result) {
       sessionStorage.setItem("activeMenu", "Dashboard");
@@ -48,7 +48,8 @@ export default function Login() {
                 <div className="app-brand justify-content-center mb-6">
                   <div className="col-lg-12 text-center">
                     <img
-                      src="assets/img/logo_vertical.png"
+                      // src="assets/img/logo_vertical.png"
+                      src={`${publicUrl}assets/img/logo_vertical.png`}
                       className="img-fluid"
                       alt="Logo"
                       style={{ maxWidth: "52%" }}

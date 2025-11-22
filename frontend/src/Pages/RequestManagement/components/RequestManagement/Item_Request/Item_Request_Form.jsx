@@ -527,7 +527,7 @@ export default function Item_Request_Form() {
   } = useItemRequest();
   const { itemMaster, fetchItemMaster } = useItemMaster();
   const [isPurpose, setIsPurpose] = useState(false);
-  console.log("type", type);
+  // console.log("type", type);
   // FIXED: Enhanced useEffect for data loading
   useEffect(() => {
     // console.log("Component mounted with type:", type, "id:", id);
@@ -552,7 +552,7 @@ export default function Item_Request_Form() {
     }
   }, [id, type]);
 
-  console.log("itemMaster itemMaster", itemMaster);
+  // console.log("itemMaster itemMaster", itemMaster);
 
   // ✅ ADD THIS HERE (just before return)
   const selectedItem = itemMaster.find(
@@ -598,7 +598,7 @@ export default function Item_Request_Form() {
       ...(id && { id: itemRequestData.request_id }),
     };
 
-    console.log("Submitting payload:", payload);
+    // console.log("Submitting payload:", payload);
 
     try {
       if (id) {
@@ -642,7 +642,7 @@ export default function Item_Request_Form() {
                   const selectedItem = itemMaster.find(
                     (itm) => Number(itm.id) === selectedId
                   );
-                  console.log("selectedId", selectedItem);
+                  // console.log("selectedId", selectedItem);
 
                   const storage = selectedItem?.storage_locations?.[0];
                   setItemRequestData((prev) => ({
@@ -881,7 +881,7 @@ export default function Item_Request_Form() {
               />
             </div>
 
-            {console.log("itemRequestData", itemRequestData)}
+            {/* {console.log("itemRequestData", itemRequestData)} */}
 
             {/* Unit of Measure */}
             <div className="col-sm-3 mb-4">

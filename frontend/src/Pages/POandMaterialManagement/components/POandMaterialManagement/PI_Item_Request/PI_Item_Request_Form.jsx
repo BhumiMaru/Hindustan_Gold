@@ -752,7 +752,7 @@ export default function PI_Item_Request_Form() {
     fetchItemMaster();
   }, []);
 
-  console.log("itemMaster", itemMaster);
+  // console.log("itemMaster", itemMaster);
 
   useEffect(() => {
     if (id && itemMaster.length > 0) {
@@ -1048,9 +1048,9 @@ export default function PI_Item_Request_Form() {
     }
   };
 
-  console.log("isPurpose", isPurpose);
-  console.log("isStock", isStock);
-  console.log(quantityError);
+  // console.log("isPurpose", isPurpose);
+  // console.log("isStock", isStock);
+  // console.log(quantityError);
 
   return (
     <>

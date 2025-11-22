@@ -7,6 +7,7 @@ import { decryptData } from "../../../../../utils/decryptData";
 import { useGetQuote } from "../../../../../Context/PIAndPoManagement/GetQuote";
 import axios from "axios";
 const base_url = import.meta.env.VITE_API_BASE_URL;
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 // export default function Vendor_fill_quote({
 //   pi_get_quote_id,
@@ -29,7 +30,7 @@ export default function Vendor_fill_quote() {
   } = useGetQuote();
   const navigate = useNavigate();
 
-  console.log("quoteDataForEmail", quoteDataForEmail);
+  // console.log("quoteDataForEmail", quoteDataForEmail);
 
   const [newVendorData, setNewVendorData] = useState([]);
 
@@ -280,7 +281,7 @@ export default function Vendor_fill_quote() {
         }
       );
 
-      console.log("res data", res);
+      // console.log("res data", res);
       // console.log("after newVendorData ", newVendorData);
 
       // Check backend response (assuming backend sends { status: true/false, message: "" })
@@ -378,13 +379,17 @@ export default function Vendor_fill_quote() {
     <div data-bs-spy="scroll" className="scrollspy-example">
       <div className="container">
         <div className="row mb-6">
-          <div>
+          {/* <div>
             <div>get Guote Id : {decryptEmailData?.getquoteid}</div>
             <div>vendor Id : {decryptEmailData?.vendorid}</div>
             <div>token :{decryptEmailData?.token}</div>
-          </div>
+          </div> */}
           <div className="col-12 text-center mt-10">
-            <img src="assets/img/logo_vertical.png" style={{ height: 100 }} />
+            <img
+              // src="assets/img/logo_vertical.png"
+              src={`${publicUrl}assets/img/logo_vertical.png`}
+              style={{ height: 100 }}
+            />
           </div>
           <div className="col-12 text-center mt-6">
             <h3>Item Quotation</h3>

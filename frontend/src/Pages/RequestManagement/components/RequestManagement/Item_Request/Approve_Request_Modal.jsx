@@ -18,14 +18,14 @@ export default function Approve_Request_Modal() {
   } = useItemRequest();
   const { CreatePIRequest } = usePIRequest();
 
-  console.log("itemRequestId", itemRequestId);
-  console.log("item_Request_Id", item_Request_Id);
-  console.log("itemRequestData", itemRequestData);
-  console.log("wholeItemRequestData", wholeItemRequestData);
+  // console.log("itemRequestId", itemRequestId);
+  // console.log("item_Request_Id", item_Request_Id);
+  // console.log("itemRequestData", itemRequestData);
+  // console.log("wholeItemRequestData", wholeItemRequestData);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("hello");
+    // console.log("hello");
     const payload = {
       // ...itemRequestData,
       // Ensure we're sending the correct ID for edit
@@ -70,7 +70,7 @@ export default function Approve_Request_Modal() {
       // receiving_person: itemRequestData.receiving_person,
     };
 
-    console.log("Submitting payload:", payload);
+    // console.log("Submitting payload:", payload);
 
     try {
       CreatePIRequest(payload);
@@ -114,10 +114,10 @@ export default function Approve_Request_Modal() {
                 Will this service request be completed in-house or by an
                 external provider?
               </h5>
-              {/*  <p class="text-muted small mt-1">This action cannot be undone.</p>*/}
+              {/*  <p className="text-muted small mt-1">This action cannot be undone.</p>*/}
             </div>
             <div className="modal-footer justify-content-center">
-              {/*  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+              {/*  <button type="button" className="btn btn-outline-secondary" data-bs-dismiss="modal">
                 Cancel
             </button>*/}
               <button

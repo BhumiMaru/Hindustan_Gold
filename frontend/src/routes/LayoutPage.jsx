@@ -161,7 +161,7 @@ export default function LayoutPage() {
     sendRequestMatch ||
     thankyouMatch;
 
-  console.log(isPublicRoute);
+  // console.log(isPublicRoute);
 
   // const isSendRequestRoute = matchPath(
   //   "/send-request/:data",

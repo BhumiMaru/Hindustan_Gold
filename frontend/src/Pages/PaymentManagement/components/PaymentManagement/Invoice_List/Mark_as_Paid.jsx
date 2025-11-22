@@ -37,12 +37,12 @@ export default function Mark_as_Paid({ id }) {
       setIsBtnLoading(true);
 
       if (invoiceDetail.is_payment_advance_or_partial === "Yes") {
-        console.log({
-          amount: invoiceDetail.taxable_amount,
-          remark: "Payment Done",
-          type_of_payment: 2,
-          invoice_file: null,
-        });
+        // console.log({
+        //   amount: invoiceDetail.taxable_amount,
+        //   remark: "Payment Done",
+        //   type_of_payment: 2,
+        //   invoice_file: null,
+        // });
 
         setPaymentData({
           amount: invoiceDetail.taxable_amount,
@@ -53,7 +53,7 @@ export default function Mark_as_Paid({ id }) {
 
         // handleClose("markaspaid");
       } else {
-        console.log("paymentData", paymentData);
+        // console.log("paymentData", paymentData);
 
         // ✅ THIS is important
         await paymentPartial(paymentData);

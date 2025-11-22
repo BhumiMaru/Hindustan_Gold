@@ -36,8 +36,8 @@ export default function Invoice_List_Form({
     // itemIdInvoice,
     btnLoading,
   } = useInvoice();
-  console.log("poIdInvoice", poIdInvoice);
-  console.log("poIdInvoice typeof", typeof poIdInvoice);
+  // console.log("poIdInvoice", poIdInvoice);
+  // console.log("poIdInvoice typeof", typeof poIdInvoice);
   const { vendorFilter, setVendorFilter, getVendorFilter } = useVendor();
   const { filterSubCategory, fetchSubCategoryFilter } = useSubCategory();
   // const [subCategoryId, setSubCategoryId] = useState(null);
@@ -45,15 +45,15 @@ export default function Invoice_List_Form({
   // const [itemName, setItemName] = useState("all");
   const { fetchItemFilter, filterItem } = useItemRequest();
   // console.log("grnId grnId", id);
-  console.log("type", type);
+  // console.log("type", type);
   // console.log("vendorIdInvoice", vendorIdInvoice);
   // console.log("itemIdInvoice", itemIdInvoice);
   // console.log("poIdInvoice", poIdInvoice);
 
-  useEffect(() => {
-    console.log("Current vendor state:", vendor);
-    console.log("Current invoiceData:", invoiceData);
-  }, [vendor, invoiceData]);
+  // useEffect(() => {
+  //   console.log("Current vendor state:", vendor);
+  //   console.log("Current invoiceData:", invoiceData);
+  // }, [vendor, invoiceData]);
 
   // useEffect(() => {
   //   if (type == 1 || type == 2) {
@@ -68,16 +68,16 @@ export default function Invoice_List_Form({
   // auto fill sub category , vendor and item id when type is 1 or 2
 
   // In your Invoice_List_Form component, add this useEffect to debug the select
-  useEffect(() => {
-    console.log("Vendor dropdown debug:", {
-      vendorValue: vendor,
-      vendorOptions: vendorFilter?.map((item) => ({
-        value: item.id,
-        label: item.vendor_name,
-      })),
-      selectedOption: vendorFilter?.find((item) => item.id === vendor),
-    });
-  }, [vendor]);
+  // useEffect(() => {
+  //   console.log("Vendor dropdown debug:", {
+  //     vendorValue: vendor,
+  //     vendorOptions: vendorFilter?.map((item) => ({
+  //       value: item.id,
+  //       label: item.vendor_name,
+  //     })),
+  //     selectedOption: vendorFilter?.find((item) => item.id === vendor),
+  //   });
+  // }, [vendor]);
 
   useEffect(() => {
     if (invoiceData.item_id && filterItem?.length > 0) {
@@ -85,7 +85,7 @@ export default function Invoice_List_Form({
         (item) => item.item_id === invoiceData.item_id
       );
       if (itemExists && itemName !== invoiceData.item_id) {
-        console.log("Auto-selecting item:", invoiceData.item_id);
+        // console.log("Auto-selecting item:", invoiceData.item_id);
         setItemName(invoiceData.item_id);
       }
     }
@@ -127,7 +127,7 @@ export default function Invoice_List_Form({
     }
   }, [subCategoryId]);
 
-  console.log("subCategoryId", subCategoryId);
+  // console.log("subCategoryId", subCategoryId);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -190,9 +190,9 @@ export default function Invoice_List_Form({
 
     if (file) formData.append("invoice_file", file);
 
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
+    // for (let [key, value] of formData.entries()) {
+    //   console.log(`${key}:`, value);
+    // }
 
     let res;
     if (invoiceId) {
@@ -201,7 +201,7 @@ export default function Invoice_List_Form({
       res = await createInvoice(formData);
     }
 
-    console.log("res", res);
+    // console.log("res", res);
     if (res?.status) {
       onClose();
     }
@@ -325,7 +325,7 @@ export default function Invoice_List_Form({
                             isTextRequired
                           />
                         </div>
-                        {console.log("CustomSelect Debug:", {
+                        {/* {console.log("CustomSelect Debug:", {
                           vendorValue: vendor,
                           vendorType: typeof vendor,
                           options: vendorFilter?.map((item) => ({
@@ -333,7 +333,7 @@ export default function Invoice_List_Form({
                             valueType: typeof item.id,
                             label: item.vendor_name,
                           })),
-                        })}
+                        })} */}
                       </div>
                     </div>
                   </>

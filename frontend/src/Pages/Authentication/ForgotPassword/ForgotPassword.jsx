@@ -80,7 +80,7 @@ export default function ForgotPassword() {
                 <div className="app-brand justify-content-center mb-6">
                   <div className="col-lg-12 text-center">
                     <img
-                      src="assets/img/logo_vertical.png"
+                      src={`${publicUrl}assets/img/logo_vertical.png`}
                       style={{ maxWidth: "52%" }}
                     />
                   </div>
@@ -117,7 +117,11 @@ export default function ForgotPassword() {
                           <button
                             type="button"
                             className="btn btn-link p-0 text-primary"
-                            style={{ color: "#696CFF", fontWeight: 500 }}
+                            style={{
+                              color: "#696CFF",
+                              fontWeight: 500,
+                              fontSize: "13px",
+                            }}
                             onClick={() => {
                               setIsOtpStep(false);
                               setOtp("");
@@ -152,9 +156,11 @@ export default function ForgotPassword() {
                       </div>
                     )}
 
-                    <button
+                    {/* <button
                       className="btn btn-primary d-flex w-100"
-                      disabled={isOtpStep ? isVerifyOtp : sendOTPLoading}
+                      disabled={
+                        isOtpStep ? isVerifyOtp : sendOTPLoading && !email
+                      }
                     >
                       {isOtpStep
                         ? isVerifyOtp
@@ -162,18 +168,43 @@ export default function ForgotPassword() {
                             <div className="spinner-border spinner-white me-2" />
                           )}
                       {isOtpStep ? "Verify OTP" : "Send OTP"}
+                    </button> */}
+                    <button
+                      className="btn btn-primary d-flex w-100 justify-content-center align-items-center gap-2"
+                      disabled={
+                        isOtpStep
+                          ? isVerifyOtp || !otp
+                          : sendOTPLoading || !email
+                      }
+                    >
+                      {isOtpStep ? (
+                        isVerifyOtp ? (
+                          <div className="spinner-border spinner-white me-2" />
+                        ) : null
+                      ) : (
+                        sendOTPLoading && (
+                          <div className="spinner-border spinner-white me-2" />
+                        )
+                      )}
+
+                      {isOtpStep ? "Verify OTP" : "Send OTP"}
                     </button>
+
                     {isOtpStep && (
                       <div className="w-100 text-center mt-2">
                         {timer > 0 ? (
-                          <small style={{ color: "#566A7F" }}>
+                          <small style={{ color: "#566A7F", fontSize: "13px" }}>
                             Resend OTP in <strong>{timer}</strong>s
                           </small>
                         ) : (
                           <button
                             type="button"
                             className="btn btn-link p-0 text-primary"
-                            style={{ color: "#FF3E1D", fontWeight: 500 }}
+                            style={{
+                              color: "#FF3E1D",
+                              fontWeight: 500,
+                              fontSize: "13px",
+                            }}
                             onClick={handleResend}
                           >
                             Resend OTP
@@ -187,7 +218,7 @@ export default function ForgotPassword() {
 
                 {/* Back to login */}
                 <div className="text-center mt-4">
-                  <a href="/login" className="d-flex justify-content-center">
+                  <a href="/" className="d-flex justify-content-center">
                     <i className="icon-base ti tabler-chevron-left me-1_5" />
                     Back to login
                   </a>

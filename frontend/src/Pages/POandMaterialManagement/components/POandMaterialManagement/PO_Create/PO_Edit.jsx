@@ -161,7 +161,7 @@ export default function PO_Edit() {
                           <span>Unit&nbsp;Price</span>
 
                           <select
-                            class="form-select-sm w-auto"
+                            className="form-select-sm w-auto"
                             value={formData?.default_rupees}
                             onChange={(e) =>
                               handleInputChange(
@@ -185,7 +185,7 @@ export default function PO_Edit() {
                     <tbody>
                       {formData?.items?.map((item, index) => (
                         <tr key={index}>
-                          {console.log("item", item)}
+                          {/* {console.log("item", item)} */}
                           <td>{index + 1}</td>
                           <td>{item?.item_name}</td>
                           {/* <td>{item?.item_name}</td> */}

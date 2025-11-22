@@ -28,7 +28,7 @@ export default function Item_Master_Table({ search }) {
     );
   });
 
-  console.log("itemMaster", itemMaster);
+  // console.log("itemMaster", itemMaster);
 
   const handleEditClick = async (item) => {
     // Fetch only subcategory
@@ -51,7 +51,7 @@ export default function Item_Master_Table({ search }) {
     }
   };
 
-  console.log("filteredData", filteredData);
+  // console.log("filteredData", filteredData);
 
   return (
     <>

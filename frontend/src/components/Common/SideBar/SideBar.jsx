@@ -239,6 +239,7 @@ export default function SideBar() {
               <span className="text-primary">
                 <img
                   src={`${publicUrl}assets/img/logo.png`}
+                  // src="assets/img/logo.png"
                   className="img-fluid"
                 />
               </span>

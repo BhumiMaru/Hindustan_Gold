@@ -27,7 +27,7 @@ export default function Invoice_details() {
     paymentDelete,
   } = useInvoice();
   // console.log("userPermission", userPermission);
-  console.log("invoiceDetail", invoiceDetail);
+  // console.log("invoiceDetail", invoiceDetail);
 
   const getAuthData = sessionStorage.getItem("authData");
   const decryptAuthData = decryptData(getAuthData);
@@ -169,8 +169,8 @@ export default function Invoice_details() {
             >
               Reject
             </button>
-            {/*  <div class="d-flex gap-4"><button class="btn btn-label-secondary waves-effect">Discard</button>*/}
-            {/*  <a href="po-create.html" class="btn btn-info waves-effect btn-sm"
+            {/*  <div className="d-flex gap-4"><button className="btn btn-label-secondary waves-effect">Discard</button>*/}
+            {/*  <a href="po-create.html" className="btn btn-info waves-effect btn-sm"
                            data-bs-toggle="modal"
                            data-bs-target="#InvoiceModel">Add Invoice</a>*/}
           </div>
@@ -464,7 +464,7 @@ export default function Invoice_details() {
                 <div className="card-body">
                   <ul className="timeline mb-0">
                     {invoiceWorkflowDetails?.map((step, index) => {
-                      console.log("steps", step);
+                      // console.log("steps", step);
                       const formattedDate = step?.detail
                         ? new Date(step?.detail?.create_at)
                             .toLocaleString("en-GB", {
@@ -629,7 +629,7 @@ export default function Invoice_details() {
                             11-08-2025&nbsp;11:25&nbsp;AM
                           </small>
                         </div>
-                        <p class="mb-2">6 team members in a project</p>
+                        <p className="mb-2">6 team members in a project</p>
                         <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
                           <div className="d-flex flex-wrap align-items-center mb-50">
                             <div className="avatar avatar-sm me-2">

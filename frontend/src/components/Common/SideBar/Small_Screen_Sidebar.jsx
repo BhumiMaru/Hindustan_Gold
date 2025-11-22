@@ -234,8 +234,8 @@ export default function Small_Screen_Sidebar({ onClose }) {
               </span>
             </span>
             {/* </span>
-                     <span class="app-brand-text demo menu-text fw-bold ms-3">
-                         <h4 class="brand-text mb-0"
+                     <span className="app-brand-text demo menu-text fw-bold ms-3">
+                         <h4 className="brand-text mb-0"
                              style="font-size:1.1rem;font-weight:600;line-height:1.1;margin-bottom:0;text-align:center;letter-spacing:0.5px;">Hindustan Gold</h4>
                            <div style="font-size: 0.7rem;font-weight:400;letter-spacing:0.5px;text-align:center;margin-top:0.15rem;margin-bottom:0.5rem;color:#888;">ERP Management System</div></span>*/}
           </a>

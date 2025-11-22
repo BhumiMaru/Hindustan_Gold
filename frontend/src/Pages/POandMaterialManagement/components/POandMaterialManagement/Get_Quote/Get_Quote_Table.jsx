@@ -140,7 +140,7 @@ export default function Get_Quote_Table() {
                         <tbody>
                           {item.piget_quate_items.map((items, index) => (
                             <tr key={index}>
-                              {console.log("items", items)}
+                              {/* {console.log("items", items)} */}
                               <td>
                                 <div className="ms-4">
                                   {items?.pi_request_item?.item_name}

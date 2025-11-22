@@ -91,7 +91,7 @@ export default function Item_Request_Table({ search }) {
             </tr>
           ) : (
             filteredData.reverse().map((item, index) => {
-              console.log("item", item);
+              // console.log("item", item);
               return (
                 <tr key={index}>
                   <td>
@@ -195,13 +195,13 @@ export default function Item_Request_Table({ search }) {
                                 onClick={() => {
                                   const workflow_id = item?.id;
                                   const item_request_id = item?.item_request_id;
-                                  console.log("hh", item_request_id); // ✅ logs item_request_id
+                                  // console.log("hh", item_request_id); //  logs item_request_id
 
                                   if (
                                     item.item_type === "service" &&
                                     item?.task_level === 4
                                   ) {
-                                    console.log("hhh");
+                                    // console.log("hhh");
                                     set_ItemRequest_Id(item_request_id); // store item_request_id
                                     setItemRequestId(workflow_id); // store workflow_id
                                     fetchItemRequestById(workflow_id);

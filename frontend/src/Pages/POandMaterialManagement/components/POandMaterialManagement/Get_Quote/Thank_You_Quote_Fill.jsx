@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function Thank_You_Quote_Fill() {
   return (
@@ -13,7 +14,8 @@ export default function Thank_You_Quote_Fill() {
       {/* Logo Section */}
       <div className="mb-4">
         <img
-          src="/assets/img/logo_vertical.png"
+          // src="/assets/img/logo_vertical.png"
+          src={`${publicUrl}assets/img/logo_vertical.png`}
           alt="Company Logo"
           style={{ height: 100 }}
         />

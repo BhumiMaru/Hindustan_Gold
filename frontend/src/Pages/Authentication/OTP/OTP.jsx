@@ -11,7 +11,7 @@ export default function OTP() {
   const decryptEmail = decryptData(getEmailFromSession);
   const extractencryptEmail = decryptData(decryptEmail);
 
-  console.log("extractencryptEmail", extractencryptEmail);
+  // console.log("extractencryptEmail", extractencryptEmail);
 
   useEffect(() => {
     if (timer === 0) return;
@@ -47,7 +47,7 @@ export default function OTP() {
                 <div className="app-brand justify-content-center mb-6">
                   <div className="col-lg-12 text-center">
                     <img
-                      src="assets/img/logo_vertical.png"
+                      src={`${publicUrl}assets/img/logo_vertical.png`}
                       style={{ maxWidth: "52%" }}
                     />
                   </div>
@@ -114,7 +114,7 @@ export default function OTP() {
                 </form>
 
                 <div className="text-center">
-                  <a href="/login" className="d-flex justify-content-center">
+                  <a href="/" className="d-flex justify-content-center">
                     <i className="icon-base ti tabler-chevron-left scaleX-n1-rtl me-1_5" />
                     Back to login
                   </a>
