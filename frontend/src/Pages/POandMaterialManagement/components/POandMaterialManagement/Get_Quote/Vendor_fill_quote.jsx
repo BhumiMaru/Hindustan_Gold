@@ -379,11 +379,11 @@ export default function Vendor_fill_quote() {
     <div data-bs-spy="scroll" className="scrollspy-example">
       <div className="container">
         <div className="row mb-6">
-          <div>
+          {/* <div>
             <div>get Guote Id : {decryptEmailData?.getquoteid}</div>
             <div>vendor Id : {decryptEmailData?.vendorid}</div>
             <div>token :{decryptEmailData?.token}</div>
-          </div>
+          </div> */}
           <div className="col-12 text-center mt-10">
             <img
               // src="assets/img/logo_vertical.png"

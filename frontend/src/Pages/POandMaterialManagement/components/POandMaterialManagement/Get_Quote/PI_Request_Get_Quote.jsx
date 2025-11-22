@@ -919,6 +919,8 @@ export default function PI_Request_Get_Quote() {
                             Vendor Approve
                           </button>
                         ) : null} */}
+                        {console.log("quoteData", quoteData)}
+                        {console.log("pastVendor", pastVendor)}
                         {quoteData.po_status === 0 &&
                         pastVendor.quote_status === "Pending" ? (
                           // <button
