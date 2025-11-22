@@ -4,6 +4,7 @@ import { useAuth } from "../../Context/Authentication/LoginContext";
 import { toast } from "react-toastify";
 import { strongPasswordRegex } from "../../utils/validators";
 const fileUrl = import.meta.env.VITE_FILE_URL;
+const publicUrl = import.meta.env.VITE_PUBLIC_URL;
 
 export default function Profile() {
   const {
@@ -78,7 +79,11 @@ export default function Profile() {
               <div className="user-profile-header d-flex flex-column flex-lg-row text-sm-start text-center mb-5">
                 <div className="flex-shrink-0 mt-n2 mx-sm-0 mx-auto">
                   <img
-                    src={`${fileUrl}/storage/users/${userData?.profile_photo}`}
+                    src={
+                      userData?.profile_photo
+                        ? `${fileUrl}/storage/users/${userData?.profile_photo}`
+                        : `${publicUrl}assets/img/avatars/user.png`
+                    }
                     alt="user image"
                     className="d-block h-auto ms-0 ms-sm-6 rounded user-profile-img"
                   />
