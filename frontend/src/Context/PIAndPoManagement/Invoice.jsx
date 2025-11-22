@@ -99,7 +99,7 @@ export const InvoiceProvider = ({ children }) => {
         per_page: perPage,
       };
 
-      console.log("params", params);
+      // console.log("params", params);
 
       const res = await getData(ENDPOINTS.INVOICE.LIST, params);
 
@@ -153,7 +153,7 @@ export const InvoiceProvider = ({ children }) => {
       // const decryptRes = decryptData(res)
 
       // console.log("res.data", res);
-      console.log("formData", formData);
+      // console.log("formData", formData);
       setInvoiceData(res);
       if (res?.status === true) {
         toast.success(res.message || "Invoice created successfully");
@@ -218,8 +218,8 @@ export const InvoiceProvider = ({ children }) => {
       // Encryt Payload
       // const encryptPayload = encryptData(formData);
 
-      console.log("id id", id);
-      console.log("id id typeof", typeof id);
+      // console.log("id id", id);
+      // console.log("id id typeof", typeof id);
       formData.append("id", id);
 
       const res = await postData(
@@ -417,7 +417,7 @@ export const InvoiceProvider = ({ children }) => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      console.log("partial res", res);
+      // console.log("partial res", res);
 
       // Decrypt Response
       // const decryptRes = decryptData(res)
@@ -475,7 +475,7 @@ export const InvoiceProvider = ({ children }) => {
         `${ENDPOINTS.INVOICE.WORKFLOW}?invoice_id=${invoiceId}`
       );
 
-      console.log("res", res);
+      // console.log("res", res);
 
       if (res.status) {
         invoiceDetails(invoiceId);
@@ -548,10 +548,10 @@ export const InvoiceProvider = ({ children }) => {
   const invoiceDelete = async (id) => {
     try {
       const res = await deleteData(`${ENDPOINTS.INVOICE.INVOICE_DELETE}/${id}`);
-      console.log(
-        "`${ENDPOINTS.INVOICE.INVOICE_DELETE}/${id}`",
-        `${ENDPOINTS.INVOICE.INVOICE_DELETE}/${id}`
-      );
+      // console.log(
+      //   "`${ENDPOINTS.INVOICE.INVOICE_DELETE}/${id}`",
+      //   `${ENDPOINTS.INVOICE.INVOICE_DELETE}/${id}`
+      // );
 
       if (res.status || res.success) {
         toast.success(res.message);

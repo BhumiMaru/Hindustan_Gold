@@ -28,10 +28,10 @@ export default function Payment_Paritals({ id }) {
   const handleSave = async () => {
     try {
       setIsBtnLoading(true);
-      console.log("paymentData", paymentData);
+      // console.log("paymentData", paymentData);
       const res = await paymentPartial(paymentData);
 
-      console.log("res", res);
+      // console.log("res", res);
 
       // ✅ Close modal only if payment was successful
       if (res?.status === true) {

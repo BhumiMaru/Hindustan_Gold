@@ -60,8 +60,8 @@ export default function ResetPassword() {
                 {/* Logo */}
                 <div className="app-brand justify-content-center mb-6">
                   <div className=" col-lg-12 text-center">
-                    {/*<span class="app-brand-logo demo">
-              <span class="text-primary">
+                    {/*<span className="app-brand-logo demo">
+              <span className="text-primary">
                 <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                     fill-rule="evenodd"
@@ -88,9 +88,9 @@ export default function ResetPassword() {
                 </svg>
               </span>
             </span>
-            <span class="app-brand-text demo text-heading fw-bold">Vuexy</span>*/}
+            <span className="app-brand-text demo text-heading fw-bold">Vuexy</span>*/}
                     <img
-                      src="assets/img/logo_vertical.png"
+                      src={`${publicUrl}assets/img/logo_vertical.png`}
                       // className="img-fluid"
                       style={{
                         maxWidth: "52%",
@@ -167,7 +167,9 @@ export default function ResetPassword() {
                   </div>
                   <button
                     className="btn btn-primary d-flex w-100 mb-6 waves-effect waves-light"
-                    disabled={isResetPassword}
+                    disabled={
+                      isResetPassword || !newPassword || !confirmPassword
+                    }
                   >
                     {isResetPassword && (
                       <div

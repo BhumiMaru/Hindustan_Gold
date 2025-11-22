@@ -41,7 +41,7 @@ export default function GRN_List_List() {
 
   // Location for search filter by url
   const location = useLocation();
-  console.log("location", location);
+  // console.log("location", location);
   const navigate = useNavigate();
   const [urlParamsApplied, setUrlParamsApplied] = useState(false);
 

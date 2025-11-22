@@ -9,7 +9,7 @@ export default function Vendor_detail_Modal() {
   useEffect(() => {
     vendorDetails(vendorEditId);
   }, [vendorEditId]);
-  console.log("vendor", vendorDetail);
+  // console.log("vendor", vendorDetail);
   return (
     <>
       {/* -------------------START VENDOR DETAILS--------------------- */}

@@ -29,7 +29,7 @@ export default function Vendor_fill_quote() {
   } = useGetQuote();
   const navigate = useNavigate();
 
-  console.log("quoteDataForEmail", quoteDataForEmail);
+  // console.log("quoteDataForEmail", quoteDataForEmail);
 
   const [newVendorData, setNewVendorData] = useState([]);
 
@@ -280,7 +280,7 @@ export default function Vendor_fill_quote() {
         }
       );
 
-      console.log("res data", res);
+      // console.log("res data", res);
       // console.log("after newVendorData ", newVendorData);
 
       // Check backend response (assuming backend sends { status: true/false, message: "" })

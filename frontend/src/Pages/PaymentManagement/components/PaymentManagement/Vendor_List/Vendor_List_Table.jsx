@@ -50,7 +50,7 @@ export default function Vendor_List_Table() {
             </tr>
           ) : (
             vendorList.map((vendor, index) => {
-              console.log("vendor", vendor);
+              // console.log("vendor", vendor);
               return (
                 <tr key={vendor.id}>
                   <td>

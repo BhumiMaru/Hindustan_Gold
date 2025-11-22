@@ -20,7 +20,7 @@ export default function PO_List_Table() {
   } = usePOCreate();
   const { handleOpen, modal } = useUIContext();
   const [expandedRow, setExpandedRow] = useState(false);
-  console.log("PoList", PoList);
+  // console.log("PoList", PoList);
 
   useEffect(() => {
     getPoDetails(poDetails.id);
@@ -56,8 +56,8 @@ export default function PO_List_Table() {
   useEffect(() => {
     fetchUserPermission(user.id);
   }, [user.id]);
-  console.log("userPermission", userPermission);
-  console.log("PoList", PoList);
+  // console.log("userPermission", userPermission);
+  // console.log("PoList", PoList);
 
   return (
     <>
@@ -172,7 +172,7 @@ export default function PO_List_Table() {
                             } `}
                             onClick={() => {
                               PoApprove(po?.id);
-                              console.log(" poDetails.id", po.id);
+                              // console.log(" poDetails.id", po.id);
                             }}
                           >
                             Approve
@@ -193,7 +193,7 @@ export default function PO_List_Table() {
                           </button>
                         </div>
                       )}
-                      {console.log("po", po)}
+                      {/* {console.log("po", po)} */}
                       <div className="d-inline-flex gap-2">
                         {po.po_generat_status === 1 && (
                           <Link
@@ -275,7 +275,7 @@ export default function PO_List_Table() {
                         <tbody>
                           {po?.items?.map((poItem, index) => (
                             <tr key={index}>
-                              {console.log("poitem", poItem)}
+                              {/* {console.log("poitem", poItem)} */}
                               <td>
                                 {" "}
                                 <div className="ms-4">

@@ -94,9 +94,9 @@ export default function PI_Request_Table({ userPermission }) {
   // }
 
   // console.log("userrrrrrrrrrrrrrrrrrr", userPermission);
-  {
-    console.log("piRequest", piRequest);
-  }
+  // {
+  //   console.log("piRequest", piRequest);
+  // }
   return (
     <>
       {/* ----------------START PI REQUEST TABLE------------------ */}
@@ -134,7 +134,7 @@ export default function PI_Request_Table({ userPermission }) {
           ) : (
             piRequest?.map((pi, index) => (
               <React.Fragment key={`pi-${pi.id}`}>
-                {console.log("pi", pi)}
+                {/* {console.log("pi", pi)} */}
                 <tr key={`row-${pi.id}`}>
                   <td
                     onClick={() => toggleRow(pi.id)}
@@ -816,7 +816,7 @@ export default function PI_Request_Table({ userPermission }) {
                         <tbody>
                           {pi?.piitems?.map((piItem) => (
                             <tr key={`piItem-${pi.id}-${piItem.id}`}>
-                              {console.log("pi items", piItem)}
+                              {/* {console.log("pi items", piItem)} */}
                               {/* {console.log("piitem", piItem)} */}
                               {/* {activeTab === "approval_request" ||
                               (activeTab === "all_request" && ( */}

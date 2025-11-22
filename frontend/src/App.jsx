@@ -10,7 +10,7 @@ function App() {
   return (
     <>
       {/* ----------Start App---------- */}
-      <BrowserRouter>
+      <BrowserRouter basename="/erp/frontend">
         <AuthProvider>
           <LayoutPage />
         </AuthProvider>

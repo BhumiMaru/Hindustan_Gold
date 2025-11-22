@@ -558,7 +558,7 @@ export const ItemRequestProvider = ({ children }) => {
       if (res.data.success) {
         await getItemRequestData();
       }
-      console.log("res", res);
+      // console.log("res", res);
 
       // Decrypt Response
       // const decryptRes = decryptData(res)
@@ -646,7 +646,7 @@ export const ItemRequestProvider = ({ children }) => {
         workflowId: itemRequestId,
       });
 
-      console.log("API Response:", res);
+      // console.log("API Response:", res);
       setWholeItemRequestData(res.data);
 
       if (res.status && res.data) {
@@ -749,7 +749,7 @@ export const ItemRequestProvider = ({ children }) => {
       // Decrypt Response
       // const decryptRes = decryptData(res)
 
-      console.log("Edit Response:", res);
+      // console.log("Edit Response:", res);
 
       if (res.status) {
         setItemRequestData(res.data);

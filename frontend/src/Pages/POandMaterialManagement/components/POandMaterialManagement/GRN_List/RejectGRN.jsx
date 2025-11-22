@@ -3,7 +3,7 @@ import { useUIContext } from "../../../../../Context/UIContext";
 import { useGRN } from "../../../../../Context/PIAndPoManagement/GRN";
 
 export default function RejectGRN({ id }) {
-  console.log("iddddddd", id);
+  // console.log("iddddddd", id);
   const { handleClose } = useUIContext();
   const { GRNReject, GRNDetails, grnDetails } = useGRN();
   //   const { rejectRequest, itemRequestData } = useItemRequest();
@@ -57,10 +57,10 @@ export default function RejectGRN({ id }) {
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
               />
-              {/*  <p class="text-muted small mt-1">This action cannot be undone.</p>*/}
+              {/*  <p className="text-muted small mt-1">This action cannot be undone.</p>*/}
             </div>
             <div className="modal-footer justify-content-center">
-              {/*  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+              {/*  <button type="button" className="btn btn-outline-secondary" data-bs-dismiss="modal">
                 Cancel
             </button>*/}
               <button

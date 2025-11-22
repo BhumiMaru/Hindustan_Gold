@@ -84,7 +84,7 @@ export default function PO_Details() {
     getGrnList();
   }, [poDetails?.id]);
 
-  console.log("grnList", grnList);
+  // console.log("grnList", grnList);
 
   const getAuthData = sessionStorage.getItem("authData");
   const decryptAuthData = decryptData(getAuthData);
@@ -127,7 +127,7 @@ export default function PO_Details() {
     link.click();
   };
 
-  console.log("poDetails", poDetails);
+  // console.log("poDetails", poDetails);
   // console.log("po id", poIdInvoice);
   return (
     <>
@@ -175,7 +175,7 @@ export default function PO_Details() {
               </>
             )}
 
-            {/*  <div class="d-flex gap-4"><button class="btn btn-label-secondary waves-effect">Discard</button>*/}
+            {/*  <div className="d-flex gap-4"><button className="btn btn-label-secondary waves-effect">Discard</button>*/}
             {poDetails.status === "Reject" ? (
               <>
                 <span className="text-danger">
@@ -585,7 +585,7 @@ export default function PO_Details() {
                       </thead>
                       <tbody>
                         {grnList?.map((grn, index) => {
-                          console.log("grnn", grn);
+                          // console.log("grnn", grn);
                           return (
                             <tr key={index}>
                               <td>
@@ -898,9 +898,9 @@ export default function PO_Details() {
               <div className=" h-100">
                 <div className="card-body">
                   <ul className="timeline mb-0">
-                    {console.log("poWorkflowDetails", poWorkflowDetails)}
+                    {/* {console.log("poWorkflowDetails", poWorkflowDetails)} */}
                     {poWorkflowDetails?.map((po, index) => {
-                      console.log("po", po);
+                      // console.log("po", po);
                       const formateDate = po?.detail
                         ? new Date(po?.detail?.create_at)
                             .toLocaleString("en-GB", {
@@ -1055,7 +1055,7 @@ export default function PO_Details() {
                             11-08-2025&nbsp;11:25&nbsp;AM
                           </small>
                         </div>
-                        <p class="mb-2">6 team members in a project</p>
+                        <p className="mb-2">6 team members in a project</p>
                         <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
                           <div className="d-flex flex-wrap align-items-center mb-50">
                             <div className="avatar avatar-sm me-2">

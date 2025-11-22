@@ -149,7 +149,7 @@ export const UserCreationProvider = ({ children }) => {
           },
         }
       );
-      console.log("usss", res);
+      // console.log("usss", res);
 
       // Decrypt Response
       // const decryptRes = decryptData(res)
@@ -164,6 +164,28 @@ export const UserCreationProvider = ({ children }) => {
       //   toast.error(error.response.data.message);
       // }
       console.log("Error:", error);
+
+      // if (error.response && error.response.data) {
+      //   const { message, errors } = error.response.data;
+
+      //   // Show main message (e.g. "Validation error")
+      //   // if (message) {
+      //   //   toast.error(message);
+      //   // }
+
+      //   // Show field-specific validation errors
+      //   if (errors && typeof errors === "object") {
+      //     Object.entries(errors).forEach(([field, msgs]) => {
+      //       if (Array.isArray(msgs)) {
+      //         msgs.forEach((msg) => toast.error(`${field}: ${msg}`));
+      //       } else {
+      //         toast.error(`${field}: ${msgs}`);
+      //       }
+      //     });
+      //   }
+      // } else {
+      //   toast.error("Something went wrong. Please try again.");
+      // }
 
       if (error.response && error.response.data) {
         const { message, errors } = error.response.data;
@@ -184,7 +206,7 @@ export const UserCreationProvider = ({ children }) => {
           });
         }
       } else {
-        toast.error("Something went wrong. Please try again.");
+        toast.error(error.response.data.message);
       }
     } finally {
       setBtnLoading(false);
@@ -277,23 +299,44 @@ export const UserCreationProvider = ({ children }) => {
       console.error("User Update error:", error);
 
       // FIXED: Properly display validation errors
-      if (error.response && error.response.data) {
-        const errorData = error.response.data;
+      // if (error.response && error.response.data) {
+      //   const errorData = error.response.data;
 
-        // Handle validation errors (422)
-        if (errorData.errors) {
-          // Display each validation error
-          Object.values(errorData.errors).forEach((errorArray) => {
-            errorArray.forEach((errorMessage) => {
-              toast.error(errorMessage);
-            });
+      //   // Handle validation errors (422)
+      //   if (errorData.errors) {
+      //     // Display each validation error
+      //     Object.values(errorData.errors).forEach((errorArray) => {
+      //       errorArray.forEach((errorMessage) => {
+      //         toast.error(errorMessage);
+      //       });
+      //     });
+      //   } else {
+      //     // Handle other API errors
+      //     toast.error(errorData.message || "An error occurred");
+      //   }
+      // } else {
+      //   toast.error("Network error occurred");
+      // }
+      if (error.response && error.response.data) {
+        const { message, errors } = error.response.data;
+
+        // Show main message (e.g. "Validation error")
+        // if (message) {
+        //   toast.error(message);
+        // }
+
+        // Show field-specific validation errors
+        if (errors && typeof errors === "object") {
+          Object.entries(errors).forEach(([field, msgs]) => {
+            if (Array.isArray(msgs)) {
+              msgs.forEach((msg) => toast.error(`${field}: ${msg}`));
+            } else {
+              toast.error(`${field}: ${msgs}`);
+            }
           });
-        } else {
-          // Handle other API errors
-          toast.error(errorData.message || "An error occurred");
         }
       } else {
-        toast.error("Network error occurred");
+        toast.error(error.response.data.message);
       }
     } finally {
       setBtnLoading(false);
@@ -304,7 +347,7 @@ export const UserCreationProvider = ({ children }) => {
   const fetchUserById = async (id) => {
     try {
       const res = await postData(ENDPOINTS.USER_CREATION.DETAILS, { id });
-      console.log("res", res);
+      // console.log("res", res);
       const user = res.data;
       setUserCreationData({
         name: user?.name || "",

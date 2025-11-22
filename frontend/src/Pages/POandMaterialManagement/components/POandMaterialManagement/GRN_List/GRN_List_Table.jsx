@@ -9,7 +9,7 @@ import Loader from "../../../../../components/Common/Loader/Loader";
 export default function GRN_List_Table() {
   const { grnList, startEditing, pagination, setGrnId, loading } = useGRN();
   const { handleOpen, modal } = useUIContext();
-  console.log("grnList", grnList);
+  // console.log("grnList", grnList);
   return (
     <>
       {/* -------------START GRN LIST TABLE--------------- */}
@@ -110,7 +110,7 @@ export default function GRN_List_Table() {
                               await startEditing(grn.id);
                               setGrnId(grn.id);
                               handleOpen("editGRN");
-                              console.log("grn id", grn.id);
+                              // console.log("grn id", grn.id);
                             }}
                           >
                             Edit

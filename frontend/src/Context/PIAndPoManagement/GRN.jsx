@@ -148,7 +148,7 @@ export const GRNProvider = ({ children }) => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      console.log("rr", res);
+      // console.log("rr", res);
 
       // Decrypt Response
       // const decryptRes = decryptData(res)

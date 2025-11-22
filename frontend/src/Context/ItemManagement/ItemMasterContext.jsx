@@ -414,7 +414,7 @@ export const ItemMasterProvider = ({ children }) => {
     try {
       const res = await postData(ENDPOINTS.ITEM_MASTER.DETAILS, { id });
       const item = res.data;
-      console.log("item master", item);
+      // console.log("item master", item);
 
       // Based on the nested structure, adjust the mapping accordingly
       const getServiceLocationData = () => {

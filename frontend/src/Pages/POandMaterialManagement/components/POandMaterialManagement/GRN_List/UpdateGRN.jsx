@@ -25,15 +25,15 @@ export default function UpdateGRN({ id, onClose }) {
     getPoDetails(po_id);
   }, [po_id]);
 
-  console.log("grnId", grnId);
-  console.log("poDetails", poDetails);
-  console.log("grnData", grnData);
+  // console.log("grnId", grnId);
+  // console.log("poDetails", poDetails);
+  // console.log("grnData", grnData);
 
   // For new GRN, initialize from PO details
   useEffect(() => {
     if (!editId && poDetails?.items) {
       const initialItems = poDetails.items.map((item, index) => {
-        console.log("PO Item:", item);
+        // console.log("PO Item:", item);
         return {
           grn_item_id: null, // ✅ null for new items (no existing GRN item ID)
           po_item_id: item.id,
@@ -121,7 +121,7 @@ export default function UpdateGRN({ id, onClose }) {
       res = await CreateGRN(grnPayload);
     }
 
-    console.log("✅ API Response:", res);
+    // console.log("✅ API Response:", res);
 
     if (res?.status) {
       // console.log("🔄 Refreshing GRN List...");
@@ -131,10 +131,10 @@ export default function UpdateGRN({ id, onClose }) {
       GRNList({ po_id: Number(res?.data?.po_id) });
 
       // Also try to refresh the parent component's data
-      console.log(
-        "typeof getPoDetails === function",
-        typeof getPoDetails === "function"
-      );
+      // console.log(
+      //   "typeof getPoDetails === function",
+      //   typeof getPoDetails === "function"
+      // );
       if (typeof getPoDetails === "function") {
         getPoDetails(Number(res?.data?.po_id));
       }

@@ -894,12 +894,12 @@ export default function PO_Create() {
   //   setCharges(updatedCharges);
   // };
 
-  console.log("poDe", poDetails);
+  // console.log("poDe", poDetails);
 
   // Enhanced useEffect to properly initialize form data for edit
   useEffect(() => {
     if (id && poDetails?.id) {
-      console.log("Initializing form with PO details:", poDetails);
+      // console.log("Initializing form with PO details:", poDetails);
 
       // Initialize charges from poDetails
       if (
@@ -1022,7 +1022,7 @@ export default function PO_Create() {
 
   // Calculate item totals (no GST included in subtotal here)
   const calculateItemTotals = (items) => {
-    console.log("itemsssssssss", items);
+    // console.log("itemsssssssss", items);
     return items?.map((item) => {
       const unitPrice = parseFloat(item?.unit_price) || 0;
       const quantity = parseFloat(item?.qty) || 0;
@@ -1034,7 +1034,7 @@ export default function PO_Create() {
       const amountAfterDiscount = baseAmount - discountAmount;
       const gstAmount = (amountAfterDiscount * gstPercent) / 100;
       const taxableValue = amountAfterDiscount + gstAmount;
-      console.log("taxableValue", taxableValue);
+      // console.log("taxableValue", taxableValue);
 
       return {
         ...item,
@@ -1201,7 +1201,7 @@ export default function PO_Create() {
       totalGST += freightGST;
     }
 
-    console.log("Total GST including packing & freight:", totalGST);
+    // console.log("Total GST including packing & freight:", totalGST);
 
     // ------------------------
     // ADDITIONAL CHARGES
@@ -1366,7 +1366,7 @@ export default function PO_Create() {
         fright_gst: frightChargeChecked ? formData?.fright_gst : "0",
       };
 
-      console.log("PO Save Payload:", payload);
+      // console.log("PO Save Payload:", payload);
 
       // Use PoEdit for existing records, PoCreate for new ones
       if (id) {
@@ -1513,7 +1513,7 @@ export default function PO_Create() {
                           <span>Unit&nbsp;Price</span>
 
                           <select
-                            class="form-select-sm w-auto"
+                            className="form-select-sm w-auto"
                             value={formData?.default_rupees}
                             onChange={(e) =>
                               handleInputChange(
@@ -1537,7 +1537,7 @@ export default function PO_Create() {
                     <tbody>
                       {formData?.items?.map((item, index) => (
                         <tr key={index}>
-                          {console.log("item", item)}
+                          {/* {console.log("item", item)} */}
                           <td>{index + 1}</td>
                           <td>{item?.item_name}</td>
                           {/* <td>{item?.item_name}</td> */}

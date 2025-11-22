@@ -162,7 +162,7 @@ export const ServiceLocation3MasterProvider = ({ children }) => {
         // }
       );
 
-      console.log("res", res);
+      // console.log("res", res);
 
       // Decrypt Response
       // const decryptRes = decryptData(res)

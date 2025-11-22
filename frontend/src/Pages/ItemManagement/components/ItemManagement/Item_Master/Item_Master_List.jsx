@@ -125,7 +125,7 @@ export default function Item_Master_List() {
     const params = new URLSearchParams(location.search);
     const urlType = params.get("type");
 
-    console.log("URL Type from dashboard:", urlType);
+    // console.log("URL Type from dashboard:", urlType);
 
     if (urlType) {
       setSelectedType(urlType);
@@ -212,7 +212,7 @@ export default function Item_Master_List() {
   // console.log("Current selectedType:", selectedType);
   // console.log("Current URL search:", location.search);
 
-  console.log("selectedType", selectedType);
+  // console.log("selectedType", selectedType);
 
   return (
     <>

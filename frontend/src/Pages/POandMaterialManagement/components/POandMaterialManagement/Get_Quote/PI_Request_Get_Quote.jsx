@@ -77,8 +77,8 @@ export default function PI_Request_Get_Quote() {
   // Vendor Approve Data
   const [vendorApproveData, setVendorApproveData] = useState();
 
-  console.log("quoteData", quoteData);
-  console.log("newVendorData", newVendorData);
+  // console.log("quoteData", quoteData);
+  // console.log("newVendorData", newVendorData);
   const vendor_type = "new";
 
   useEffect(() => {
@@ -926,7 +926,7 @@ export default function PI_Request_Get_Quote() {
                           //   onClick={handleSendNewVendorRequest}
                           // >
                           //   <div
-                          //     class="spinner-border text-secondary"
+                          //     className="spinner-border text-secondary"
                           //     role="status"
                           //   ></div>
                           //   Send Request
@@ -1260,7 +1260,7 @@ export default function PI_Request_Get_Quote() {
                           //   onClick={handleSendNewVendorRequest}
                           // >
                           //   <div
-                          //     class="spinner-border text-secondary"
+                          //     className="spinner-border text-secondary"
                           //     role="status"
                           //   ></div>
                           //   Send Request

@@ -14,7 +14,7 @@ export default function Vendor_Quote_Detail() {
     vendorRateUpdate,
     newVendorList,
   } = useGetQuote();
-  console.log("newVendorData", newVendorData);
+  // console.log("newVendorData", newVendorData);
   const vendorData = newVendorData?.vendor_item;
   return (
     <>
@@ -82,7 +82,7 @@ export default function Vendor_Quote_Detail() {
                   {vendorData?.map((vendor, index) => {
                     return (
                       <tr key={index}>
-                        {console.log("vv", vendor)}
+                        {/* {console.log("vv", vendor)} */}
                         <td>{vendor?.pirequestitem?.item_name}</td>
                         <td>{vendor?.pirequestitem?.qty}</td>
                         <td>{vendor?.pirequestitem?.uom}</td>

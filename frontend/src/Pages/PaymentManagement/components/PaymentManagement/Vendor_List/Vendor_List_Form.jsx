@@ -27,7 +27,7 @@ export default function Vendor_List_Form({ getVendorFilter }) {
     }));
   };
 
-  console.log("vendor", vendorData);
+  // console.log("vendor", vendorData);
 
   const handleSave = async () => {
     try {
@@ -35,7 +35,7 @@ export default function Vendor_List_Form({ getVendorFilter }) {
         ...vendorData,
       };
 
-      console.log("Saving vendor data:", payload);
+      // console.log("Saving vendor data:", payload);
 
       let result;
       if (vendorEditId) {
@@ -44,7 +44,7 @@ export default function Vendor_List_Form({ getVendorFilter }) {
         result = await createVendor(payload);
       }
 
-      console.log("Save result:", result);
+      // console.log("Save result:", result);
 
       if (result?.success) {
         handleClose("addNewVendor");
@@ -295,7 +295,7 @@ export default function Vendor_List_Form({ getVendorFilter }) {
                     ]}
                     value={vendorData?.status}
                     onChange={(val) => {
-                      console.log("val", val);
+                      // console.log("val", val);
                       return setVendorData((prev) => ({
                         ...prev,
                         status: Number(val),

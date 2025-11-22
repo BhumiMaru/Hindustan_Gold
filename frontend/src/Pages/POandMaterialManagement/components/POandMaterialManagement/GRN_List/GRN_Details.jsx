@@ -32,7 +32,7 @@ export default function GRN_Details() {
     grnWorkflow,
   } = useGRN();
   const { invoiceList, invoice, isInvoiceLoad } = useInvoice();
-  console.log("grnDetails", grnDetails);
+  // console.log("grnDetails", grnDetails);
   const [grnIdInvoice, setGrnIdInvoice] = useState(null);
 
   // useEffect(() => {
@@ -49,9 +49,9 @@ export default function GRN_Details() {
     };
     loadData();
   }, [id]);
-  console.log("invoice", invoice);
+  // console.log("invoice", invoice);
 
-  console.log("GRNWorkflowdetails", GRNWorkflowdetails);
+  // console.log("GRNWorkflowdetails", GRNWorkflowdetails);
 
   // ✅ Get saved auth data
   const savedAuth = sessionStorage.getItem("authData");
@@ -162,7 +162,7 @@ export default function GRN_Details() {
                 )
             }
 
-            {/*  <div class="d-flex gap-4"><button class="btn btn-label-secondary waves-effect">Discard</button>*/}
+            {/*  <div className="d-flex gap-4"><button className="btn btn-label-secondary waves-effect">Discard</button>*/}
             {isInvoiceLoad && invoice.length === 0 && (
               <a
                 href="po-create"
@@ -290,7 +290,7 @@ export default function GRN_Details() {
                       <span className="h6 mb-0 text-info">
                         {grnDetails?.invoice_file}
                       </span> */}
-                        {console.log("grnDetails", grnDetails)}
+                        {/* {console.log("grnDetails", grnDetails)} */}
                         {invoice[0]?.invoice_file ? (
                           <Link
                             to={`${fileUrl}/storage/uploads/invoices/${invoice[0]?.invoice_file}`}
@@ -595,7 +595,7 @@ export default function GRN_Details() {
                             11-08-2025&nbsp;11:25&nbsp;AM
                           </small>
                         </div>
-                        <p class="mb-2">6 team members in a project</p>
+                        <p className="mb-2">6 team members in a project</p>
                         <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
                           <div className="d-flex flex-wrap align-items-center mb-50">
                             <div className="avatar avatar-sm me-2">

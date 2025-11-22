@@ -17,8 +17,8 @@ export default function Invoice_List_Table() {
     loading,
     invoiceDelete,
   } = useInvoice();
-  console.log("type", type);
-  console.log("invoice", invoice);
+  // console.log("type", type);
+  // console.log("invoice", invoice);
   return (
     <>
       {/* -------------------START INVOICE LIST TABLE------------------- */}
@@ -137,7 +137,7 @@ export default function Invoice_List_Table() {
                               data-bs-toggle="modal"
                               data-bs-target="#grnCreateModel"
                               onClick={() => {
-                                console.log("invoice?.id", invoice?.id);
+                                // console.log("invoice?.id", invoice?.id);
                                 startEditing({
                                   id: invoice?.id,
                                   payload: invoice,

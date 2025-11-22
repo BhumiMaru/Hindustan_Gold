@@ -184,7 +184,7 @@ export default function Add_Quote_Modal() {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const vendorData = newVendorData?.vendor_item || [];
-  console.log("vendorData", vendorData);
+  // console.log("vendorData", vendorData);
 
   //  Handle rate input change
   // const handleRateChange = (index, value) => {

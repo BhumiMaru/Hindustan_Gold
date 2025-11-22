@@ -111,7 +111,7 @@ export const SubCategoryProvider = ({ children }) => {
         //   data: encryptPayload,
         // }
       );
-      console.log("rr", res);
+      // console.log("rr", res);
 
       // Decrypt Response
       // const decryptRes = decryptData(res)
